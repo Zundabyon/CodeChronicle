@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { areaLabel, difficultyLabel, maps, questions, type Area, type Difficulty, type Enemy, type Npc, type Point, type Question, type Track } from './content';
+import { areaLabel, difficultyLabel, houseAt, houses, maps, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { PixelSprite, enemySprite } from './PixelSprite';
 import { CharacterPortrait } from './CharacterPortrait';
 import { WorldCharacter } from './WorldCharacter';
@@ -15,12 +15,12 @@ const STORAGE = 'code-chronicle-save-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
-const initialSave = (): Save => ({ name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'town', pos: maps.town.entry, hp: 20, mp: 3, xp: 0, level: 1, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
-const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); return raw ? { ...initialSave(), ...JSON.parse(raw) } : null; } catch { return null; } };
+const initialSave = (): Save => ({ name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
+const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const saved={...initialSave(),...JSON.parse(raw)} as Save; if(!maps[saved.area] || !walkable(saved.area,saved.pos)) return {...saved,area:'town',pos:maps.town.entry}; return saved; } catch { return null; } };
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ').replace(/^\.\//, '');
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const inside = (area: Area, p: Point) => p.y >= 0 && p.y < maps[area].tiles.length && p.x >= 0 && p.x < maps[area].tiles[p.y].length;
-const walkable = (area: Area, p: Point) => inside(area,p) && !['#', 'r', 'l'].includes(maps[area].tiles[p.y][p.x]);
+const walkable = (area: Area, p: Point) => inside(area,p) && !['#', 'r', 'l', 'A', 'R', 'Z', 'W', 'w', 'U', 'V', 'b', 's', 'c'].includes(maps[area].tiles[p.y][p.x]);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
 function pathfind(area: Area, start: Point, goal: Point, defeated: string[], positions: EnemyPositions): Point[] {
   const queue: Point[] = [start], seen = new Set([`${start.x},${start.y}`]), parents = new Map<string,string>();
@@ -46,14 +46,14 @@ function chooseQuestion(save: Save, kind?: 'choice' | 'cli', topic?: Question['t
 }
 
 const prologue = [
-  ['語り手','📜','千年前。人々は「コード」と呼ばれる知識で、世界を形づくっていた。AIと呼ばれた魔法は、知識とともに人々を助けた。'],
-  ['語り手','📜','しかし魔王が現れ、知識と魔法を封じた。魔王自身もまた、AIの力とともに封印された。'],
-  ['語り手','📜','千年の時を経て、何者かが封印を解いた。魔王は今度こそ、世界そのものを「デリート」しようとしている。'],
-  ['語り手','📜','主人公の故郷の城が崩れ、町は炎に包まれた。逃げ遅れた幼い主人公へ、魔王の影が迫る。'],
-  ['父','🧔','「お前は早く行け！ 知識の扉を開け、魔王を討ち取るのだ」'],
-  ['母','👩','「生きて。あなたが覚えたことは、誰にも奪わせないで」'],
-  ['語り手','📜','両親は主人公をかばい、命を落とした。泣きながら走り続けたあの日から、十年。'],
-  ['語り手','📜','物語は、とある小さな町から始まる。'],
+  {speaker:'語り手',face:'📜',title:'知識が世界を照らした時代',text:'千年前。人々は「コード」と呼ばれる知識で、城を築き、遠くの誰かと言葉を交わした。\nAIと呼ばれた魔法は、人の知恵を広げ、日々の暮らしを支えていた。'},
+  {speaker:'語り手',face:'📜',title:'奪われた言葉',text:'その光を恐れた魔王は、書物から言葉を、記憶から術を奪った。\n人々は知識を守るため、魔王をAIの力ごと深い門の向こうへ封じた。'},
+  {speaker:'語り手',face:'📜',title:'封印のひび',text:'千年後、忘れられた遺跡の封印に亀裂が走る。\n目覚めた魔王は、かつて奪いきれなかった世界そのものを「デリート」しようとしていた。'},
+  {speaker:'語り手',face:'📜',title:'燃える故郷',text:'青い屋根の城下町は、ある夜、炎に包まれた。\n鐘の音とともに人々が逃げ惑う。幼い主人公は、崩れた通りにひとり取り残された。'},
+  {speaker:'語り手',face:'📜',title:'迫る影',text:'瓦礫の向こうから魔王の影が伸びる。足がすくみ、声も出ない。\nそのとき、聞き慣れた足音が炎の中を駆けてきた。'},
+  {speaker:'父',face:'🧔',title:'父の背中',text:'「ここは俺が食い止める。お前は走れ！」\n父は剣を抜き、幼い主人公を背にかばった。「知識の扉を開け。忘れた言葉は、きっと取り戻せる」'},
+  {speaker:'母',face:'👩',title:'母との約束',text:'「生きて。あなたが覚えたことは、誰にも奪わせないで」\n母は小さな手を握り、森へ続く道を示した。両親は主人公を逃がし、燃える町に残った。'},
+  {speaker:'語り手',face:'📜',title:'十年後、旅立ちの朝',text:'十年が過ぎた。生き延びた人々は、新しい町を築いた。\n主人公は旅の支度を整え、自宅で朝を迎える。あの約束を胸に、最初の知識の扉を目指す時が来た。'},
 ] as const;
 const npcChoices: Record<string,{label:string;response:string}[]> = {
   elder: [
@@ -149,6 +149,7 @@ export function App() {
   const transition = useCallback((from: Area,to: Area) => {
     stopPath(); let pos: Point = maps[to].entry;
     if (from==='dungeon' && to==='field') pos={x:32,y:6};
+    if (to==='town' && from in houses) pos=houses[from as HouseArea].outside;
     update(s => ({...s,area:to,pos})); beep(520,0.16);
   },[update,stopPath,beep]);
   const step = useCallback((dx: number,dy: number): boolean => {
@@ -165,7 +166,9 @@ export function App() {
     walkTimer.current=setTimeout(()=>setWalking(false),190);
     const tile=map.tiles[target.y][target.x];
     if (s.area==='town' && tile==='f') { enterChurch(); return false; }
-    if (s.area==='town' && target.x===10 && target.y===11) { transition('town','field'); return false; }
+    if (s.area==='town' && tile==='D') { const house=houseAt(target); if(house) { transition('town',house); return false; } }
+    if (s.area in houses && tile==='e') { transition(s.area,'town'); return false; }
+    if (s.area==='town' && target.x===14 && target.y===23) { transition('town','field'); return false; }
     if (s.area==='field' && target.x===18 && target.y===21) { transition('field','town'); return false; }
     if (s.area==='field' && tile==='d') { transition('field','dungeon'); return false; }
     if (s.area==='dungeon' && target.x===10 && target.y===11) { transition('dungeon','field'); return false; }
@@ -204,7 +207,7 @@ export function App() {
   };
   const battleNext = () => {
     if (!battle || !battle.answered) return;
-    if (stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:7,y:8},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setChurchTab('heal'); setToast('司祭セラに助けられ、教会で目を覚ました。'); return; }
+    if (stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:13,y:16},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setChurchTab('heal'); setToast('司祭セラに助けられ、教会で目を覚ました。'); return; }
     if (battle.hp<=0) {
       if (battle.fromReview) { setBattle(null); setPhase('church'); setChurchTab('review'); setToast('復習完了！'); return; }
       if (battle.enemy.id==='after-gate') { update(s=>({...s,completed:true})); setBattle(null); setPhase('clear'); beep(1080,0.5,'sine'); return; }
@@ -227,17 +230,31 @@ export function App() {
     update(s=>({...s,mp:s.mp-1,magicUsed:true})); setBattle({...battle,eliminated:index}); setBattleNote('魔法「見極め」！ 誤った選択肢が一つ消えた。'); beep(1040,0.4,'sine');
   };
   const startNew = () => { const previous=stateRef.current; const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(true); setIntroIndex(0); setPhase('prologue'); beep(600,0.2); };
+  const finishPrologue = () => { update(s=>({...s,area:'home',pos:maps.home.entry})); setPhase('world'); startDialogue(stateRef.current.name,'🗡️',['十年ぶりに、あの夢を見た。父さんと母さんの声が、まだ耳に残っている。','旅の支度はできた。棚の手紙を見てから、玄関を出よう。']); };
   const startReview = (q: Question) => { const enemy: Enemy={id:'review',name:'記憶の影',x:0,y:0,icon:'♧'}; startBattle(enemy,true,q); };
   const wrongQuestions=save.wrong.map(id=>questions.find(q=>q.id===id)).filter((q):q is Question=>!!q);
   const intro=prologue[introIndex];
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='title'?'冒険の始まり':'物語'}</span><button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
     {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p><div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
-    {phase==='prologue' && <main className="story-screen"><div className="story-backdrop"><div className="red-moon"/><div className="story-castle">♜</div><div className="ember e1">✦</div><div className="ember e2">✦</div><div className="ember e3">✦</div></div><div className="story-card"><div className="story-progress">序章　{introIndex+1} / {prologue.length}</div><div className="story-face"><CharacterPortrait face={intro[1]} standing/></div><strong>{intro[0]}</strong><p>{intro[2]}</p><button className="primary" onClick={()=>introIndex<prologue.length-1?setIntroIndex(introIndex+1):setPhase('world')}>{introIndex<prologue.length-1?'次へ':'十年後へ'}　▶</button><button className="text-button" onClick={()=>setPhase('world')}>序章をスキップ</button></div></main>}
+    {phase==='prologue' && <main className="prologue-screen">
+      <div className="prologue-layout">
+        <div className="prologue-art" key={introIndex} role="img" aria-label={intro.title} style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/${introIndex<4?'ancient-and-fall':'family-and-dawn'}.png)`,backgroundPosition:`${introIndex%2?100:0}% ${Math.floor((introIndex%4)/2)?100:0}%`}}>
+          <span>THE LOST ART OF CODING</span>
+        </div>
+        <div className="prologue-panel">
+          <div className="prologue-progress"><span>序章　{introIndex+1} / {prologue.length}</span><span>{'◆'.repeat(introIndex+1)}{'◇'.repeat(prologue.length-introIndex-1)}</span></div>
+          <h2>{intro.title}</h2>
+          <div className="prologue-speaker"><CharacterPortrait face={intro.face}/><strong>{intro.speaker}</strong></div>
+          <p>{intro.text}</p>
+          <div className="prologue-actions"><button className="primary" onClick={()=>introIndex<prologue.length-1?setIntroIndex(introIndex+1):finishPrologue()}>{introIndex<prologue.length-1?'次の場面へ':'自宅で目覚める'}　▶</button><button className="text-button" onClick={finishPrologue}>序章をスキップ</button></div>
+        </div>
+      </div>
+    </main>}
     {phase==='world' && <WorldScene save={save} enemyPositions={enemyPositions} menu={worldMenu} onMenu={menu=>{stopPath();setWorldMenu(menu);}} onTile={clickTile} onChurch={enterChurch} onSettings={()=>setShowSettings(true)} onSound={toggleSound} muted={muted} walking={walking}/>}
     {phase==='encounter' && battle && <main className={`encounter-screen ${battle.enemy.boss?'boss-encounter':''}`} role="status" aria-live="assertive"><div className="encounter-flash"/><div className="encounter-rays"/><div className="encounter-content"><span className="encounter-kicker">ENCOUNTER!</span><div className="encounter-sprite"><PixelSprite name={enemySprite(battle.enemy.id)}/></div><h2>{battle.enemy.name}が現れた！</h2><p>知識を武器に立ち向かえ</p><button onClick={()=>setPhase('battle')}>戦闘へ ›</button></div></main>}
     {phase==='battle' && battle && <main className="battle-layout"><section className="combat-panel"><div className="panel-heading"><div><span className="eyebrow">ENCOUNTER</span><h2>{battle.fromReview?'復習の戦い':battle.enemy.boss?'知識の扉を守る者':'敵が現れた！'}</h2></div><span className="map-badge danger">{battle.enemy.boss?'BOSS BATTLE':'BATTLE'}</span></div><div className="enemy-stage"><div className="battle-sparks">✦　·　✧　·　✦</div><div className={`enemy-sprite ${battle.enemy.boss?'boss-sprite':''}`}><PixelSprite name={enemySprite(battle.enemy.id)}/></div><h3>{battle.enemy.name}</h3><div className="enemy-hp"><i style={{width:`${battle.hp/battle.maxHp*100}%`}}/></div><span>{battle.hp} / {battle.maxHp}</span></div><div className="battle-player"><span>♟ {save.name}　LV {save.level}</span><div><span>HP {save.hp}/{maxHp(save.level)}</span><span>MP {save.mp}/{maxMp(save.level)}</span></div></div><div className="question-card"><div className="question-kicker"><span>{battle.question.kind==='cli'?'⌘ CLI CHALLENGE':'✦ FOUR CHOICES'}</span><span>{difficultyLabel[save.difficulty]} · {battle.question.topic==='frontend'?save.track==='react'?'React':'Vue':battle.question.topic==='laravel'?'Laravel':save.inertia?'Inertia':'API連携'}</span></div><h3>{battle.question.prompt}</h3>{battle.question.code&&<pre>{battle.question.code}</pre>}{battle.question.kind==='choice'?<div className="options">{battle.question.options!.map((option,i)=><button key={i} disabled={battle.answered||battle.eliminated===i} className={`${battle.answered&&i===battle.question.answer?'right':''} ${battle.answered&&i!==battle.question.answer?'faded':''} ${battle.eliminated===i?'eliminated':''}`} onClick={()=>answer(i)}><span>{String.fromCharCode(65+i)}</span>{battle.eliminated===i?'魔法で除外':option}</button>)}</div>:<form className="cli-form" onSubmit={e=>{e.preventDefault();answer(battleInput);}}><label htmlFor="cli-answer">ゲーム内CLI</label><div><span>❯</span><input id="cli-answer" autoFocus spellCheck={false} value={battleInput} onChange={e=>setBattleInput(e.target.value)} disabled={battle.answered} placeholder="コマンドを入力"/><button disabled={battle.answered||!battleInput.trim()}>実行 ↵</button></div></form>}{!battle.answered&&save.bossDefeated&&battle.question.kind==='choice'&&<button className="magic-button" disabled={save.mp<1||battle.eliminated!==null} onClick={castMagic}>✦ 見極めの魔法を使う <small>MP 1</small></button>}{battleNote&&<div className={`battle-note ${battle.correct?'success':'fail'}`}>{battleNote}</div>}{battle.answered&&<button className="primary next-turn" onClick={battleNext}>{battle.hp<=0?'戦闘を終える':save.hp<=0?'教会へ':'次の問題へ'}　▶</button>}</div></section><aside className="explain-panel"><div className="explain-header"><span className="eyebrow">GRIMOIRE</span><h2>知識の書</h2><p>問いを解くたび、失われた言葉が戻ってくる。</p></div>{battle.answered?<div className="explain-content"><span className={battle.correct?'answer-tag good':'answer-tag bad'}>{battle.correct?'正解':'復習ポイント'}</span><h3>答え：{battle.question.reveal}</h3><p>{battle.question.explanation}</p><div className="tip-box">間違えた問題は町の教会で振り返れます。</div></div>:<div className="explain-placeholder"><div>✧</div><p>回答するとここに解説が表示されます。</p></div>}<div className="battle-stats"><span>正解 {save.correct}</span><span>回答 {save.total}</span><span>復習 {save.wrong.length}</span></div></aside></main>}
-    {phase==='church' && <main className="church-screen"><div className="church-visual"><span>✝</span><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="tabs"><button className={churchTab==='heal'?'active':''} onClick={()=>setChurchTab('heal')}>✦ 回復</button><button className={churchTab==='review'?'active':''} onClick={()=>setChurchTab('review')}>📖 復習 <span>{wrongQuestions.length}</span></button></div>{churchTab==='heal'?<div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3><p>「知識の扉は、何度でも挑む者に開かれます。心と体を休めていってください」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div><button className="primary" onClick={()=>{update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');beep(900,0.4,'sine');}}>HP・MPを回復する ✦</button></div>:<div className="review-content"><h3>もう一度、知識の扉へ</h3><p>間違えた問題の解説を読み、再挑戦できます。</p>{wrongQuestions.length===0?<div className="empty-review">復習する問題はありません。冒険へ戻りましょう。</div>:<div className="review-list">{wrongQuestions.map(q=><div className="review-item" key={q.id}><button onClick={()=>setReviewId(reviewId===q.id?null:q.id)}><span>{q.kind==='cli'?'⌘':'✦'} {q.prompt}</span><b>{reviewId===q.id?'−':'＋'}</b></button>{reviewId===q.id&&<div><strong>答え：{q.reveal}</strong><p>{q.explanation}</p><button className="secondary" onClick={()=>startReview(q)}>再挑戦する　▶</button></div>}</div>)}</div>}</div>}<button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:7,y:8}}));}}>← 町へ戻る</button></div></main>}
+    {phase==='church' && <main className="church-screen"><div className="church-visual"><span>✝</span><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="tabs"><button className={churchTab==='heal'?'active':''} onClick={()=>setChurchTab('heal')}>✦ 回復</button><button className={churchTab==='review'?'active':''} onClick={()=>setChurchTab('review')}>📖 復習 <span>{wrongQuestions.length}</span></button></div>{churchTab==='heal'?<div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3><p>「知識の扉は、何度でも挑む者に開かれます。心と体を休めていってください」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div><button className="primary" onClick={()=>{update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');beep(900,0.4,'sine');}}>HP・MPを回復する ✦</button></div>:<div className="review-content"><h3>もう一度、知識の扉へ</h3><p>間違えた問題の解説を読み、再挑戦できます。</p>{wrongQuestions.length===0?<div className="empty-review">復習する問題はありません。冒険へ戻りましょう。</div>:<div className="review-list">{wrongQuestions.map(q=><div className="review-item" key={q.id}><button onClick={()=>setReviewId(reviewId===q.id?null:q.id)}><span>{q.kind==='cli'?'⌘':'✦'} {q.prompt}</span><b>{reviewId===q.id?'−':'＋'}</b></button>{reviewId===q.id&&<div><strong>答え：{q.reveal}</strong><p>{q.explanation}</p><button className="secondary" onClick={()=>startReview(q)}>再挑戦する　▶</button></div>}</div>)}</div>}</div>}<button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));}}>← 町へ戻る</button></div></main>}
     {phase==='epilogue' && <main className="epilogue-screen"><div className="gate-art">◈</div><div className="story-card"><span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'ゲートガーディアンは光の粒となって消えた。重い扉の向こうから、忘れられた魔法の気配が流れ込む。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'扉の奥に残った記憶の影が問いを投げかけた。覚えた魔法を使って答えよう。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'記憶の影',x:0,y:0,icon:'✧'} ,false,chooseQuestion(stateRef.current,'choice'));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><div className="clear-symbol">✧</div><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>最初の扉は、開かれた。</h1><p>失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&phase==='world'&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogue.face}/></div><div className="dialogue-text"><strong>{dialogue.speaker}</strong><p>{dialogue.lines[dialogue.index]}</p>{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<div className="dialogue-choices">{dialogue.choices.map(choice=><button key={choice.label} onClick={e=>{e.stopPropagation();setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined});beep(720,0.08);}}>{choice.label}　▶</button>)}</div>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}

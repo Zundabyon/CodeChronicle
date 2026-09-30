@@ -136,6 +136,47 @@ button,input{font-family:'DotGothic16',monospace}
 .standing-character{width:120px;height:160px;margin:0 auto}
 .title-hero .world-character{width:72px;height:90px;margin:auto}
 @media(prefers-reduced-motion:reduce){.world-character.walking,.world-character.walking .character-arm-left,.world-character.walking .character-arm-right,.world-character.walking .character-leg-left,.world-character.walking .character-leg-right{animation:none}}
+
+/* Building parts occupy map cells, so doors and walls stay aligned with movement. */
+.world-map.map-town .world-tile.tile-A,.world-map.map-town .world-tile.tile-R,.world-map.map-town .world-tile.tile-Z,.world-map.map-town .world-tile.tile-U{background:repeating-linear-gradient(90deg,#1c334b 0 7px,#52769a 7px 10px,#294662 10px 19px);box-shadow:inset 0 -5px #14283a,inset 0 5px #91a9af}
+.world-map.map-town .world-tile.tile-A{clip-path:polygon(100% 0,100% 100%,0 100%,18% 30%)}
+.world-map.map-town .world-tile.tile-Z{clip-path:polygon(0 0,82% 30%,100% 100%,0 100%)}
+.world-map.map-town .world-tile.tile-W,.world-map.map-town .world-tile.tile-w,.world-map.map-town .world-tile.tile-D,.world-map.map-town .world-tile.tile-V,.world-map.map-town .world-tile.tile-f{background:repeating-linear-gradient(90deg,#3d2b23 0 6px,#c5aa78 6px 44px,#75533b 44px 49px);box-shadow:inset 0 6px #72543b,inset 0 -7px #4c372d}
+.world-map.map-town .world-tile.tile-w::after{content:'';width:55%;height:50%;background:linear-gradient(135deg,#6fabc3,#293d58);border:5px solid #5d412d;box-shadow:inset 0 0 0 3px #bc9b62}
+.world-map.map-town .world-tile.tile-D::after,.world-map.map-town .world-tile.tile-f::after{content:'';width:62%;height:82%;align-self:end;background:linear-gradient(90deg,#422a1d 0 12%,#855b32 12% 48%,#4f341e 48% 55%,#8f6539 55% 90%,#3c291b 90%);border:4px solid #32251d;box-shadow:inset -8px 0 #0003}
+.world-map.map-town .world-tile.tile-D:hover::after,.world-map.map-town .world-tile.tile-f:hover::after{filter:brightness(1.3)}
+.world-map.map-town .world-tile.tile-U{background:repeating-linear-gradient(90deg,#544a69 0 8px,#8e84a5 8px 11px,#645979 11px 20px)}
+.world-map.map-town .world-tile.tile-V,.world-map.map-town .world-tile.tile-f{background:repeating-linear-gradient(90deg,#5b5665 0 7px,#d5c6aa 7px 48px,#776d6d 48px 53px)}
+.world-map.map-interior .world-tile{background:repeating-linear-gradient(90deg,#805a3a 0 8px,#986f45 8px 15px,#704b32 15px 17px);box-shadow:inset 0 -2px #513822}
+.world-map.map-interior .world-tile.tile-\#{background:repeating-linear-gradient(90deg,#574536 0 10px,#a68a61 10px 38px,#513a2d 38px 42px);box-shadow:inset 0 -8px #322820}
+.world-map.map-interior .world-tile.tile-g{background:#a37b4d}
+.world-map.map-interior .world-tile.tile-e{background:#69412d;box-shadow:inset 0 0 0 5px #c9a46b;color:#fff1cf}
+.world-map.map-interior .world-tile.tile-e::after{content:'▼';font-size:18px}
+.world-map.map-interior .world-tile.tile-b{background:#76502e;box-shadow:inset 5px 5px #e8d4a0,inset -6px -6px #463222;color:#fff2d6}
+.world-map.map-interior .world-tile.tile-s{background:repeating-linear-gradient(0deg,#35281f 0 7px,#a26640 7px 12px,#4e704c 12px 16px);color:#f3dcac}
+.world-map.map-interior .world-tile.tile-c{background:#684729;box-shadow:inset 9px 9px #b89158,inset -9px -9px #4a3427;color:#ead2a6}
+.map-letter{font-size:calc(var(--tile-size) * .6);color:#fff1c8;text-shadow:2px 2px #342b2a}
+
+.prologue-screen{min-height:calc(100vh - 76px);padding:26px 18px 44px;display:grid;place-items:center;background:radial-gradient(circle at 50% 5%,#30405b,#0a0e1b 68%)}
+.prologue-layout{width:min(1050px,100%);background:#0b111c;border:3px solid #e6d5a9;box-shadow:0 0 0 5px #1a263a,0 24px 65px #000b}
+.prologue-art{position:relative;width:100%;aspect-ratio:2/1;background-size:200% 200%;background-repeat:no-repeat;image-rendering:auto;animation:prologue-reveal .5s ease-out both}
+.prologue-art::after{content:'';position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0b111c9a)}
+.prologue-art>span{position:absolute;left:22px;top:19px;z-index:1;color:#fff0c7;font:10px 'Press Start 2P',monospace;text-shadow:0 2px 6px #000;letter-spacing:.08em}
+.prologue-panel{padding:22px 32px 28px;color:#f7f0dc}
+.prologue-progress{display:flex;justify-content:space-between;gap:12px;color:#d7bb82;font-size:12px;letter-spacing:.14em}
+.prologue-progress span:last-child{letter-spacing:.16em;color:#f5c77a}
+.prologue-panel h2{font-size:clamp(22px,3vw,34px);margin:10px 0 12px;color:#fff3d5}
+.prologue-speaker{display:flex;align-items:center;gap:12px;color:#f3cd8a}
+.prologue-speaker .character-portrait{width:45px;height:60px;border:2px solid #cbb788}
+.narrator-portrait{display:grid;place-items:center;flex:none;width:120px;height:160px}
+.narrator-portrait .pixel-sprite{width:70px;height:70px}
+.prologue-speaker .narrator-portrait{width:45px;height:60px;border:2px solid #cbb788}
+.prologue-speaker .narrator-portrait .pixel-sprite{width:36px;height:36px}
+.prologue-panel p{white-space:pre-line;line-height:1.85;font-size:15px;margin:10px 0 19px}
+.prologue-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.prologue-actions .primary{min-width:210px}
+@keyframes prologue-reveal{from{opacity:.4;filter:brightness(.5)}to{opacity:1;filter:brightness(1)}}
+@media(max-width:700px){.prologue-screen{padding:10px}.prologue-panel{padding:17px}.prologue-panel p{font-size:13px}.prologue-progress span:last-child{font-size:9px}.prologue-art>span{font-size:7px;left:10px;top:10px}}
 .world-map .world-tile{background:#459149 url('/maps/grass-64.png') center / 100% 100%;box-shadow:none}
 .world-map .world-tile.tile-g,.world-map .world-tile.tile-d{background:#b78a50 url('/maps/path-64.png') center / 100% 100%}
 .world-map .world-tile.tile-r{background:#1c72b5 url('/maps/river.png') center / 100% 100%}

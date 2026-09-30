@@ -10,7 +10,7 @@ const locations: Record<string, [number, number]> = {
 export function CharacterPortrait({face,standing=false}:{face:string;standing?:boolean}) {
   const name=faceSprite(face);
   const location=locations[name];
-  if (!location) return <PixelSprite name={name}/>;
+  if (!location) return <span className="narrator-portrait"><PixelSprite name={name}/></span>;
   if (standing) return <WorldCharacter name={name as CharacterName} className="standing-character"/>;
   const [column,row]=location;
   const style={

@@ -21,6 +21,7 @@ export function WorldCharacter({name,walking=false,className=''}:{name:Character
   const style={'--coat':c.coat,'--shade':c.shade,'--skin':c.skin,'--legs':c.legs} as CSSProperties;
   return <svg className={`world-character ${walking?'walking':''} ${className}`} style={style} viewBox="0 0 32 40" shapeRendering="crispEdges" aria-hidden="true">
     <path fill="#171823" d="M9 2h14v2h4v4h2v12h-3v3h-3v2h3v11h-3v2h-6v-2h-2v2H9v-2H6V25h3v-2H6v-3H3V9h3V5h3z"/>
+    {name==='hero'&&<path fill="#a5263a" d="M6 21h4v3H7v8H5v5H3V27h2v-4h1zM22 21h4v5h2v10h-3v-4h-2v-8h-1z"/>}
     <path fill={hood?c.shade:c.hair} d="M9 3h14v2h3v4h2v10h-4V9H8v10H4V9h3V5h2z"/>
     <path fill={c.light} d="M9 4h7v2H8v5H6V8h3zM18 4h4v2h3v3h-3V7h-4z"/>
     <path fill={c.skin} d="M8 10h16v10h-3v3H11v-3H8zM5 14h3v5H5zM24 14h3v5h-3z"/>
@@ -32,6 +33,7 @@ export function WorldCharacter({name,walking=false,className=''}:{name:Character
     <path fill={c.shade} d="M11 23h10v3h4v9H7v-9h4z"/>
     <path fill={c.coat} d="M12 24h8v2h4v8H8v-8h4z"/>
     <path fill={c.trim} d="M15 25h2v10h-2zM9 31h3v2H9zM20 31h3v2h-3z"/>
+    {name==='hero'&&<><path fill="#f7d678" d="M7 24h5v3H8v4H6v-5h1zM20 24h5v3h1v4h-2v-4h-4zM11 32h10v2H11z"/><path fill="#e7e9ef" d="M27 25h2v9h-2zM26 34h4v2h-4z"/><path fill="#967038" d="M27 36h2v3h-2z"/></>}
     {robe&&<path fill={c.coat} d="M9 32h14v4H7v-2h2z"/>}
     <g className="character-arm-left"><path fill="#171823" d="M6 25h4v9H5v-3H4v-4h2z"/><path fill={c.coat} d="M6 26h3v5H5v-4h1z"/><path fill={c.skin} d="M5 31h4v3H5z"/></g>
     <g className="character-arm-right"><path fill="#171823" d="M22 25h4v2h2v7h-6z"/><path fill={c.coat} d="M23 26h3v5h-3z"/><path fill={c.skin} d="M23 31h4v3h-4z"/></g>

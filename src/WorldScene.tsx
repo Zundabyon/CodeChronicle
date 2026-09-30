@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
-import { areaLabel, difficultyLabel, maps, type Area, type Point, type Track, type Difficulty } from './content';
+import { areaLabel, difficultyLabel, houseAt, maps, type Area, type Point, type Track, type Difficulty } from './content';
 import { PixelSprite, enemySprite, npcSprite } from './PixelSprite';
-import { WorldCharacter } from './WorldCharacter';
+import { WorldCharacter, type CharacterName } from './WorldCharacter';
 import { positionOf, type EnemyPositions } from './enemyMovement';
 
 type WorldSave = {
@@ -30,8 +30,10 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
   const map=maps[save.area];
   const width=map.tiles[0].length;
   const height=map.tiles.length;
-  const cameraX=Math.max(0,Math.min(save.pos.x-7,width-14));
-  const cameraY=Math.max(0,Math.min(save.pos.y-4,height-9));
+  const viewColumns=Math.min(14,width),viewRows=Math.min(9,height);
+  const cameraX=Math.max(0,Math.min(save.pos.x-7,width-viewColumns));
+  const cameraY=Math.max(0,Math.min(save.pos.y-4,height-viewRows));
+  const interior=!['town','field','dungeon'].includes(save.area);
   const mapStyle={
     '--map-columns':width,
     '--map-rows':height,
@@ -39,16 +41,17 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
   } as CSSProperties;
   const visibleEnemies=map.enemies.filter(enemy=>!save.defeated.includes(enemy.id));
   return <main className="world-stage">
-    <div className="world-viewport" aria-label={areaLabel[save.area]}>
-      <div className={`world-map map-${save.area}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`}>
+    <div className="world-viewport" style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} aria-label={areaLabel[save.area]}>
+      <div className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`}>
         {map.tiles.map((row,y)=>row.split('').map((tile,x)=>{
           const point={x,y};
           const npc=map.npcs.find(person=>person.x===x&&person.y===y);
           const player=save.pos.x===x&&save.pos.y===y;
-          const objectPath=tile==='h'?'house':tile==='f'?'church':tile==='t'?'tree':tile==='#'&&save.area!=='dungeon'?(save.area==='town'?'tree':'mountain'):null;
+          const objectPath=tile==='t'?'tree':tile==='#'&&!interior&&save.area!=='dungeon'?(save.area==='town'?'tree':'mountain'):null;
           const shore=tile==='r'?`${row[x-1]!=='r'?' shore-west':''}${row[x+1]!=='r'?' shore-east':''}`:'';
-          const icon=player?<WorldCharacter name="hero" walking={walking}/>:npc?<WorldCharacter name={npcSprite(npc.id) as 'elder'|'scholar'|'child'|'priest'|'wanderer'}/>:objectPath?<img className={`world-object world-object-${objectPath}`} src={`${import.meta.env.BASE_URL}maps/${objectPath}-${objectPath==='house'||objectPath==='church'?'128':'64'}.png`} alt="" draggable={false}/>:tile==='d'?'◈':null;
-          return <button key={`${x}-${y}`} role="gridcell" className={`world-tile tile-${tile} ${player?'player':''} ${npc?'npc':''}${shore}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(tile==='f'?'教会':tile==='d'?'遺跡への門':'移動')} aria-label={player?'現在地':npc?.name??`${x}, ${y}へ移動`}>{icon}</button>;
+          const icon=player?<WorldCharacter name="hero" walking={walking}/>:npc?npc.id==='letter'?<span className="map-letter">✉</span>:<WorldCharacter name={npcSprite(npc.id) as CharacterName}/>:objectPath?<img className={`world-object world-object-${objectPath}`} src={`${import.meta.env.BASE_URL}maps/${objectPath}-64.png`} alt="" draggable={false}/>:tile==='d'?'◈':tile==='b'?'▣':tile==='s'?'▤':tile==='c'?'◉':null;
+          const destination=save.area==='town'&&tile==='D'?(houseAt(point)?areaLabel[houseAt(point)!]:'家'):tile==='f'?'教会':tile==='e'?'町へ出る':tile==='d'?'遺跡への門':'移動';
+          return <button key={`${x}-${y}`} role="gridcell" className={`world-tile tile-${tile} ${player?'player':''} ${npc?'npc':''}${shore}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??destination} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{icon}</button>;
         }))}
         <div className="world-enemies">
           {visibleEnemies.map(enemy=>{
@@ -60,7 +63,7 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
     </div>
     <div className="world-place retro-window"><span>{areaLabel[save.area]}</span></div>
     <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
-    <div className="world-hint">十字キー / WASD で移動　•　クリックで目的地へ</div>
+    <div className="world-hint">{interior?'玄関から町へ　•　クリック / 十字キーで移動':'十字キー / WASD で移動　•　扉から家へ入る'}</div>
     {menu&&<div className="world-menu retro-window">
       <div className="world-menu-title">{menu==='command'?'コマンド':menu==='status'?'つよさ': 'たびのもくてき'}</div>
       {menu==='command'&&<div className="world-menu-items">
