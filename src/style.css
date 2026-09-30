@@ -125,6 +125,17 @@ button,input{font-family:'DotGothic16',monospace}
 .dialogue-portrait .character-portrait{width:120px;height:160px}
 .story-face .character-portrait,.priest-portrait .character-portrait{width:120px;height:160px;margin:0 auto}
 @media(max-width:700px){.dialogue-portrait{width:79px}.dialogue-portrait .character-portrait{width:75px;height:100px}}
+.world-character{display:block;image-rendering:pixelated;overflow:visible;filter:drop-shadow(2px 3px 0 #0a102277)}
+.world-tile .world-character{width:88%;height:112%;align-self:end;justify-self:center;transform-origin:50% 90%}
+.world-character.walking{animation:character-step .22s steps(2,end) infinite}
+.world-character.walking .character-arm-left,.world-character.walking .character-leg-right{animation:character-limb-left .22s steps(2,end) infinite;transform-origin:50% 0;transform-box:fill-box}
+.world-character.walking .character-arm-right,.world-character.walking .character-leg-left{animation:character-limb-right .22s steps(2,end) infinite;transform-origin:50% 0;transform-box:fill-box}
+@keyframes character-step{0%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes character-limb-left{0%{transform:rotate(12deg)}50%{transform:rotate(-12deg)}}
+@keyframes character-limb-right{0%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+.standing-character{width:120px;height:160px;margin:0 auto}
+.title-hero .world-character{width:72px;height:90px;margin:auto}
+@media(prefers-reduced-motion:reduce){.world-character.walking,.world-character.walking .character-arm-left,.world-character.walking .character-arm-right,.world-character.walking .character-leg-left,.world-character.walking .character-leg-right{animation:none}}
 .world-map .world-tile{background:#459149 url('/maps/grass-64.png') center / 100% 100%;box-shadow:none}
 .world-map .world-tile.tile-g,.world-map .world-tile.tile-d{background:#b78a50 url('/maps/path-64.png') center / 100% 100%}
 .world-map .world-tile.tile-r{background:#1c72b5 url('/maps/river.png') center / 100% 100%}

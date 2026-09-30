@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { areaLabel, difficultyLabel, maps, type Area, type Point, type Track, type Difficulty } from './content';
 import { PixelSprite, enemySprite, npcSprite } from './PixelSprite';
+import { WorldCharacter } from './WorldCharacter';
 import { positionOf, type EnemyPositions } from './enemyMovement';
 
 type WorldSave = {
@@ -19,12 +20,13 @@ type Props = {
   onSettings: () => void;
   onSound: () => void;
   muted: boolean;
+  walking: boolean;
 };
 
 const hpLimit = (level: number) => 20 + (level - 1) * 5;
 const mpLimit = (level: number) => 3 + Math.floor((level - 1) / 2);
 
-export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSettings,onSound,muted}:Props) {
+export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSettings,onSound,muted,walking}:Props) {
   const map=maps[save.area];
   const width=map.tiles[0].length;
   const height=map.tiles.length;
@@ -45,7 +47,7 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
           const player=save.pos.x===x&&save.pos.y===y;
           const objectPath=tile==='h'?'house':tile==='f'?'church':tile==='t'?'tree':tile==='#'&&save.area!=='dungeon'?(save.area==='town'?'tree':'mountain'):null;
           const shore=tile==='r'?`${row[x-1]!=='r'?' shore-west':''}${row[x+1]!=='r'?' shore-east':''}`:'';
-          const icon=player?<PixelSprite name="hero"/>:npc?<PixelSprite name={npcSprite(npc.id)}/>:objectPath?<img className={`world-object world-object-${objectPath}`} src={`${import.meta.env.BASE_URL}maps/${objectPath}-${objectPath==='house'||objectPath==='church'?'128':'64'}.png`} alt="" draggable={false}/>:tile==='d'?'◈':null;
+          const icon=player?<WorldCharacter name="hero" walking={walking}/>:npc?<WorldCharacter name={npcSprite(npc.id) as 'elder'|'scholar'|'child'|'priest'|'wanderer'}/>:objectPath?<img className={`world-object world-object-${objectPath}`} src={`${import.meta.env.BASE_URL}maps/${objectPath}-${objectPath==='house'||objectPath==='church'?'128':'64'}.png`} alt="" draggable={false}/>:tile==='d'?'◈':null;
           return <button key={`${x}-${y}`} role="gridcell" className={`world-tile tile-${tile} ${player?'player':''} ${npc?'npc':''}${shore}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(tile==='f'?'教会':tile==='d'?'遺跡への門':'移動')} aria-label={player?'現在地':npc?.name??`${x}, ${y}へ移動`}>{icon}</button>;
         }))}
         <div className="world-enemies">
