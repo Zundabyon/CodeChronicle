@@ -85,6 +85,26 @@ export type Npc = { id: string; name: string; x: number; y: number; face: string
 export type Enemy = { id: string; name: string; x: number; y: number; icon: string; boss?: boolean; cli?: boolean };
 export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: Point };
 
+const fieldTiles = (() => {
+  const width=36, height=22;
+  const grid: string[][]=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>x===0||x===width-1||y===0||y===height-1?'#':'.'));
+  const paint=(tile:string,points:Point[])=>points.forEach(({x,y})=>{grid[y][x]=tile;});
+  for(let y=2;y<=18;y++) for(let x=12;x<=13;x++) grid[y][x]='r';
+  for(let x=12;x<=13;x++) grid[10][x]='g';
+  for(let y=11;y<=20;y++) grid[y][18]='g';
+  for(let x=13;x<=18;x++) grid[10][x]='g';
+  for(let x=14;x<=31;x++) grid[9][x]='g';
+  for(let y=6;y<=9;y++) grid[y][31]='g';
+  for(let x=31;x<=33;x++) grid[6][x]='g';
+  for(let y=2;y<=8;y++) for(let x=3;x<=8;x++) if((x+y)%4!==0) grid[y][x]='t';
+  for(let y=12;y<=18;y++) for(let x=3;x<=9;x++) if((x*3+y)%5!==0) grid[y][x]='t';
+  for(let y=12;y<=18;y++) for(let x=24;x<=32;x++) if((x+y*2)%4!==0) grid[y][x]='t';
+  paint('#',[{x:27,y:2},{x:28,y:2},{x:29,y:2},{x:28,y:3},{x:29,y:3},{x:30,y:3},{x:29,y:4},{x:30,y:4}]);
+  grid[21][18]='g';
+  grid[6][33]='d';
+  return grid.map(row=>row.join(''));
+})();
+
 export const maps: Record<Area, MapData> = {
   town: {
     tiles: [
@@ -97,7 +117,7 @@ export const maps: Record<Area, MapData> = {
       '#..h.........h.....#',
       '#..................#',
       '#.....f............#',
-      '#..................#',
+      '#.......l...l......#',
       '#........g.........#',
       '##########.#########',
     ],
@@ -111,26 +131,13 @@ export const maps: Record<Area, MapData> = {
     enemies: [],
   },
   field: {
-    tiles: [
-      '####################',
-      '#....t.............#',
-      '#.t.......t........#',
-      '#.................d#',
-      '#......t..........d#',
-      '#................r.#',
-      '#.t........t.....r.#',
-      '#................r.#',
-      '#....t...........r.#',
-      '#................r.#',
-      '#........g.........#',
-      '##########.#########',
-    ],
-    entry: {x:10,y:10},
-    npcs: [{id:'wanderer',name:'旅人ロイ',x:6,y:4,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','あの東の門の先に、忘却の遺跡がある。']}],
+    tiles: fieldTiles,
+    entry: {x:18,y:20},
+    npcs: [{id:'wanderer',name:'旅人ロイ',x:19,y:17,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','あの東の門の先に、忘却の遺跡がある。']}],
     enemies: [
-      {id:'f1',name:'バグスライム',x:4,y:3,icon:'◕'},
-      {id:'f2',name:'ノイズコウモリ',x:12,y:5,icon:'✦'},
-      {id:'f3',name:'コマンドゴースト',x:15,y:8,icon:'♟',cli:true},
+      {id:'f1',name:'バグスライム',x:20,y:14,icon:'◕'},
+      {id:'f2',name:'ノイズコウモリ',x:8,y:9,icon:'✦'},
+      {id:'f3',name:'コマンドゴースト',x:29,y:7,icon:'♟',cli:true},
     ],
   },
   dungeon: {

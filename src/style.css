@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Old+Mincho:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap');
 .guide-card button:disabled{opacity:.5}.dialogue-choices{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.dialogue-choices button{background:#373047;border:1px solid #ab8b60;color:#f1d9ad;padding:7px 12px;font-size:12px}.dialogue-choices button:hover{background:#5a4356}
 .pixel-sprite{display:block;width:100%;height:100%;image-rendering:pixelated;filter:drop-shadow(2px 3px 0 #1b182c88)}.tile .pixel-sprite{width:78%;height:78%}.tile.player .pixel-sprite{width:88%;height:88%}.title-hero .pixel-sprite{width:56px;height:60px}.avatar .pixel-sprite{width:36px;height:36px}.enemy-sprite .pixel-sprite{width:122px;height:122px}.story-face .pixel-sprite,.priest-portrait .pixel-sprite{width:76px;height:76px;margin:auto}.dialogue-portrait .pixel-sprite{width:95px;height:95px;margin:auto}.enemy-sprite:has(.pixel-sprite){margin-top:13px}.tile.enemy .pixel-sprite{filter:drop-shadow(0 0 4px #ffe0b7)}
 
@@ -20,3 +20,123 @@
 .map-object-house,.map-object-church{width:155%;height:155%}
 .map-object-mountain{width:120%;height:120%}
 .map-object-river{width:100%;height:100%;object-fit:cover;filter:none}
+
+:root{font-family:'DotGothic16',monospace;font-size:15px}
+button,input{font-family:'DotGothic16',monospace}
+.eyebrow,.map-badge,.brand small,.title-foot,.question-kicker,.battle-stats,.encounter-kicker{font-family:'Press Start 2P','DotGothic16',monospace}
+.eyebrow{font-size:9px;line-height:1.8;letter-spacing:.08em}
+.map-badge{font-size:8px;line-height:1.7}
+.brand small,.title-foot{font-size:8px;line-height:1.7}
+.panel-heading h2,.title-screen h1,.story-card h2,.clear-screen h1{font-family:'DotGothic16',monospace}
+
+.map{position:relative;--map-inset:9px}
+.enemy-layer{position:absolute;inset:var(--map-inset);z-index:5;pointer-events:none}
+.roaming-enemy{position:absolute;top:0;left:0;width:5%;height:8.333333%;padding:2px;border:1px solid #f0ad9277;background:radial-gradient(circle,#b96d7899,#6a3a5770 65%,transparent 75%);display:grid;place-items:center;pointer-events:auto;cursor:pointer;transition:transform .52s ease-in-out;will-change:transform}
+.roaming-enemy .pixel-sprite{width:88%;height:88%;animation:enemy-float 1.2s ease-in-out infinite;filter:drop-shadow(0 0 4px #ffe0b7)}
+.roaming-enemy.boss{border-color:#f4ce82;background:radial-gradient(circle,#ac7287cc,#6f3b6faa 65%,transparent 78%);box-shadow:0 0 13px #e4aa75aa}
+.roaming-enemy:focus-visible{outline:2px solid #fff1ba;outline-offset:1px}
+@keyframes enemy-float{50%{translate:0 -3px}}
+
+.encounter-screen{position:relative;min-height:calc(100vh - 76px);overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at center,#654357 0,#2e263b 40%,#0e111d 82%);isolation:isolate}
+.encounter-screen::before,.encounter-screen::after{content:'';position:absolute;inset:-60%;pointer-events:none}
+.encounter-screen::before{background:repeating-conic-gradient(from 0deg,#dca46a25 0deg 10deg,transparent 10deg 22deg);animation:encounter-spin 5s linear infinite}
+.encounter-screen::after{border:70px solid #fff3c500;box-shadow:inset 0 0 110px #080611,0 0 100px #080611}
+.encounter-flash{position:absolute;inset:0;background:#fff3db;z-index:3;pointer-events:none;animation:encounter-flash .95s steps(2,end) forwards}
+.encounter-rays{position:absolute;width:80vmin;height:80vmin;border:3px solid #f5cc8444;border-radius:50%;box-shadow:0 0 0 45px #f1ac5130,0 0 0 90px #d9626330,0 0 0 135px #a8465730;animation:encounter-ring .8s ease-out both}
+.encounter-content{position:relative;z-index:4;display:flex;align-items:center;flex-direction:column;text-align:center;padding:30px;animation:encounter-enter .7s .2s both}
+.encounter-kicker{color:#f5ca83;font-size:14px;letter-spacing:.08em;text-shadow:0 0 17px #edaf60}
+.encounter-sprite{width:150px;height:150px;margin:22px 0 8px;filter:drop-shadow(0 0 21px #eead8aaa);animation:encounter-sprite .75s cubic-bezier(.15,1.3,.35,1) both}
+.encounter-screen h2{font:clamp(22px,3.6vw,40px)/1.5 'DotGothic16',monospace;color:#fff0cb;margin:9px 0;text-shadow:0 4px #70444d,0 0 25px #f4bd87}
+.encounter-screen p{color:#d8c5b5;font-size:14px;margin:4px 0 20px}
+.encounter-screen button{background:#392d41;color:#f6d9a9;border:1px solid #daa96c;padding:10px 20px}
+.boss-encounter{background:radial-gradient(circle at center,#7b4e65 0,#30213a 43%,#0c0b17 84%)}
+.battle-layout{animation:battle-enter .45s ease-out both}
+@keyframes encounter-flash{0%,22%{opacity:.9} 12%,42%,100%{opacity:0}}
+@keyframes encounter-spin{to{transform:rotate(360deg)}}
+@keyframes encounter-ring{from{transform:scale(.2);opacity:1}to{transform:scale(1.2);opacity:.4}}
+@keyframes encounter-enter{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes encounter-sprite{from{transform:scale(.15) rotate(-25deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes battle-enter{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@media(max-width:700px){.map{--map-inset:3px}.roaming-enemy{padding:0}.encounter-screen{min-height:calc(100vh - 69px)}}
+@media(prefers-reduced-motion:reduce){.roaming-enemy,.roaming-enemy .pixel-sprite,.encounter-screen::before,.encounter-flash,.encounter-rays,.encounter-content,.encounter-sprite,.battle-layout{animation:none;transition:none}.encounter-flash{display:none}}
+
+/* Exploration uses one 64px source tile per map cell. The viewport follows the player. */
+.app-shell:has(.world-stage) .topbar{display:none}
+.world-stage{--tile-size:clamp(23px,4.2vw,64px);position:relative;min-height:100vh;display:grid;place-items:center;overflow:hidden;background:#090e19;padding:20px}
+.world-viewport{width:calc(14 * var(--tile-size));height:calc(9 * var(--tile-size));overflow:hidden;position:relative;border:4px solid #e9e7df;box-shadow:0 0 0 5px #17191d,0 20px 60px #000c;background:#245d39;image-rendering:pixelated}
+.world-map{position:relative;display:grid;grid-template-columns:repeat(var(--map-columns),var(--tile-size));grid-template-rows:repeat(var(--map-rows),var(--tile-size));width:calc(var(--map-columns) * var(--tile-size));height:calc(var(--map-rows) * var(--tile-size));transition:transform .16s steps(3,end);background:#428344;image-rendering:pixelated}
+.world-tile{position:relative;display:grid;place-items:center;padding:0;margin:0;border:0;border-radius:0;min-width:0;min-height:0;color:#f9e9b6;font-size:calc(var(--tile-size) * .55);background:#459149 url('/maps/grass-64.png') center / 100% 100%;image-rendering:pixelated;overflow:visible}
+.world-tile.tile-g,.world-tile.tile-d{background-image:url('/maps/path-64.png')}
+.world-tile.tile-r{background:#1c72b5 url('/maps/river.png') center / 100% 100%}
+.world-tile.tile-\#{background:#66795b url('/maps/mountain.png') center / 100% 100%}
+.world-map.map-dungeon .world-tile{background:#706d79}
+.world-map.map-dungeon .world-tile.tile-\#{background:#3a3741}
+.world-tile.player,.world-tile.npc{z-index:3}
+.world-tile .pixel-sprite{width:82%;height:88%;filter:drop-shadow(2px 4px 0 #142a2888)}
+.world-tile.player .pixel-sprite{width:90%;height:96%;animation:world-hero-idle .8s steps(2,end) infinite}
+.world-tile:hover{filter:brightness(1.12)}
+.world-tile:focus-visible,.world-enemy:focus-visible{outline:3px solid #fff;outline-offset:-3px;z-index:7}
+.world-object{display:block;width:130%;height:130%;max-width:none;object-fit:contain;pointer-events:none;image-rendering:pixelated;filter:drop-shadow(2px 3px 0 #15251b77)}
+.world-object-house,.world-object-church{width:170%;height:170%}
+.world-object-mountain{width:110%;height:110%}
+.world-object-river{width:100%;height:100%;object-fit:cover;filter:none}
+.world-enemies{position:absolute;inset:0;pointer-events:none}
+.world-enemy{position:absolute;width:var(--tile-size);height:var(--tile-size);border:0;background:transparent;pointer-events:auto;padding:4px;cursor:pointer}
+.world-enemy .pixel-sprite{width:100%;height:100%;filter:drop-shadow(0 0 3px #fff0bb)}
+.world-place,.world-command,.world-menu{position:absolute;z-index:10}
+.retro-window{background:#06070bdc;border:3px solid #f2f2ed;color:#f5f4eb;box-shadow:0 0 0 3px #171923,0 7px 0 #0008;font-family:'DotGothic16',monospace}
+.world-place{top:28px;left:max(28px,calc(50% - 27 * var(--tile-size) / 4));padding:10px 18px;font-size:18px}
+.world-command{bottom:30px;left:calc(50% - 7 * var(--tile-size));padding:10px 16px;font-size:17px;text-align:left;cursor:pointer}
+.world-command small{font-size:11px;color:#a6b2b6;margin-left:14px}
+.world-hint{position:absolute;bottom:34px;right:calc(50% - 7 * var(--tile-size));font-size:11px;color:#e4e3d2;background:#080b12cc;padding:10px 12px}
+.world-menu{top:50%;left:50%;width:min(360px,calc(100vw - 36px));padding:18px 22px;transform:translate(-50%,-50%)}
+.world-menu-title{font-size:20px;border-bottom:1px solid #a6a6a2;padding-bottom:9px;margin-bottom:10px}
+.world-menu-items{display:grid;gap:2px}
+.world-menu button{display:block;width:100%;padding:9px 8px;border:0;background:transparent;color:#f5f4eb;text-align:left;font-size:17px}
+.world-menu button:hover,.world-menu button:focus-visible{background:#273b4b;outline:0}
+.world-menu-detail{font-size:15px;line-height:1.6}
+.world-menu-detail p{margin:8px 0}
+@keyframes world-hero-idle{50%{transform:translateY(-2px)}}
+@media(max-width:700px){.world-stage{padding:8px}.world-viewport{border-width:2px}.world-place{left:12px;top:16px;font-size:13px;padding:6px 9px}.world-command{bottom:18px;left:15px;font-size:14px;padding:7px 10px}.world-hint{right:12px;bottom:20px;font-size:8px;padding:7px}}
+@media(prefers-reduced-motion:reduce){.world-map{transition:none}.world-tile.player .pixel-sprite{animation:none}}
+
+/* A code editor accent keeps the learning battle legible and distinct from exploration. */
+.battle-layout{background:radial-gradient(circle at top,#182a3e,#0b111e 70%);min-height:calc(100vh - 76px)}
+.combat-panel,.explain-panel{background:#101824;border-color:#44637a;box-shadow:0 0 0 2px #08121d,0 18px 36px #0008}
+.combat-panel .panel-heading,.explain-header{border-bottom:1px solid #35546c;background:#142235}
+.combat-panel .eyebrow,.explain-header .eyebrow,.question-kicker{color:#77dcce}
+.combat-panel .panel-heading h2,.explain-header h2{color:#e7f4f1}
+.question-card{background:#0a1320;border:1px solid #40677c;box-shadow:inset 0 0 0 2px #101f2b}
+.question-card::before{content:'●  ●  ●   codechronicle / challenge.ts';display:block;margin:-1px -1px 18px;padding:9px 13px;color:#8fc4c6;background:#19334a;border-bottom:1px solid #477086;font:11px/1.3 monospace;letter-spacing:.03em}
+.question-card h3{color:#e8f6f2}
+.question-card pre,.cli-form>div{background:#06121b;border-color:#488b83;color:#ace5d1}
+.options button{background:#142c3a;border-color:#427382;color:#e8f1eb}
+.options button:hover{background:#1e4656}
+.options button span{color:#8fe1d1}
+.explain-content p{color:#d2e4df}
+.tip-box{background:#183038;border-left-color:#65c9b6;color:#d2ede3}
+.dialogue-box{background:#07090fe9;border:3px solid #f1f1ea;box-shadow:0 0 0 4px #151923,0 16px 50px #000b}
+.dialogue-portrait{background:#111d27;border-right:2px solid #f1f1ea}
+.dialogue-text strong{color:#fff}
+.dialogue-text p{color:#f1f1ea}
+.dialogue-choices button{background:#121c29;border:1px solid #f1f1ea;color:#fff}
+.world-map .world-tile{background:#459149 url('/maps/grass-64.png') center / 100% 100%;box-shadow:none}
+.world-map .world-tile.tile-g,.world-map .world-tile.tile-d{background:#b78a50 url('/maps/path-64.png') center / 100% 100%}
+.world-map .world-tile.tile-r{background:#1c72b5 url('/maps/river.png') center / 100% 100%}
+.world-map .world-tile.tile-\#{background:#316d37}
+.world-map.map-dungeon .world-tile{background:#706d79}
+.world-map.map-dungeon .world-tile.tile-\#{background:#3a3741}
+.world-object-house,.world-object-church{width:260%;height:260%}
+.world-object-tree{width:155%;height:155%}
+.world-tile:has(.world-object){z-index:2}
+.world-viewport{overflow:clip}
+.world-map .world-tile.tile-r{background:#1262b4 url('/maps/water-64.png') center / 100% 100%;animation:water-flow 3s steps(4,end) infinite}
+.world-map .world-tile.tile-r.shore-west{box-shadow:inset 5px 0 #a7894e}
+.world-map .world-tile.tile-r.shore-east{box-shadow:inset -5px 0 #a7894e}
+@keyframes water-flow{to{background-position:var(--tile-size) 0}}
+@media(prefers-reduced-motion:reduce){.world-map .world-tile.tile-r{animation:none}}
+.world-tile img.pixel-sprite{width:120%;height:120%;max-width:none;align-self:end;filter:drop-shadow(2px 3px 0 #10251388)}
+.world-tile.player img.pixel-sprite,.world-tile.npc img.pixel-sprite{width:120%;height:120%}
+.world-map.map-dungeon{background:#544f59 url('/maps/dungeon-ground.png') center / 100% 100%}
+.world-map.map-dungeon .world-tile{background:transparent}
+.world-map.map-dungeon .world-tile.tile-\#{background:#282530d4;box-shadow:inset 0 0 0 2px #746d74}

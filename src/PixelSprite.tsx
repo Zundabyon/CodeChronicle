@@ -1,6 +1,6 @@
-type SpriteName = 'hero'|'elder'|'scholar'|'child'|'priest'|'slime'|'bat'|'ghost'|'shadow'|'guardian'|'memory'|'father'|'mother'|'scroll';
+type SpriteName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'slime'|'bat'|'ghost'|'shadow'|'guardian'|'memory'|'father'|'mother'|'scroll';
 type SpriteData = { rows: string[]; colors: Record<string,string> };
-const sprites: Record<SpriteName,SpriteData> = {
+const sprites: Partial<Record<SpriteName,SpriteData>> = {
   hero: { rows:[
     '....hhhh....','...hhhhhh...','...hffffh...','...fefef....','...ffffff...','....ffff....','...cccccc...','..cccccccc..','..ccaccaac..','...cccccc...','...dd..dd...','..ddd..ddd..',
   ],colors:{h:'#453344',f:'#eac49b',e:'#27283d',c:'#345c78',a:'#e1c17d',d:'#382f43'} },
@@ -45,13 +45,32 @@ const sprites: Record<SpriteName,SpriteData> = {
   ],colors:{y:'#b8945e',w:'#e8d8ad',d:'#866d59'} },
 };
 
+const rasterSprites: Partial<Record<SpriteName,string>> = {
+  hero:'/sprites/hero-64.png',
+  elder:'/sprites/elder-64.png',
+  scholar:'/sprites/scholar-64.png',
+  child:'/sprites/child-64.png',
+  priest:'/sprites/priest-64.png',
+  wanderer:'/sprites/wanderer-64.png',
+  slime:'/sprites/slime-64.png',
+  bat:'/sprites/bat-64.png',
+  ghost:'/sprites/ghost-64.png',
+  shadow:'/sprites/shadow-64.png',
+  guardian:'/sprites/guardian-64.png',
+  memory:'/sprites/ghost-64.png',
+  father:'/sprites/father-64.png',
+  mother:'/sprites/mother-64.png',
+};
+
 export function PixelSprite({name,className=''}:{name:SpriteName;className?:string}) {
-  const sprite=sprites[name];
+  const raster=rasterSprites[name];
+  if(raster) return <img className={`pixel-sprite ${className}`} src={`${import.meta.env.BASE_URL}${raster.slice(1)}`} alt="" aria-hidden="true" draggable={false}/>;
+  const sprite=sprites[name]!;
   return <svg className={`pixel-sprite ${className}`} viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
     {sprite.rows.flatMap((row,y)=>[...row].map((pixel,x)=>pixel==='.'?null:<rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={sprite.colors[pixel]??'#fff'}/>))}
   </svg>;
 }
 
-export function npcSprite(id:string):SpriteName { return id==='elder'?'elder':id==='scholar'?'scholar':id==='child'?'child':'priest'; }
+export function npcSprite(id:string):SpriteName { return id==='elder'?'elder':id==='scholar'?'scholar':id==='child'?'child':id==='wanderer'?'wanderer':'priest'; }
 export function enemySprite(id:string):SpriteName { return id==='boss'?'guardian':id==='after-gate'?'memory':id==='review'?'shadow':id==='f1'?'slime':id==='f2'?'bat':id==='f3'||id==='d2'?'ghost':'shadow'; }
 export function faceSprite(face:string):SpriteName { return face==='👴'?'elder':face==='👩🏻‍🎓'?'scholar':face==='🧒'?'child':face==='👩🏼'?'priest':face==='🧔'?'father':face==='👩'?'mother':'scroll'; }

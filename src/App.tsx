@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, maps, questions, type Area, type Difficulty, type Enemy, type Point, type Question, type Track } from './content';
-import { PixelSprite, enemySprite, faceSprite, npcSprite } from './PixelSprite';
+import { PixelSprite, enemySprite, faceSprite } from './PixelSprite';
+import { WorldScene } from './WorldScene';
+import { enemyAt, moveEnemies, spawnEnemies, type EnemyPositions } from './enemyMovement';
 
-type Phase = 'title' | 'prologue' | 'world' | 'battle' | 'church' | 'epilogue' | 'clear';
+type Phase = 'title' | 'prologue' | 'world' | 'encounter' | 'battle' | 'church' | 'epilogue' | 'clear';
 type Save = { name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: string[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
 type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean };
@@ -10,19 +12,20 @@ type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; ans
 const STORAGE = 'code-chronicle-save-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
+const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
 const initialSave = (): Save => ({ name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'town', pos: maps.town.entry, hp: 20, mp: 3, xp: 0, level: 1, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
 const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); return raw ? { ...initialSave(), ...JSON.parse(raw) } : null; } catch { return null; } };
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ').replace(/^\.\//, '');
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const inside = (area: Area, p: Point) => p.y >= 0 && p.y < maps[area].tiles.length && p.x >= 0 && p.x < maps[area].tiles[p.y].length;
-const walkable = (area: Area, p: Point) => inside(area,p) && !['#', 'r'].includes(maps[area].tiles[p.y][p.x]);
+const walkable = (area: Area, p: Point) => inside(area,p) && !['#', 'r', 'l'].includes(maps[area].tiles[p.y][p.x]);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
-function pathfind(area: Area, start: Point, goal: Point, defeated: string[]): Point[] {
+function pathfind(area: Area, start: Point, goal: Point, defeated: string[], positions: EnemyPositions): Point[] {
   const queue: Point[] = [start], seen = new Set([`${start.x},${start.y}`]), parents = new Map<string,string>();
   while (queue.length) {
     const p = queue.shift()!;
     if (same(p,goal)) { const path: Point[] = []; let key = `${p.x},${p.y}`; while (key !== `${start.x},${start.y}`) { const [x,y] = key.split(',').map(Number); path.unshift({x,y}); key = parents.get(key)!; } return path; }
-    for (const next of neighbors(p)) { const key = `${next.x},${next.y}`; const blocked=maps[area].npcs.some(n=>same(n,next)) || maps[area].enemies.some(e=>!defeated.includes(e.id)&&same(e,next)); if (!seen.has(key) && walkable(area,next) && !blocked) { seen.add(key); parents.set(key,`${p.x},${p.y}`); queue.push(next); } }
+    for (const next of neighbors(p)) { const key = `${next.x},${next.y}`; const blocked=maps[area].npcs.some(n=>same(n,next)) || !!enemyAt(area,next,positions,defeated); if (!seen.has(key) && walkable(area,next) && !blocked) { seen.add(key); parents.set(key,`${p.x},${p.y}`); queue.push(next); } }
   }
   return [];
 }
@@ -68,6 +71,7 @@ const npcChoices: Record<string,{label:string;response:string}[]> = {
 
 export function App() {
   const [save,setSave] = useState<Save>(() => loadSave() ?? initialSave());
+  const [enemyPositions,setEnemyPositions] = useState<EnemyPositions>(() => spawnEnemies(save.defeated));
   const [hasSave,setHasSave] = useState(() => !!loadSave());
   const [phase,setPhase] = useState<Phase>('title');
   const [introIndex,setIntroIndex] = useState(0);
@@ -76,6 +80,7 @@ export function App() {
   const [battleInput,setBattleInput] = useState('');
   const [battleNote,setBattleNote] = useState('');
   const [showSettings,setShowSettings] = useState(false);
+  const [worldMenu,setWorldMenu] = useState<'command'|'status'|'quest'|null>(null);
   const [muted,setMuted] = useState(true);
   const [volume,setVolume] = useState(0.35);
   const [churchTab,setChurchTab] = useState<'heal'|'review'>('heal');
@@ -83,11 +88,18 @@ export function App() {
   const [epilogueStep,setEpilogueStep] = useState(0);
   const [toast,setToast] = useState('');
   const stateRef = useRef(save); const phaseRef = useRef(phase); const dialogueRef = useRef(dialogue);
+  const enemyPositionsRef = useRef(enemyPositions);
   const pathTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
   useEffect(() => { stateRef.current = save; if (hasSave) localStorage.setItem(STORAGE,JSON.stringify(save)); },[save,hasSave]);
   useEffect(() => { phaseRef.current = phase; },[phase]);
   useEffect(() => { dialogueRef.current = dialogue; },[dialogue]);
+  useEffect(() => { enemyPositionsRef.current = enemyPositions; },[enemyPositions]);
+  useEffect(() => {
+    if (phase !== 'encounter') return;
+    const timer = setTimeout(() => setPhase('battle'), 1500);
+    return () => clearTimeout(timer);
+  },[phase]);
   useEffect(() => { if (toast) { const t = setTimeout(() => setToast(''),3500); return () => clearTimeout(t); } },[toast]);
   const update = useCallback((fn: (s: Save) => Save) => { const next = fn(stateRef.current); stateRef.current = next; setSave(next); },[]);
   const stopPath = useCallback(() => { if (pathTimer.current) { clearInterval(pathTimer.current); pathTimer.current = null; } },[]);
@@ -110,12 +122,22 @@ export function App() {
     if (enemy.boss && s.level<2) { startDialogue('知識の扉','📜',['石の扉に文字が浮かぶ。「知識の断片を集め、第二の階へ至った者のみ、この門を試せる」','平原や遺跡の敵と戦い、経験を積んでから戻ろう。']); return; }
     const hp=enemy.boss?5:enemy.id==='after-gate'||fromReview?1:3;
     setBattle({enemy,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview});
-    setBattleInput(''); setBattleNote(''); setPhase('battle'); beep(180,0.3);
+    setBattleInput(''); setBattleNote(''); phaseRef.current='encounter'; setPhase('encounter'); beep(180,0.3);
   },[stopPath,beep,startDialogue]);
+  useEffect(() => {
+    if (phase !== 'world' || dialogue || showSettings || !maps[save.area].enemies.length) return;
+    const timer = setInterval(() => {
+      if (pathTimer.current || phaseRef.current !== 'world' || dialogueRef.current) return;
+      const current = enemyPositionsRef.current;
+      const next = moveEnemies(save.area,current,stateRef.current.defeated,stateRef.current.pos);
+      if (next !== current) { enemyPositionsRef.current = next; setEnemyPositions(next); }
+    },1150);
+    return () => clearInterval(timer);
+  },[phase,save.area,save.defeated,dialogue,showSettings]);
   const enterChurch = useCallback(() => { stopPath(); setChurchTab('heal'); setReviewId(null); setPhase('church'); beep(660,0.16,'sine'); },[stopPath,beep]);
   const transition = useCallback((from: Area,to: Area) => {
     stopPath(); let pos: Point = maps[to].entry;
-    if (from==='dungeon' && to==='field') pos={x:17,y:3};
+    if (from==='dungeon' && to==='field') pos={x:32,y:6};
     update(s => ({...s,area:to,pos})); beep(520,0.16);
   },[update,stopPath,beep]);
   const step = useCallback((dx: number,dy: number): boolean => {
@@ -124,13 +146,13 @@ export function App() {
     const target={x:s.pos.x+dx,y:s.pos.y+dy}; if (!walkable(s.area,target)) { beep(130,0.05); return false; }
     const map=maps[s.area]; const npc=map.npcs.find(n=>same(n,target));
     if (npc) { startDialogue(npc.name,npc.face,npc.lines.map(line=>line.replaceAll('{name}',s.name)),npcChoices[npc.id]); return false; }
-    const enemy=map.enemies.find(e=>same(e,target) && !s.defeated.includes(e.id));
+    const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated);
     if (enemy) { startBattle(enemy); return false; }
     update(prev=>({...prev,pos:target,steps:prev.steps+1})); beep(220,0.025,'triangle');
     const tile=map.tiles[target.y][target.x];
     if (s.area==='town' && tile==='f') { enterChurch(); return false; }
     if (s.area==='town' && target.x===10 && target.y===11) { transition('town','field'); return false; }
-    if (s.area==='field' && target.x===10 && target.y===11) { transition('field','town'); return false; }
+    if (s.area==='field' && target.x===18 && target.y===21) { transition('field','town'); return false; }
     if (s.area==='field' && tile==='d') { transition('field','dungeon'); return false; }
     if (s.area==='dungeon' && target.x===10 && target.y===11) { transition('dungeon','field'); return false; }
     return true;
@@ -139,16 +161,18 @@ export function App() {
     if (showSettings || ['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement)?.tagName)) return;
     if (dialogueRef.current) { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); advanceDialogue(); } return; }
     if (phaseRef.current!=='world') return;
+    if (e.key==='Escape') { e.preventDefault(); stopPath(); setWorldMenu(menu=>menu?null:'command'); return; }
+    if (worldMenu) return;
     const dirs: Record<string,[number,number]>={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
     if (dirs[e.key]) { e.preventDefault(); stopPath(); step(...dirs[e.key]); }
-  }; window.addEventListener('keydown',onKey); return ()=>window.removeEventListener('keydown',onKey); },[step,advanceDialogue,showSettings,stopPath]);
+  }; window.addEventListener('keydown',onKey); return ()=>window.removeEventListener('keydown',onKey); },[step,advanceDialogue,showSettings,stopPath,worldMenu]);
   useEffect(() => () => stopPath(),[stopPath]);
   const clickTile = (target: Point) => {
-    if (phase!=='world' || dialogue || showSettings) return;
-    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=map.npcs.find(n=>same(n,target)); const enemy=map.enemies.find(e=>same(e,target)&&!s.defeated.includes(e.id));
+    if (phase!=='world' || dialogue || showSettings || worldMenu) return;
+    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=map.npcs.find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated);
     let destination=target;
-    if (npc || enemy) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
-    const route=pathfind(s.area,s.pos,destination,s.defeated); if (!route.length && !same(s.pos,destination)) return;
+    if (npc || enemy) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
+    const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current); if (!route.length && !same(s.pos,destination)) return;
     let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) startDialogue(npc.name,npc.face,npc.lines.map(line=>line.replaceAll('{name}',stateRef.current.name)),npcChoices[npc.id]); else if (enemy) startBattle(enemy); } },105);
   };
   const answer = (value: string | number) => {
@@ -156,11 +180,12 @@ export function App() {
     if (battle.enemy.id==='after-gate' && battle.eliminated===null) { setBattleNote('覚えたばかりの「見極め」を使ってみよう。'); return; }
     const q=battle.question;
     const correct=q.kind==='choice' ? value===q.answer : q.accepted!.some(a=>normalize(a)===normalize(String(value)));
-    const damage=correct||battle.fromReview?0:(battle.enemy.boss?5:4);
+    const dealt=correct?rollDamage(1,2):0;
+    const damage=correct||battle.fromReview?0:rollDamage(battle.enemy.boss?4:2,battle.enemy.boss?7:5);
     const newHp=Math.max(0,stateRef.current.hp-damage);
     update(s=>({...s,hp:newHp,total:s.total+1,correct:s.correct+(correct?1:0),answered:[...s.answered,q.id],wrong:correct?s.wrong.filter(id=>id!==q.id):s.wrong.includes(q.id)?s.wrong:[...s.wrong,q.id]}));
-    setBattle({...battle,answered:true,correct,hp:Math.max(0,battle.hp-(correct?1:0)),rounds:battle.rounds+1});
-    setBattleNote(correct?'正解！ 知識が刃となり、敵にダメージを与えた。':battle.fromReview?'惜しい！ 解説を読んで、もう一度挑戦しよう。':`惜しい！ ${battle.enemy.name}の反撃でHPが${damage}減った。`);
+    setBattle({...battle,answered:true,correct,hp:Math.max(0,battle.hp-dealt),rounds:battle.rounds+1});
+    setBattleNote(correct?`正解！ ${battle.enemy.name}に${dealt}ダメージ！`:battle.fromReview?'惜しい！ 解説を読んで、もう一度挑戦しよう。':`惜しい！ ${battle.enemy.name}の反撃でHPが${damage}減った。`);
     beep(correct?800:150,correct?0.18:0.28);
   };
   const battleNext = () => {
@@ -187,16 +212,16 @@ export function App() {
     const index=battle.question.options!.findIndex((_,i)=>i!==battle.question.answer);
     update(s=>({...s,mp:s.mp-1,magicUsed:true})); setBattle({...battle,eliminated:index}); setBattleNote('魔法「見極め」！ 誤った選択肢が一つ消えた。'); beep(1040,0.4,'sine');
   };
-  const startNew = () => { const previous=stateRef.current; const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; stateRef.current=s; setSave(s); setHasSave(true); setIntroIndex(0); setPhase('prologue'); beep(600,0.2); };
+  const startNew = () => { const previous=stateRef.current; const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); stateRef.current=s; setSave(s); setHasSave(true); setIntroIndex(0); setPhase('prologue'); beep(600,0.2); };
   const startReview = (q: Question) => { const enemy: Enemy={id:'review',name:'記憶の影',x:0,y:0,icon:'♧'}; startBattle(enemy,true,q); };
-  const currentMap=maps[save.area];
   const wrongQuestions=save.wrong.map(id=>questions.find(q=>q.id===id)).filter((q):q is Question=>!!q);
   const intro=prologue[introIndex];
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='title'?'冒険の始まり':'物語'}</span><button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
     {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><PixelSprite name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p><div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
     {phase==='prologue' && <main className="story-screen"><div className="story-backdrop"><div className="red-moon"/><div className="story-castle">♜</div><div className="ember e1">✦</div><div className="ember e2">✦</div><div className="ember e3">✦</div></div><div className="story-card"><div className="story-progress">序章　{introIndex+1} / {prologue.length}</div><div className="story-face"><PixelSprite name={faceSprite(intro[1])}/></div><strong>{intro[0]}</strong><p>{intro[2]}</p><button className="primary" onClick={()=>introIndex<prologue.length-1?setIntroIndex(introIndex+1):setPhase('world')}>{introIndex<prologue.length-1?'次へ':'十年後へ'}　▶</button><button className="text-button" onClick={()=>setPhase('world')}>序章をスキップ</button></div></main>}
-    {phase==='world' && <main className="game-layout"><section className="world-panel"><div className="panel-heading"><div><span className="eyebrow">CHAPTER 1 · THE FIRST GATE</span><h2>{areaLabel[save.area]}</h2></div><span className="map-badge">{save.area==='town'?'SAFE ZONE':save.area==='field'?'OPEN WORLD':'DANGER ZONE'}</span></div><div className={`map map-${save.area}`} role="grid" aria-label={`${areaLabel[save.area]}のマップ`}>{currentMap.tiles.map((row,y)=>row.split('').map((tile,x)=>{ const p={x,y}; const npc=currentMap.npcs.find(n=>same(n,p)); const enemy=currentMap.enemies.find(e=>same(e,p)&&!save.defeated.includes(e.id)); const player=same(save.pos,p); const objectPath=tile==='h'?'house':tile==='f'?'church':tile==='t'?'tree':tile==='r'?'river':tile==='#'&&save.area!=='dungeon'?'mountain':null; const icon=player?<PixelSprite name="hero"/>:npc?<PixelSprite name={npcSprite(npc.id)}/>:enemy?<PixelSprite name={enemySprite(enemy.id)}/>:objectPath?<img className={`map-object map-object-${objectPath}`} src={`/maps/${objectPath}.png`} alt="" draggable={false}/>:tile==='d'?'◈':tile==='g'?'◇':null; return <button key={`${x}-${y}`} role="gridcell" className={`tile tile-${tile} ${player?'player':''} ${npc?'npc':''} ${enemy?'enemy':''} ${enemy?.boss?'boss':''}`} onClick={()=>clickTile(p)} title={player?save.name:npc?.name??enemy?.name??(tile==='f'?'教会':tile==='d'?'遺跡への門':tile==='g'?'道':'移動')} aria-label={player?'現在地':npc?.name??enemy?.name??`${x}, ${y}へ移動`}>{icon}</button>}))}</div><div className="map-footer"><span>↑ ↓ ← → / WASD で移動 · マップをクリックして移動</span><span>{save.area==='town'?'南の道から平原へ':save.area==='field'?'東の門から遺跡へ':'奥に知識の扉がある'}</span></div></section><aside className="sidebar"><div className="status-card"><div className="status-title"><span className="avatar"><PixelSprite name="hero"/></span><div><span className="eyebrow">THE WANDERER</span><h3>{save.name}</h3></div><span className="level">LV {save.level}</span></div><div className="meter-label"><span>HP</span><strong>{save.hp} / {maxHp(save.level)}</strong></div><div className="meter"><i className="hp" style={{width:`${save.hp/maxHp(save.level)*100}%`}}/></div><div className="meter-label"><span>MP</span><strong>{save.mp} / {maxMp(save.level)}</strong></div><div className="meter"><i className="mp" style={{width:`${save.mp/maxMp(save.level)*100}%`}}/></div><div className="meter-label"><span>EXP</span><strong>{save.xp%12} / 12</strong></div><div className="meter"><i className="xp" style={{width:`${save.xp%12/12*100}%`}}/></div></div><div className="quest-card"><span className="eyebrow">MAIN QUEST</span><h3>失われた知識の扉</h3><p>{save.bossDefeated?'ゲートガーディアンを倒し、魔法「見極め」を取り戻した。':`東の忘却の遺跡へ向かおう。守護者へ挑むにはLV 2が必要。現在 LV ${save.level}。`}</p><div className="quest-progress"><i style={{width:`${save.bossDefeated?100:Math.min(75,save.defeated.length*12)}%`}}/></div></div><div className="guide-card"><span className="eyebrow">ADVENTURE LOG</span><p>⚔ 倒した敵 <b>{save.defeated.length}</b></p><p>✦ 正解した問題 <b>{save.correct} / {save.total}</b></p><p>✝ 復習する問題 <b>{save.wrong.length}</b></p><p>⌘ 学習ルート <b>{save.track==='react'?'React':'Vue'} / {difficultyLabel[save.difficulty]}</b></p><button disabled={save.area!=='town'} onClick={enterChurch}>{save.area==='town'?'教会で復習する　↗':'教会は町にあります'}</button></div></aside></main>}
+    {phase==='world' && <WorldScene save={save} enemyPositions={enemyPositions} menu={worldMenu} onMenu={menu=>{stopPath();setWorldMenu(menu);}} onTile={clickTile} onChurch={enterChurch} onSettings={()=>setShowSettings(true)} onSound={toggleSound} muted={muted}/>}
+    {phase==='encounter' && battle && <main className={`encounter-screen ${battle.enemy.boss?'boss-encounter':''}`} role="status" aria-live="assertive"><div className="encounter-flash"/><div className="encounter-rays"/><div className="encounter-content"><span className="encounter-kicker">ENCOUNTER!</span><div className="encounter-sprite"><PixelSprite name={enemySprite(battle.enemy.id)}/></div><h2>{battle.enemy.name}が現れた！</h2><p>知識を武器に立ち向かえ</p><button onClick={()=>setPhase('battle')}>戦闘へ ›</button></div></main>}
     {phase==='battle' && battle && <main className="battle-layout"><section className="combat-panel"><div className="panel-heading"><div><span className="eyebrow">ENCOUNTER</span><h2>{battle.fromReview?'復習の戦い':battle.enemy.boss?'知識の扉を守る者':'敵が現れた！'}</h2></div><span className="map-badge danger">{battle.enemy.boss?'BOSS BATTLE':'BATTLE'}</span></div><div className="enemy-stage"><div className="battle-sparks">✦　·　✧　·　✦</div><div className={`enemy-sprite ${battle.enemy.boss?'boss-sprite':''}`}><PixelSprite name={enemySprite(battle.enemy.id)}/></div><h3>{battle.enemy.name}</h3><div className="enemy-hp"><i style={{width:`${battle.hp/battle.maxHp*100}%`}}/></div><span>{battle.hp} / {battle.maxHp}</span></div><div className="battle-player"><span>♟ {save.name}　LV {save.level}</span><div><span>HP {save.hp}/{maxHp(save.level)}</span><span>MP {save.mp}/{maxMp(save.level)}</span></div></div><div className="question-card"><div className="question-kicker"><span>{battle.question.kind==='cli'?'⌘ CLI CHALLENGE':'✦ FOUR CHOICES'}</span><span>{difficultyLabel[save.difficulty]} · {battle.question.topic==='frontend'?save.track==='react'?'React':'Vue':battle.question.topic==='laravel'?'Laravel':save.inertia?'Inertia':'API連携'}</span></div><h3>{battle.question.prompt}</h3>{battle.question.code&&<pre>{battle.question.code}</pre>}{battle.question.kind==='choice'?<div className="options">{battle.question.options!.map((option,i)=><button key={i} disabled={battle.answered||battle.eliminated===i} className={`${battle.answered&&i===battle.question.answer?'right':''} ${battle.answered&&i!==battle.question.answer?'faded':''} ${battle.eliminated===i?'eliminated':''}`} onClick={()=>answer(i)}><span>{String.fromCharCode(65+i)}</span>{battle.eliminated===i?'魔法で除外':option}</button>)}</div>:<form className="cli-form" onSubmit={e=>{e.preventDefault();answer(battleInput);}}><label htmlFor="cli-answer">ゲーム内CLI</label><div><span>❯</span><input id="cli-answer" autoFocus spellCheck={false} value={battleInput} onChange={e=>setBattleInput(e.target.value)} disabled={battle.answered} placeholder="コマンドを入力"/><button disabled={battle.answered||!battleInput.trim()}>実行 ↵</button></div></form>}{!battle.answered&&save.bossDefeated&&battle.question.kind==='choice'&&<button className="magic-button" disabled={save.mp<1||battle.eliminated!==null} onClick={castMagic}>✦ 見極めの魔法を使う <small>MP 1</small></button>}{battleNote&&<div className={`battle-note ${battle.correct?'success':'fail'}`}>{battleNote}</div>}{battle.answered&&<button className="primary next-turn" onClick={battleNext}>{battle.hp<=0?'戦闘を終える':save.hp<=0?'教会へ':'次の問題へ'}　▶</button>}</div></section><aside className="explain-panel"><div className="explain-header"><span className="eyebrow">GRIMOIRE</span><h2>知識の書</h2><p>問いを解くたび、失われた言葉が戻ってくる。</p></div>{battle.answered?<div className="explain-content"><span className={battle.correct?'answer-tag good':'answer-tag bad'}>{battle.correct?'正解':'復習ポイント'}</span><h3>答え：{battle.question.reveal}</h3><p>{battle.question.explanation}</p><div className="tip-box">間違えた問題は町の教会で振り返れます。</div></div>:<div className="explain-placeholder"><div>✧</div><p>回答するとここに解説が表示されます。</p></div>}<div className="battle-stats"><span>正解 {save.correct}</span><span>回答 {save.total}</span><span>復習 {save.wrong.length}</span></div></aside></main>}
     {phase==='church' && <main className="church-screen"><div className="church-visual"><span>✝</span><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="tabs"><button className={churchTab==='heal'?'active':''} onClick={()=>setChurchTab('heal')}>✦ 回復</button><button className={churchTab==='review'?'active':''} onClick={()=>setChurchTab('review')}>📖 復習 <span>{wrongQuestions.length}</span></button></div>{churchTab==='heal'?<div className="church-content"><div className="priest-portrait"><PixelSprite name="priest"/></div><h3>司祭セラ</h3><p>「知識の扉は、何度でも挑む者に開かれます。心と体を休めていってください」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div><button className="primary" onClick={()=>{update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');beep(900,0.4,'sine');}}>HP・MPを回復する ✦</button></div>:<div className="review-content"><h3>もう一度、知識の扉へ</h3><p>間違えた問題の解説を読み、再挑戦できます。</p>{wrongQuestions.length===0?<div className="empty-review">復習する問題はありません。冒険へ戻りましょう。</div>:<div className="review-list">{wrongQuestions.map(q=><div className="review-item" key={q.id}><button onClick={()=>setReviewId(reviewId===q.id?null:q.id)}><span>{q.kind==='cli'?'⌘':'✦'} {q.prompt}</span><b>{reviewId===q.id?'−':'＋'}</b></button>{reviewId===q.id&&<div><strong>答え：{q.reveal}</strong><p>{q.explanation}</p><button className="secondary" onClick={()=>startReview(q)}>再挑戦する　▶</button></div>}</div>)}</div>}</div>}<button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:7,y:8}}));}}>← 町へ戻る</button></div></main>}
     {phase==='epilogue' && <main className="epilogue-screen"><div className="gate-art">◈</div><div className="story-card"><span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'ゲートガーディアンは光の粒となって消えた。重い扉の向こうから、忘れられた魔法の気配が流れ込む。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'扉の奥に残った記憶の影が問いを投げかけた。覚えた魔法を使って答えよう。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'記憶の影',x:0,y:0,icon:'✧'} ,false,chooseQuestion(stateRef.current,'choice'));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
