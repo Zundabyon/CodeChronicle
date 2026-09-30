@@ -120,6 +120,11 @@ button,input{font-family:'DotGothic16',monospace}
 .dialogue-text strong{color:#fff}
 .dialogue-text p{color:#f1f1ea}
 .dialogue-choices button{background:#121c29;border:1px solid #f1f1ea;color:#fff}
+.dialogue-portrait{width:124px;overflow:hidden;align-self:stretch}
+.character-portrait{display:block;width:120px;height:160px;flex:none;background-size:400% 200%;background-repeat:no-repeat;image-rendering:pixelated}
+.dialogue-portrait .character-portrait{width:120px;height:160px}
+.story-face .character-portrait,.priest-portrait .character-portrait{width:120px;height:160px;margin:0 auto}
+@media(max-width:700px){.dialogue-portrait{width:79px}.dialogue-portrait .character-portrait{width:75px;height:100px}}
 .world-map .world-tile{background:#459149 url('/maps/grass-64.png') center / 100% 100%;box-shadow:none}
 .world-map .world-tile.tile-g,.world-map .world-tile.tile-d{background:#b78a50 url('/maps/path-64.png') center / 100% 100%}
 .world-map .world-tile.tile-r{background:#1c72b5 url('/maps/river.png') center / 100% 100%}

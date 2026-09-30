@@ -73,4 +73,4 @@ export function PixelSprite({name,className=''}:{name:SpriteName;className?:stri
 
 export function npcSprite(id:string):SpriteName { return id==='elder'?'elder':id==='scholar'?'scholar':id==='child'?'child':id==='wanderer'?'wanderer':'priest'; }
 export function enemySprite(id:string):SpriteName { return id==='boss'?'guardian':id==='after-gate'?'memory':id==='review'?'shadow':id==='f1'?'slime':id==='f2'?'bat':id==='f3'||id==='d2'?'ghost':'shadow'; }
-export function faceSprite(face:string):SpriteName { return face==='👴'?'elder':face==='👩🏻‍🎓'?'scholar':face==='🧒'?'child':face==='👩🏼'?'priest':face==='🧔'?'father':face==='👩'?'mother':'scroll'; }
+export function faceSprite(face:string):SpriteName { return face==='👴'?'elder':face==='👩🏻‍🎓'?'scholar':face==='🧒'?'child':face==='👩🏼'?'priest':face==='🧑🏽'?'wanderer':face==='🧔'?'father':face==='👩'?'mother':'scroll'; }
