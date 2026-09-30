@@ -3,11 +3,12 @@ import { areaLabel, difficultyLabel, houseAt, maps, type Area, type Point, type 
 import { PixelSprite, enemySprite, npcSprite } from './PixelSprite';
 import { WorldCharacter, type CharacterName } from './WorldCharacter';
 import { positionOf, type EnemyPositions } from './enemyMovement';
+import { items, type Equipment } from './items';
 
 type WorldSave = {
   name: string; area: Area; pos: Point; level: number; hp: number; mp: number;
   xp: number; defeated: string[]; correct: number; total: number; wrong: string[];
-  track: Track; difficulty: Difficulty; bossDefeated: boolean;
+  track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment;
 };
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
   onMenu: (menu: 'command'|'status'|'quest'|null) => void;
   onTile: (point: Point) => void;
   onChurch: () => void;
+  onInventory: () => void;
   onSettings: () => void;
   onSound: () => void;
   muted: boolean;
@@ -26,7 +28,7 @@ type Props = {
 const hpLimit = (level: number) => 20 + (level - 1) * 5;
 const mpLimit = (level: number) => 3 + Math.floor((level - 1) / 2);
 
-export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSettings,onSound,muted,walking}:Props) {
+export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onInventory,onSettings,onSound,muted,walking}:Props) {
   const map=maps[save.area];
   const width=map.tiles[0].length;
   const height=map.tiles.length;
@@ -49,9 +51,11 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
           const player=save.pos.x===x&&save.pos.y===y;
           const objectPath=tile==='t'?'tree':tile==='#'&&!interior&&save.area!=='dungeon'?(save.area==='town'?'tree':'mountain'):null;
           const shore=tile==='r'?`${row[x-1]!=='r'?' shore-west':''}${row[x+1]!=='r'?' shore-east':''}`:'';
-          const icon=player?<WorldCharacter name="hero" walking={walking}/>:npc?npc.id==='letter'?<span className="map-letter">✉</span>:<WorldCharacter name={npcSprite(npc.id) as CharacterName}/>:objectPath?<img className={`world-object world-object-${objectPath}`} src={`${import.meta.env.BASE_URL}maps/${objectPath}-64.png`} alt="" draggable={false}/>:tile==='d'?'◈':tile==='b'?'▣':tile==='s'?'▤':tile==='c'?'◉':null;
-          const destination=save.area==='town'&&tile==='D'?(houseAt(point)?areaLabel[houseAt(point)!]:'家'):tile==='f'?'教会':tile==='e'?'町へ出る':tile==='d'?'遺跡への門':'移動';
-          return <button key={`${x}-${y}`} role="gridcell" className={`world-tile tile-${tile} ${player?'player':''} ${npc?'npc':''}${shore}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??destination} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{icon}</button>;
+          const icon=player?<WorldCharacter name="hero" walking={walking}/>:npc?<WorldCharacter name={npcSprite(npc.id) as CharacterName}/>:objectPath?<img className={`world-object world-object-${objectPath}`} src={`${import.meta.env.BASE_URL}maps/${objectPath}-64.png`} alt="" draggable={false}/>:tile==='d'?'◈':tile==='b'?'▣':tile==='s'?'▤':tile==='c'?'◉':null;
+          const destination=save.area==='town'&&tile==='D'?(houseAt(point)?areaLabel[houseAt(point)!]:'家'):tile==='f'?'教会':tile==='e'?'町へ出る':tile==='d'?'遺跡への門':tile==='T'?'タンスを調べる':'移動';
+          const house=save.area==='town'&&tile==='D'?houseAt(point):undefined;
+          const shopSign=house==='weaponShop'?'武器':house==='armorShop'?'防具':house==='itemShop'?'道具':undefined;
+          return <button key={`${x}-${y}`} role="gridcell" className={`world-tile tile-${tile} ${player?'player':''} ${npc?'npc':''}${shore} ${shopSign?'shop-door':''}`} data-shop={shopSign} onClick={()=>onTile(point)} title={player?save.name:npc?.name??destination} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{icon}</button>;
         }))}
         <div className="world-enemies">
           {visibleEnemies.map(enemy=>{
@@ -68,6 +72,7 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
       <div className="world-menu-title">{menu==='command'?'コマンド':menu==='status'?'つよさ': 'たびのもくてき'}</div>
       {menu==='command'&&<div className="world-menu-items">
         <button onClick={()=>onMenu('status')}>▶ つよさ</button>
+        <button onClick={()=>{onMenu(null);onInventory();}}>▶ もちもの</button>
         <button onClick={()=>onMenu('quest')}>▶ たびのもくてき</button>
         {save.area==='town'&&<button onClick={()=>{onMenu(null);onChurch();}}>▶ きょうかい</button>}
         <button onClick={()=>{onMenu(null);onSettings();}}>▶ 学習設定</button>
@@ -79,6 +84,9 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onSe
         <p>HP　{save.hp} / {hpLimit(save.level)}</p>
         <p>MP　{save.mp} / {mpLimit(save.level)}</p>
         <p>EXP　{save.xp%12} / 12</p>
+        <p>所持金　{save.gold} G</p>
+        <p>武器　{items[save.equipment.weapon].name}</p>
+        <p>防具　{items[save.equipment.armor].name}</p>
         <p>学習　{save.track==='react'?'React':'Vue'} / {difficultyLabel[save.difficulty]}</p>
         <p>正解　{save.correct} / {save.total}　復習　{save.wrong.length}</p>
         <button onClick={()=>onMenu('command')}>◀ もどる</button>

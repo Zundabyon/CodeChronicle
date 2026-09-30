@@ -1,6 +1,6 @@
 export type Track = 'react' | 'vue';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
-export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse';
+export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse' | 'weaponShop' | 'armorShop' | 'itemShop';
 export type Area = 'town' | 'field' | 'dungeon' | HouseArea;
 export type Question = {
   id: string;
@@ -79,7 +79,7 @@ export const questions: Question[] = [
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
-export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'長老の家', scholarHouse:'学者の家', childHouse:'町の子の家', guestHouse:'旅籠' };
+export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'長老の家', scholarHouse:'学者の家', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
@@ -92,19 +92,22 @@ export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = 
   scholarHouse:{name:'学者の家',door:{x:22,y:6},outside:{x:22,y:7}},
   childHouse:{name:'町の子の家',door:{x:4,y:15},outside:{x:4,y:16}},
   guestHouse:{name:'旅籠',door:{x:22,y:15},outside:{x:22,y:16}},
+  weaponShop:{name:'武器屋',door:{x:4,y:24},outside:{x:4,y:25}},
+  armorShop:{name:'防具屋',door:{x:13,y:24},outside:{x:13,y:25}},
+  itemShop:{name:'道具屋',door:{x:22,y:24},outside:{x:22,y:25}},
 };
 export const houseAt = (point:Point): HouseArea | undefined =>
   (Object.entries(houses) as [HouseArea,(typeof houses)[HouseArea]][]).find(([,house])=>house.door.x===point.x&&house.door.y===point.y)?.[0];
 
 const townTiles = (() => {
-  const width=28,height=24;
+  const width=28,height=32;
   const grid:string[][]=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>x===0||x===width-1||y===0||y===height-1?'#':'.'));
-  for(let y=7;y<=22;y++) grid[y][14]='g';
+  for(let y=7;y<=30;y++) grid[y][14]='g';
   for(let x=14;x<=17;x++) grid[11][x]='g';
   for(let y=11;y<=16;y++) grid[y][17]='g';
   for(const house of Object.values(houses)) for(let x=Math.min(house.outside.x,14);x<=Math.max(house.outside.x,14);x++) grid[house.outside.y][x]='g';
   for(let x=4;x<=22;x++) grid[16][x]='g';
-  grid[23][14]='g';
+  grid[31][14]='g';
   for(const house of Object.values(houses)) {
     const left=house.door.x-2,top=house.door.y-3;
     for(let y=0;y<4;y++) for(let x=0;x<5;x++) grid[top+y][left+x]=y<2?(x===0?'A':x===4?'Z':'R'):y===3&&x===2?'D':y===2&&(x===1||x===3)?'w':'W';
@@ -148,7 +151,7 @@ const fieldTiles = (() => {
 export const maps: Record<Area, MapData> = {
   town: {
     tiles: townTiles,
-    entry: {x:14,y:22},
+    entry: {x:14,y:30},
     npcs: [
       {id:'elder',name:'長老エルド',x:7,y:3,face:'👴',lines:['よく戻ったな、{name}。あの日から十年……世界の傷はいまだ癒えぬ。','魔王が奪ったのは言葉だけではない。考え、組み立てる力そのものだ。','平原を越え、忘却の遺跡へ向かうのだ。まず経験を積み、第二の階へ至れ。知識の扉が、お前を待っている。'],alternateLines:[['平原の風が変わった。忘却の遺跡の門が、お前を呼んでいるようだ。','敵に勝てば経験が身につく。焦らず一歩ずつ進むのだ。'],['{name}、知識は一人で抱えるものではない。町の者にも話を聞いてみなさい。','学者ミラは新しい術を、司祭セラは立ち直り方を教えてくれる。']]},
       {id:'scholar',name:'学者ミラ',x:19,y:8,face:'👩🏻‍🎓',lines:['型とは、値がどんな姿をしているかを示す約束よ。','ReactもVueも、小さな部品を組み合わせて画面を作る。Laravelはその背後で道を示すの。','学ぶ道を変えたくなったら、右上の「学習設定」を開いてね。'],alternateLines:[['画面を作るときは、まず何を表示したいか決めるの。','小さな部品に分ければ、複雑な画面も読みやすくなるわ。'],['間違えた問題こそ宝物よ。答えを見た後に、自分の言葉で説明してみて。','教会で復習すれば、その知識が次の戦いで力になるはず。']]},
@@ -158,8 +161,8 @@ export const maps: Record<Area, MapData> = {
     enemies: [],
   },
   home: {
-    tiles: interiorTiles('b'),entry:{x:5,y:7},
-    npcs:[{id:'letter',name:'古い手紙',x:3,y:5,face:'📜',lines:['棚の奥に、十年前に書かれた手紙が残っていた。','「知識の扉へ向かうときは、ひとりで背負わないで。家は、いつでも帰ってこられる場所だから」','手紙を胸にしまい、玄関へ向かう。'],alternateLines:[['机の上には、幼いころの落書きが残っている。','文字はかすれていても、ここで過ごした時間は消えていない。']] }],
+    tiles: interiorTiles('b').map((row,y)=>y===5?'#..T......#':row),entry:{x:5,y:7},
+    npcs:[],
     enemies:[],
   },
   elderHouse: {
@@ -177,6 +180,18 @@ export const maps: Record<Area, MapData> = {
   guestHouse: {
     tiles: interiorTiles('b'),entry:{x:5,y:7},
     npcs:[{id:'innkeeper',name:'旅籠の女将',x:7,y:5,face:'👩',lines:['いらっしゃい。旅の支度は整っているかい？','教会で傷を癒してから出発するといいよ。'],alternateLines:[['平原から来た旅人が、東の遺跡で光を見たって言っていたよ。','無理は禁物。帰る道も忘れずにね。']]}],enemies:[],
+  },
+  weaponShop: {
+    tiles: interiorTiles('s'),entry:{x:5,y:7},
+    npcs:[{id:'weaponMerchant',name:'武器屋のガラン',x:7,y:5,face:'🧔',lines:['剣は手入れしてこそ力を発揮する。','鉄の剣と銀の剣を見ていくかい？']}],enemies:[],
+  },
+  armorShop: {
+    tiles: interiorTiles('c'),entry:{x:5,y:7},
+    npcs:[{id:'armorMerchant',name:'防具屋のネラ',x:7,y:5,face:'👩',lines:['遠い道を行くなら、身を守る装備も忘れずに。','革の鎧と鎖かたびらを揃えているよ。']}],enemies:[],
+  },
+  itemShop: {
+    tiles: interiorTiles('b'),entry:{x:5,y:7},
+    npcs:[{id:'itemMerchant',name:'道具屋のトビ',x:7,y:5,face:'🧑🏽',lines:['やくそう、ポーション、エーテルはいかが？','旅の前に買い足しておくと安心だよ。']}],enemies:[],
   },
   field: {
     tiles: fieldTiles,
