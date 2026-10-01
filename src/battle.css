@@ -214,6 +214,13 @@
   animation-delay: .58s;
 }
 
+.battlefield-hero-attack .battle-foe-sprite::after,
+.battlefield-enemy-attack .battle-hero-sprite::after {
+  inset: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff8d0bb, #ffe6a555 36%, transparent 72%);
+}
+
 .battle-slash-effect {
   position: absolute;
   z-index: 4;
@@ -396,4 +403,277 @@
   .battlefield-hero-attack .battle-foe-sprite,
   .battlefield-enemy-attack .battle-foe-sprite,
   .battlefield-enemy-attack .battle-hero-sprite { animation: none; }
+}
+
+/* Each answer has a full windup, strike and recovery. The weapon stays attached
+   to the hero sprite, so its swing follows the lunge on narrow screens too. */
+.battlefield-hero-attack .battle-hero-sprite {
+  --hero-lunge: clamp(80px, 18vw, 175px);
+  animation: battle-hero-cut 1.2s steps(8, end) both;
+}
+
+.battlefield-hero-move-1 .battle-hero-sprite { animation-name: battle-hero-sweep; }
+.battlefield-hero-move-2 .battle-hero-sprite { animation-name: battle-hero-thrust; }
+.battlefield-hero-attack .battle-foe-sprite { animation: battle-foe-hit .75s .4s steps(3, end) both; }
+
+.battle-hero-weapon {
+  position: absolute;
+  z-index: 2;
+  left: 62%;
+  top: 33%;
+  width: 13px;
+  height: 92px;
+  transform-origin: 50% 88%;
+  background: linear-gradient(90deg, #6689a0 0 20%, #fffbea 21% 48%, #c1e5e8 49% 72%, #577b9d 73%);
+  border: 2px solid #31475e;
+  filter: drop-shadow(0 0 7px #efffff);
+  animation: battle-weapon-cut 1.2s steps(8, end) both;
+}
+
+.battle-hero-weapon::after {
+  content: '';
+  position: absolute;
+  left: -11px;
+  bottom: 15px;
+  width: 31px;
+  height: 7px;
+  border: 2px solid #63473c;
+  background: #f8cf7f;
+}
+
+.battlefield-hero-move-1 .battle-hero-weapon { animation-name: battle-weapon-sweep; }
+.battlefield-hero-move-2 .battle-hero-weapon { animation-name: battle-weapon-thrust; }
+.battle-slash-effect { top: 28%; height: 41%; }
+.battle-slash-effect i { animation-duration: 1.15s; animation-delay: 0s; }
+.battle-slash-effect i:nth-child(2) { animation-delay: .08s; }
+.battle-slash-effect i:nth-child(3) { animation-delay: .14s; }
+.battle-slash-effect b {
+  position: absolute;
+  left: 40%;
+  top: 42%;
+  width: 56px;
+  height: 56px;
+  border: 4px solid #fff5c2;
+  border-radius: 50%;
+  box-shadow: 0 0 18px #fff1a5;
+  opacity: 0;
+  animation: battle-sword-impact .6s .4s steps(4, end) both;
+}
+.battlefield-hero-move-1 .battle-slash-effect i { --slash-angle: 86deg; }
+.battlefield-hero-move-1 .battle-slash-effect i:nth-child(2) { --slash-angle: 78deg; top: 22%; }
+.battlefield-hero-move-1 .battle-slash-effect i:nth-child(3) { --slash-angle: 94deg; top: 39%; }
+.battlefield-hero-move-2 .battle-slash-effect i { --slash-angle: 72deg; height: 42%; top: 28%; }
+.battlefield-hero-move-2 .battle-slash-effect i:nth-child(2) { left: 54%; top: 36%; }
+.battlefield-hero-move-2 .battle-slash-effect i:nth-child(3) { left: 33%; top: 19%; }
+
+@keyframes battle-hero-cut {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  16% { translate: 17px -4px; rotate: 8deg; }
+  43% { translate: calc(-1 * var(--hero-lunge)) -11px; rotate: -10deg; }
+  62% { translate: calc(-.85 * var(--hero-lunge)) 0; rotate: 4deg; }
+  82% { translate: -22px 0; rotate: 0deg; }
+}
+@keyframes battle-hero-sweep {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  18% { translate: 11px -5px; rotate: -8deg; }
+  45% { translate: calc(-1 * var(--hero-lunge)) 1px; rotate: 6deg; }
+  65% { translate: calc(-.8 * var(--hero-lunge)) -6px; rotate: -5deg; }
+  84% { translate: -17px 0; rotate: 0deg; }
+}
+@keyframes battle-hero-thrust {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  23% { translate: 22px 0; rotate: 3deg; }
+  48% { translate: calc(-1.12 * var(--hero-lunge)) -3px; rotate: -3deg; }
+  58% { translate: calc(-.96 * var(--hero-lunge)) -3px; rotate: -3deg; }
+  82% { translate: -18px 0; rotate: 0deg; }
+}
+@keyframes battle-weapon-cut {
+  0%, 100% { transform: translate(13px, 9px) rotate(37deg); opacity: 0; }
+  13% { transform: translate(13px, 9px) rotate(37deg); opacity: 1; }
+  30% { transform: translate(24px, -3px) rotate(76deg); }
+  47% { transform: translate(-38px, -21px) rotate(-53deg); }
+  70% { transform: translate(-36px, 6px) rotate(-77deg); opacity: 1; }
+  86% { opacity: 0; }
+}
+@keyframes battle-weapon-sweep {
+  0%, 100% { transform: translate(7px, 10px) rotate(-38deg); opacity: 0; }
+  15% { opacity: 1; }
+  32% { transform: translate(20px, 12px) rotate(-40deg); }
+  51% { transform: translate(-40px, -22px) rotate(83deg); }
+  68% { transform: translate(-45px, -27px) rotate(103deg); opacity: 1; }
+  85% { opacity: 0; }
+}
+@keyframes battle-weapon-thrust {
+  0%, 100% { transform: translate(13px, 6px) rotate(50deg); opacity: 0; }
+  16% { opacity: 1; }
+  30% { transform: translate(19px, 4px) rotate(55deg); }
+  49%, 60% { transform: translate(-76px, -16px) rotate(82deg); opacity: 1; }
+  85% { opacity: 0; }
+}
+@keyframes battle-sword-impact {
+  0%, 100% { opacity: 0; transform: scale(.2); }
+  30% { opacity: 1; transform: scale(1.2); }
+  70% { opacity: .5; transform: scale(.85); }
+}
+
+/* Enemy techniques share the same route, but use different shapes and timing. */
+.battlefield-enemy-attack .battle-foe-sprite { animation: battle-foe-cast 1.15s steps(7, end) both; }
+.battlefield-enemy-blade .battle-foe-sprite { animation-name: battle-foe-dash; }
+.battlefield-enemy-wave .battle-foe-sprite { animation-name: battle-foe-flap; }
+.battlefield-enemy-lightning .battle-foe-sprite { animation-name: battle-foe-summon; }
+.battlefield-enemy-attack .battle-hero-sprite { animation: battle-hero-hit .72s .56s steps(3, end) both; }
+.battlefield-enemy-effect {
+  --attack-color: #d4a6fa;
+  top: 42%;
+  height: 50%;
+}
+.battle-enemy-effect .battle-enemy-projectile,
+.battle-enemy-effect .battle-enemy-impact,
+.battle-enemy-effect i { position: absolute; display: block; box-sizing: border-box; }
+.battle-enemy-effect .battle-enemy-projectile::after { content: none; }
+.battle-enemy-effect i { opacity: 0; }
+
+.battle-enemy-effect-splash { --attack-color: #a9ed7f; }
+.battle-enemy-effect-splash .battle-enemy-projectile {
+  border-radius: 65% 35% 65% 35%;
+  background: radial-gradient(circle at 30% 25%, #f5ffd9, #8acc74 50%, #428b80 75%);
+  animation: battle-splash-flight 1.2s steps(8, end) both;
+}
+.battle-enemy-effect-splash i {
+  width: 14px; height: 22px; border-radius: 75% 30% 70% 45%;
+  background: #d5f9a2; box-shadow: 0 0 9px #a1ec81;
+  animation: battle-splash-drop .6s .57s steps(5, end) both;
+}
+.battle-enemy-effect-splash i:nth-of-type(1) { left: 89%; top: -45px; --drop-x: -23px; --drop-y: -25px; }
+.battle-enemy-effect-splash i:nth-of-type(2) { left: 93%; top: 9px; --drop-x: 23px; --drop-y: 11px; animation-delay: .64s; }
+.battle-enemy-effect-splash i:nth-of-type(3) { left: 85%; top: 22px; --drop-x: -26px; --drop-y: 22px; animation-delay: .7s; }
+
+.battle-enemy-effect-wave { --attack-color: #85e4ee; }
+.battle-enemy-effect-wave .battle-enemy-projectile {
+  top: -34px; width: 74px; height: 70px; border: 7px double currentColor;
+  border-radius: 50%; background: radial-gradient(circle, transparent 30%, #6ae0f559 60%, transparent 70%);
+  animation: battle-wave-flight 1.2s steps(9, end) both;
+}
+.battle-enemy-effect-wave i {
+  top: -38px; width: 50px; height: 80px; border: 5px solid currentColor;
+  border-radius: 50%; animation: battle-wave-flight 1.2s steps(8, end) both;
+}
+.battle-enemy-effect-wave i:nth-of-type(1) { animation-delay: .08s; }
+.battle-enemy-effect-wave i:nth-of-type(2) { animation-delay: .17s; }
+.battle-enemy-effect-wave i:nth-of-type(3) { animation-delay: .26s; }
+
+.battle-enemy-effect-curse { --attack-color: #c6a3f7; }
+.battle-enemy-effect-curse .battle-enemy-projectile {
+  width: 46px; height: 46px; border: 3px solid currentColor;
+  border-radius: 0; transform: rotate(45deg); background: #39235dbb;
+  animation: battle-curse-flight 1.2s steps(8, end) both;
+}
+.battle-enemy-effect-curse .battle-enemy-projectile::after {
+  content: '✦'; position: absolute; inset: -8px; width: auto; height: auto;
+  background: none; text-align: center; font: 42px/1.1 Georgia, serif; color: #f7e4ff;
+}
+.battle-enemy-effect-curse i {
+  width: 16px; height: 16px; background: currentColor; transform: rotate(45deg);
+  box-shadow: 0 0 12px currentColor; animation: battle-curse-spark .8s .38s steps(5, end) both;
+}
+.battle-enemy-effect-curse i:nth-of-type(1) { top: -50px; left: 65%; }
+.battle-enemy-effect-curse i:nth-of-type(2) { top: 23px; left: 75%; animation-delay: .49s; }
+.battle-enemy-effect-curse i:nth-of-type(3) { top: -9px; left: 90%; animation-delay: .6s; }
+
+.battle-enemy-effect-blade { --attack-color: #ffc0d0; }
+.battle-enemy-effect-blade .battle-enemy-projectile,
+.battle-enemy-effect-blade i {
+  top: -52px; width: 12px; height: 104px; border: 0; border-radius: 0;
+  background: linear-gradient(90deg, #fff7ed, #f27b9f);
+  box-shadow: 0 0 13px #f087a4; transform: rotate(54deg);
+  animation: battle-shadow-blade 1.15s steps(7, end) both;
+}
+.battle-enemy-effect-blade i:nth-of-type(1) { top: -67px; animation-delay: .08s; }
+.battle-enemy-effect-blade i:nth-of-type(2) { top: -38px; animation-delay: .16s; }
+.battle-enemy-effect-blade i:nth-of-type(3) { display: none; }
+
+.battle-enemy-effect-drain { --attack-color: #a77adc; }
+.battle-enemy-effect-drain .battle-enemy-projectile {
+  top: -28px; width: 52px; height: 52px; border-radius: 50%;
+  background: radial-gradient(circle, #fff2dc, #8d61bb 45%, #482e70 70%);
+  animation: battle-drain-flight 1.2s steps(8, end) both;
+}
+.battle-enemy-effect-drain i {
+  left: 82%; top: -10px; width: 12px; height: 12px; border-radius: 50%;
+  background: #e5c5ff; box-shadow: 0 0 14px #ddbbff;
+  animation: battle-drain-return .7s .55s steps(6, end) both;
+}
+.battle-enemy-effect-drain i:nth-of-type(2) { top: -31px; animation-delay: .65s; }
+.battle-enemy-effect-drain i:nth-of-type(3) { top: 16px; animation-delay: .73s; }
+
+.battle-enemy-effect-lightning { --attack-color: #ffe391; }
+.battle-enemy-effect-lightning .battle-enemy-projectile {
+  left: 79%; top: -150px; width: 68px; height: 186px; border: 0; border-radius: 0;
+  background: #fff4b4;
+  clip-path: polygon(60% 0, 20% 42%, 51% 42%, 8% 100%, 89% 45%, 57% 45%, 100% 0);
+  filter: drop-shadow(0 0 18px #fff6c7);
+  animation: battle-lightning-strike 1.2s steps(4, end) both;
+}
+.battle-enemy-effect-lightning i {
+  left: 81%; top: -23px; width: 78px; height: 78px; border: 5px solid #fff7cf;
+  border-radius: 50%; box-shadow: 0 0 16px #ffe691;
+  animation: battle-lightning-spark .6s .55s steps(4, end) both;
+}
+.battle-enemy-effect-lightning i:nth-of-type(2) { animation-delay: .62s; }
+.battle-enemy-effect-lightning i:nth-of-type(3) { animation-delay: .69s; }
+
+.battle-enemy-effect-shock { --attack-color: #f1d394; }
+.battle-enemy-effect-shock .battle-enemy-projectile {
+  border-radius: 50%; background: radial-gradient(circle, #fff9d9, #e8c579 45%, #785288 72%);
+  animation: battle-shock-flight 1.2s steps(8, end) both;
+}
+.battle-enemy-effect-shock i {
+  left: 89%; top: -42px; width: 90px; height: 90px; border: 3px solid currentColor;
+  border-radius: 50%; animation: battle-shock-ring .7s .55s steps(5, end) both;
+}
+.battle-enemy-effect-shock i:nth-of-type(2) { animation-delay: .64s; }
+.battle-enemy-effect-shock i:nth-of-type(3) { animation-delay: .73s; }
+
+.battle-enemy-effect-splash .battle-enemy-impact,
+.battle-enemy-effect-wave .battle-enemy-impact,
+.battle-enemy-effect-curse .battle-enemy-impact,
+.battle-enemy-effect-blade .battle-enemy-impact,
+.battle-enemy-effect-drain .battle-enemy-impact,
+.battle-enemy-effect-lightning .battle-enemy-impact,
+.battle-enemy-effect-shock .battle-enemy-impact {
+  animation: battle-impact .55s .6s steps(4, end) both;
+}
+
+@keyframes battle-foe-dash { 0%, 100% { translate: 0 0; } 22% { translate: -15px 0; } 48% { translate: 83px -7px; } 67% { translate: 54px 0; } }
+@keyframes battle-foe-flap { 0%, 100% { translate: 0 0; rotate: 0deg; } 28% { translate: 8px -20px; rotate: -8deg; } 52% { translate: 25px -11px; rotate: 9deg; } }
+@keyframes battle-foe-summon { 0%, 100% { translate: 0 0; filter: none; } 25%, 60% { translate: 0 -16px; filter: brightness(1.8) drop-shadow(0 0 13px #ffe393); } }
+@keyframes battle-splash-flight { 0%, 15%, 100% { left: 0; top: -21px; opacity: 0; } 23% { opacity: 1; } 45% { left: 50%; top: -65px; } 65% { left: 88%; top: -21px; opacity: 1; } 75% { left: 88%; opacity: 0; } }
+@keyframes battle-splash-drop { 0%, 100% { opacity: 0; translate: 0 0; } 20% { opacity: 1; } 72% { opacity: 1; translate: var(--drop-x) var(--drop-y); } }
+@keyframes battle-wave-flight { 0%, 17%, 100% { left: 0; opacity: 0; transform: scale(.55); } 27% { opacity: .85; } 69% { left: 88%; opacity: 1; transform: scale(1.3); } 79% { opacity: 0; } }
+@keyframes battle-curse-flight { 0%, 17%, 100% { left: 0; opacity: 0; rotate: 0deg; } 25% { opacity: 1; } 69% { left: 88%; opacity: 1; rotate: 180deg; } 80% { opacity: 0; } }
+@keyframes battle-curse-spark { 0%, 100% { opacity: 0; translate: 0 0; } 35% { opacity: 1; translate: -10px -17px; } 65% { opacity: .8; translate: 14px 10px; } }
+@keyframes battle-shadow-blade { 0%, 20%, 100% { left: 0; opacity: 0; } 36% { opacity: 1; } 64% { left: 88%; opacity: 1; } 78% { opacity: 0; } }
+@keyframes battle-drain-flight { 0%, 17%, 100% { left: 0; opacity: 0; scale: .5; } 28% { opacity: 1; } 68% { left: 88%; opacity: 1; scale: 1.3; } 81% { opacity: 0; } }
+@keyframes battle-drain-return { 0%, 100% { opacity: 0; left: 82%; } 25% { opacity: 1; } 74% { opacity: 1; left: 4%; } }
+@keyframes battle-lightning-strike { 0%, 42%, 100% { opacity: 0; } 49%, 60%, 69% { opacity: 1; } 55%, 65% { opacity: .15; } }
+@keyframes battle-lightning-spark { 0%, 100% { opacity: 0; scale: .2; } 34% { opacity: 1; scale: 1; } 68% { opacity: .4; scale: 1.4; } }
+@keyframes battle-shock-flight { 0%, 18%, 100% { left: 0; opacity: 0; scale: .4; } 28% { opacity: 1; } 70% { left: 88%; opacity: 1; scale: 1.3; } 80% { opacity: 0; } }
+@keyframes battle-shock-ring { 0%, 100% { opacity: 0; scale: .2; } 30% { opacity: 1; scale: 1; } 70% { opacity: .4; scale: 1.6; } }
+
+@media (max-width: 700px) {
+  .battle-hero-weapon { width: 10px; height: 72px; }
+  .battle-enemy-effect-lightning .battle-enemy-projectile { top: -112px; height: 142px; }
+  .battle-enemy-effect-wave .battle-enemy-projectile { width: 51px; height: 50px; top: -25px; }
+  .battle-enemy-effect-blade .battle-enemy-projectile,
+  .battle-enemy-effect-blade i { height: 75px; top: -38px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .battlefield-hero-attack .battle-hero-sprite,
+  .battlefield-hero-attack .battle-foe-sprite,
+  .battlefield-enemy-attack .battle-foe-sprite,
+  .battlefield-enemy-attack .battle-hero-sprite { animation: none; }
+  .battle-hero-weapon,
+  .battle-slash-effect,
+  .battle-enemy-effect { display: none; }
 }

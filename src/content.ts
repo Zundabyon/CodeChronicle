@@ -83,7 +83,7 @@ export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '�
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
-export type Enemy = { id: string; name: string; attackName: string; x: number; y: number; icon: string; boss?: boolean; cli?: boolean };
+export type Enemy = { id: string; name: string; attackName: string; x: number; y: number; icon: string; boss?: boolean };
 export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: Point };
 
 export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = {
@@ -200,7 +200,7 @@ export const maps: Record<Area, MapData> = {
     enemies: [
       {id:'f1',name:'バグスライム',attackName:'バグスプラッシュ',x:20,y:14,icon:'◕'},
       {id:'f2',name:'ノイズコウモリ',attackName:'ノイズウェーブ',x:8,y:9,icon:'✦'},
-      {id:'f3',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:29,y:7,icon:'♟',cli:true},
+      {id:'f3',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:29,y:7,icon:'♟'},
     ],
   },
   dungeon: {
@@ -222,7 +222,7 @@ export const maps: Record<Area, MapData> = {
     npcs: [],
     enemies: [
       {id:'d1',name:'断片の影',attackName:'断片斬り',x:4,y:7,icon:'♢'},
-      {id:'d2',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:14,y:5,icon:'♟',cli:true},
+      {id:'d2',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:14,y:5,icon:'♟'},
       {id:'d3',name:'記憶の番人',attackName:'記憶侵食',x:11,y:3,icon:'◆'},
       {id:'boss',name:'ゲートガーディアン',attackName:'封印の雷',x:10,y:1,icon:'♛',boss:true},
     ],
