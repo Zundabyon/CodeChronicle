@@ -83,7 +83,7 @@ export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '�
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
-export type Enemy = { id: string; name: string; x: number; y: number; icon: string; boss?: boolean; cli?: boolean };
+export type Enemy = { id: string; name: string; attackName: string; x: number; y: number; icon: string; boss?: boolean; cli?: boolean };
 export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: Point };
 
 export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = {
@@ -198,9 +198,9 @@ export const maps: Record<Area, MapData> = {
     entry: {x:18,y:20},
     npcs: [{id:'wanderer',name:'旅人ロイ',x:19,y:17,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','あの東の門の先に、忘却の遺跡がある。'],alternateLines:[['川の浅い所に橋がある。道を見失ったら、石畳をたどるといい。','敵は動き回る。近づく前にHPを確かめておけよ。'],['俺も昔は答えを覚えるだけで精一杯だった。','なぜその答えになるのか考えるようになって、ようやく先へ進めたんだ。']]}],
     enemies: [
-      {id:'f1',name:'バグスライム',x:20,y:14,icon:'◕'},
-      {id:'f2',name:'ノイズコウモリ',x:8,y:9,icon:'✦'},
-      {id:'f3',name:'コマンドゴースト',x:29,y:7,icon:'♟',cli:true},
+      {id:'f1',name:'バグスライム',attackName:'バグスプラッシュ',x:20,y:14,icon:'◕'},
+      {id:'f2',name:'ノイズコウモリ',attackName:'ノイズウェーブ',x:8,y:9,icon:'✦'},
+      {id:'f3',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:29,y:7,icon:'♟',cli:true},
     ],
   },
   dungeon: {
@@ -221,10 +221,10 @@ export const maps: Record<Area, MapData> = {
     entry: {x:10,y:10},
     npcs: [],
     enemies: [
-      {id:'d1',name:'断片の影',x:4,y:7,icon:'♢'},
-      {id:'d2',name:'コマンドゴースト',x:14,y:5,icon:'♟',cli:true},
-      {id:'d3',name:'記憶の番人',x:11,y:3,icon:'◆'},
-      {id:'boss',name:'ゲートガーディアン',x:10,y:1,icon:'♛',boss:true},
+      {id:'d1',name:'断片の影',attackName:'断片斬り',x:4,y:7,icon:'♢'},
+      {id:'d2',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:14,y:5,icon:'♟',cli:true},
+      {id:'d3',name:'記憶の番人',attackName:'記憶侵食',x:11,y:3,icon:'◆'},
+      {id:'boss',name:'ゲートガーディアン',attackName:'封印の雷',x:10,y:1,icon:'♛',boss:true},
     ],
   },
 };
