@@ -721,3 +721,39 @@
 @media (prefers-reduced-motion: reduce) {
   .battle-voice { animation: none; }
 }
+
+.encounter-duo {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: min(560px, 88vw);
+  margin: 6px 0 12px;
+}
+.encounter-duo .encounter-sprite { flex: none; margin: 0; }
+.encounter-foe-sprite .pixel-sprite,
+.encounter-hero-sprite .pixel-sprite { transform: scaleX(-1); }
+.encounter-duo > span {
+  color: #f9d59d;
+  font: 20px 'Press Start 2P', monospace;
+  text-shadow: 0 0 14px #f1b478;
+}
+.encounter-banter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+  width: min(760px, 90vw);
+  margin: 3px 0 22px;
+  text-align: left;
+}
+.encounter-banter .battle-voice { min-height: 85px; }
+
+@media (max-width: 700px) {
+  .encounter-duo .encounter-sprite { width: 108px; height: 108px; }
+  .encounter-duo > span { font-size: 13px; }
+  .encounter-banter { gap: 7px; }
+  .encounter-banter .battle-voice { padding: 7px 9px; min-height: 82px; }
+}
+@media (max-width: 480px) {
+  .encounter-banter { grid-template-columns: 1fr; margin-bottom: 16px; }
+  .encounter-banter .battle-voice { min-height: 0; }
+}
