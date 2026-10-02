@@ -1,3 +1,5 @@
+import { moreQuestions } from './moreQuestions';
+
 export type Track = 'react' | 'vue';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse' | 'weaponShop' | 'armorShop' | 'itemShop';
@@ -76,6 +78,7 @@ export const questions: Question[] = [
   choice('api-i-2','intermediate','connection','API通信中に画面で管理したい状態は？',['読み込み中と失敗','文字色だけ','端末の時刻だけ','コンポーネント名だけ'],0,'通信には待機と失敗があるため、画面でも状態を分けます。',{inertia:false}),
   choice('api-a-1','advanced','connection','APIが401を返した。まず確認すべき意味は？',['認証が必要、または認証できない','必ずサーバが落ちた','CSSに構文エラー','JSON配列が空'],0,'401は認証に関するHTTPステータスです。',{inertia:false}),
   choice('api-a-2','advanced','connection','APIへの書き込みでフロント側だけの検証では足りない理由は？',['サーバへ直接リクエストできるから','TypeScriptが無効になるから','画面が必ず白くなるから','GETしか使えないから'],0,'クライアント側を迂回できるため、サーバ側でも検証します。',{inertia:false}),
+  ...moreQuestions,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
