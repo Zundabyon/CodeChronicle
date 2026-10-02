@@ -11,25 +11,36 @@ type BattleStageProps = {
   heroMaxHp: number;
   heroMaxMp: number;
   attack: 'hero' | 'enemy' | null;
+  attackRound: number;
 };
 
-export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack }: BattleStageProps) {
+type EnemyAttackStyle = 'splash' | 'wave' | 'curse' | 'blade' | 'drain' | 'lightning' | 'shock';
+
+const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
+  f1: 'splash', f2: 'wave', f3: 'curse', d1: 'blade', d2: 'curse',
+  d3: 'drain', boss: 'lightning', review: 'curse', 'after-gate': 'shock',
+};
+
+const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
+
+export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound }: BattleStageProps) {
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : 'town';
   const location = terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
-  const attackTone = enemy.id === 'f1' ? 'green' : enemy.id === 'f2' ? 'cyan' : enemy.boss ? 'gold' : 'violet';
+  const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? 'shock';
+  const heroMove = (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
   const style = { '--battle-ground': `url("${import.meta.env.BASE_URL}maps/${ground}")` } as CSSProperties;
 
   return (
-    <div className={`battlefield battlefield-${terrain} ${attack ? `battlefield-${attack}-attack` : ''}`} style={style}>
+    <div className={`battlefield battlefield-${terrain} ${attack ? `battlefield-${attack}-attack` : ''} ${attack === 'hero' ? `battlefield-hero-move-${heroMove}` : ''} ${attack === 'enemy' ? `battlefield-enemy-${enemyAttackStyle}` : ''}`} style={style}>
       <span className="battlefield-location">{location}</span>
       <div className="battlefield-backdrop" aria-hidden="true">
         <span className="battlefield-scenery-back" />
         <span className="battlefield-scenery-front" />
       </div>
-      {attack && <span className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の斬りつけ！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
-      {attack === 'hero' && <div className="battle-slash-effect" aria-hidden="true"><i /><i /><i /></div>}
-      {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${attackTone}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /></div>}
+      {attack && <span className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の${heroMoves[heroMove]}！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
+      {attack === 'hero' && <div className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /></div>}
+      {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
       <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''}`}>
         <div className="battle-combatant-sprite battle-foe-sprite">
@@ -47,6 +58,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
       <div className="battle-combatant battle-hero">
         <div className="battle-combatant-sprite battle-hero-sprite">
           <PixelSprite name="hero" />
+          {attack === 'hero' && <span className="battle-hero-weapon" aria-hidden="true" />}
         </div>
         <div className="battle-combatant-status battle-hero-status">
           <strong>{hero.name} <small>LV {hero.level}</small></strong>
