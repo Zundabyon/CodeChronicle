@@ -4,8 +4,9 @@ const choice = (
   id: string, difficulty: Difficulty, topic: Question['topic'], prompt: string,
   options: [string, string, string, string], answer: number, explanation: string,
   extra: Partial<Question> = {},
+  slotOverride?: number,
 ): Question => {
-  const slot = [...id].reduce((value, character) => (value * 31 + character.charCodeAt(0)) >>> 0, 7) % 4;
+  const slot = slotOverride ?? [...id].reduce((value, character) => (value * 31 + character.charCodeAt(0)) >>> 0, 7) % 4;
   const shuffled: [string, string, string, string] = [...options];
   [shuffled[answer], shuffled[slot]] = [shuffled[slot], shuffled[answer]];
   return { id, difficulty, topic, kind: 'choice', prompt, options: shuffled, answer: slot, reveal: shuffled[slot], explanation, ...extra };
@@ -97,4 +98,44 @@ export const moreQuestions: Question[] = [
   cli('l-a-cli-4', 'advanced', 'Postモデル用のPostPolicyを作成するArtisanコマンドを入力せよ。', ['php artisan make:policy PostPolicy --model=Post', 'artisan make:policy PostPolicy --model=Post'], '--modelを指定すると、Postに対応するPolicyの雛形を作れます。'),
   cli('l-a-cli-5', 'advanced', 'PostFactoryをPostモデルに対応させて作成するコマンドを入力せよ。', ['php artisan make:factory PostFactory --model=Post', 'artisan make:factory PostFactory --model=Post'], 'Factoryはテストや開発用の投稿データを生成するのに使えます。'),
   cli('l-a-cli-6', 'advanced', 'Laravelのテストを実行するArtisanコマンドを入力せよ。', ['php artisan test', 'artisan test'], 'testでLaravelのテストスイートを実行できます。'),
+
+  // 投稿の操作を一歩ずつ組み立てる追加問題
+  choice('r-b-8', 'beginner', 'frontend', '「投稿する」ボタンを押したときにsaveを呼ぶReactの指定は？', ['onClick={save}', 'onClick="save"', 'onSubmit={save}をボタンに指定', 'click={save}'], 0, 'Reactではイベント名をonClickとし、関数を波括弧で渡します。', { track: 'react' }),
+  choice('r-b-9', 'beginner', 'frontend', '投稿タイトルを画面に文字として表示するTSXは？', ['<h2>{post.title}</h2>', '<h2>post.title</h2>', '<h2>${post.title}</h2>', '<h2 v-model="post.title" />'], 0, 'JSXでは波括弧の中にJavaScriptの式を書いて値を表示します。', { track: 'react' }),
+  choice('r-i-7', 'intermediate', 'frontend', '空白だけの投稿タイトルを送らないため、送信前に使う文字列メソッドは？', ['title.trim()', 'title.map()', 'title.push()', 'title.filter()'], 0, 'trim()で前後の空白を除き、残りが空文字なら送信を止められます。', { track: 'react' }),
+  choice('r-i-8', 'intermediate', 'frontend', '投稿の保存中に送信ボタンの連打を防ぐReactの指定は？', ['disabled={saving}', 'disabled="saving"', 'onClick={saving}', 'key={saving}'], 0, '保存中を表す真偽値をdisabledに渡すと、送信ボタンを無効にできます。', { track: 'react' }),
+  choice('r-a-7', 'advanced', 'frontend', '投稿を新しい順に並べたい。stateの配列を直接変更しない式は？', ['[...posts].sort(comparePosts)', 'posts.sort(comparePosts)', 'posts.reverse()', 'posts.splice(0, 1)'], 0, 'sortは元の配列を変更するため、コピーしてから並べ替えます。', { track: 'react' }, 2),
+  choice('r-a-8', 'advanced', 'frontend', '投稿一覧の取得中に検索条件が変わった。古い結果を反映しない対策は？', ['古いリクエストを中止するか結果を無視する', '古い結果を必ず先にstateへ入れる', 'propsを書き換える', 'keyを毎回乱数にする'], 0, '通信の後始末を行い、現在の条件に合わない結果で画面を上書きしないようにします。', { track: 'react' }),
+
+  choice('v-b-8', 'beginner', 'frontend', '投稿カード内のリンク先をpost.urlに合わせるVueの指定は？', [':href="post.url"', 'href="post.url"', '@href="post.url"', 'v-for="post.url"'], 0, ':hrefでリンク先の属性をデータに結び付けます。', { track: 'vue' }),
+  choice('v-b-9', 'beginner', 'frontend', '投稿保存中のボタンを無効にするVueの属性指定は？', [':disabled="saving"', 'disabled="saving"だけ', '@disabled="saving"', 'v-for="saving"'], 0, ':disabledで真偽値の状態をHTML属性へ結び付けます。', { track: 'vue' }),
+  choice('v-i-7', 'intermediate', 'frontend', '入力の前後の空白をv-modelで除きたい。使える修飾子は？', ['v-model.trim', 'v-model.filter', 'v-model.clean', 'v-model.strip'], 0, 'v-model.trimは入力値の前後の空白を除く修飾子です。', { track: 'vue' }),
+  choice('v-i-8', 'intermediate', 'frontend', '検索語が変わるたびに非同期で投稿を取得したい。副作用を起こす用途に適するのは？', ['watch', 'computedだけ', 'v-for', 'defineProps'], 0, 'watchはリアクティブな値の変化に応じて通信などの副作用を実行できます。', { track: 'vue' }),
+  choice('v-a-7', 'advanced', 'frontend', '検索条件を変えて再取得するとき、前回の通信を止める処理を登録する場所は？', ['watchのクリーンアップ', 'computedの戻り値だけ', 'v-forのkey', 'propsの直接変更'], 0, 'watchのクリーンアップで古い通信を中止すると、古い応答による上書きを防げます。', { track: 'vue' }),
+  choice('v-a-8', 'advanced', 'frontend', '投稿を日付順に表示したい。元のref配列を変更せずにcomputedで返す式は？', ['[...posts.value].sort(comparePosts)', 'posts.value.sort(comparePosts)', 'posts.value.reverse()', 'posts.value.splice(0, 1)'], 0, 'sortは配列を直接変更するので、コピーしてから並べ替えます。', { track: 'vue' }),
+
+  choice('l-b-8', 'beginner', 'laravel', '投稿1件の詳細を表示するリソースコントローラのメソッドは？', ['show', 'index', 'store', 'destroy'], 0, 'showは指定した1件のリソースを表示する処理です。'),
+  choice('l-b-9', 'beginner', 'laravel', '投稿を登録するテーブルにtitle列を追加する場所は？', ['マイグレーション', 'CSS', 'Reactのkey', 'ブラウザの履歴'], 0, 'マイグレーションでテーブルの列を定義します。'),
+  choice('l-i-8', 'intermediate', 'laravel', '投稿を1ページ10件ずつ取得するEloquentの呼び出しは？', ['Post::paginate(10)', 'Post::all(10)', 'Post::destroy(10)', 'Post::create(10)'], 0, 'paginate(10)で投稿をページに分けて取得できます。'),
+  choice('l-i-9', 'intermediate', 'laravel', '投稿タイトルを100文字以内の文字列にしたい。適切な検証規則は？', ["['required', 'string', 'max:100']", "['required', 'array', 'max:100']", "['nullable', 'string']", "['integer', 'min:100']"], 0, 'requiredで必須、stringで文字列、max:100で最大100文字を指定します。', {}, 3),
+  choice('l-a-8', 'advanced', 'laravel', '投稿一覧に各投稿のコメント数だけ追加して取得するEloquentの呼び出しは？', ["Post::withCount('comments')->get()", "Post::with('comments')->count()", 'Post::count()で各投稿の数を得る', 'Post::pluck("comments")'], 0, 'withCountは関連件数を各モデルの属性として取得できます。'),
+  choice('l-a-9', 'advanced', 'laravel', '投稿を後から復元できる削除にしたい。Eloquentで使う仕組みは？', ['SoftDeletes', 'Seeder', 'Route::view', 'Blade'], 0, 'SoftDeletesを使い、deleted_at列も用意すると論理削除と復元ができます。'),
+
+  choice('i-b-6', 'beginner', 'connection', 'InertiaのLinkで投稿詳細へ移動するとき、行き先を渡す属性は？', ['href', 'src', 'actionだけ', 'methodだけ'], 0, 'Linkのhrefに移動先URLを指定します。', { inertia: true }),
+  choice('i-b-7', 'beginner', 'connection', '投稿を保存したあと一覧ページを表示したい。Laravel側で一般的な応答は？', ['一覧へのリダイレクト', 'CSS文字列だけを返す', 'JavaScriptのstateを直接変更', 'マイグレーションを返す'], 0, '保存後のリダイレクト先のInertiaページが、更新された投稿を表示します。', { inertia: true }),
+  choice('i-i-6', 'intermediate', 'connection', 'InertiaのuseFormで送信中か調べるプロパティは？', ['form.processing', 'form.loading', 'form.pending', 'form.waiting'], 0, 'processingを使って送信中の表示やボタンの無効化ができます。', { inertia: true }),
+  choice('i-i-7', 'intermediate', 'connection', '投稿が保存できた後、useFormの入力を初期値に戻すメソッドは？', ['form.reset()', 'form.clear()', 'form.reload()', 'form.destroy()'], 0, 'reset()はフォームの値を初期値に戻します。', { inertia: true }),
+  choice('i-a-6', 'advanced', 'connection', '投稿保存が成功した場合だけ入力を戻したい。form.postのオプションは？', ['onSuccess: () => form.reset()', 'onError: () => form.reset()', 'preserveScroll: falseだけ', 'only: ["title"]'], 0, 'onSuccessで成功時の処理を指定できます。', { inertia: true }),
+  choice('i-a-7', 'advanced', 'connection', '入力エラーが出たときだけスクロール位置を残したい。訪問オプションは？', ["preserveScroll: 'errors'", 'preserveScroll: false', 'only: ["errors"]', 'resetScroll: true'], 0, "preserveScroll: 'errors'は検証エラーがある訪問でスクロールを保ちます。", { inertia: true }, 3),
+
+  choice('api-b-6', 'beginner', 'connection', '投稿タイトルをJSONでAPIへ送るとき、本文に入れるキーは？', ['title', 'stylesheet', 'migration', 'component'], 0, 'サーバが受け取る投稿データの項目名に合わせてtitleを送ります。', { inertia: false }),
+  choice('api-b-7', 'beginner', 'connection', '投稿ID 7の詳細を取得するAPIリクエストとして適切なのは？', ["GET /api/posts/7", "DELETE /api/posts/7", "POST /api/posts/7", "PATCH /api/posts/7"], 0, '1件の取得には対象のURLへGETを送ります。', { inertia: false }),
+  choice('api-i-6', 'intermediate', 'connection', 'fetchでJavaScriptの投稿データをJSON本文として送る式は？', ['JSON.stringify({ title })', 'JSON.parse({ title })', 'String.parse({ title })', 'response.json({ title })'], 0, 'JSON.stringifyでオブジェクトをJSON文字列に変換してbodyへ渡します。', { inertia: false }),
+  choice('api-i-7', 'intermediate', 'connection', '投稿の検索語をURLのクエリへ安全に入れるときに使うものは？', ['encodeURIComponent(query)', 'JSON.parse(query)', 'query.toUpperCase()だけ', 'document.write(query)'], 0, 'encodeURIComponentは検索語の空白や記号をURLの一部として安全に符号化します。', { inertia: false }),
+  choice('api-a-6', 'advanced', 'connection', 'DELETEの応答が204 No Contentだった。本文を読む処理は？', ['JSONを読まずに成功として処理する', '必ずresponse.json()を呼ぶ', '必ず投稿を再作成する', '必ず422として扱う'], 0, '204には応答本文がないので、JSON解析を行わず成功を反映します。', { inertia: false }),
+  choice('api-a-7', 'advanced', 'connection', '投稿一覧APIがページ分割されている。画面で次ページへ進むために必要なのは？', ['現在ページと次ページの情報を応答から管理する', '最初の10件を無限に複製する', '毎回DELETEを送る', 'CSSだけで残りを表示する'], 0, 'ページ番号や次ページへのリンクを管理して、必要なページを取得します。', { inertia: false }, 3),
+
+  cli('l-b-cli-7', 'beginner', '投稿テーブルを作るマイグレーションの雛形を生成するArtisanコマンドを入力せよ。', ['php artisan make:migration create_posts_table', 'artisan make:migration create_posts_table'], 'make:migrationでテーブル構造を定義するファイルを作ります。'),
+  cli('l-i-cli-7', 'intermediate', '投稿更新用のUpdatePostRequestを作成するArtisanコマンドを入力せよ。', ['php artisan make:request UpdatePostRequest', 'artisan make:request UpdatePostRequest'], 'make:requestで更新時の検証をまとめるForm Requestを作れます。'),
+  cli('l-a-cli-7', 'advanced', 'マイグレーションを1段階だけ戻すArtisanコマンドを入力せよ。', ['php artisan migrate:rollback --step=1', 'artisan migrate:rollback --step=1'], '--step=1で直近のマイグレーションを1件だけ戻せます。'),
 ];
