@@ -102,6 +102,9 @@ export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = 
 export const houseAt = (point:Point): HouseArea | undefined =>
   (Object.entries(houses) as [HouseArea,(typeof houses)[HouseArea]][]).find(([,house])=>house.door.x===point.x&&house.door.y===point.y)?.[0];
 
+export const fieldTownGate: Point = {x:60,y:79};
+export const fieldRuinsGate: Point = {x:108,y:14};
+
 const townTiles = (() => {
   const width=28,height=32;
   const grid:string[][]=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>x===0||x===width-1||y===0||y===height-1?'#':'.'));
@@ -132,24 +135,62 @@ const interiorTiles = (furniture:'b'|'s'|'c') => [
 ];
 
 const fieldTiles = (() => {
-  const width=36, height=22;
-  const grid: string[][]=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>x===0||x===width-1||y===0||y===height-1?'#':'.'));
-  const paint=(tile:string,points:Point[])=>points.forEach(({x,y})=>{grid[y][x]=tile;});
-  for(let y=2;y<=18;y++) for(let x=12;x<=13;x++) grid[y][x]='r';
-  for(let x=12;x<=13;x++) grid[10][x]='g';
-  for(let y=11;y<=20;y++) grid[y][18]='g';
-  for(let x=13;x<=18;x++) grid[10][x]='g';
-  for(let x=14;x<=31;x++) grid[9][x]='g';
-  for(let y=6;y<=9;y++) grid[y][31]='g';
-  for(let x=31;x<=33;x++) grid[6][x]='g';
-  for(let y=2;y<=8;y++) for(let x=3;x<=8;x++) if((x+y)%4!==0) grid[y][x]='t';
-  for(let y=12;y<=18;y++) for(let x=3;x<=9;x++) if((x*3+y)%5!==0) grid[y][x]='t';
-  for(let y=12;y<=18;y++) for(let x=24;x<=32;x++) if((x+y*2)%4!==0) grid[y][x]='t';
-  paint('#',[{x:27,y:2},{x:28,y:2},{x:29,y:2},{x:28,y:3},{x:29,y:3},{x:30,y:3},{x:29,y:4},{x:30,y:4}]);
-  grid[21][18]='g';
-  grid[6][33]='d';
+  const width=120,height=80;
+  const grid:string[][]=Array.from({length:height},()=>Array(width).fill('.'));
+  const ellipse=(x:number,y:number,cx:number,cy:number,rx:number,ry:number)=>((x-cx)/rx)**2+((y-cy)/ry)**2;
+  const noise=(x:number,y:number)=>((x*73+y*151+x*y*19+43)%101)/101;
+  for(let y=0;y<height;y++) for(let x=0;x<width;x++) {
+    const coast=10+Math.sin(y/7)*3;
+    const northCoast=8+Math.sin(x/5)*2;
+    const sea=x<coast || (x<51 && y<northCoast);
+    const lake=ellipse(x,y,39,25,13,8)<1 || ellipse(x,y,27,17,5,4)<1;
+    const river=y>=28&&y<=72&&Math.abs(x-(43+Math.round(Math.sin(y/5)*3)))<=1;
+    const oasis=ellipse(x,y,99,62,6,4)<1;
+    const mountains=ellipse(x,y,94,25,26,16)<1 && noise(x,y)>.19 || ellipse(x,y,112,9,10,12)<1;
+    const desert=x>70+Math.sin(y/5)*5&&y>41+Math.sin(x/8)*4;
+    const forest=ellipse(x,y,26,52,19,23)<1 || ellipse(x,y,55,17,13,14)<1 || ellipse(x,y,68,55,10,12)<1;
+    if(x===0||x===width-1||y===0||y===height-1) grid[y][x]='#';
+    else if(sea||lake||river||oasis) grid[y][x]='r';
+    else if(mountains) grid[y][x]='m';
+    else if(desert) grid[y][x]=noise(x,y)>.94?'k':'s';
+    else if(x<coast+3||ellipse(x,y,39,25,15,10)<1.15) grid[y][x]='s';
+    else if(forest&&noise(x,y)>.31) grid[y][x]='t';
+    else if(noise(x,y)>.82) grid[y][x]='v';
+  }
+  // A continuous old road leads from town through the woods and mountain pass.
+  const road:Point[]=[{x:60,y:79},{x:60,y:70},{x:52,y:62},{x:48,y:54},{x:47,y:45},{x:56,y:37},{x:69,y:36},{x:80,y:31},{x:91,y:26},{x:102,y:20},fieldRuinsGate];
+  const carve=(from:Point,to:Point)=>{
+    let {x,y}=from;
+    while(x!==to.x||y!==to.y){
+      grid[y][x]='g';
+      if(Math.abs(to.x-x)>Math.abs(to.y-y)) x+=Math.sign(to.x-x);
+      else y+=Math.sign(to.y-y);
+    }
+    grid[y][x]='g';
+  };
+  for(let i=1;i<road.length;i++) carve(road[i-1],road[i]);
+  // Smaller trails make the coast and oasis reachable without blocking the main quest.
+  const branches:Point[][]=[
+    [{x:48,y:54},{x:32,y:55},{x:20,y:47},{x:16,y:36}],
+    [{x:60,y:70},{x:77,y:65},{x:93,y:63},{x:100,y:66}],
+    [{x:56,y:37},{x:49,y:29},{x:49,y:20}],
+  ];
+  for(const branch of branches) for(let i=1;i<branch.length;i++) carve(branch[i-1],branch[i]);
+  grid[fieldTownGate.y][fieldTownGate.x]='g';
+  grid[fieldRuinsGate.y][fieldRuinsGate.x]='d';
   return grid.map(row=>row.join(''));
 })();
+
+export const fieldRegion = (point:Point):string => {
+  const tile=fieldTiles[point.y]?.[point.x];
+  if(point.y>68&&point.x>45&&point.x<72) return '黎明の町への道';
+  if(point.x>75&&point.y>42) return '陽炎の砂漠';
+  if(point.x>76&&point.y<39) return '石鳴り山脈';
+  if(point.x<18) return '西の海岸';
+  if(point.x<51&&point.y<34) return '鏡の湖';
+  if(tile==='t'||point.x<44&&point.y>32) return '深緑の森';
+  return '風渡りの平原';
+};
 
 export const maps: Record<Area, MapData> = {
   town: {
@@ -198,12 +239,18 @@ export const maps: Record<Area, MapData> = {
   },
   field: {
     tiles: fieldTiles,
-    entry: {x:18,y:20},
-    npcs: [{id:'wanderer',name:'旅人ロイ',x:19,y:17,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','あの東の門の先に、忘却の遺跡がある。'],alternateLines:[['川の浅い所に橋がある。道を見失ったら、石畳をたどるといい。','敵は動き回る。近づく前にHPを確かめておけよ。'],['俺も昔は答えを覚えるだけで精一杯だった。','なぜその答えになるのか考えるようになって、ようやく先へ進めたんだ。']]}],
+    entry: {x:60,y:78},
+    npcs: [{id:'wanderer',name:'旅人ロイ',x:61,y:72,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','北東の山脈の門が、忘却の遺跡への入口だ。'],alternateLines:[['森の川に古い橋がある。道を見失ったら、石畳をたどるといい。','敵は動き回る。近づく前にHPを確かめておけよ。'],['俺も昔は答えを覚えるだけで精一杯だった。','なぜその答えになるのか考えるようになって、ようやく先へ進めたんだ。']]}],
     enemies: [
-      {id:'f1',name:'バグスライム',attackName:'バグスプラッシュ',x:20,y:14,icon:'◕'},
-      {id:'f2',name:'ノイズコウモリ',attackName:'ノイズウェーブ',x:8,y:9,icon:'✦'},
-      {id:'f3',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:29,y:7,icon:'♟'},
+      {id:'f1',name:'バグスライム',attackName:'バグスプラッシュ',x:57,y:73,icon:'◕'},
+      {id:'f2',name:'ノイズコウモリ',attackName:'ノイズウェーブ',x:53,y:64,icon:'✦'},
+      {id:'f3',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:47,y:51,icon:'♟'},
+      {id:'f4',name:'苔むす影',attackName:'深緑の呪い',x:30,y:55,icon:'♢'},
+      {id:'f5',name:'湖畔のバグスライム',attackName:'水しぶき',x:49,y:28,icon:'◕'},
+      {id:'f6',name:'砂塵の影',attackName:'砂塵の呪い',x:81,y:64,icon:'♢'},
+      {id:'f7',name:'砂漠のコマンドゴースト',attackName:'コマンドの呪縛',x:95,y:68,icon:'♟'},
+      {id:'f8',name:'山影のノイズコウモリ',attackName:'ノイズウェーブ',x:83,y:34,icon:'✦'},
+      {id:'f9',name:'峠の断片',attackName:'断片斬り',x:101,y:22,icon:'◆'},
     ],
   },
   dungeon: {
