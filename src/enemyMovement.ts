@@ -12,11 +12,11 @@ export function enemyAt(area: Area, point: Point, positions: EnemyPositions, def
 }
 
 const canOccupy = (area: Area, point: Point) =>
-  maps[area].tiles[point.y]?.[point.x] === '.' &&
+  (area==='field' ? ['.','s','v','g'] : ['.']).includes(maps[area].tiles[point.y]?.[point.x]) &&
   !maps[area].npcs.some(npc => same(npc, point));
 
-const withinTerritory = (enemy: Enemy, point: Point) =>
-  !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
+const withinTerritory = (area:Area, enemy: Enemy, point: Point) =>
+  area==='field' ? distance(enemy,point)<=7 : !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
 
 export function spawnEnemies(defeated: string[] = []): EnemyPositions {
   const positions: EnemyPositions = {};
@@ -28,7 +28,7 @@ export function spawnEnemies(defeated: string[] = []): EnemyPositions {
     for (const enemy of maps[area].enemies) {
       if (defeated.includes(enemy.id)) continue;
       const choices = candidates.filter(point =>
-        withinTerritory(enemy, point) && occupied.every(other => distance(point, other) > 1));
+        withinTerritory(area, enemy, point) && occupied.every(other => distance(point, other) > 1));
       const point = choices[Math.floor(Math.random() * choices.length)] ?? { x: enemy.x, y: enemy.y };
       positions[enemy.id] = point;
       occupied.push(point);
@@ -48,7 +48,7 @@ export function moveEnemies(area: Area, current: EnemyPositions, defeated: strin
       { x: from.x, y: from.y + 1 }, { x: from.x - 1, y: from.y },
     ];
     const choices = neighbors.filter(point =>
-      canOccupy(area, point) && withinTerritory(enemy, point) && !same(point, player) &&
+      canOccupy(area, point) && withinTerritory(area, enemy, point) && !same(point, player) &&
       !maps[area].enemies.some(other => other.id !== enemy.id && !defeated.includes(other.id) && same(positionOf(other, next), point)));
     if (!choices.length) continue;
     next[enemy.id] = choices[Math.floor(Math.random() * choices.length)];

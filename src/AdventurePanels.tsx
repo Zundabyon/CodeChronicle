@@ -11,7 +11,7 @@ function Frame({title,onClose,children}:{title:string;onClose:()=>void;children:
 }
 
 export function DresserPanel({opened,reading,onRead,onClose}:{opened:boolean;reading:boolean;onRead:()=>void;onClose:()=>void}) {
-  return <Frame title="自宅のタンス" onClose={onClose}><div className="dresser-scene" aria-hidden="true"><span className="dresser-art"><i/><i/></span></div><p>{opened?'引き出しの奥から、古い封筒とやくそうを見つけた。':'引き出しは空になっている。'}</p><p>{opened?'家族の手紙とやくそうを持ち物に入れた。':'あの手紙は、今も持ち物の中にある。'}</p>{reading&&<div className="letter-paper"><strong>家族の手紙</strong><p>「知識の扉へ向かうときは、ひとりで背負わないで。<br/>覚えた言葉は、誰かを守る力になる。<br/>家は、いつでも帰ってこられる場所だから」</p><small>父と母より</small></div>}<div className="adventure-actions"><button onClick={onRead}>{reading?'手紙をしまう':'手紙を読む'}</button><button onClick={onClose}>とじる</button></div></Frame>;
+  return <Frame title="自宅のタンス" onClose={onClose}><div className="dresser-scene" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}maps/dresser-64.png`} alt=""/></div><p>{opened?'引き出しの奥から、古い封筒とやくそうを見つけた。':'引き出しは空になっている。'}</p><p>{opened?'家族の手紙とやくそうを持ち物に入れた。':'あの手紙は、今も持ち物の中にある。'}</p>{reading&&<div className="letter-paper"><strong>家族の手紙</strong><p>「知識の扉へ向かうときは、ひとりで背負わないで。<br/>覚えた言葉は、誰かを守る力になる。<br/>家は、いつでも帰ってこられる場所だから」</p><small>父と母より</small></div>}<div className="adventure-actions"><button onClick={onRead}>{reading?'手紙をしまう':'手紙を読む'}</button><button onClick={onClose}>とじる</button></div></Frame>;
 }
 
 export function InventoryPanel({save,onUse,onEquip,onReadLetter,onClose}:{save:Possessions;onUse:(id:ItemId)=>void;onEquip:(id:ItemId)=>void;onReadLetter:()=>void}&Common) {
