@@ -1,4 +1,6 @@
-type SpriteName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'slime'|'bat'|'ghost'|'shadow'|'guardian'|'memory'|'father'|'mother'|'scroll';
+import { enemyKinds, type EnemyKind } from './content';
+
+type SpriteName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother'|'scroll'|EnemyKind;
 type SpriteData = { rows: string[]; colors: Record<string,string> };
 const sprites: Partial<Record<SpriteName,SpriteData>> = {
   hero: { rows:[
@@ -28,6 +30,42 @@ const sprites: Partial<Record<SpriteName,SpriteData>> = {
   shadow: { rows:[
     '....pppp....','...pppppp...','..pppppppp..','..pppppppp..','..ppreerpp..','..pppppppp..','...pppppp...','..pppppppp..','..pppppppp..','...pppppp...','....p..p....','............',
   ],colors:{p:'#6b557e',r:'#da7995',e:'#f7bd84'} },
+  crab: { rows:[
+    '............','rr........rr','rrr......rrr','.rrr....rrr.','..rrr..rrr..','...rrrrrr...','..rroorrrr..','..rrerrerr..','...rrrrrr...','..r.r..r.r..','.r..r..r..r.','............',
+  ],colors:{r:'#d96952',o:'#f7b76d',e:'#352d47'} },
+  wolf: { rows:[
+    '..dd....dd..','..ddd..ddd..','...dddddd...','..dddddddd..','..ddeeeddd..','.ddwwddwwdd.','.dddddddddd.','..ddnndddd..','...dddddd...','..dd.dd.dd..','.dd..dd..dd.','............',
+  ],colors:{d:'#777b85',w:'#eee4d2',e:'#3d3346',n:'#d29883'} },
+  treant: { rows:[
+    '..gg....gg..','.gggg..gggg.','..gggggggg..','...gggggg...','..ggttttgg..','..ttweewtt..','..tttttttt..','.tttttttttt.','.ttt.tt.ttt.','..tt.tt.tt..','..bb....bb..','.bbb....bbb.',
+  ],colors:{g:'#6e9d56',t:'#79573e',w:'#ded299',e:'#382d38',b:'#4c3b38'} },
+  moth: { rows:[
+    '............','ppp......ppp','pppp....pppp','.pppp..pppp.','..pppppppp..','..ppwppwpp..','...ppddpp...','..ppdwwdpp..','.pppddddppp.','..pp....pp..','...p....p...','............',
+  ],colors:{p:'#ad8abc',w:'#eee4be',d:'#7e6b9b'} },
+  beetle: { rows:[
+    '............','....gggg....','..gggggggg..','.gggddddggg.','.gddggggddg.','..ddweewdd..','..ddggggdd..','..dddddddd..','.g.dddd.dd.g','g..dddddd..g','...g....g...','............',
+  ],colors:{g:'#8ab884',d:'#365966',w:'#d8b978',e:'#272e40'} },
+  scorpion: { rows:[
+    '............','..rr........','.rrrr.......','..r.r...rr..','...rrrrrrrr.','..rrrooorr..','..rrweewrr..','...rrrrrr...','..rr.r..r.rr','.r...r..r..r','r..........r','............',
+  ],colors:{r:'#b97850',o:'#e3bd78',w:'#eddfba',e:'#3a3242'} },
+  cactus: { rows:[
+    '....gggg....','...gggggg...','r..gggggg..r','rr.gggggg.rr','rgggweewgggr','rggggggggggr','.gggggggggg.','..gggggggg..','...gggggg...','....gggg....','...bb..bb...','..bbb..bbb..',
+  ],colors:{g:'#679859',r:'#b67455',w:'#e7cf92',e:'#363847',b:'#82634a'} },
+  serpent: { rows:[
+    '............','..gggggg....','.ggwwweegg..','..gggggggg..','......gggg..','....ggggg...','...gggg.....','..ggggggg...','.ggg..gggg..','..g.....ggg.','.........ggg','..........g.',
+  ],colors:{g:'#9a7a60',w:'#e7d196',e:'#382f41'} },
+  golem: { rows:[
+    '..ss....ss..','.ssss..ssss.','..ssssssss..','..sshhhhss..','..shweewhs..','..shhhhhss..','.ssssssssss.','.ssshhhhsss.','..ssssssss..','..sss..sss..','.ssss..ssss.','............',
+  ],colors:{s:'#8d9293',h:'#596c77',w:'#dcd5ae',e:'#d5a26e'} },
+  wisp: { rows:[
+    '.....y......','....yyy.....','...yyyyy....','..yywwwyy...','...yweewy...','..yywwwwyy..','..yyyyyyyy..','...yyyyyy...','....yyyy....','...y.yy.y...','..y......y..','............',
+  ],colors:{y:'#f1bf68',w:'#fff0be',e:'#677491'} },
+  skeleton: { rows:[
+    '....wwww....','...wwwwww...','...wweeww...','...wwnnww...','....wwww....','..w.wwww.w..','.w..wwww..w.','....wwww....','...ww..ww...','...ww..ww...','..www..www..','............',
+  ],colors:{w:'#e5ddc7',e:'#4b4558',n:'#9f7181'} },
+  mimic: { rows:[
+    '............','..yyyyyyyy..','.yyyyyyyyyy.','.ywwwwwwwyy.','.yeeeeeeeyy.','.dddddddddd.','.dwwwwwwwwd.','.ddeeddeedd.','.dddddddddd.','..dd....dd..','..dd....dd..','............',
+  ],colors:{y:'#d5a95b',w:'#f1e5c2',e:'#684354',d:'#76513d'} },
   guardian: { rows:[
     '..yyy..yyy..','..yyyyyyyy..','...yppppy...','..pppppppp..','..ppweewpp..','..pppppppp..','...yppppy...','..yyyyyyyy..','.yyypyyypyy.','..yy.yyyy...','..dd.dd.dd..','.ddd.dd.ddd.',
   ],colors:{y:'#d9b870',p:'#5d425f',w:'#fff0d2',e:'#e78d77',d:'#332e4b'} },
@@ -57,7 +95,6 @@ const rasterSprites: Partial<Record<SpriteName,string>> = {
   ghost:'/sprites/ghost-64.png',
   shadow:'/sprites/shadow-64.png',
   guardian:'/sprites/guardian-64.png',
-  memory:'/sprites/ghost-64.png',
   father:'/sprites/father-64.png',
   mother:'/sprites/mother-64.png',
 };
@@ -72,5 +109,5 @@ export function PixelSprite({name,className=''}:{name:SpriteName;className?:stri
 }
 
 export function npcSprite(id:string):SpriteName { return id==='elder'?'elder':id==='scholar'||id==='assistant'?'scholar':id==='child'||id==='elderKin'?'child':id==='wanderer'||id==='itemMerchant'?'wanderer':id==='weaponMerchant'?'father':id==='childMother'||id==='innkeeper'||id==='armorMerchant'?'mother':'priest'; }
-export function enemySprite(id:string):SpriteName { return id==='boss'?'guardian':id==='after-gate'?'memory':id==='review'?'shadow':id==='f1'?'slime':id==='f2'?'bat':id==='f3'||id==='d2'?'ghost':'shadow'; }
+export function enemySprite(id:string):SpriteName { return enemyKinds[id] ?? 'shadow'; }
 export function faceSprite(face:string):SpriteName { return face==='🗡️'?'hero':face==='👴'?'elder':face==='👩🏻‍🎓'?'scholar':face==='🧒'?'child':face==='👩🏼'?'priest':face==='🧑🏽'?'wanderer':face==='🧔'?'father':face==='👩'?'mother':'scroll'; }
