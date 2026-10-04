@@ -1,4 +1,5 @@
-import { maps, type Area, type Enemy, type Point } from './content';
+import { type Area, type Enemy, type Point } from './content';
+import { worldMaps as maps, canEnemyOccupyMap } from './world/maps';
 
 export type EnemyPositions = Record<string, Point>;
 
@@ -11,19 +12,18 @@ export function enemyAt(area: Area, point: Point, positions: EnemyPositions, def
   return maps[area].enemies.find(enemy => !defeated.includes(enemy.id) && same(positionOf(enemy, positions), point));
 }
 
-const canOccupy = (area: Area, point: Point) =>
-  (area==='field' ? ['.','s','v','g'] : ['.']).includes(maps[area].tiles[point.y]?.[point.x]) &&
-  !maps[area].npcs.some(npc => same(npc, point));
+const canOccupy = (area: Area, point: Point) => canEnemyOccupyMap(maps[area],point);
 
 const withinTerritory = (area:Area, enemy: Enemy, point: Point) =>
-  area==='field' ? distance(enemy,point)<=7 : !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
+  maps[area].environment==='outdoor' ? distance(enemy,point)<=7 : area!=='dungeon' || !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
 
 export function spawnEnemies(defeated: string[] = []): EnemyPositions {
   const positions: EnemyPositions = {};
-  for (const area of ['field', 'dungeon'] as const) {
+  for (const area of Object.keys(maps) as Area[]) {
+    if(!maps[area].enemies.length) continue;
     const occupied: Point[] = [];
-    const tiles = maps[area].tiles;
-    const candidates = tiles.flatMap((row, y) => [...row].map((_, x) => ({ x, y })))
+    const tiles = maps[area].terrain;
+    const candidates = tiles.flatMap((row, y) => row.map((_, x) => ({ x, y })))
       .filter(point => canOccupy(area, point) && distance(point, maps[area].entry) > 2);
     for (const enemy of maps[area].enemies) {
       if (defeated.includes(enemy.id)) continue;

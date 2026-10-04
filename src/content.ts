@@ -193,7 +193,9 @@ export const fieldRegion = (point:Point):string => {
   return '風渡りの平原';
 };
 
-export const maps: Record<Area, MapData> = {
+// Legacy letter maps are adapted in world/maps.ts. New maps can be authored
+// directly in world/nativeMaps.ts without adding a legacy entry here.
+export const maps: Partial<Record<Area, MapData>> = {
   town: {
     tiles: townTiles,
     entry: {x:14,y:30},
