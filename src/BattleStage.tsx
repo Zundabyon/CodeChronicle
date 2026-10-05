@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { type Area, type Enemy } from './content';
+import { enemyKinds, type Area, type Enemy } from './content';
 import { enemySprite, PixelSprite } from './PixelSprite';
 import { battleBanter, type BattleMoment } from './battleBanter';
 
@@ -20,8 +20,10 @@ type BattleStageProps = {
 type EnemyAttackStyle = 'splash' | 'wave' | 'curse' | 'blade' | 'drain' | 'lightning' | 'shock';
 
 const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
-  f1: 'splash', f2: 'wave', f3: 'curse', d1: 'blade', d2: 'curse',
-  d3: 'drain', boss: 'lightning', review: 'curse', 'after-gate': 'shock',
+  slime:'splash',bat:'wave',ghost:'curse',shadow:'blade',memory:'drain',guardian:'lightning',
+  crab:'splash',wolf:'blade',treant:'drain',moth:'wave',beetle:'shock',scorpion:'blade',
+  cactus:'shock',serpent:'curse',golem:'shock',wisp:'lightning',skeleton:'blade',mimic:'drain',
+  review:'curse','after-gate':'shock',
 };
 
 const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
@@ -30,7 +32,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : 'town';
   const location = terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
-  const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? 'shock';
+  const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'];
   const heroMove = (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
   let moment: BattleMoment = attackRound ? 'ready' : 'intro';
   if (answered) {

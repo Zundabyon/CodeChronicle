@@ -87,6 +87,7 @@ export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '�
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
 export type Enemy = { id: string; name: string; attackName: string; x: number; y: number; icon: string; boss?: boolean };
+export type EnemyKind = 'slime' | 'bat' | 'ghost' | 'shadow' | 'memory' | 'guardian' | 'crab' | 'wolf' | 'treant' | 'moth' | 'beetle' | 'scorpion' | 'cactus' | 'serpent' | 'golem' | 'wisp' | 'skeleton' | 'mimic';
 export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: Point };
 
 export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = {
@@ -250,7 +251,25 @@ export const maps: Record<Area, MapData> = {
       {id:'f6',name:'砂塵の影',attackName:'砂塵の呪い',x:81,y:64,icon:'♢'},
       {id:'f7',name:'砂漠のコマンドゴースト',attackName:'コマンドの呪縛',x:95,y:68,icon:'♟'},
       {id:'f8',name:'山影のノイズコウモリ',attackName:'ノイズウェーブ',x:83,y:34,icon:'✦'},
-      {id:'f9',name:'峠の断片',attackName:'断片斬り',x:101,y:22,icon:'◆'},
+      {id:'f9',name:'峠の岩人形',attackName:'岩砕き',x:101,y:21,icon:'◆'},
+      {id:'f10',name:'潮だまりガニ',attackName:'泡のはさみ',x:18,y:69,icon:'♧'},
+      {id:'f11',name:'潮鳴りコウモリ',attackName:'潮騒の羽音',x:18,y:36,icon:'✦'},
+      {id:'f12',name:'湖光のウィスプ',attackName:'水鏡の閃光',x:52,y:25,icon:'✧'},
+      {id:'f13',name:'鏡湖の甲羅ガニ',attackName:'水泡のはさみ',x:34,y:33,icon:'♧'},
+      {id:'f14',name:'木陰の灰狼',attackName:'疾風の牙',x:25,y:43,icon:'♞'},
+      {id:'f15',name:'古根のトレント',attackName:'絡む根',x:24,y:54,icon:'♣'},
+      {id:'f16',name:'木漏れ日の毒蛾',attackName:'眠りの鱗粉',x:35,y:67,icon:'✤'},
+      {id:'f17',name:'苔甲虫',attackName:'硬い角',x:54,y:42,icon:'⬢'},
+      {id:'f18',name:'草原の灰狼',attackName:'跳躍の牙',x:65,y:71,icon:'♞'},
+      {id:'f19',name:'風切り蛾',attackName:'風の鱗粉',x:69,y:42,icon:'✤'},
+      {id:'f20',name:'砂針サソリ',attackName:'砂針',x:88,y:53,icon:'♜'},
+      {id:'f21',name:'歩くサボテン',attackName:'千本針',x:107,y:57,icon:'♣'},
+      {id:'f22',name:'砂潜りヘビ',attackName:'流砂の牙',x:111,y:71,icon:'〰'},
+      {id:'f23',name:'オアシスの灯',attackName:'陽炎の閃光',x:100,y:58,icon:'✧'},
+      {id:'f24',name:'山麓の岩人形',attackName:'落石拳',x:78,y:31,icon:'◆'},
+      {id:'f25',name:'霧峰の亡霊',attackName:'霧の呪縛',x:92,y:40,icon:'♟'},
+      {id:'f26',name:'鉄殻甲虫',attackName:'鉄殻突進',x:117,y:32,icon:'⬢'},
+      {id:'f27',name:'門前の岩人形',attackName:'石門の拳',x:107,y:14,icon:'◆'},
     ],
   },
   dungeon: {
@@ -274,7 +293,20 @@ export const maps: Record<Area, MapData> = {
       {id:'d1',name:'断片の影',attackName:'断片斬り',x:4,y:7,icon:'♢'},
       {id:'d2',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:14,y:5,icon:'♟'},
       {id:'d3',name:'記憶の番人',attackName:'記憶侵食',x:11,y:3,icon:'◆'},
+      {id:'d4',name:'遺跡の骸兵',attackName:'錆びた剣',x:3,y:9,icon:'♟'},
+      {id:'d5',name:'偽りの宝箱',attackName:'宝箱の噛みつき',x:16,y:8,icon:'▣'},
+      {id:'d6',name:'迷い火',attackName:'忘却の火花',x:4,y:2,icon:'✧'},
+      {id:'d7',name:'石碑の骸兵',attackName:'骨刃',x:17,y:2,icon:'♟'},
       {id:'boss',name:'ゲートガーディアン',attackName:'封印の雷',x:10,y:1,icon:'♛',boss:true},
     ],
   },
+};
+
+// Encounter identity is shared by map sprites, battle animation and dialogue.
+export const enemyKinds: Record<string, EnemyKind> = {
+  f1:'slime',f2:'bat',f3:'ghost',f4:'treant',f5:'slime',f6:'scorpion',f7:'serpent',f8:'bat',f9:'golem',
+  f10:'crab',f11:'bat',f12:'wisp',f13:'crab',f14:'wolf',f15:'treant',f16:'moth',f17:'beetle',f18:'wolf',
+  f19:'moth',f20:'scorpion',f21:'cactus',f22:'serpent',f23:'wisp',f24:'golem',f25:'ghost',f26:'beetle',f27:'golem',
+  d1:'shadow',d2:'ghost',d3:'memory',d4:'skeleton',d5:'mimic',d6:'wisp',d7:'skeleton',
+  boss:'guardian',review:'shadow','after-gate':'memory',
 };
