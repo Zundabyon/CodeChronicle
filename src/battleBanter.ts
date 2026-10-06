@@ -1,4 +1,5 @@
 import { enemyKinds, type Enemy } from './content';
+import { heroLines, type HeroBanterContext } from './heroBanter';
 
 type EnemyBanter = {
   intro: string;
@@ -174,17 +175,24 @@ const lines: Record<string, EnemyBanter> = {
 
 export type BattleMoment = 'intro' | 'ready' | 'heroAttack' | 'enemyAttack' | 'reviewMiss' | 'victory' | 'defeat';
 
-export function battleBanter(enemy: Enemy, moment: BattleMoment, round: number): { enemy: string; hero: string } {
+export function battleBanter(enemy: Enemy, moment: BattleMoment, round: number, seed=0): { enemy: string; hero: string } {
   const foe = lines[enemy.id] ?? lines[enemyKinds[enemy.id] ?? 'shadow'];
-  const heroStrike = ['答えは見えた。行くぞ！', 'この一歩で、道を開く！', '迷いを断つ。そこだ！'];
-  const heroHurt = ['くっ……でも、まだ考えられる。', '痛いな。でも次は見抜く。', '間違いから、次の答えを探す。'];
+  let context: HeroBanterContext = moment;
+  if (moment==='intro' || moment==='victory') {
+    const prefix=enemy.boss?'boss':enemy.id==='review'?'review':enemy.id==='after-gate'?'afterGate':null;
+    if(prefix) context=`${prefix}${moment==='intro'?'Intro':'Victory'}` as HeroBanterContext;
+  }
+  const pool=heroLines[context];
+  // Choose once per battle seed and round; React renders keep the same line.
+  const offset=[...enemy.id].reduce((value,character)=>(value*31+character.charCodeAt(0))>>>0,7);
+  const hero=pool[(seed+offset+Math.max(0,Math.floor(round)))%pool.length];
   switch (moment) {
-    case 'intro': return { enemy: foe.intro, hero: enemy.boss ? '石版の言葉を、必ず読み解く。' : enemy.id === 'review' ? '今度は、自分の言葉で答える。' : '問いを解けば、道は開く。' };
-    case 'ready': return { enemy: foe.ready, hero: '次の問いも、一つずつ解こう。' };
-    case 'heroAttack': return { enemy: foe.hurt, hero: heroStrike[(round - 1) % heroStrike.length] };
-    case 'enemyAttack': return { enemy: foe.attack, hero: heroHurt[(round - 1) % heroHurt.length] };
-    case 'reviewMiss': return { enemy: foe.ready, hero: 'まだ曖昧だ。解説を読んで、もう一度。' };
-    case 'victory': return { enemy: foe.defeat, hero: enemy.boss ? '石版の封印が……解ける！' : enemy.id === 'review' ? '思い出せた。この答えを持っていこう。' : 'よし、学んだことが力になった。' };
-    case 'defeat': return { enemy: foe.victory, hero: 'ここで終わらない。学び直して戻る。' };
+    case 'intro': return { enemy: foe.intro, hero };
+    case 'ready': return { enemy: foe.ready, hero };
+    case 'heroAttack': return { enemy: foe.hurt, hero };
+    case 'enemyAttack': return { enemy: foe.attack, hero };
+    case 'reviewMiss': return { enemy: foe.ready, hero };
+    case 'victory': return { enemy: foe.defeat, hero };
+    case 'defeat': return { enemy: foe.victory, hero };
   }
 }

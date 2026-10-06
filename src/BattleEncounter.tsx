@@ -5,11 +5,12 @@ import { enemySprite, PixelSprite } from './PixelSprite';
 type BattleEncounterProps = {
   enemy: Enemy;
   heroName: string;
+  banterSeed?: number;
   onEnter: () => void;
 };
 
-export function BattleEncounter({ enemy, heroName, onEnter }: BattleEncounterProps) {
-  const voices = battleBanter(enemy, 'intro', 0);
+export function BattleEncounter({ enemy, heroName, banterSeed=0, onEnter }: BattleEncounterProps) {
+  const voices = battleBanter(enemy, 'intro', 0, banterSeed);
 
   return <main className={`encounter-screen ${enemy.boss ? 'boss-encounter' : ''}`} role="status" aria-live="assertive">
     <div className="encounter-flash" />

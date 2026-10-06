@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { enemyKinds, type Area, type Enemy } from './content';
 import { enemySprite, PixelSprite } from './PixelSprite';
 import { battleBanter, type BattleMoment } from './battleBanter';
+import type { HeroTechnique } from './heroTechniques';
 
 type BattleStageProps = {
   area: Area | 'church';
@@ -15,6 +16,8 @@ type BattleStageProps = {
   attackRound: number;
   answered: boolean;
   attackAnimating: boolean;
+  banterSeed?: number;
+  heroTechnique?: HeroTechnique | null;
 };
 
 type EnemyAttackStyle = 'splash' | 'wave' | 'curse' | 'blade' | 'drain' | 'lightning' | 'shock';
@@ -28,12 +31,12 @@ const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
 
 const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
 
-export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating }: BattleStageProps) {
+export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, banterSeed=0, heroTechnique }: BattleStageProps) {
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : 'town';
   const location = terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
   const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'];
-  const heroMove = (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
+  const heroMove = heroTechnique?.motion ?? (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
   let moment: BattleMoment = attackRound ? 'ready' : 'intro';
   if (answered) {
     if (!attackAnimating && hero.hp <= 0) moment = 'defeat';
@@ -42,7 +45,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
     else if (attack === 'enemy') moment = 'enemyAttack';
     else moment = 'reviewMiss';
   }
-  const voices = battleBanter(enemy, moment, attackRound);
+  const voices = battleBanter(enemy, moment, attackRound, banterSeed);
   const style = { '--battle-ground': `url("${import.meta.env.BASE_URL}maps/${ground}")` } as CSSProperties;
 
   return (
@@ -53,7 +56,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
         <span className="battlefield-scenery-back" />
         <span className="battlefield-scenery-front" />
       </div>
-      {attack && <span className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の${heroMoves[heroMove]}！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
+      {attack && <span className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の「${heroTechnique?.name ?? heroMoves[heroMove]}」！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
       {attack === 'hero' && <div className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /></div>}
       {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
