@@ -1,6 +1,6 @@
 import { enemyKinds, type EnemyKind } from './content';
 
-type SpriteName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother'|'scroll'|EnemyKind;
+export type SpriteName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother'|'scroll'|EnemyKind;
 type SpriteData = { rows: string[]; colors: Record<string,string> };
 const sprites: Partial<Record<SpriteName,SpriteData>> = {
   hero: { rows:[

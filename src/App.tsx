@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { areaLabel, difficultyLabel, fieldRuinsGate, fieldTownGate, houseAt, houses, maps, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
+import { areaLabel, difficultyLabel, fieldRuinsGate, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
+import { worldMaps as maps, canWalkOnMap, eventAt } from './world/maps';
 import { CharacterPortrait } from './CharacterPortrait';
 import { WorldCharacter } from './WorldCharacter';
 import { WorldScene } from './WorldScene';
@@ -22,8 +23,7 @@ const initialSave = (): Save => ({ name: '旅人', track: 'react', difficulty: '
 const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area] || !walkable(saved.area,saved.pos)) return {...saved,area:'town',pos:maps.town.entry}; return saved; } catch { return null; } };
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ').replace(/^\.\//, '');
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
-const inside = (area: Area, p: Point) => p.y >= 0 && p.y < maps[area].tiles.length && p.x >= 0 && p.x < maps[area].tiles[p.y].length;
-const walkable = (area: Area, p: Point) => inside(area,p) && !['#', 'r', 'o', 'm', 'k', 'l', 'A', 'R', 'Z', 'W', 'w', 'U', 'V', 'b', 'c', 'T', ...(area==='field'?[]:['s'])].includes(maps[area].tiles[p.y][p.x]);
+const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
 function pathfind(area: Area, start: Point, goal: Point, defeated: string[], positions: EnemyPositions): Point[] {
   const queue: Point[] = [start], seen = new Set([`${start.x},${start.y}`]), parents = new Map<string,string>();
@@ -191,17 +191,18 @@ export function App() {
     return () => clearInterval(timer);
   },[phase,save.area,save.defeated,dialogue,showSettings]);
   const enterChurch = useCallback(() => { stopPath(); setChurchTab('heal'); setReviewId(null); setPhase('church'); beep(660,0.16,'sine'); },[stopPath,beep]);
-  const transition = useCallback((from: Area,to: Area) => {
+  const transition = useCallback((from: Area,to: Area,position?:Point) => {
     stopPath(); let pos: Point = maps[to].entry;
     if (from==='dungeon' && to==='field') pos={x:fieldRuinsGate.x,y:fieldRuinsGate.y+1};
     if (to==='town' && from in houses) pos=houses[from as HouseArea].outside;
+    if (position) pos=position;
     update(s => ({...s,area:to,pos})); beep(520,0.16);
   },[update,stopPath,beep]);
   const step = useCallback((dx: number,dy: number): boolean => {
     const s=stateRef.current;
     if (phaseRef.current!=='world' || dialogueRef.current || showSettings || inventoryOpen || dresserOpen || shopType) return false;
     const target={x:s.pos.x+dx,y:s.pos.y+dy};
-    if (inside(s.area,target) && maps[s.area].tiles[target.y][target.x]==='T') { openDresser(); return false; }
+    if (eventAt(maps[s.area],target,'interact')?.action.kind==='dresser') { openDresser(); return false; }
     if (!walkable(s.area,target)) { beep(130,0.05); return false; }
     const map=maps[s.area]; const npc=map.npcs.find(n=>same(n,target));
     if (npc) { talkToNpc(npc); return false; }
@@ -211,14 +212,9 @@ export function App() {
     setWalking(true);
     if (walkTimer.current) clearTimeout(walkTimer.current);
     walkTimer.current=setTimeout(()=>setWalking(false),190);
-    const tile=map.tiles[target.y][target.x];
-    if (s.area==='town' && tile==='f') { enterChurch(); return false; }
-    if (s.area==='town' && tile==='D') { const house=houseAt(target); if(house) { transition('town',house); return false; } }
-    if (s.area in houses && tile==='e') { transition(s.area,'town'); return false; }
-    if (s.area==='town' && target.x===14 && target.y===31) { transition('town','field'); return false; }
-    if (s.area==='field' && same(target,fieldTownGate)) { transition('field','town'); return false; }
-    if (s.area==='field' && tile==='d') { transition('field','dungeon'); return false; }
-    if (s.area==='dungeon' && target.x===10 && target.y===11) { transition('dungeon','field'); return false; }
+    const action=eventAt(map,target,'enter')?.action;
+    if (action?.kind==='church') { enterChurch(); return false; }
+    if (action?.kind==='transition') { transition(s.area,action.to,action.position); return false; }
     return true;
   },[showSettings,inventoryOpen,dresserOpen,shopType,openDresser,talkToNpc,startBattle,update,beep,enterChurch,transition]);
   useEffect(() => { const onKey=(e: KeyboardEvent) => {
@@ -233,7 +229,7 @@ export function App() {
   useEffect(() => () => { stopPath(); if(walkTimer.current) clearTimeout(walkTimer.current); if(attackTimer.current) clearTimeout(attackTimer.current); },[stopPath]);
   const clickTile = (target: Point) => {
     if (phase!=='world' || dialogue || showSettings || worldMenu || inventoryOpen || dresserOpen || shopType) return;
-    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=map.npcs.find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const dresser=inside(s.area,target)&&map.tiles[target.y][target.x]==='T';
+    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=map.npcs.find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const dresser=eventAt(map,target,'interact')?.action.kind==='dresser';
     let destination=target;
     if (npc || enemy || dresser) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
     const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current); if (!route.length && !same(s.pos,destination)) return;
