@@ -153,6 +153,7 @@
 .battle-combatant-status strong,
 .battle-combatant-status span { display: block; }
 .battle-combatant-status strong { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.battle-foe-status strong { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 .battle-combatant-status small { font-size: 10px; font-weight: normal; }
 .battle-hero-status strong { display: flex; justify-content: space-between; gap: 5px; }
 .battle-hero-status span { display: inline-block; margin-right: 12px; }
@@ -688,6 +689,7 @@
 }
 .battle-voice {
   min-width: 0;
+  overflow-wrap: anywhere;
   min-height: 77px;
   padding: 8px 13px 10px;
   border: 2px solid #9f86a4;
