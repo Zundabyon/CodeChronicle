@@ -1,4 +1,5 @@
 import { moreQuestions } from './moreQuestions';
+import { fillQuestions } from './fillQuestions';
 
 export type Track = 'react' | 'vue';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
@@ -10,7 +11,8 @@ export type Question = {
   topic: 'frontend' | 'laravel' | 'connection';
   track?: Track;
   inertia?: boolean;
-  kind: 'choice' | 'cli';
+  kind: 'choice' | 'cli' | 'fill-choice' | 'fill-input';
+  filename?: string;
   prompt: string;
   code?: string;
   options?: [string, string, string, string];
@@ -79,6 +81,7 @@ export const questions: Question[] = [
   choice('api-a-1','advanced','connection','APIが401を返した。まず確認すべき意味は？',['認証が必要、または認証できない','必ずサーバが落ちた','CSSに構文エラー','JSON配列が空'],0,'401は認証に関するHTTPステータスです。',{inertia:false}),
   choice('api-a-2','advanced','connection','APIへの書き込みでフロント側だけの検証では足りない理由は？',['サーバへ直接リクエストできるから','TypeScriptが無効になるから','画面が必ず白くなるから','GETしか使えないから'],0,'クライアント側を迂回できるため、サーバ側でも検証します。',{inertia:false}),
   ...moreQuestions,
+  ...fillQuestions,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };

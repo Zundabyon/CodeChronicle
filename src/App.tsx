@@ -5,16 +5,20 @@ import { CharacterPortrait } from './CharacterPortrait';
 import { WorldCharacter } from './WorldCharacter';
 import { WorldScene } from './WorldScene';
 import { BattleStage } from './BattleStage';
+import { bossStages, bossGuardHp, bossQuestion, bossQuestionById, bossCommandResult, bossStrike, bossGuardBroken } from './bossBattle';
 import { BattleEncounter } from './BattleEncounter';
+import { QuestionCode } from './QuestionCode';
+import { ReviewRoom } from './ReviewRoom';
+import { selectQuestion, isChoiceQuestion, isFillQuestion, inputIsCorrect } from './questionSelection';
 import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
 import { enemyAt, moveEnemies, spawnEnemies, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment, type Inventory, type ItemId, type ShopType } from './items';
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
 
-type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'epilogue' | 'clear';
+type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';
 type Save = { name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: string[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
-type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null };
+type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
 const STORAGE = 'code-chronicle-save-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
@@ -22,7 +26,6 @@ const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
 const initialSave = (): Save => ({ name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
 const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area] || !walkable(saved.area,saved.pos)) return {...saved,area:'town',pos:maps.town.entry}; return saved; } catch { return null; } };
-const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ').replace(/^\.\//, '');
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
@@ -36,31 +39,6 @@ function pathfind(area: Area, start: Point, goal: Point, defeated: string[], pos
   return [];
 }
 
-function eligible(save: Save, kind?: 'choice' | 'cli', topic?: Question['topic']) {
-  return questions.filter(q => q.difficulty === save.difficulty && (!q.track || q.track === save.track) && (q.inertia === undefined || q.inertia === save.inertia) && (!kind || q.kind === kind) && (!topic || q.topic === topic));
-}
-function chooseQuestion(save: Save, kind?: 'choice' | 'cli', topic?: Question['topic']): Question {
-  const pool = eligible(save,kind,topic);
-  const unseen = pool.filter(q => !save.answered.includes(q.id));
-  const candidates = unseen.length ? unseen : pool;
-  const last = save.answered.at(-1);
-  const withoutLast = candidates.filter(q => q.id !== last);
-  const finalPool = withoutLast.length ? withoutLast : candidates;
-  return finalPool[Math.floor(Math.random() * finalPool.length)];
-}
-
-function asReviewChoice(question: Question): Question {
-  if (question.kind === 'choice') return question;
-  const alternatives = questions
-    .filter(q => q.kind === 'cli' && q.id !== question.id && q.reveal !== question.reveal)
-    .sort((a,b) => Number(b.difficulty === question.difficulty) - Number(a.difficulty === question.difficulty))
-    .slice(0,3)
-    .map(q => q.reveal);
-  const options = [...alternatives];
-  const answer = question.id.length % 4;
-  options.splice(answer,0,question.reveal);
-  return {...question,kind:'choice',prompt:question.prompt.replace('入力せよ。','選べ。'),options:options as [string,string,string,string],answer};
-}
 
 const prologue = [
   {speaker:'語り手',face:'📜',title:'知識が世界を照らした時代',text:'千年前。人々は「コード」と呼ばれる知識で、城を築き、遠くの誰かと言葉を交わした。\nAIと呼ばれた魔法は、人の知恵を広げ、日々の暮らしを支えていた。'},
@@ -124,8 +102,6 @@ export function App() {
   const [walking,setWalking] = useState(false);
   const [muted,setMuted] = useState(true);
   const [volume,setVolume] = useState(0.35);
-  const [churchTab,setChurchTab] = useState<'heal'|'review'>('heal');
-  const [reviewId,setReviewId] = useState<string | null>(null);
   const [epilogueStep,setEpilogueStep] = useState(0);
   const [toast,setToast] = useState('');
   const stateRef = useRef(save); const phaseRef = useRef(phase); const dialogueRef = useRef(dialogue);
@@ -175,10 +151,10 @@ export function App() {
   },[stopPath,update,beep]);
   const advanceDialogue = useCallback(() => { setDialogue(prev => { if (!prev) return null; if (prev.index < prev.lines.length-1) { beep(640,0.04); return {...prev,index:prev.index+1}; } if (prev.choices?.length) return prev; queueMicrotask(() => prev.onEnd?.()); return null; }); },[beep]);
   const startBattle = useCallback((enemy: Enemy, fromReview=false, reviewQuestion?: Question) => {
-    stopPath(); const s=stateRef.current; const q=reviewQuestion ? asReviewChoice(reviewQuestion) : chooseQuestion(s,enemy.boss?'cli':'choice',enemy.boss?'laravel':undefined);
+    stopPath(); const s=stateRef.current; const q=reviewQuestion ?? (enemy.boss ? bossQuestion(0,s.difficulty) : selectQuestion(questions,s));
     if (enemy.boss && s.level<2) { startDialogue('知識の扉','📜',['石の扉に文字が浮かぶ。「知識の断片を集め、第二の階へ至った者のみ、この門を試せる」','平原や遺跡の敵と戦い、経験を積んでから戻ろう。']); return; }
-    const hp=enemy.boss?5:enemy.id==='after-gate'||fromReview?1:3;
-    setBattle({enemy,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null});
+    const hp=enemy.boss?bossStages.length*bossGuardHp:enemy.id==='after-gate'||fromReview?1:3;
+    setBattle({enemy,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null,bossStage:0,hints:0});
     setBattleInput(''); setBattleNote(''); phaseRef.current='encounter'; setPhase('encounter'); beep(180,0.3);
   },[stopPath,beep,startDialogue]);
   useEffect(() => {
@@ -191,7 +167,7 @@ export function App() {
     },1150);
     return () => clearInterval(timer);
   },[phase,save.area,save.defeated,dialogue,showSettings]);
-  const enterChurch = useCallback(() => { stopPath(); setChurchTab('heal'); setReviewId(null); setPhase('church'); beep(660,0.16,'sine'); },[stopPath,beep]);
+  const enterChurch = useCallback(() => { stopPath(); setPhase('church'); beep(660,0.16,'sine'); },[stopPath,beep]);
   const transition = useCallback((from: Area,to: Area,position?:Point) => {
     stopPath(); let pos: Point = maps[to].entry;
     if (from==='dungeon' && to==='field') pos={x:fieldRuinsGate.x,y:fieldRuinsGate.y+1};
@@ -240,7 +216,8 @@ export function App() {
     if (!battle || battle.answered) return;
     if (battle.enemy.id==='after-gate' && battle.eliminated===null) { setBattleNote('覚えたばかりの「見極め」を使ってみよう。'); return; }
     const q=battle.question;
-    const correct=q.kind==='choice' ? value===q.answer : q.accepted!.some(a=>normalize(a)===normalize(String(value)));
+    const bossResult=battle.enemy.boss ? bossCommandResult(battle.bossStage,String(value)) : battle.fromReview && bossQuestionById(q.id) ? bossCommandResult(Number(q.id.split('-')[2]),String(value)) : null;
+    const correct=bossResult ? bossResult.correct : isChoiceQuestion(q) ? value===q.answer : inputIsCorrect(q,String(value));
     const dealt=correct?rollDamage(1,2)+(items[stateRef.current.equipment.weapon].power??0):0;
     const damage=correct||battle.fromReview?0:Math.max(1,rollDamage(battle.enemy.boss?4:2,battle.enemy.boss?7:5)-(items[stateRef.current.equipment.armor].power??0));
     const newHp=Math.max(0,stateRef.current.hp-damage);
@@ -250,15 +227,16 @@ export function App() {
     if(animateAttack) attackTimer.current=setTimeout(()=>{setAttackAnimating(false);attackTimer.current=null;},1300);
     update(s=>({...s,hp:newHp,total:s.total+1,correct:s.correct+(correct?1:0),answered:[...s.answered,q.id],wrong:correct?s.wrong.filter(id=>id!==q.id):s.wrong.includes(q.id)?s.wrong:[...s.wrong,q.id]}));
     const heroTechnique=correct?chooseHeroTechnique(battle.heroTechnique):battle.heroTechnique;
-    setBattle({...battle,answered:true,correct,hp:Math.max(0,battle.hp-dealt),rounds:battle.rounds+1,heroTechnique});
-    setBattleNote(correct?`${heroTechnique!.name}！ ${battle.enemy.name}に${dealt}ダメージ！`:battle.fromReview?'惜しい！ 解説を読んで、もう一度挑戦しよう。':`${battle.enemy.name}の「${battle.enemy.attackName}」！ HPが${damage}減った。`);
+    const enemyHp=battle.enemy.boss && correct ? bossStrike(battle.hp,battle.bossStage,dealt) : Math.max(0,battle.hp-dealt);
+    setBattle({...battle,answered:true,correct,hp:enemyHp,rounds:battle.rounds+1,heroTechnique});
+    setBattleNote(correct?`${heroTechnique!.name}！ ${battle.enemy.name}に${battle.hp-enemyHp}ダメージ！${bossResult ? ` ${bossResult.reason}` : ''}`:battle.fromReview?'惜しい！ 解説を読んで、もう一度挑戦しよう。':`${battle.enemy.name}の「${battle.enemy.attackName}」！ HPが${damage}減った。${bossResult ? ` ${bossResult.reason}` : ''}`);
     beep(correct?800:150,correct?0.18:0.28);
   };
   const battleNext = () => {
     if (!battle || !battle.answered || attackAnimating) return;
-    if (stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:13,y:16},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setChurchTab('heal'); setToast('司祭セラに助けられ、教会で目を覚ました。'); return; }
+    if (!battle.fromReview && stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:13,y:16},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setToast('司祭セラに助けられ、教会で目を覚ました。'); return; }
     if (battle.hp<=0) {
-      if (battle.fromReview) { setBattle(null); setPhase('church'); setChurchTab('review'); setToast('復習完了！'); return; }
+      if (battle.fromReview) { setBattle(null); setPhase('review-room'); setToast('復習完了！'); return; }
       if (battle.enemy.id==='after-gate') { update(s=>({...s,completed:true})); setBattle(null); setPhase('clear'); beep(1080,0.5,'sine'); return; }
       const gained=battle.enemy.boss?12:4, earned=battle.enemy.boss?100:35;
       update(s=>{ const xp=s.xp+gained, level=1+Math.floor(xp/12), leveled=level>s.level; return {...s,xp,level,gold:s.gold+earned,hp:leveled?maxHp(level):s.hp,mp:leveled?maxMp(level):s.mp,defeated:[...s.defeated,battle.enemy.id],bossDefeated:s.bossDefeated||!!battle.enemy.boss}; });
@@ -267,12 +245,28 @@ export function App() {
       beep(950,0.26);
       return;
     }
+    if (battle.enemy.boss) {
+      if (battle.correct && !bossGuardBroken(battle.hp,battle.bossStage)) {
+        const hp=bossStrike(battle.hp,battle.bossStage,rollDamage(1,2)+(items[stateRef.current.equipment.weapon].power??0));
+        const heroTechnique=chooseHeroTechnique(battle.heroTechnique);
+        const animate=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        setAttackAnimating(animate);
+        if (animate) attackTimer.current=setTimeout(()=>{setAttackAnimating(false);attackTimer.current=null;},1300);
+        setBattle({...battle,hp,rounds:battle.rounds+1,heroTechnique});
+        setBattleNote(`${heroTechnique.name}！ 防御を崩した隙に追撃、${battle.hp-hp}ダメージ！`);
+        beep(800,0.18);
+        return;
+      }
+      const bossStage=battle.correct ? battle.bossStage+1 : battle.bossStage;
+      setBattle({...battle,bossStage,question:bossQuestion(bossStage,battle.question.difficulty),answered:false,correct:false,eliminated:null,hints:battle.correct?0:battle.hints});
+      setBattleInput(''); setBattleNote(''); return;
+    }
     if (battle.fromReview) { setBattle({...battle,answered:false,correct:false,eliminated:null}); setBattleInput(''); setBattleNote(''); return; }
-    const q=chooseQuestion(stateRef.current,battle.enemy.boss?'cli':'choice',battle.enemy.boss?'laravel':undefined);
+    const q=selectQuestion(questions,stateRef.current);
     setBattle({...battle,question:q,answered:false,correct:false,eliminated:null}); setBattleInput(''); setBattleNote('');
   };
   const castMagic = () => {
-    if (!battle || battle.answered || battle.question.kind!=='choice' || battle.eliminated!==null || !save.bossDefeated || save.mp<1) return;
+    if (!battle || battle.answered || !isChoiceQuestion(battle.question) || battle.eliminated!==null || !save.bossDefeated || save.mp<1) return;
     const index=battle.question.options!.findIndex((_,i)=>i!==battle.question.answer);
     update(s=>({...s,mp:s.mp-1,magicUsed:true})); setBattle({...battle,eliminated:index}); setBattleNote('魔法「見極め」！ 誤った選択肢が一つ消えた。'); beep(1040,0.4,'sine');
   };
@@ -302,10 +296,10 @@ export function App() {
   const finishPrologue = () => { setPhase('setup'); beep(620,0.14); };
   const beginAdventure = () => { const name=setup.name.trim(); if(!name) return; update(s=>({...s,name,track:setup.track,difficulty:setup.difficulty,inertia:setup.inertia,area:'home',pos:maps.home.entry})); setHasSave(true); setPhase('world'); startDialogue(name,'🗡️',['十年ぶりに、あの夢を見た。父さんと母さんの声が、まだ耳に残っている。','旅の支度はできた。棚の手紙を見てから、玄関を出よう。']); };
   const startReview = (q: Question) => { const enemy: Enemy={id:'review',name:'リトライシャドウ',attackName:'記憶のささやき',x:0,y:0,icon:'♧'}; startBattle(enemy,true,q); };
-  const wrongQuestions=save.wrong.map(id=>questions.find(q=>q.id===id)).filter((q):q is Question=>!!q);
+  const wrongQuestions=save.wrong.map(id=>bossQuestionById(id) ?? questions.find(q=>q.id===id)).filter((q):q is Question=>!!q);
   const intro=prologue[introIndex];
   return <div className="app-shell">
-    <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='title'?'冒険の始まり':'物語'}</span>{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
+    <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
     {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p><div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
     {phase==='prologue' && <main className="prologue-screen">
       <div className="prologue-layout">
@@ -329,15 +323,16 @@ export function App() {
         <label className="setup-name" htmlFor="hero-name">主人公の名前<input id="hero-name" autoFocus maxLength={12} required value={setup.name} onChange={e=>setSetup(s=>({...s,name:e.target.value}))} placeholder="名前を入力"/></label>
         <fieldset className="setup-field"><legend>学ぶフロントエンド</legend><div className="setup-choice-row"><button type="button" className={setup.track==='react'?'selected':''} aria-pressed={setup.track==='react'} onClick={()=>setSetup(s=>({...s,track:'react'}))}>React + TypeScript</button><button type="button" className={setup.track==='vue'?'selected':''} aria-pressed={setup.track==='vue'} onClick={()=>setSetup(s=>({...s,track:'vue'}))}>Vue + TypeScript</button></div><p>Laravelはどちらの道でも学びます。</p></fieldset>
         <fieldset className="setup-field"><legend>Laravelと画面のつなぎ方</legend><div className="setup-choice-row"><button type="button" className={setup.inertia?'selected':''} aria-pressed={setup.inertia} onClick={()=>setSetup(s=>({...s,inertia:true}))}>Inertia連携</button><button type="button" className={!setup.inertia?'selected':''} aria-pressed={!setup.inertia} onClick={()=>setSetup(s=>({...s,inertia:false}))}>API連携</button></div><p>選んだ連携方法に応じて問題が変わります。</p></fieldset>
-        <fieldset className="setup-field"><legend>難易度</legend><DifficultyPicker value={setup.difficulty} onChange={difficulty=>setSetup(s=>({...s,difficulty}))}/><p className="difficulty-note">難易度で変わるのは出題内容です。通常戦は4択、ボス戦はCLI入力。敵の強さ・HP・報酬は共通です。</p></fieldset>
+        <fieldset className="setup-field"><legend>難易度</legend><DifficultyPicker value={setup.difficulty} onChange={difficulty=>setSetup(s=>({...s,difficulty}))}/><p className="difficulty-note">難易度で変わるのは出題内容です。通常戦は4択とコード穴埋め（選択・入力）。ボスは全難易度共通の3段階の復旧をCLI入力で攻略します。敵の強さ・HP・報酬は共通です。</p></fieldset>
         <button className="primary setup-submit" type="submit" disabled={!setup.name.trim()}>この名前で冒険を始める　▶</button>
       </form>
     </div></main>}
     {phase==='world' && <WorldScene save={save} enemyPositions={enemyPositions} menu={worldMenu} onMenu={menu=>{stopPath();setWorldMenu(menu);}} onTile={clickTile} onChurch={enterChurch} onInventory={()=>setInventoryOpen(true)} onSettings={()=>setShowSettings(true)} onSound={toggleSound} muted={muted} walking={walking}/>}
     {phase==='encounter' && battle && <BattleEncounter enemy={battle.enemy} heroName={save.name} banterSeed={battle.banterSeed} onEnter={()=>setPhase('battle')}/>}
-    {phase==='battle' && battle && <main className="battle-layout"><section className="combat-panel"><div className="panel-heading"><div><span className="eyebrow">ENCOUNTER</span><h2>{battle.fromReview?'復習の戦い':battle.enemy.boss?'知識の扉を守る者':'敵が現れた！'}</h2></div><span className="map-badge danger">{battle.enemy.boss?'BOSS BATTLE':'BATTLE'}</span></div><BattleStage area={battle.fromReview ? 'church' : save.area} enemy={battle.enemy} enemyHp={battle.hp} enemyMaxHp={battle.maxHp} hero={save} heroMaxHp={maxHp(save.level)} heroMaxMp={maxMp(save.level)} attack={battle.answered ? battle.correct ? 'hero' : battle.fromReview ? null : 'enemy' : null} attackRound={battle.rounds} answered={battle.answered} attackAnimating={attackAnimating} banterSeed={battle.banterSeed} heroTechnique={battle.heroTechnique}/><div className="question-card"><div className="question-kicker"><span>{battle.question.kind==='cli'?'⌘ CLI CHALLENGE':'✦ FOUR CHOICES'}</span><span>{difficultyLabel[save.difficulty]} · {battle.question.topic==='frontend'?save.track==='react'?'React':'Vue':battle.question.topic==='laravel'?'Laravel':save.inertia?'Inertia':'API連携'}</span></div><h3>{battle.question.prompt}</h3>{battle.question.code&&<pre>{battle.question.code}</pre>}{battle.question.kind==='choice'?<div className="options">{battle.question.options!.map((option,i)=><button key={i} disabled={battle.answered||battle.eliminated===i} className={`${battle.answered&&i===battle.question.answer?'right':''} ${battle.answered&&i!==battle.question.answer?'faded':''} ${battle.eliminated===i?'eliminated':''}`} onClick={()=>answer(i)}><span>{String.fromCharCode(65+i)}</span>{battle.eliminated===i?'魔法で除外':option}</button>)}</div>:<form className="cli-form" onSubmit={e=>{e.preventDefault();answer(battleInput);}}><label htmlFor="cli-answer">ゲーム内CLI</label><div><span>❯</span><input id="cli-answer" autoFocus spellCheck={false} value={battleInput} onChange={e=>setBattleInput(e.target.value)} disabled={battle.answered} placeholder="コマンドを入力"/><button disabled={battle.answered||!battleInput.trim()}>実行 ↵</button></div></form>}{!battle.answered&&save.bossDefeated&&battle.question.kind==='choice'&&<button className="magic-button" disabled={save.mp<1||battle.eliminated!==null} onClick={castMagic}>✦ 見極めの魔法を使う <small>MP 1</small></button>}{!battle.answered&&<button className="magic-button" onClick={()=>setInventoryOpen(true)}>✦ どうぐを使う</button>}{battleNote&&<div className={`battle-note ${battle.correct?'success':'fail'}`}>{battleNote}</div>}{battle.answered&&<button className="primary next-turn" disabled={attackAnimating} onClick={battleNext}>{battle.hp<=0?'戦闘を終える':save.hp<=0?'教会へ':'次の問題へ'}　▶</button>}</div></section><aside className="explain-panel"><div className="explain-header"><span className="eyebrow">GRIMOIRE</span><h2>知識の書</h2><p>問いを解くたび、失われた言葉が戻ってくる。</p></div>{battle.answered?<div className="explain-content"><span className={battle.correct?'answer-tag good':'answer-tag bad'}>{battle.correct?'正解':'復習ポイント'}</span><h3>答え：{battle.question.reveal}</h3><p>{battle.question.explanation}</p><div className="tip-box">間違えた問題は町の教会で振り返れます。</div></div>:<div className="explain-placeholder"><div>✧</div><p>回答するとここに解説が表示されます。</p></div>}<div className="battle-stats"><span>正解 {save.correct}</span><span>回答 {save.total}</span><span>復習 {save.wrong.length}</span></div></aside></main>}
-    {phase==='church' && <main className="church-screen"><div className="church-visual"><img src={`${import.meta.env.BASE_URL}maps/church-town-320x256.png`} alt="黎明の教会"/><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="tabs"><button className={churchTab==='heal'?'active':''} onClick={()=>setChurchTab('heal')}>✦ 回復</button><button className={churchTab==='review'?'active':''} onClick={()=>setChurchTab('review')}>📖 復習 <span>{wrongQuestions.length}</span></button></div>{churchTab==='heal'?<div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3><p>「知識の扉は、何度でも挑む者に開かれます。心と体を休めていってください」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div><button className="primary" onClick={()=>{update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');beep(900,0.4,'sine');}}>HP・MPを回復する ✦</button></div>:<div className="review-content"><h3>もう一度、知識の扉へ</h3><p>間違えた問題の解説を読み、再挑戦できます。</p>{wrongQuestions.length===0?<div className="empty-review">復習する問題はありません。冒険へ戻りましょう。</div>:<div className="review-list">{wrongQuestions.map(q=><div className="review-item" key={q.id}><button onClick={()=>setReviewId(reviewId===q.id?null:q.id)}><span>✦ {asReviewChoice(q).prompt}</span><b>{reviewId===q.id?'−':'＋'}</b></button>{reviewId===q.id&&<div><strong>答え：{q.reveal}</strong><p>{q.explanation}</p><button className="secondary" onClick={()=>startReview(q)}>再挑戦する　▶</button></div>}</div>)}</div>}</div>}<button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));}}>← 町へ戻る</button></div></main>}
-    {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card"><span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'CLIゲートガーディアンは光の粒となって消えた。重い扉の向こうから、忘れられた魔法の気配が流れ込む。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'扉の奥に残ったデバッグキーパーが問いを投げかけた。覚えた魔法を使って答えよう。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,chooseQuestion(stateRef.current,'choice'));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
+    {phase==='battle' && battle && <main className={`battle-layout ${isFillQuestion(battle.question)?'fill-battle':''}`}><section className="combat-panel"><div className="panel-heading"><div><span className="eyebrow">ENCOUNTER</span><h2>{battle.fromReview?'復習の戦い':battle.enemy.boss?'知識の扉を守る者':'敵が現れた！'}</h2></div><span className="map-badge danger">{battle.enemy.boss?'BOSS BATTLE':'BATTLE'}</span></div><BattleStage area={battle.fromReview ? 'church' : save.area} enemy={battle.enemy} enemyHp={battle.hp} enemyMaxHp={battle.maxHp} hero={save} heroMaxHp={maxHp(save.level)} heroMaxMp={maxMp(save.level)} attack={battle.answered ? battle.correct ? 'hero' : battle.fromReview ? null : 'enemy' : null} attackRound={battle.rounds} answered={battle.answered} attackAnimating={attackAnimating} banterSeed={battle.banterSeed} heroTechnique={battle.heroTechnique}/><div className="question-card"><div className="question-kicker"><span>{isFillQuestion(battle.question)?isChoiceQuestion(battle.question)?'✦ CODE CHOICE':'✎ CODE INPUT':battle.question.kind==='cli'?'⌘ CLI CHALLENGE':'✦ FOUR CHOICES'}</span><span>{difficultyLabel[save.difficulty]} · {battle.question.topic==='frontend'?save.track==='react'?'React':'Vue':battle.question.topic==='laravel'?'Laravel':save.inertia?'Inertia':'API連携'}</span></div>{battle.enemy.boss&&<div className="boss-progress"><strong>復旧 {battle.bossStage+1} / {bossStages.length} · {bossStages[battle.bossStage].title}</strong><ol>{bossStages.map((stage,i)=><li key={stage.title} aria-current={i===battle.bossStage?'step':undefined} className={i<battle.bossStage?'done':i===battle.bossStage?'current':''}>{i<battle.bossStage?'✓':i+1} {stage.title}</li>)}</ol><p>症状を読んで対処すると防御が崩れます。追撃で突破し、次の復旧へ。時間制限はありません。</p></div>}<h3>{battle.question.prompt}</h3>{isFillQuestion(battle.question)&&<div className="mobile-question-code"><QuestionCode question={battle.question} answered={battle.answered}/></div>}{battle.question.code&&!isFillQuestion(battle.question)&&<pre>{battle.question.code}</pre>}{isChoiceQuestion(battle.question)?<div className="options">{battle.question.options!.map((option,i)=><button key={i} disabled={battle.answered||battle.eliminated===i} className={`${battle.answered&&i===battle.question.answer?'right':''} ${battle.answered&&i!==battle.question.answer?'faded':''} ${battle.eliminated===i?'eliminated':''}`} onClick={()=>answer(i)}><span>{String.fromCharCode(65+i)}</span>{battle.eliminated===i?'魔法で除外':option}</button>)}</div>:<form className="cli-form" onSubmit={e=>{e.preventDefault();answer(battleInput);}}><label htmlFor="cli-answer">{isFillQuestion(battle.question)?'① に入るコード':'ゲーム内CLI'}</label><div><span>❯</span><input id="cli-answer" autoFocus spellCheck={false} value={battleInput} onChange={e=>setBattleInput(e.target.value)} disabled={battle.answered} autoComplete="off" autoCapitalize="off" placeholder={isFillQuestion(battle.question)?'① に入る単語・式を入力':'コマンドを入力'}/><button disabled={battle.answered||!battleInput.trim()}>{isFillQuestion(battle.question)?'回答 ↵':'実行 ↵'}</button></div></form>}{battle.enemy.boss&&!battle.answered&&<div className="boss-hints"><button className="magic-button" disabled={battle.hints>=2} onClick={()=>setBattle({...battle,hints:Math.min(2,battle.hints+1)})}>✦ ヒントを見る（無料） {battle.hints} / 2</button>{bossStages[battle.bossStage].hints.slice(0,battle.hints).map((hint,i)=><p key={i}>{hint}</p>)}</div>}{!battle.answered&&save.bossDefeated&&isChoiceQuestion(battle.question)&&<button className="magic-button" disabled={save.mp<1||battle.eliminated!==null} onClick={castMagic}>✦ 見極めの魔法を使う <small>MP 1</small></button>}{!battle.answered&&<button className="magic-button" onClick={()=>setInventoryOpen(true)}>✦ どうぐを使う</button>}{battleNote&&<div className={`battle-note ${battle.correct?'success':'fail'}`}>{battleNote}</div>}{battle.fromReview&&<button className="back-link" disabled={attackAnimating} onClick={()=>{setBattle(null);setBattleInput('');setBattleNote('');setPhase('review-room');}}>← 復習の部屋へ戻る</button>}{battle.answered&&<button className="primary next-turn" disabled={attackAnimating} onClick={battleNext}>{battle.hp<=0?'戦闘を終える':save.hp<=0&&!battle.fromReview?'教会へ':battle.enemy.boss?battle.correct?bossGuardBroken(battle.hp,battle.bossStage)?'次の復旧へ':'隙を突いて追撃する':'同じ状況に再挑戦':battle.fromReview&&!battle.correct?'もう一度挑戦する':'次の問題へ'}　▶</button>}</div></section><aside className="explain-panel">{isFillQuestion(battle.question)&&<div className="desktop-question-code"><QuestionCode question={battle.question} answered={battle.answered}/></div>}<div className="explain-header"><span className="eyebrow">GRIMOIRE</span><h2>知識の書</h2><p>問いを解くたび、失われた言葉が戻ってくる。</p></div>{battle.answered?<div className="explain-content"><span className={battle.correct?'answer-tag good':'answer-tag bad'}>{battle.correct?'正解':'復習ポイント'}</span><h3>答え：{battle.question.reveal}</h3><p>{battle.question.explanation}</p><div className="tip-box">間違えた問題は教会の「復習の部屋」で振り返れます。</div></div>:<div className="explain-placeholder"><div>✧</div><p>回答するとここに解説が表示されます。</p></div>}<div className="battle-stats"><span>正解 {save.correct}</span><span>回答 {save.total}</span><span>復習 {save.wrong.length}</span></div></aside></main>}
+    {phase==='church' && <main className="church-screen"><div className="church-visual"><img src={`${import.meta.env.BASE_URL}maps/church-town-320x256.png`} alt="黎明の教会"/><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3><p>「心と体を休めていってください。問いを振り返りたいときは、奥の復習の部屋へどうぞ」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div><button className="primary" onClick={()=>{update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');beep(900,0.4,'sine');}}>HP・MPを回復する ✦</button><button className="church-room-door" onClick={()=>{setPhase('review-room');beep(660,0.12,'sine');}}><span><strong>📖 復習の部屋へ入る</strong><small>教会の奥の別室 · 復習する問題 {wrongQuestions.length} 問</small></span><span aria-hidden="true">▶</span></button></div><button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));}}>← 町へ戻る</button></div></main>}
+    {phase==='review-room' && <ReviewRoom questions={wrongQuestions} onStart={startReview} onLeave={()=>{setPhase('church');beep(520,0.12);}}/>}
+    {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card"><span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'CLIゲートガーディアンは光の粒となって消えた。重い扉の向こうから、忘れられた魔法の気配が流れ込む。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'扉の奥に残ったデバッグキーパーが問いを投げかけた。覚えた魔法を使って答えよう。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,selectQuestion(questions,stateRef.current,Math.random,true));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><img className="clear-symbol" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>最初の扉は、開かれた。</h1><p>失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&phase==='world'&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogue.face}/></div><div className="dialogue-text"><strong>{dialogue.speaker}</strong><p>{dialogue.lines[dialogue.index]}</p>{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<div className="dialogue-choices">{dialogue.choices.map(choice=><button key={choice.label} onClick={e=>{e.stopPropagation();setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined});beep(720,0.08);}}>{choice.label}　▶</button>)}</div>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
