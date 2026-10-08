@@ -53,6 +53,18 @@ export const terrainChips = {
 export type TerrainId = keyof typeof terrainChips;
 
 export const propChips = {
+  diningTable: {...prop('食卓',image('props/table.svg',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
+  chair: prop('木の椅子',image('props/chair.svg',.8,.9)),
+  rug: prop('織物の敷物',image('props/rug.svg',3,2,{x:0,y:1}),false,'ground'),
+  plant: prop('鉢植え',image('props/plant.svg',.85,1.1)),
+  barrel: prop('樽',image('props/barrel.svg',.9,1)),
+  crate: prop('木箱',image('props/crate.svg',.95,.95)),
+  flowers: prop('花壇',image('props/flowers.svg',1.2,.85),false,'ground'),
+  bench: {...prop('ベンチ',image('props/bench.svg',2,1,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
+  well: {...prop('石造りの井戸',image('props/well.svg',2,2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0},{x:0,y:-1},{x:1,y:-1}]},
+  stove: prop('かまど',image('props/stove.svg',1,1.3)),
+  books: prop('積まれた本',image('props/books.svg',.85,.8)),
+  potions: prop('薬瓶の棚',image('props/potions.svg',1,1.2)),
   tree: prop('木',image('tree-64.png',1.55,1.55),true,'depth','#2d6a3d'),
   cactus: prop('サボテン',image('cactus-64.png',1.15,1.3),true,'depth','#799054'),
   chest: prop('宝箱',image('chest-64.png',.92,.92)),
@@ -81,7 +93,7 @@ const person = (name: CharacterName, label: string): ObjectDefinition => ({categ
 const enemy = (name: SpriteName, label: string): ObjectDefinition => ({category:'character',label,
   visual:{renderer:'sprite',name,width:.875,height:.875,anchor:{x:.5,y:.5}},blockedCells:[{x:0,y:0}],layer:'depth'});
 export const characterChips = {
-  hero:person('hero','主人公'), elder:person('elder','長老'), scholar:person('scholar','学者'),
+  knight:person('knight','謎の騎士'), hero:person('hero','主人公'), elder:person('elder','長老'), scholar:person('scholar','学者'),
   child:person('child','子ども'), priest:person('priest','司祭'), wanderer:person('wanderer','旅人'),
   father:person('father','男性'), mother:person('mother','女性'),
   slime:enemy('slime','スライム'), bat:enemy('bat','コウモリ'), ghost:enemy('ghost','幽霊'),

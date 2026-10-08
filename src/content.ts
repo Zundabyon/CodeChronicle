@@ -85,7 +85,7 @@ export const questions: Question[] = [
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
-export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'長老の家', scholarHouse:'学者の家', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
+export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'学者の家', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
@@ -95,7 +95,7 @@ export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: P
 
 export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = {
   home:{name:'旅人の家',door:{x:4,y:6},outside:{x:4,y:7}},
-  elderHouse:{name:'長老の家',door:{x:13,y:6},outside:{x:13,y:7}},
+  elderHouse:{name:'村長の家',door:{x:13,y:6},outside:{x:13,y:7}},
   scholarHouse:{name:'学者の家',door:{x:22,y:6},outside:{x:22,y:7}},
   childHouse:{name:'町の子の家',door:{x:4,y:15},outside:{x:4,y:16}},
   guestHouse:{name:'旅籠',door:{x:22,y:15},outside:{x:22,y:16}},
@@ -203,7 +203,7 @@ export const maps: Partial<Record<Area, MapData>> = {
     tiles: townTiles,
     entry: {x:14,y:30},
     npcs: [
-      {id:'elder',name:'長老エルド',x:7,y:3,face:'👴',lines:['よく戻ったな、{name}。あの日から十年……世界の傷はいまだ癒えぬ。','魔王が奪ったのは言葉だけではない。考え、組み立てる力そのものだ。','平原を越え、忘却の遺跡へ向かうのだ。まず経験を積み、第二の階へ至れ。知識の扉が、お前を待っている。'],alternateLines:[['平原の風が変わった。忘却の遺跡の門が、お前を呼んでいるようだ。','敵に勝てば経験が身につく。焦らず一歩ずつ進むのだ。'],['{name}、知識は一人で抱えるものではない。町の者にも話を聞いてみなさい。','学者ミラは新しい術を、司祭セラは立ち直り方を教えてくれる。']]},
+
       {id:'scholar',name:'学者ミラ',x:19,y:8,face:'👩🏻‍🎓',lines:['型とは、値がどんな姿をしているかを示す約束よ。','ReactもVueも、小さな部品を組み合わせて画面を作る。Laravelはその背後で道を示すの。','学ぶ道を変えたくなったら、右上の「学習設定」を開いてね。'],alternateLines:[['画面を作るときは、まず何を表示したいか決めるの。','小さな部品に分ければ、複雑な画面も読みやすくなるわ。'],['間違えた問題こそ宝物よ。答えを見た後に、自分の言葉で説明してみて。','教会で復習すれば、その知識が次の戦いで力になるはず。']]},
       {id:'child',name:'町の子ども',x:5,y:7,face:'🧒',lines:['ねえ、世界を消すって、どういうこと？','みんなが教えてくれた言葉までなくなるのは、いやだよ。','だから、僕も一つずつ覚える。あなたも無事に帰ってきてね。'],alternateLines:[['今日は「変数」って言葉を覚えたよ。大事なものをしまう箱なんだって！','僕の箱には、町のみんなとの約束を入れておくんだ。'],['旅の話を聞かせてよ。平原にはどんな敵がいるの？','強い相手でも、問いを一つずつ解けば勝てるんだね。']]},
       {id:'priest',name:'司祭セラ',x:8,y:8,face:'👩🏼',lines:['教会では傷を癒し、思い出せなかった問いを振り返れます。','間違いは、知識の扉を開くための足跡。何度でもお越しください。'],alternateLines:[['疲れた顔をしていますね。教会でHPとMPを回復していきませんか。','休むことも、次の問いへ向かうための大切な準備です。'],['同じ問いをもう一度解くと、前は見えなかった道が見つかることがあります。','復習する問題を、教会の記録から選んでくださいね。']]},
@@ -217,7 +217,8 @@ export const maps: Partial<Record<Area, MapData>> = {
   },
   elderHouse: {
     tiles: interiorTiles('s'),entry:{x:5,y:7},
-    npcs:[{id:'elderKin',name:'長老の孫 リン',x:7,y:5,face:'🧒',lines:['祖父はいつも古い地図を広げているの。','遺跡へ行くなら、平原の東の門を探してね。'],alternateLines:[['本棚には忘れられた言葉の記録があるよ。','少しずつ読めるようになるのが楽しいんだ。']]}],enemies:[],
+    npcs:[{id:'elder',name:'村長エルド',x:7,y:5,face:'👴',lines:['よく戻ったな、{name}。あの日から十年……世界の傷はいまだ癒えぬ。','魔王が奪ったのは言葉だけではない。考え、組み立てる力そのものだ。','平原を越え、忘却の遺跡へ向かうのだ。まず経験を積み、第二の階へ至れ。知識の扉が、お前を待っている。'],alternateLines:[['平原の風が変わった。忘却の遺跡の門が、お前を呼んでいるようだ。','敵に勝てば経験が身につく。焦らず一歩ずつ進むのだ。'],['{name}、知識は一人で抱えるものではない。町の者にも話を聞いてみなさい。','学者ミラは新しい術を、司祭セラは立ち直り方を教えてくれる。']]},
+      {id:'elderKin',name:'村長の孫 リン',x:3,y:5,face:'🧒',lines:['村長は奥にいるよ。困ったときには、きっと力になってくれる。','遺跡へ行くなら、平原の東の門を探してね。'],alternateLines:[['本棚には忘れられた言葉の記録があるよ。','少しずつ読めるようになるのが楽しいんだ。']]}],enemies:[],
   },
   scholarHouse: {
     tiles: interiorTiles('c'),entry:{x:5,y:7},
@@ -229,7 +230,7 @@ export const maps: Partial<Record<Area, MapData>> = {
   },
   guestHouse: {
     tiles: interiorTiles('b'),entry:{x:5,y:7},
-    npcs:[{id:'innkeeper',name:'旅籠の女将',x:7,y:5,face:'👩',lines:['いらっしゃい。旅の支度は整っているかい？','教会で傷を癒してから出発するといいよ。'],alternateLines:[['平原から来た旅人が、東の遺跡で光を見たって言っていたよ。','無理は禁物。帰る道も忘れずにね。']]}],enemies:[],
+    npcs:[{id:'innkeeper',name:'女将ハンナ',x:7,y:5,face:'👩',lines:['いらっしゃい。旅の支度は整っているかい？','教会で傷を癒してから出発するといいよ。'],alternateLines:[['平原から来た旅人が、東の遺跡で光を見たって言っていたよ。','無理は禁物。帰る道も忘れずにね。']]}],enemies:[],
   },
   weaponShop: {
     tiles: interiorTiles('s'),entry:{x:5,y:7},

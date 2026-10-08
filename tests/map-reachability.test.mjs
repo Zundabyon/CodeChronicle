@@ -82,3 +82,27 @@ test('seeded spawns and movement never strand an enemy on isolated land',()=>{
     }
   } finally {Math.random=originalRandom;}
 });
+
+
+test('added furniture stays clear of doors, residents and existing buildings',async()=>{
+  const {mapDecorations}=await server.ssrLoadModule('/src/world/decorations.ts');
+  const {propChips,buildingChips}=await server.ssrLoadModule('/src/world/catalog.ts');
+  for(const [area,decorations] of Object.entries(mapDecorations)) {
+    const map=worldMaps[area],occupied=new Set();
+    for(const placement of map.buildings) for(const offset of buildingChips[placement.chip].blockedCells)
+      occupied.add(key({x:placement.x+offset.x,y:placement.y+offset.y}));
+    for(const placement of map.props.filter(p=>!p.id.startsWith('decor-'))) for(const offset of propChips[placement.chip].blockedCells)
+      occupied.add(key({x:placement.x+offset.x,y:placement.y+offset.y}));
+    for(const placement of decorations) for(const offset of propChips[placement.chip].blockedCells) {
+      const point={x:placement.x+offset.x,y:placement.y+offset.y},cell=key(point);
+      assert.ok(point.x>0&&point.x<map.width-1&&point.y>0&&point.y<map.height-1,`${area}: bounds ${placement.id}`);
+      assert.ok(!occupied.has(cell),`${area}: overlapping object ${placement.id}`);
+      assert.ok(!map.npcs.some(npc=>key(npc)===cell),`${area}: resident ${placement.id}`);
+      assert.ok(!map.events.some(event=>event.trigger==='enter'&&key(event)===cell),`${area}: entrance ${placement.id}`);
+      occupied.add(cell);
+      assert.equal(canWalkOnMap(map,point),false,`${area}: solid furniture ${placement.id}`);
+    }
+    for(const placement of decorations.filter(p=>['rug','flowers'].includes(p.chip)))
+      assert.ok(canWalkOnMap(map,placement),`${area}: walkable decoration ${placement.id}`);
+  }
+});

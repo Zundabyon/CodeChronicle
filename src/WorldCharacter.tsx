@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react';
+import { MysteriousKnight } from './MysteriousKnight';
 
-export type CharacterName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother';
+export type CharacterName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother'|'knight';
 
-const colors: Record<CharacterName,{hair:string;light:string;coat:string;shade:string;trim:string;skin:string;legs:string}> = {
+const colors: Record<Exclude<CharacterName,'knight'>,{hair:string;light:string;coat:string;shade:string;trim:string;skin:string;legs:string}> = {
   hero:{hair:'#172b75',light:'#4273db',coat:'#2457a4',shade:'#15326b',trim:'#f5c35d',skin:'#f5bd8d',legs:'#71462e'},
   elder:{hair:'#c6cad1',light:'#f0f0df',coat:'#7b5238',shade:'#493327',trim:'#d5aa6c',skin:'#deb18c',legs:'#553b2d'},
   scholar:{hair:'#67412e',light:'#a27044',coat:'#247c7c',shade:'#194b59',trim:'#e1bb6e',skin:'#efbd91',legs:'#5b3c31'},
@@ -14,6 +15,7 @@ const colors: Record<CharacterName,{hair:string;light:string;coat:string;shade:s
 };
 
 export function WorldCharacter({name,walking=false,className=''}:{name:CharacterName;walking?:boolean;className?:string}) {
+  if(name==='knight')return <MysteriousKnight className={`world-character ${className}`}/>;
   const c=colors[name];
   const hood=name==='wanderer';
   const robe=name==='priest'||name==='elder'||name==='mother';
