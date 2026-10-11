@@ -1,5 +1,11 @@
 export function MysteriousKnight({className='',world=false}:{className?:string;world?:boolean}) {
-  if(world)return <span className={`mysterious-knight ${className}`} aria-hidden="true"><img className="character-art-image" src={`${import.meta.env.BASE_URL}sprites/knight-64.png`} alt="" width={64} height={64} draggable={false}/></span>;
+  if(world)return <span className={`mysterious-knight ${className}`} aria-hidden="true">
+    <svg className="character-art-image" width={64} height={64} viewBox="0 0 64 64" overflow="hidden">
+      <svg x={14} y={14} width={36} height={50} viewBox="284 130 705 989" preserveAspectRatio="xMidYMax meet" overflow="hidden">
+        <image href={`${import.meta.env.BASE_URL}sprites/knight-generated-original.png`} width={1254} height={1254} imageRendering="pixelated"/>
+      </svg>
+    </svg>
+  </span>;
   // Dialogue portraits retain their existing artwork and proportions.
   return <svg className={`mysterious-knight ${className}`} viewBox="0 0 32 40" shapeRendering="crispEdges" role="img" aria-label="顔を兜で隠した謎の騎士">
     <path fill="#111924" d="M9 2h14v2h3v4h2v14h-3v3h3v10h-4v4H8v-4H4V25h3v-3H4V8h3V4h2z"/>
