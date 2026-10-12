@@ -2,55 +2,62 @@ import type { Area } from '../content';
 import type { PropId } from './catalog';
 import type { PropPlacement } from './maps';
 
-// Decorations stay separate from terrain, doors and the legacy map adapter.
 const props=(prefix:string,placements:[PropId,number,number][]):PropPlacement[]=>
   placements.map(([chip,x,y],i)=>({id:`decor-${prefix}-${i}-${chip}`,chip,x,y}));
-const room=(name:string,extras:[PropId,number,number][])=>props(name,[
-  ['plant',1,1],['lantern',8,1],['rug',4,6],...extras,
-]);
+
+// Coordinates describe useful household areas, not a shared decorative preset.
+// Keep the central route from the south door to the residents open.
 export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
-  home:room('home',[
-    ['stove',1,2],['diningTable',6,2],['chair',6,3],['chair',8,3],
-    ['plant',9,6],['barrel',1,5],['crate',1,6],['books',7,1],
+  home:props('home',[
+    // Bed and personal storage on the left; cooking and meals on the right.
+    ['shelf',2,1],['bed',2,2],['dresser',3,5],
+    ['stove',8,1],['diningTable',6,3],['chair',6,4],['rug',6,6],
   ]),
-  elderHouse:room('elder',[
-    ['diningTable',6,2],['chair',6,3],['books',8,1],['shelf',1,3],['books',1,5],
+  elderHouse:props('elder',[
+    // Records at the back, a small meeting table, and a private sleeping corner.
+    ['shelf',1,1],['shelf',2,1],['books',8,2],
+    ['diningTable',6,2],['chair',6,3],['bed',2,3],['dresser',1,6],
   ]),
-  scholarHouse:room('scholar',[
-    ['diningTable',6,2],['chair',6,3],['books',8,1],['shelf',1,3],['potions',1,5],['books',9,3],
+  scholarHouse:props('scholar',[
+    // Library and work area; supplies stay beside the shelves.
+    ['shelf',1,1],['shelf',2,1],['shelf',3,1],['books',4,2],
+    ['diningTable',6,3],['chair',6,4],['potions',9,1],['bed',1,5],
   ]),
-  childHouse:room('child',[
-    ['stove',1,3],['diningTable',6,2],['chair',6,3],['books',2,5],['flowers',8,2],
+  childHouse:props('child',[
+    // Two sleeping places and a family meal area next to the stove.
+    ['bed',1,2],['bed',3,2],['dresser',1,5],
+    ['stove',8,1],['diningTable',6,3],['chair',6,4],['chair',8,4],
   ]),
-  guestHouse:room('inn',[
-    ['bed',1,3],['bed',1,5],['diningTable',6,2],['chair',6,3],['barrel',9,2],['crate',9,3],
+  guestHouse:props('inn',[
+    // Separate guest beds, linen storage, and a shared breakfast corner.
+    ['bed',2,2],['bed',2,5],['bed',8,2],['dresser',1,1],
+    ['stove',9,5],['diningTable',6,6],['chair',6,7],
   ]),
-  weaponShop:room('weapons',[
-    ['crate',1,3],['crate',2,3],['barrel',1,5],['diningTable',6,2],['wallSword',8,0],['toolRack',6,0],
+  weaponShop:props('weapons',[
+    // Weapons belong inside the weapons shop, above the stock shelves.
+    ['toolRack',2,1],['wallSword',5,1],['shelf',2,2],['crate',1,5],
+    ['shelf',6,4],['shelf',7,4],['shelf',8,4],
   ]),
-  armorShop:room('armor',[
-    ['crate',1,3],['barrel',1,5],['shelf',8,2],['diningTable',6,2],['chair',6,3],
+  armorShop:props('armor',[
+    // Equipment storage and a sales counter; no household bed or dining setting.
+    ['shelf',1,2],['chest',2,2],['crate',9,2],
+    ['shelf',6,4],['shelf',7,4],['shelf',8,4],
   ]),
-  itemShop:room('items',[
-    ['potions',1,3],['potions',2,3],['barrel',1,5],['crate',9,2],['potions',8,2],
+  itemShop:props('items',[
+    // Bottles on the back displays, a barrel of supplies, and a clear customer aisle.
+    ['potions',1,1],['potions',2,1],['potions',8,1],['barrel',9,2],
+    ['shelf',6,4],['shelf',7,4],['shelf',8,4],
   ]),
   town:props('town',[
-    // Front gardens and door-side lamps leave the east-west paths clear.
-    ['flowers',2,8],['flowers',3,8],['plant',7,5],['lantern',7,6],
-    ['flowers',11,8],['flowers',12,8],['lantern',15,6],
-    ['flowers',21,8],['flowers',22,8],['plant',25,6],
-    ['flowers',2,17],['flowers',3,17],['plant',1,15],
-    ['flowers',21,17],['flowers',22,17],['barrel',25,15],['lantern',24,17],
-    // A small public square west of the church.
-    ['well',9,19],['bench',6,18],['bench',9,21],['lantern',8,17],['lantern',12,20],
-    ['flowers',6,20],['flowers',7,20],['flowers',11,17],['flowers',12,17],
-    // Church garden and an eastern rest spot.
-    ['flowers',11,16],['flowers',12,16],['flowers',15,17],['flowers',16,17],
-    ['bench',19,19],['plant',22,19],['lantern',23,19],
-    // Shop deliveries and the southern approach.
-    ['crate',1,24],['barrel',7,24],['flowers',3,26],['flowers',4,26],
-    ['crate',11,26],['barrel',16,24],['flowers',15,26],
-    ['crate',25,24],['barrel',24,26],['crate',21,27],['barrel',22,27],
-    ['bench',8,28],['lantern',11,29],['lantern',17,29],['flowers',18,28],['flowers',19,28],
+    // Small front gardens; avoid scattering indoor fixtures along the streets.
+    ['flowers',2,8],['flowers',11,8],['flowers',21,8],
+    ['flowers',2,17],['flowers',21,17],
+    // Water and seating form one public square west of the church.
+    ['well',9,19],['bench',6,18],['flowers',6,20],
+    // A quiet garden east of the church, with room to walk past.
+    ['bench',19,19],['flowers',22,19],
+    // Deliveries stay beside the inn and weapons shop, rather than across the road.
+    ['barrel',25,15],['crate',1,25],
+    ['bench',8,28],['flowers',18,28],
   ]),
 };

@@ -106,3 +106,17 @@ test('added furniture stays clear of doors, residents and existing buildings',as
       assert.ok(canWalkOnMap(map,placement),`${area}: walkable decoration ${placement.id}`);
   }
 });
+
+test('interiors reflect their purpose and outdoor paths contain no household fixtures',()=>{
+  const rooms=Object.keys(houses);
+  const layouts=rooms.map(area=>JSON.stringify(worldMaps[area].props.map(({chip,x,y})=>[chip,x,y])));
+  assert.equal(new Set(layouts).size,rooms.length,'every room has its own furniture layout');
+  assert.equal(worldMaps.guestHouse.props.filter(p=>p.chip==='bed').length,3,'inn provides separate guest beds');
+  for(const area of ['weaponShop','armorShop','itemShop']) {
+    assert.ok(!worldMaps[area].props.some(p=>['bed','diningTable','stove'].includes(p.chip)),`${area}: sales area, not a bedroom or kitchen`);
+  }
+  for(const [area,map] of Object.entries(worldMaps)) {
+    if(area!=='weaponShop') assert.ok(!map.props.some(p=>['wallSword','toolRack'].includes(p.chip)),`${area}: no automatic weapon displays`);
+  }
+  assert.ok(!worldMaps.town.props.some(p=>['lantern','wallSword','toolRack','bed','dresser','potions'].includes(p.chip)));
+});
