@@ -1,3 +1,4 @@
+import { chestId } from '../chests';
 import { maps as legacyMaps, houses, fieldTownGate, fieldRuinsGate, type Area, type MapData, type Point, type Npc, type Enemy } from '../content';
 import { npcSprite, enemySprite } from '../PixelSprite';
 import { terrainChips, propChips, buildingChips, characterChips, type TerrainId, type PropId, type BuildingId, type CharacterId, type ObjectDefinition } from './catalog';
@@ -13,7 +14,7 @@ export type CharacterPlacement = Placement<CharacterId> & (
   | {role:'npc'; npc:Npc}
   | {role:'enemy'; enemy:Enemy}
 );
-export type MapAction = {kind:'dresser'} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
+export type MapAction = {kind:'dresser'} | {kind:'chest';id:string} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
 export type MapEvent = Point & {id:string; trigger:'enter'|'interact'; label:string; action:MapAction};
 export type WorldMapInput = {
   environment:'outdoor'|'interior'|'dungeon';
@@ -64,6 +65,14 @@ export function createWorldMap(input:WorldMapInput):WorldMap {
   return {...input,characters,width,height,blocked,eventIndex,minimapOverrides,
     npcs:characters.flatMap(character=>character.role==='npc'?[character.npc]:[]),
     enemies:characters.flatMap(character=>character.role==='enemy'?[character.enemy]:[])};
+}
+
+function withChestEvents(area:Area,input:WorldMapInput):WorldMapInput {
+  const events:MapEvent[]=input.props.filter(prop=>prop.chip==='chest').map(prop=>({
+    id:`chest-${chestId(area,prop)}`,x:prop.x,y:prop.y,trigger:'interact',label:'宝箱を開ける',
+    action:{kind:'chest',id:chestId(area,prop)},
+  }));
+  return {...input,events:[...input.events,...events]};
 }
 
 // The old letter grids remain source data during migration. Only this function
@@ -119,14 +128,14 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
     ...legacy.npcs.map(npc=>({id:npc.id,chip:npcSprite(npc.id) as CharacterId,x:npc.x,y:npc.y,role:'npc' as const,npc})),
     ...legacy.enemies.map(enemy=>({id:enemy.id,chip:enemySprite(enemy.id) as CharacterId,x:enemy.x,y:enemy.y,role:'enemy' as const,enemy})),
   ];
-  return createWorldMap({environment,terrain,props:[...props,...mapDecorations[area]??[]],buildings,characters,events,entry:legacy.entry,cellOverrides,
-    backdrop:area==='dungeon'?'maps/dungeon-ground.png':undefined});
+  return createWorldMap(withChestEvents(area,{environment,terrain,props:[...props,...mapDecorations[area]??[]],buildings,characters,events,entry:legacy.entry,cellOverrides,
+    backdrop:area==='dungeon'?'maps/dungeon-ground.png':undefined}));
 }
 
 const areaIds=[...new Set([...Object.keys(legacyMaps),...Object.keys(nativeMaps)])] as Area[];
 export const worldMaps=Object.fromEntries(areaIds.map(area=>{
   const native=nativeMaps[area],legacy=legacyMaps[area];
-  if(native) return [area,createWorldMap({...native,props:[...native.props,...mapDecorations[area]??[]]})];
+  if(native) return [area,createWorldMap(withChestEvents(area,{...native,props:[...native.props,...mapDecorations[area]??[]]}))];
   if(legacy) return [area,adaptLegacyMap(area,legacy)];
   throw new Error(`マップが未定義です: ${area}`);
 })) as Record<Area,WorldMap>;

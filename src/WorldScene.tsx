@@ -1,3 +1,4 @@
+import { chestId } from './chests';
 import { useEffect, useId, useRef, type CSSProperties } from 'react';
 import { areaLabel, difficultyLabel, fieldRegion, fieldRuinsGate, fieldTownGate, type Area, type Point, type Track, type Difficulty } from './content';
 import { positionOf, type EnemyPositions } from './enemyMovement';
@@ -11,7 +12,7 @@ import { storyNpcs, storyObjective, type StoryStage } from './story';
 type WorldSave = {
   story:StoryStage; name: string; area: Area; pos: Point; level: number; hp: number; mp: number;
   xp: number; defeated: string[]; correct: number; total: number; wrong: string[];
-  track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment;
+  track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment; openedChests:string[];
 };
 
 type Props = {
@@ -95,7 +96,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
           const player=save.pos.x===x&&save.pos.y===y;
           const chip=terrainChips[tile];
           const event=eventAt(map,point,'interact')??eventAt(map,point,'enter');
-          const destination=event?.label??'移動';
+          const destination=event?.action.kind==='chest'&&save.openedChests.includes(event.action.id)?'空の宝箱を調べる':event?.label??'移動';
           const background=outdoor&&chip.connection?'none':map.backdrop&&chip.transparentOnBackdrop?'transparent':
             `${chip.color}${chip.image?` url('${import.meta.env.BASE_URL}${chip.image}') center / 100% 100%`:''}`;
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
@@ -107,8 +108,13 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
           }))}
           {map.buildings.filter(placement=>visible(placement,buildingChips[placement.chip].visual)).map(placement=>
             <WorldChip key={placement.id} definition={buildingChips[placement.chip]} point={placement}/>)}
-          {map.props.filter(placement=>visible(placement,propChips[placement.chip].visual)).map(placement=>
-            <WorldChip key={placement.id} definition={propChips[placement.chip]} point={placement} text={placement.text}/>)}
+          {map.props.filter(placement=>visible(placement,propChips[placement.chip].visual)).map(placement=>{
+            const chest=placement.chip==='chest';
+            const opened=chest&&save.openedChests.includes(chestId(save.area,placement));
+            return <WorldChip key={placement.id} definition={propChips[placement.chip]} point={placement} text={placement.text}
+              chestOpen={chest?opened:undefined} label={chest?(opened?'空の宝箱を調べる':'宝箱を開ける'):undefined}
+              onClick={chest?()=>onTile(placement):undefined}/>;
+          })}
           {map.characters.map(character=>{
             if(character.role==='npc'&&!npcs.some(npc=>npc.id===character.id))return null;
             const enemy=character.role==='enemy'?character.enemy:null;

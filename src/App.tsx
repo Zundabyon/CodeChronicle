@@ -1,3 +1,4 @@
+import { claimChest, normalizeOpenedChests } from './chests';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn } from './world/maps';
@@ -21,7 +22,7 @@ import { items, type Equipment, type Inventory, type ItemId, type ShopType } fro
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';
-type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
+type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
 type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
@@ -29,8 +30,8 @@ const STORAGE = 'code-chronicle-save-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
-const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
-const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area] || !walkable(saved.area,saved.pos)) return {...saved,area:'town',pos:maps.town.entry}; return saved; } catch { return null; } };
+const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
+const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,openedChests:normalizeOpenedChests(parsed.openedChests),story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area] || !walkable(saved.area,saved.pos)) return {...saved,area:'town',pos:maps.town.entry}; return saved; } catch { return null; } };
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
@@ -179,6 +180,12 @@ export function App() {
     if(first) { update(s=>({...s,dresserOpened:true,inventory:{...s.inventory,familyLetter:1,herb:(s.inventory.herb??0)+1}})); setToast('家族の手紙とやくそうを手に入れた！'); }
     setDresserFound(first); setReadingLetter(false); setDresserOpen(true); beep(640,0.12);
   },[stopPath,update,beep]);
+  const openChest = useCallback((id:string) => {
+    stopPath();
+    const result=claimChest(stateRef.current,id);
+    if(result.opened) update(()=>result.save);
+    setToast(result.message); beep(result.opened?880:320,0.15);
+  },[stopPath,update,beep]);
   const advanceDialogue = useCallback(() => {
     const prev=dialogueRef.current;
     if(!prev)return;
@@ -240,7 +247,9 @@ export function App() {
     if (phaseRef.current!=='world' || dialogueRef.current || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || shopType) return false;
     facingRef.current={x:dx,y:dy};
     const target={x:s.pos.x+dx,y:s.pos.y+dy};
-    if (eventAt(maps[s.area],target,'interact')?.action.kind==='dresser') { openDresser(); return false; }
+    const interaction=eventAt(maps[s.area],target,'interact')?.action;
+    if (interaction?.kind==='dresser') { openDresser(); return false; }
+    if (interaction?.kind==='chest') { openChest(interaction.id); return false; }
     if (!walkable(s.area,target)) { beep(130,0.05); return false; }
     const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target));
     if (npc) { talkToNpc(npc); return false; }
@@ -254,7 +263,7 @@ export function App() {
     if (action?.kind==='church') { enterChurch(); return false; }
     if (action?.kind==='transition') { transition(s.area,action.to,action.position); return false; }
     return true;
-  },[showSettings,showGuide,worldMenu,inventoryOpen,dresserOpen,shopType,openDresser,talkToNpc,startBattle,update,beep,enterChurch,transition]);
+  },[showSettings,showGuide,worldMenu,inventoryOpen,dresserOpen,shopType,openDresser,openChest,talkToNpc,startBattle,update,beep,enterChurch,transition]);
   const interact = useCallback(() => {
     stopPath();
     const s=stateRef.current, map=maps[s.area];
@@ -263,10 +272,12 @@ export function App() {
     for (const point of targets) {
       const npc=storyNpcs(map.npcs,s.story).find(person=>same(person,point));
       if (npc) { talkToNpc(npc); return; }
-      if (eventAt(map,point,'interact')?.action.kind==='dresser') { openDresser(); return; }
+      const action=eventAt(map,point,'interact')?.action;
+      if (action?.kind==='dresser') { openDresser(); return; }
+      if (action?.kind==='chest') { openChest(action.id); return; }
     }
     setToast('隣に人や調べられるものがない。近づいてEnterを押そう。');
-  },[stopPath,talkToNpc,openDresser]);
+  },[stopPath,talkToNpc,openDresser,openChest]);
   const navigationScope = () => Array.from(document.querySelectorAll('.modal-backdrop')).at(-1)
     ?? document.querySelector('.dialogue-overlay')
     ?? document.querySelector('.world-menu')
@@ -316,11 +327,11 @@ export function App() {
   useEffect(() => () => { stopPath(); if(walkTimer.current) clearTimeout(walkTimer.current); if(attackTimer.current) clearTimeout(attackTimer.current); },[stopPath]);
   const clickTile = (target: Point) => {
     if (phase!=='world' || dialogue || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || shopType) return;
-    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const dresser=eventAt(map,target,'interact')?.action.kind==='dresser';
+    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action;
     let destination=target;
-    if (npc || enemy || dresser) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
+    if (npc || enemy || interaction) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
     const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current,s.story); if (!route.length && !same(s.pos,destination)) return;
-    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (dresser) openDresser(); } },105);
+    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='chest') openChest(interaction.id); } },105);
   };
   const answer = (value: string | number) => {
     if (!battle || battle.answered) return;

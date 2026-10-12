@@ -1,0 +1,6 @@
+.opened-chest{position:relative;display:block;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.opened-chest>img{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.opened-chest .chest-base{clip-path:inset(40% 0 0)}
+.opened-chest .chest-lid{clip-path:inset(0 0 60%);transform:translateY(-12%) rotate(-12deg);transform-origin:15% 40%}
+.chest-interior{position:absolute;left:10%;right:10%;top:27%;height:23%;background:#18121e;border:2px solid #986335;border-radius:35% 35% 0 0}
+.chest-empty{position:absolute;right:-4px;bottom:-4px;padding:1px 3px;border:1px solid #c0aa75;background:#151c27;color:#e5d7af;font-size:10px;line-height:1.2}
