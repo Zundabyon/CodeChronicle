@@ -17,8 +17,13 @@ export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
     ['diningTable',6,2],['chair',6,3],['books',8,1],['shelf',1,3],['books',1,5],
   ]),
   scholarHouse:room('scholar',[
-    ['diningTable',6,2],['chair',6,3],['books',8,1],['shelf',1,3],['potions',1,5],['books',9,3],
+    ['diningTable',2,5],['chair',2,6],['books',9,3],
   ]),
+  librarySecondFloor:room('library-second',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  libraryThirdFloor:room('library-third',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  libraryFourthFloor:room('library-fourth',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  backendLibrary:room('backend-first',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  backendSecondFloor:room('backend-second',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
   childHouse:room('child',[
     ['stove',1,3],['diningTable',6,2],['chair',6,3],['books',2,5],['flowers',8,2],
   ]),
@@ -38,7 +43,7 @@ export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
     // Front gardens and door-side lamps leave the east-west paths clear.
     ['flowers',2,8],['flowers',3,8],['plant',7,5],['lantern',7,6],
     ['flowers',11,8],['flowers',12,8],['lantern',15,6],
-    ['flowers',21,8],['flowers',22,8],['plant',25,6],
+    ['flowers',21,8],['flowers',22,8],
     ['flowers',2,17],['flowers',3,17],['plant',1,15],
     ['flowers',21,17],['flowers',22,17],['barrel',25,15],['lantern',24,17],
     // A small public square west of the church.

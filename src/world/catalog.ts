@@ -46,13 +46,15 @@ export const terrainChips = {
   sea: terrain('海の水面', 'sea', '#1262b4', '#347cb5', {image:'maps/water-64.png',connection:'water',walkable:false,enemyAllowed:false}),
   mountain: terrain('山地', 'mountain', '#606968', '#777985', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
   fieldBoundary: terrain('世界の外縁', 'mountain', '#365453', '#223849', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
-  stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {transparentOnBackdrop:true}),
-  stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {walkable:false,enemyAllowed:false}),
+  stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {image:'maps/props/stone-floor.svg'}),
+  stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {image:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   woodFloor: terrain('板張りの床', 'interior', '#805a3a', '#805a3a', {image:'maps/wood-floor-64.png'}),
 } satisfies Record<string,TerrainDefinition>;
 export type TerrainId = keyof typeof terrainChips;
 
 export const propChips = {
+  libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.3,1.25),false),
+  stairs: prop('図書館の階段',image('props/stairs.svg'),false,'ground'),
   diningTable: {...prop('食卓',image('props/table.svg',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
   chair: prop('木の椅子',image('props/chair.svg',.8,.9)),
   rug: prop('織物の敷物',image('props/rug.svg',3,2,{x:0,y:1}),false,'ground'),
@@ -83,6 +85,7 @@ const houseFootprint = Array.from({length:20},(_,i)=>({x:i%5,y:Math.floor(i/5)})
 export const buildingChips = {
   house: {category:'building',label:'家',visual:image('house-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
   church: {category:'building',label:'教会',visual:image('church-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
+  villageGate: {category:'building',label:'山里の入口',visual:image('house-town-320x256.png',3,3,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#efcd82'},
   ruinsGate: {category:'building',label:'遺跡の門',visual:image('ruins-gate-128.png',3,3,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#a675d0'},
   plasterWall: {category:'building',label:'室内の壁',visual:image('plaster-wall-64.png',1,1,{x:0,y:0}),blockedCells:[{x:0,y:0}],layer:'ground'},
 } satisfies Record<string,ObjectDefinition>;

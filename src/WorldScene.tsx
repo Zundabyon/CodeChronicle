@@ -3,6 +3,7 @@ import { areaLabel, difficultyLabel, fieldRegion, fieldRuinsGate, fieldTownGate,
 import { positionOf, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment } from './items';
 import { TerrainTile, TerrainTextures } from './TerrainTile';
+import { mountainVillageGate } from './world/mountainVillage';
 import { worldMaps, eventAt, minimapColorAt, canWalkOnMap } from './world/maps';
 import { terrainChips, propChips, buildingChips, characterChips } from './world/catalog';
 import { WorldChip } from './world/WorldChip';
@@ -43,18 +44,19 @@ function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>vo
     map.terrain.forEach((row,y)=>row.forEach((_,x)=>{ctx.fillStyle=minimapColorAt(map,{x,y});ctx.fillRect(x,y,1,1)}));
     ctx.fillStyle='#f7e8bb';ctx.fillRect(fieldTownGate.x-1,fieldTownGate.y-2,3,2);
     ctx.fillStyle='#ecb9ff';ctx.fillRect(fieldRuinsGate.x-1,fieldRuinsGate.y-1,3,3);
+    ctx.fillStyle='#efcd82';ctx.fillRect(mountainVillageGate.x-1,mountainVillageGate.y-1,3,3);
     ctx.fillStyle='#151721';ctx.fillRect(position.x-2,position.y-2,5,5);
     ctx.fillStyle='#ffe18d';ctx.fillRect(position.x-1,position.y-1,3,3);
   },[position.x,position.y,map]);
   return <div className="field-minimap retro-window">
     <div className="field-minimap-title">世界地図 <small>{position.x}, {position.y}</small></div>
-    <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡は北東。小地図をクリックして移動`} onClick={event=>{
+    <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡と石灯の村は北東。小地図をクリックして移動`} onClick={event=>{
       const bounds=event.currentTarget.getBoundingClientRect();
       const x=Math.min(119,Math.max(0,Math.floor((event.clientX-bounds.left)/bounds.width*120)));
       const y=Math.min(79,Math.max(0,Math.floor((event.clientY-bounds.top)/bounds.height*80)));
       onTile({x,y});
     }}/>
-    <div className="field-minimap-key"><span>● 現在地</span><span>▣ 町</span><span>✦ 遺跡</span></div>
+    <div className="field-minimap-key"><span>● 現在地</span><span>▣ 町</span><span>✦ 遺跡</span><span>▣ 村</span></div>
   </div>;
 }
 
@@ -86,7 +88,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
   return <main className="world-stage">
     {outdoor&&<TerrainTextures id={textureId}/>}
     <div className="world-viewport" style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
-      <div className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
+      <div key={save.area} className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
         {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((tile,columnIndex)=>{
           const x=firstX+columnIndex,y=firstY+rowIndex;
           const inViewport=x>=cameraX&&x<cameraX+viewColumns&&y>=cameraY&&y<cameraY+viewRows;
