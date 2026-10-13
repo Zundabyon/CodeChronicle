@@ -6,9 +6,49 @@ import { createServer } from 'vite';
 const server=await createServer({server:{middlewareMode:true,hmr:false},appType:'custom'});
 after(()=>server.close());
 const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt}=await server.ssrLoadModule('/src/world/maps.ts');
-const {maps:legacyMaps,houses,fieldTownGate,fieldRuinsGate}=await server.ssrLoadModule('/src/content.ts');
+const {maps:legacyMaps,houses,fieldTownGate,fieldRuinsGate,questions}=await server.ssrLoadModule('/src/content.ts');
 const {chipCatalog,terrainSets}=await server.ssrLoadModule('/src/world/catalog.ts');
 const {moveEnemies,spawnEnemies}=await server.ssrLoadModule('/src/enemyMovement.ts');
+const {bossStages,bossGuardHp,bossQuestion,bossQuestionById,bossCommandResult,bossStrike,bossGuardBroken}=await server.ssrLoadModule('/src/bossBattle.ts');
+
+const {selectQuestion,inputIsCorrect}=await server.ssrLoadModule('/src/questionSelection.ts');
+const {fillQuestions}=await server.ssrLoadModule('/src/fillQuestions.ts');
+
+test('every weapon must repair all three boss guards before victory',()=>{
+  for (const damage of [1,2,3,6,100]) {
+    let hp=bossStages.length*bossGuardHp;
+    for(let stage=0;stage<bossStages.length;stage++) {
+      hp=bossStrike(hp,stage,damage);
+      assert.ok(hp>=(bossStages.length-stage-1)*bossGuardHp);
+      if(stage<2) assert.ok(hp>0,'a strong weapon cannot finish before the final repair');
+      while(!bossGuardBroken(hp,stage)) hp=bossStrike(hp,stage,damage);
+    }
+    assert.equal(hp,0);
+  }
+});
+
+test('boss accepts equivalent CLI forms and distinguishes different effects',()=>{
+  for (const [stage,input] of [[0,' php   artisan make:controller "NoteController" -n '],[0,'./artisan make:controller NoteController'],[1,'artisan --no-interaction migrate --step'],[2,'php ./artisan config:clear']]) {
+    assert.equal(bossCommandResult(stage,input).correct,true,input);
+  }
+  for (const [stage,input] of [[0,'artisan make:controller notecontroller'],[0,'artisan make:controller NoteController --invokable'],[1,'artisan migrate:status'],[1,'artisan migrate:fresh'],[1,'artisan migrate --pretend'],[2,'artisan cache:clear'],[2,'artisan optimize:clear'],[2,'artisan config:clear; echo hello']]) {
+    const result=bossCommandResult(stage,input);
+    assert.equal(result.correct,false,input);
+    assert.ok(result.reason.length>0);
+  }
+});
+
+test('boss mistakes remain available as CLI review questions in every difficulty',()=>{
+  for (const difficulty of ['beginner','intermediate','advanced']) {
+    for (let stage=0;stage<bossStages.length;stage++) {
+      const q=bossQuestion(stage,difficulty);
+      assert.deepEqual(bossQuestionById(q.id),q);
+      assert.equal(q.kind,'cli');
+      assert.equal(bossCommandResult(stage,q.reveal).correct,true);
+    }
+  }
+  assert.equal(bossQuestionById('guardian-repair-3-beginner'),undefined);
+});
 
 test('all existing cells retain player passability, including doors and furniture',()=>{
   for(const [area,legacy] of Object.entries(legacyMaps)) {
@@ -97,4 +137,57 @@ test('registered image assets exist and terrain themes can be extended independe
     for(const path of paths) await access(new URL(`../public/${path}`,import.meta.url));
   }
   for(const set of ['snow','space','hell','underworld','otherworld','cave','abyss']) assert.ok(terrainSets[set]);
+});
+
+
+
+test('every learning route and difficulty has both fill formats with one blank',()=>{
+  assert.equal(new Set(questions.map(q=>q.id)).size,questions.length);
+  assert.equal(fillQuestions.length,30);
+  for(const q of fillQuestions) {
+    assert.equal(q.code.split('【①】').length,2,q.id);
+    assert.ok(q.code.split('\n').length>=10 && q.code.split('\n').length<=25,q.id);
+    if(q.kind==='fill-choice') {
+      assert.equal(q.options.length,4);
+      assert.equal(q.options[q.answer],q.reveal);
+      assert.equal(new Set(q.options).size,4);
+    } else assert.equal(inputIsCorrect(q,q.reveal),true);
+  }
+  for(const difficulty of ['beginner','intermediate','advanced']) {
+    for(const track of ['react','vue']) for(const inertia of [true,false]) {
+      const eligible=fillQuestions.filter(q=>q.difficulty===difficulty&&(!q.track||q.track===track)&&(q.inertia===undefined||q.inertia===inertia));
+      assert.equal(eligible.length,6);
+      for(const topic of ['frontend','laravel','connection']) for(const kind of ['fill-choice','fill-input']) {
+        assert.ok(eligible.some(q=>q.topic===topic&&q.kind===kind));
+      }
+    }
+  }
+});
+
+test('selection weights formats 50/25/25 and preserves route and unanswered priority',()=>{
+  const save={difficulty:'beginner',track:'react',inertia:true,answered:[]};
+  const eligible=questions.filter(q=>q.difficulty===save.difficulty&&(!q.track||q.track===save.track)&&(q.inertia===undefined||q.inertia===save.inertia)&&q.kind!=='cli');
+  const counts={choice:0,'fill-choice':0,'fill-input':0};
+  for(let i=0;i<100;i++) {
+    const q=selectQuestion(questions,save,()=> (i+.5)/100);
+    assert.ok(eligible.includes(q));
+    counts[q.kind]++;
+  }
+  assert.deepEqual(counts,{choice:50,'fill-choice':25,'fill-input':25});
+  const remaining=eligible.find(q=>q.kind==='fill-input');
+  const answered=eligible.filter(q=>q!==remaining).map(q=>q.id);
+  assert.equal(selectQuestion(questions,{...save,answered},()=>0).id,remaining.id);
+  const completed={...save,answered:eligible.map(q=>q.id)};
+  assert.notEqual(selectQuestion(questions,completed,()=>.99).id,completed.answered.at(-1));
+  assert.equal(selectQuestion(questions,save,()=>.99,true).kind,'choice');
+});
+
+test('fill input trims ends but preserves code case and internal whitespace',()=>{
+  const input=fillQuestions.find(q=>q.kind==='fill-input'&&q.reveal==='json');
+  assert.equal(inputIsCorrect(input,'  '+input.reveal+'  '),true);
+  assert.equal(inputIsCorrect(input,input.reveal.toUpperCase()),false);
+  const expression=fillQuestions.find(q=>q.kind==='fill-input'&&q.reveal==='prev + 1');
+  assert.equal(inputIsCorrect(expression,'prev+1'),true);
+  assert.equal(inputIsCorrect(expression,'prev + 2'),false);
+  assert.equal(inputIsCorrect({...input,accepted:["'a b'"]},"'a  b'"),false);
 });
