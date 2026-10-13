@@ -136,6 +136,24 @@ export const insideMap=(map:WorldMap,point:Point)=>Number.isInteger(point.x)&&Nu
   point.x>=0&&point.x<map.width&&point.y>=0&&point.y<map.height;
 export const canWalkOnMap=(map:WorldMap,point:Point)=>insideMap(map,point)&&
   terrainChips[map.terrain[point.y][point.x]].walkable&&!map.blocked.has(key(point));
+export const dungeonFieldReturn:Point={x:fieldRuinsGate.x-1,y:fieldRuinsGate.y+1};
+
+export function reachableMapCells(map:WorldMap):ReadonlySet<string> {
+  const seen=new Set<string>(),queue:Point[]=[];
+  const npcCells=new Set(map.npcs.map(key));
+  const visit=(point:Point)=>{
+    const cell=key(point);
+    if(!seen.has(cell)&&canWalkOnMap(map,point)&&!npcCells.has(cell)) {
+      seen.add(cell); queue.push(point);
+    }
+  };
+  visit(map.entry);
+  for(let head=0;head<queue.length;head++) {
+    const {x,y}=queue[head];
+    visit({x:x+1,y}); visit({x:x-1,y}); visit({x,y:y+1}); visit({x,y:y-1});
+  }
+  return seen;
+}
 export const canEnemyOccupyMap=(map:WorldMap,point:Point)=>canWalkOnMap(map,point)&&
   (map.cellOverrides?.[key(point)]?.enemyAllowed??terrainChips[map.terrain[point.y][point.x]].enemyAllowed)&&
   !map.eventIndex.has(key(point))&&!map.npcs.some(npc=>npc.x===point.x&&npc.y===point.y);

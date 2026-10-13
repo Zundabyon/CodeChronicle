@@ -1,5 +1,5 @@
 import { type Area, type Enemy, type Point } from './content';
-import { worldMaps as maps, canEnemyOccupyMap } from './world/maps';
+import { worldMaps as maps, canEnemyOccupyMap, reachableMapCells } from './world/maps';
 
 export type EnemyPositions = Record<string, Point>;
 
@@ -23,13 +23,16 @@ export function spawnEnemies(defeated: string[] = []): EnemyPositions {
     if(!maps[area].enemies.length) continue;
     const occupied: Point[] = [];
     const tiles = maps[area].terrain;
+    const reachable=reachableMapCells(maps[area]);
     const candidates = tiles.flatMap((row, y) => row.map((_, x) => ({ x, y })))
-      .filter(point => canOccupy(area, point) && distance(point, maps[area].entry) > 2);
+      .filter(point => reachable.has(`${point.x},${point.y}`) && canOccupy(area, point) && distance(point, maps[area].entry) > 2);
     for (const enemy of maps[area].enemies) {
       if (defeated.includes(enemy.id)) continue;
       const choices = candidates.filter(point =>
         withinTerritory(area, enemy, point) && occupied.every(other => distance(point, other) > 1));
-      const point = choices[Math.floor(Math.random() * choices.length)] ?? { x: enemy.x, y: enemy.y };
+      const fallback=candidates.find(point=>withinTerritory(area,enemy,point)&&occupied.every(other=>!same(point,other)));
+      const point = choices[Math.floor(Math.random() * choices.length)] ?? fallback;
+      if(!point) throw new Error(`到達可能な敵の配置場所がありません: ${area}/${enemy.id}`);
       positions[enemy.id] = point;
       occupied.push(point);
     }

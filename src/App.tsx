@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { areaLabel, difficultyLabel, fieldRuinsGate, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
-import { worldMaps as maps, canWalkOnMap, eventAt } from './world/maps';
+import { areaLabel, difficultyLabel, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
+import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn } from './world/maps';
 import { CharacterPortrait } from './CharacterPortrait';
 import { WorldCharacter } from './WorldCharacter';
 import { WorldScene } from './WorldScene';
@@ -171,7 +171,7 @@ export function App() {
   const enterChurch = useCallback(() => { stopPath(); setChurchTab('heal'); setReviewId(null); setPhase('church'); beep(660,0.16,'sine'); },[stopPath,beep]);
   const transition = useCallback((from: Area,to: Area,position?:Point) => {
     stopPath(); let pos: Point = maps[to].entry;
-    if (from==='dungeon' && to==='field') pos={x:fieldRuinsGate.x,y:fieldRuinsGate.y+1};
+    if (from==='dungeon' && to==='field') pos=dungeonFieldReturn;
     if (to==='town' && from in houses) pos=houses[from as HouseArea].outside;
     if (position) pos=position;
     update(s => ({...s,area:to,pos})); beep(520,0.16);
