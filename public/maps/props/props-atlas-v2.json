@@ -1,0 +1,83 @@
+{
+  "generator": "built-in image_gen",
+  "style": "64px logical top-down 16-bit JRPG pixel art; upper-left light; warm wood and blue-grey shadows",
+  "sourceSize": [
+    1448,
+    1086
+  ],
+  "frames": {
+    "table": [
+      22,
+      80,
+      351,
+      259
+    ],
+    "chair": [
+      449,
+      35,
+      188,
+      313
+    ],
+    "rug": [
+      706,
+      71,
+      401,
+      263
+    ],
+    "plant": [
+      1153,
+      52,
+      265,
+      293
+    ],
+    "barrel": [
+      60,
+      373,
+      246,
+      323
+    ],
+    "crate": [
+      403,
+      392,
+      259,
+      291
+    ],
+    "flowers": [
+      700,
+      435,
+      344,
+      235
+    ],
+    "bench": [
+      1076,
+      432,
+      355,
+      238
+    ],
+    "well": [
+      24,
+      714,
+      322,
+      351
+    ],
+    "stove": [
+      440,
+      699,
+      208,
+      357
+    ],
+    "books": [
+      724,
+      760,
+      308,
+      283
+    ],
+    "potions": [
+      1089,
+      749,
+      340,
+      289
+    ]
+  },
+  "reference": "https://note.com/am0500_lab/n/n50606ae6f6db"
+}
