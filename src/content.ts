@@ -117,11 +117,18 @@ export const fieldRuinsGate: Point = {x:108,y:14};
 const townTiles = (() => {
   const width=32,height=32;
   const grid:string[][]=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>x===0||x===width-1||y===0||y===height-1?'#':'.'));
-  for(let y=7;y<=30;y++) grid[y][14]='g';
-  for(let x=14;x<=17;x++) grid[11][x]='g';
-  for(let y=11;y<=16;y++) grid[y][17]='g';
-  for(const house of Object.values(houses)) for(let x=Math.min(house.outside.x,14);x<=Math.max(house.outside.x,14);x++) grid[house.outside.y][x]='g';
-  for(let x=4;x<=22;x++) grid[16][x]='g';
+  // Three parallel streets sit in front of the housing rows. The avenue
+  // runs between the central buildings and the eastern houses, never through them.
+  for(let y=7;y<=29;y++) for(let x=16;x<=18;x++) grid[y][x]='g';
+  for(const top of [9,18,27]) for(let y=top;y<=top+1;y++)
+    for(let x=3;x<=28;x++) grid[y][x]='g';
+  for(const house of Object.values(houses)) {
+    const street=house.outside.y+2;
+    for(let y=house.outside.y;y<=street;y++) grid[y][house.outside.x]='g';
+  }
+  for(let y=16;y<=18;y++) grid[y][13]='g'; // Church porch.
+  for(let x=14;x<=17;x++) grid[29][x]='g';
+  grid[30][14]='g';
   grid[31][14]='g';
   for(const house of Object.values(houses)) {
     const left=house.door.x-2,top=house.door.y-3;
@@ -173,17 +180,21 @@ const fieldTiles = (() => {
     else if(noise(x,y)>.82) grid[y][x]='v';
   }
   // A continuous old road leads from town through the woods and mountain pass.
-  const road:Point[]=[{x:60,y:79},{x:60,y:70},{x:52,y:62},{x:48,y:54},{x:47,y:45},{x:56,y:37},{x:69,y:36},{x:80,y:31},{x:91,y:26},{x:102,y:20},fieldRuinsGate];
-  const carve=(from:Point,to:Point)=>{
+  const road:Point[]=[{x:60,y:79},{x:60,y:70},{x:52,y:62},{x:48,y:54},{x:47,y:45},{x:56,y:37},{x:69,y:36},{x:80,y:31},{x:90,y:30},{x:108,y:30},fieldRuinsGate];
+  const carve=(from:Point,to:Point,radius=0)=>{
+    const pave=(cx:number,cy:number)=>{
+      for(let y=cy-radius;y<=cy+radius;y++) for(let x=cx-radius;x<=cx+radius;x++)
+        if(x>0&&x<width-1&&y>0&&y<height-1) grid[y][x]='g';
+    };
     let {x,y}=from;
     while(x!==to.x||y!==to.y){
-      grid[y][x]='g';
+      pave(x,y);
       if(Math.abs(to.x-x)>Math.abs(to.y-y)) x+=Math.sign(to.x-x);
       else y+=Math.sign(to.y-y);
     }
-    grid[y][x]='g';
+    pave(x,y);
   };
-  for(let i=1;i<road.length;i++) carve(road[i-1],road[i]);
+  for(let i=1;i<road.length;i++) carve(road[i-1],road[i],i>=7?2:1);
   // Smaller trails make the coast and oasis reachable without blocking the main quest.
   const branches:Point[][]=[
     [{x:48,y:54},{x:32,y:55},{x:20,y:47},{x:16,y:36}],
@@ -191,9 +202,9 @@ const fieldTiles = (() => {
     [{x:56,y:37},{x:49,y:29},{x:49,y:20}],
   ];
   for(const branch of branches) for(let i=1;i<branch.length;i++) carve(branch[i-1],branch[i]);
-  // A short mountain trail links the cave road with the nearby village.
-  carve({x:102,y:20},mountainVillageGate);
-  carve(mountainVillageGate,mountainVillageReturn);
+  // The village is a destination on a side road, not a gate on the cave route.
+  carve({x:100,y:30},mountainVillageReturn,1);
+  carve(mountainVillageReturn,mountainVillageGate,1);
   grid[fieldTownGate.y][fieldTownGate.x]='g';
   grid[fieldRuinsGate.y][fieldRuinsGate.x]='d';
   return grid.map(row=>row.join(''));

@@ -41,21 +41,21 @@ export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
   ]),
   town:props('town',[
     // Front gardens and door-side lamps leave the east-west paths clear.
-    ['flowers',2,8],['flowers',3,8],['plant',7,5],['lantern',7,6],
-    ['flowers',11,8],['flowers',12,8],['lantern',15,6],
-    ['flowers',21,8],['flowers',22,8],
+    ['flowers',2,8],['flowers',3,8],['plant',7,5],
+    ['flowers',11,8],['flowers',12,8],
+    ['flowers',21,8],['flowers',23,8],
     ['flowers',2,17],['flowers',3,17],['plant',1,15],
-    ['flowers',21,17],['flowers',22,17],['barrel',25,15],['lantern',24,17],
+    ['flowers',21,17],['flowers',23,17],['barrel',25,15],
     // A small public square west of the church.
-    ['well',9,19],['bench',6,18],['bench',9,21],['lantern',8,17],['lantern',12,20],
+    ['well',9,21],['bench',6,16],['bench',9,23],
     ['flowers',6,20],['flowers',7,20],['flowers',11,17],['flowers',12,17],
     // Church garden and an eastern rest spot.
-    ['flowers',11,16],['flowers',12,16],['flowers',15,17],['flowers',16,17],
-    ['bench',19,19],['plant',22,19],['lantern',23,19],
+    ['flowers',11,16],['flowers',12,16],['flowers',14,17],['flowers',15,16],
+    ['bench',19,20],['plant',22,20],
     // Shop deliveries and the southern approach.
-    ['crate',1,24],['barrel',7,24],['flowers',3,26],['flowers',4,26],
-    ['crate',11,26],['barrel',16,24],['flowers',15,26],
-    ['crate',25,24],['barrel',24,26],['crate',21,27],['barrel',22,27],
-    ['bench',8,28],['lantern',11,29],['lantern',17,29],['flowers',18,28],['flowers',19,28],
+    ['crate',1,24],['barrel',7,24],['flowers',3,26],['flowers',5,26],
+    ['crate',11,26],['barrel',19,24],['flowers',15,26],
+    ['crate',25,24],['barrel',24,26],['crate',25,29],['barrel',26,29],
+    ['bench',8,30],['flowers',18,30],['flowers',19,30],
   ]),
 };

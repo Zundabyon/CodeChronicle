@@ -82,6 +82,7 @@ export const propChips = {
   toolRack: prop('道具掛け',image('tool-rack-64.png',.78,.78),false,'overhead'),
   wallSword: prop('飾り剣',image('wall-sword-64.png',.78,.78),false,'overhead'),
   lantern: prop('灯り',image('lantern-64.png'),false),
+  wallLantern: prop('壁掛けの灯り',image('lantern-64.png',.55,.55),false,'overhead'),
   sign: prop('看板',{renderer:'text',text:'',width:1,height:.4,anchor:{x:.5,y:1}},false,'overhead'),
 } satisfies Record<string,ObjectDefinition>;
 export type PropId = keyof typeof propChips;
