@@ -120,21 +120,23 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
     const below=libraryFloors.find(floor=>floor.wing===libraryFloor.wing&&floor.floor===libraryFloor.floor-1);
     if(above) stairs(9,`${above.floor}階へ ▲`,above.area,{x:1,y:5});
     if(below) stairs(1,`${below.floor}階へ ▼`,below.area,{x:9,y:5});
-    if(area==='scholarHouse'||area==='backendLibrary') {
-      const west=area==='scholarHouse',x=west?10:0;
+    if(libraryFloor.floor<=2) {
+      const west=libraryFloor.wing==='frontend',x=west?10:0;
+      const destination=libraryFloors.find(floor=>floor.wing!==libraryFloor.wing&&floor.floor===libraryFloor.floor)!;
       const label=west?'東棟・バックエンドへ':'西棟・フロントエンドへ';
-      event(x,4,'enter',label,{kind:'transition',to:west?'backendLibrary':'scholarHouse',position:{x:west?1:9,y:4}});
+      event(x,4,'enter',label,{kind:'transition',to:destination.area,position:{x:west?1:9,y:4}});
       props.push({id:'connecting-hall-label',chip:'sign',x:west?9:1,y:3.5,text:west?'東棟へ ▶':'◀ 西棟へ'});
     }
   }
   if(area==='town') {
     for(const [id,house] of Object.entries(houses)) {
-      buildings.push({id:`house-${id}`,chip:'house',x:house.door.x-2,y:house.door.y-3});
+      buildings.push({id:`house-${id}`,chip:id==='scholarHouse'?'libraryWest':id==='backendLibrary'?'libraryEast':'house',x:house.door.x-2,y:house.door.y-3});
       props.push({id:`wall-lantern-${id}`,chip:'wallLantern',x:house.door.x-.55,y:house.door.y-1.15});
       const text=id==='weaponShop'?'武器':id==='armorShop'?'防具':id==='itemShop'?'道具':id==='elderHouse'?'村長':id==='guestHouse'?'旅籠':id==='scholarHouse'?'西棟・フロントエンド':id==='backendLibrary'?'東棟・バックエンド':undefined;
       if(text) props.push({id:`sign-${id}`,chip:'sign',x:house.door.x,y:house.door.y-.63,text});
     }
     props.push({id:'library-connecting-hall',chip:'libraryHall',x:24.5,y:5.4});
+    props.push({id:'library-second-floor-hall',chip:'libraryHall',x:24.5,y:4.1});
     buildings.push({id:'church',chip:'church',x:11,y:12});
     props.push({id:'wall-lantern-church',chip:'wallLantern',x:12.45,y:13.85});
     event(14,31,'enter','平原へ出る',{kind:'transition',to:'field'});

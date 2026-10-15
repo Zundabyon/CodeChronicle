@@ -150,10 +150,10 @@ const interiorTiles = (furniture:'b'|'s'|'c') => [
   '#####e#####',
 ];
 
-const libraryTiles = (ground?:'west'|'east') => [
+const libraryTiles = (ground?:'west'|'east',upper=false) => [
   '###########','#.........#','#.s..s..s.#','#.........#',
   ground==='west'?'#..........':ground==='east'?'..........#':'#.........#',
-  '#.........#','#.........#','#.........#',ground?'#####e#####':'###########',
+  '#.........#','#.........#','#.........#',ground&&!upper?'#####e#####':'###########',
 ];
 
 const fieldTiles = (() => {
@@ -248,10 +248,10 @@ export const maps: Partial<Record<Area, MapData>> = {
   },
   scholarHouse: {
     tiles: libraryTiles('west'),entry:{x:5,y:7},
-    npcs:[{id:'assistant',name:'司書見習い ノア',x:7,y:5,face:'👩🏻‍🎓',lines:['ここは図書館の西棟、フロントエンド棟です。画面を作る言葉を、小さな本に分けて集めています。','1階はJavaScript、2階はTypeScript、3階はReact、4階はVue。右奥の階段から上がれます。','一冊で学ぶのは小さなこと一つ。東側の渡り廊下はバックエンド棟へ続きます。PHPとLaravelの本はそちらへどうぞ。']}],enemies:[],
+    npcs:[{id:'assistant',name:'司書見習い ノア',x:7,y:5,face:'👩🏻‍🎓',lines:['ここは図書館の西棟、フロントエンド棟です。画面を作る言葉を、小さな本に分けて集めています。','1階はJavaScript、2階はTypeScript、3階はReact、4階はVue。右奥の階段から上がれます。','一冊で学ぶのは小さなこと一つ。1階と2階の東側の渡り廊下はバックエンド棟へ続きます。PHPとLaravelの本はそちらへどうぞ。']}],enemies:[],
   },
   librarySecondFloor: {
-    tiles: libraryTiles(),
+    tiles: libraryTiles('west',true),
     entry:{x:1,y:5},npcs:[],enemies:[],
   },
   libraryThirdFloor: {
@@ -266,11 +266,11 @@ export const maps: Partial<Record<Area, MapData>> = {
     npcs:[{id:'backendLibrarian',name:'司書 イオ',x:7,y:5,face:'👩🏻‍🎓',lines:[
       'ここは図書館の東棟、バックエンド棟です。1階はPHP、2階はLaravelの入門書を置いています。',
       'Laravelの本は、ルート・コントローラ・バリデーションに分けました。一冊ずつ、担当する役割を覚えていこう。',
-      '西側の渡り廊下から、フロントエンド棟へ戻れます。'
+      '1階と2階の西側の渡り廊下から、フロントエンド棟へ戻れます。'
     ]}],enemies:[],
   },
   backendSecondFloor: {
-    tiles:libraryTiles(),entry:{x:1,y:5},npcs:[],enemies:[],
+    tiles:libraryTiles('east',true),entry:{x:1,y:5},npcs:[],enemies:[],
   },
   childHouse: {
     tiles: interiorTiles('b'),entry:{x:5,y:7},
