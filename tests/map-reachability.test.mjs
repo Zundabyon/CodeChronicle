@@ -2,7 +2,7 @@ import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
-const server=await createServer({server:{middlewareMode:true,hmr:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
 after(()=>server.close());
 const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt,reachableMapCells,dungeonFieldReturn}=await server.ssrLoadModule('/src/world/maps.ts');
 const {houses}=await server.ssrLoadModule('/src/content.ts');
@@ -119,4 +119,58 @@ test('interiors reflect their purpose and outdoor paths contain no household fix
     if(area!=='weaponShop') assert.ok(!map.props.some(p=>['wallSword','toolRack'].includes(p.chip)),`${area}: no automatic weapon displays`);
   }
   assert.ok(!worldMaps.town.props.some(p=>['lantern','wallSword','toolRack','bed','dresser','potions'].includes(p.chip)));
+});
+
+test('both library wings connect every floor with safe arrival cells',async()=>{
+  const {libraryShelves,libraryFloors}=await server.ssrLoadModule('/src/library.ts');
+  const referencedShelves=new Set();
+  for(const floor of libraryFloors) {
+    const map=worldMaps[floor.area];
+    const shelves=map.events.filter(event=>event.action.kind==='bookshelf');
+    assert.equal(shelves.length,3);
+    for(const event of shelves) {
+      const shelf=libraryShelves.find(shelf=>shelf.id===event.action.shelf);
+      assert.equal(shelf.floor,floor.floor);
+      assert.equal(shelf.wing,floor.wing);
+      assert.equal(shelf.language,floor.language);
+      assert.equal(shelf.books.length,3);
+      assert.ok(!referencedShelves.has(shelf.id));
+      referencedShelves.add(shelf.id);
+    }
+    for(const [point,target] of [
+      [{x:9,y:6},libraryFloors.find(other=>other.wing===floor.wing&&other.floor===floor.floor+1)],
+      [{x:1,y:6},libraryFloors.find(other=>other.wing===floor.wing&&other.floor===floor.floor-1)]
+    ]) {
+      if(!target) continue;
+      const action=eventAt(map,point,'enter').action;
+      assert.equal(action.to,target.area);
+      assert.ok(playerCells(worldMaps[target.area]).has(key(action.position)));
+      assert.equal(eventAt(worldMaps[target.area],action.position,'enter'),undefined);
+    }
+  }
+  assert.equal(referencedShelves.size,libraryShelves.length);
+  assert.equal(libraryShelves.reduce((count,shelf)=>count+shelf.books.length,0),54);
+});
+
+test('west frontend and east backend wings adjoin and have two-way corridors on both the ground and second floors',()=>{
+  const west=houses.scholarHouse,east=houses.backendLibrary;
+  assert.equal(worldMaps.town.buildings.find(building=>building.id==='house-scholarHouse').chip,'libraryWest');
+  assert.equal(worldMaps.town.buildings.find(building=>building.id==='house-backendLibrary').chip,'libraryEast');
+  assert.equal(worldMaps.town.props.filter(prop=>prop.chip==='libraryHall').length,2);
+  for(const area of ['librarySecondFloor','backendSecondFloor'])
+    assert.equal(eventAt(worldMaps[area],{x:5,y:8},'enter'),undefined,'upper floors have no street exit');
+  assert.equal(east.door.x-west.door.x,5,'the two five-cell buildings share an edge');
+  assert.equal(east.door.y,west.door.y);
+  for(const [area,point,to] of [
+    ['scholarHouse',{x:10,y:4},'backendLibrary'],
+    ['backendLibrary',{x:0,y:4},'scholarHouse'],
+    ['librarySecondFloor',{x:10,y:4},'backendSecondFloor'],
+    ['backendSecondFloor',{x:0,y:4},'librarySecondFloor']
+  ]) {
+    const map=worldMaps[area],action=eventAt(map,point,'enter').action;
+    assert.ok(playerCells(map).has(key(point)));
+    assert.equal(action.to,to);
+    assert.ok(playerCells(worldMaps[to]).has(key(action.position)));
+    assert.equal(eventAt(worldMaps[to],action.position,'enter'),undefined);
+  }
 });

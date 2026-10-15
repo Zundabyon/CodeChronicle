@@ -1,7 +1,7 @@
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
 after(()=>server.close());
 const {migrateStoryStage,canLeaveTown,storyNpcs,storyObjective}=await server.ssrLoadModule('/src/story.ts');
 const {worldMaps,canWalkOnMap,reachableMapCells}=await server.ssrLoadModule('/src/world/maps.ts');

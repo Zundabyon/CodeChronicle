@@ -1,10 +1,13 @@
 import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
+import { beginnerQuestions } from './beginnerQuestions';
+import { dungeonTiles, dungeonEntry, dungeonEnemies } from './world/caveLayout';
+import { mountainVillageGate, mountainVillageReturn } from './world/mountainVillage';
 
 export type Track = 'react' | 'vue';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
-export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse' | 'weaponShop' | 'armorShop' | 'itemShop';
-export type Area = 'town' | 'field' | 'dungeon' | HouseArea;
+export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse' | 'weaponShop' | 'armorShop' | 'itemShop' | 'backendLibrary';
+export type Area = 'town' | 'field' | 'dungeon' | 'village' | 'librarySecondFloor' | 'libraryThirdFloor' | 'libraryFourthFloor' | 'backendSecondFloor' | HouseArea;
 export type Question = {
   id: string;
   difficulty: Difficulty;
@@ -80,12 +83,13 @@ export const questions: Question[] = [
   choice('api-i-2','intermediate','connection','API通信中に画面で管理したい状態は？',['読み込み中と失敗','文字色だけ','端末の時刻だけ','コンポーネント名だけ'],0,'通信には待機と失敗があるため、画面でも状態を分けます。',{inertia:false}),
   choice('api-a-1','advanced','connection','APIが401を返した。まず確認すべき意味は？',['認証が必要、または認証できない','必ずサーバが落ちた','CSSに構文エラー','JSON配列が空'],0,'401は認証に関するHTTPステータスです。',{inertia:false}),
   choice('api-a-2','advanced','connection','APIへの書き込みでフロント側だけの検証では足りない理由は？',['サーバへ直接リクエストできるから','TypeScriptが無効になるから','画面が必ず白くなるから','GETしか使えないから'],0,'クライアント側を迂回できるため、サーバ側でも検証します。',{inertia:false}),
+  ...beginnerQuestions,
   ...moreQuestions,
   ...fillQuestions,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
-export const areaLabel: Record<Area, string> = { town: '黎明の町', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'学者の家', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
+export const areaLabel: Record<Area, string> = { town: '黎明の町', village:'石灯の村', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'西棟 1階・JavaScript', librarySecondFloor:'西棟 2階・TypeScript', libraryThirdFloor:'西棟 3階・React', libraryFourthFloor:'西棟 4階・Vue', backendLibrary:'東棟 1階・PHP', backendSecondFloor:'東棟 2階・Laravel', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
@@ -96,7 +100,8 @@ export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: P
 export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = {
   home:{name:'旅人の家',door:{x:4,y:6},outside:{x:4,y:7}},
   elderHouse:{name:'村長の家',door:{x:13,y:6},outside:{x:13,y:7}},
-  scholarHouse:{name:'学者の家',door:{x:22,y:6},outside:{x:22,y:7}},
+  scholarHouse:{name:'図書館 西棟・フロントエンド',door:{x:22,y:6},outside:{x:22,y:7}},
+  backendLibrary:{name:'図書館 東棟・バックエンド',door:{x:27,y:6},outside:{x:27,y:7}},
   childHouse:{name:'町の子の家',door:{x:4,y:15},outside:{x:4,y:16}},
   guestHouse:{name:'旅籠',door:{x:22,y:15},outside:{x:22,y:16}},
   weaponShop:{name:'武器屋',door:{x:4,y:24},outside:{x:4,y:25}},
@@ -110,13 +115,20 @@ export const fieldTownGate: Point = {x:60,y:79};
 export const fieldRuinsGate: Point = {x:108,y:14};
 
 const townTiles = (() => {
-  const width=28,height=32;
+  const width=32,height=32;
   const grid:string[][]=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>x===0||x===width-1||y===0||y===height-1?'#':'.'));
-  for(let y=7;y<=30;y++) grid[y][14]='g';
-  for(let x=14;x<=17;x++) grid[11][x]='g';
-  for(let y=11;y<=16;y++) grid[y][17]='g';
-  for(const house of Object.values(houses)) for(let x=Math.min(house.outside.x,14);x<=Math.max(house.outside.x,14);x++) grid[house.outside.y][x]='g';
-  for(let x=4;x<=22;x++) grid[16][x]='g';
+  // Three parallel streets sit in front of the housing rows. The avenue
+  // runs between the central buildings and the eastern houses, never through them.
+  for(let y=7;y<=29;y++) for(let x=16;x<=18;x++) grid[y][x]='g';
+  for(const top of [9,18,27]) for(let y=top;y<=top+1;y++)
+    for(let x=3;x<=28;x++) grid[y][x]='g';
+  for(const house of Object.values(houses)) {
+    const street=house.outside.y+2;
+    for(let y=house.outside.y;y<=street;y++) grid[y][house.outside.x]='g';
+  }
+  for(let y=16;y<=18;y++) grid[y][13]='g'; // Church porch.
+  for(let x=14;x<=17;x++) grid[29][x]='g';
+  grid[30][14]='g';
   grid[31][14]='g';
   for(const house of Object.values(houses)) {
     const left=house.door.x-2,top=house.door.y-3;
@@ -136,6 +148,12 @@ const interiorTiles = (furniture:'b'|'s'|'c') => [
   '#.........#',
   '#....g....#',
   '#####e#####',
+];
+
+const libraryTiles = (ground?:'west'|'east',upper=false) => [
+  '###########','#.........#','#.s..s..s.#','#.........#',
+  ground==='west'?'#..........':ground==='east'?'..........#':'#.........#',
+  '#.........#','#.........#','#.........#',ground&&!upper?'#####e#####':'###########',
 ];
 
 const fieldTiles = (() => {
@@ -162,17 +180,21 @@ const fieldTiles = (() => {
     else if(noise(x,y)>.82) grid[y][x]='v';
   }
   // A continuous old road leads from town through the woods and mountain pass.
-  const road:Point[]=[{x:60,y:79},{x:60,y:70},{x:52,y:62},{x:48,y:54},{x:47,y:45},{x:56,y:37},{x:69,y:36},{x:80,y:31},{x:91,y:26},{x:102,y:20},fieldRuinsGate];
-  const carve=(from:Point,to:Point)=>{
+  const road:Point[]=[{x:60,y:79},{x:60,y:70},{x:52,y:62},{x:48,y:54},{x:47,y:45},{x:56,y:37},{x:69,y:36},{x:80,y:31},{x:90,y:30},{x:108,y:30},fieldRuinsGate];
+  const carve=(from:Point,to:Point,radius=0)=>{
+    const pave=(cx:number,cy:number)=>{
+      for(let y=cy-radius;y<=cy+radius;y++) for(let x=cx-radius;x<=cx+radius;x++)
+        if(x>0&&x<width-1&&y>0&&y<height-1) grid[y][x]='g';
+    };
     let {x,y}=from;
     while(x!==to.x||y!==to.y){
-      grid[y][x]='g';
+      pave(x,y);
       if(Math.abs(to.x-x)>Math.abs(to.y-y)) x+=Math.sign(to.x-x);
       else y+=Math.sign(to.y-y);
     }
-    grid[y][x]='g';
+    pave(x,y);
   };
-  for(let i=1;i<road.length;i++) carve(road[i-1],road[i]);
+  for(let i=1;i<road.length;i++) carve(road[i-1],road[i],i>=7?2:1);
   // Smaller trails make the coast and oasis reachable without blocking the main quest.
   const branches:Point[][]=[
     [{x:48,y:54},{x:32,y:55},{x:20,y:47},{x:16,y:36}],
@@ -180,6 +202,9 @@ const fieldTiles = (() => {
     [{x:56,y:37},{x:49,y:29},{x:49,y:20}],
   ];
   for(const branch of branches) for(let i=1;i<branch.length;i++) carve(branch[i-1],branch[i]);
+  // The village is a destination on a side road, not a gate on the cave route.
+  carve({x:100,y:30},mountainVillageReturn,1);
+  carve(mountainVillageReturn,mountainVillageGate,1);
   grid[fieldTownGate.y][fieldTownGate.x]='g';
   grid[fieldRuinsGate.y][fieldRuinsGate.x]='d';
   return grid.map(row=>row.join(''));
@@ -187,6 +212,7 @@ const fieldTiles = (() => {
 
 export const fieldRegion = (point:Point):string => {
   const tile=fieldTiles[point.y]?.[point.x];
+  if(Math.abs(point.x-mountainVillageGate.x)+Math.abs(point.y-mountainVillageGate.y)<=4) return '石灯の村への道';
   if(point.y>68&&point.x>45&&point.x<72) return '黎明の町への道';
   if(point.x>75&&point.y>42) return '陽炎の砂漠';
   if(point.x>76&&point.y<39) return '石鳴り山脈';
@@ -221,8 +247,30 @@ export const maps: Partial<Record<Area, MapData>> = {
       {id:'elderKin',name:'村長の孫 リン',x:3,y:5,face:'🧒',lines:['村長は奥にいるよ。困ったときには、きっと力になってくれる。','遺跡へ行くなら、平原の東の門を探してね。'],alternateLines:[['本棚には忘れられた言葉の記録があるよ。','少しずつ読めるようになるのが楽しいんだ。']]}],enemies:[],
   },
   scholarHouse: {
-    tiles: interiorTiles('c'),entry:{x:5,y:7},
-    npcs:[{id:'assistant',name:'見習い ノア',x:7,y:5,face:'👩🏻‍🎓',lines:['ミラ先生の机には、画面の設計図がいっぱい！','大きな問題も、小さく分ければ解けるって教わったの。'],alternateLines:[['分からない言葉があったら、戦いの解説を読み返して。','覚えたことを一つずつつなげていこう。']]}],enemies:[],
+    tiles: libraryTiles('west'),entry:{x:5,y:7},
+    npcs:[{id:'assistant',name:'司書見習い ノア',x:7,y:5,face:'👩🏻‍🎓',lines:['ここは図書館の西棟、フロントエンド棟です。画面を作る言葉を、小さな本に分けて集めています。','1階はJavaScript、2階はTypeScript、3階はReact、4階はVue。右奥の階段から上がれます。','一冊で学ぶのは小さなこと一つ。1階と2階の東側の渡り廊下はバックエンド棟へ続きます。PHPとLaravelの本はそちらへどうぞ。']}],enemies:[],
+  },
+  librarySecondFloor: {
+    tiles: libraryTiles('west',true),
+    entry:{x:1,y:5},npcs:[],enemies:[],
+  },
+  libraryThirdFloor: {
+    tiles: libraryTiles(),
+    entry:{x:1,y:5},npcs:[],enemies:[],
+  },
+  libraryFourthFloor: {
+    tiles:libraryTiles(),entry:{x:1,y:5},npcs:[],enemies:[],
+  },
+  backendLibrary: {
+    tiles:libraryTiles('east'),entry:{x:5,y:7},
+    npcs:[{id:'backendLibrarian',name:'司書 イオ',x:7,y:5,face:'👩🏻‍🎓',lines:[
+      'ここは図書館の東棟、バックエンド棟です。1階はPHP、2階はLaravelの入門書を置いています。',
+      'Laravelの本は、ルート・コントローラ・バリデーションに分けました。一冊ずつ、担当する役割を覚えていこう。',
+      '1階と2階の西側の渡り廊下から、フロントエンド棟へ戻れます。'
+    ]}],enemies:[],
+  },
+  backendSecondFloor: {
+    tiles:libraryTiles('east',true),entry:{x:1,y:5},npcs:[],enemies:[],
   },
   childHouse: {
     tiles: interiorTiles('b'),entry:{x:5,y:7},
@@ -279,32 +327,7 @@ export const maps: Partial<Record<Area, MapData>> = {
     ],
   },
   dungeon: {
-    tiles: [
-      '####################',
-      '#......#...........#',
-      '#......#...........#',
-      '#..................#',
-      '#.###......###.....#',
-      '#..................#',
-      '#.....###..........#',
-      '#..................#',
-      '#.###..............#',
-      '#..................#',
-      '#........g.........#',
-      '##########.#########',
-    ],
-    entry: {x:10,y:10},
-    npcs: [],
-    enemies: [
-      {id:'d1',name:'ヌルシャドウ',attackName:'断片斬り',x:4,y:7,icon:'♢'},
-      {id:'d2',name:'コマンドゴースト',attackName:'コマンドの呪縛',x:14,y:5,icon:'♟'},
-      {id:'d3',name:'キャッシュキーパー',attackName:'記憶侵食',x:11,y:3,icon:'◆'},
-      {id:'d4',name:'遺跡のスタックスケルトン',attackName:'錆びた剣',x:3,y:9,icon:'♟'},
-      {id:'d5',name:'モックミミック',attackName:'宝箱の噛みつき',x:16,y:8,icon:'▣'},
-      {id:'d6',name:'遺跡の非同期ウィスプ',attackName:'忘却の火花',x:4,y:2,icon:'✧'},
-      {id:'d7',name:'石碑のスタックスケルトン',attackName:'骨刃',x:17,y:2,icon:'♟'},
-      {id:'boss',name:'CLIゲートガーディアン',attackName:'封印の雷',x:10,y:1,icon:'♛',boss:true},
-    ],
+    tiles:dungeonTiles,entry:dungeonEntry,npcs:[],enemies:dungeonEnemies,
   },
 };
 
