@@ -1,3 +1,4 @@
+import { loadAudioPreferences, saveAudioPreferences } from './audioPreferences';
 import { claimChest, normalizeOpenedChests } from './chests';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
@@ -110,8 +111,8 @@ export function App() {
   const [shopType,setShopType] = useState<ShopType|null>(null);
   const [shopMode,setShopMode] = useState<'buy'|'sell'>('buy');
   const [walking,setWalking] = useState(false);
-  const [muted,setMuted] = useState(true);
-  const [volume,setVolume] = useState(0.35);
+  const [audioPreferences,setAudioPreferences] = useState(loadAudioPreferences);
+  const {muted,volume}=audioPreferences;
   const [epilogueStep,setEpilogueStep] = useState(0);
   const [toast,setToast] = useState('');
   const stateRef = useRef(save); const phaseRef = useRef(phase); const dialogueRef = useRef(dialogue);
@@ -122,6 +123,18 @@ export function App() {
   const walkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const attackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
+  const audioUnlocked=useRef(false);
+  useEffect(()=>saveAudioPreferences(audioPreferences),[audioPreferences]);
+  useEffect(()=>{
+    const unlock=()=>{
+      audioUnlocked.current=true;
+      if(audioRef.current?.state==='suspended')void audioRef.current.resume().catch(()=>{});
+      window.removeEventListener('pointerdown',unlock,true);
+      window.removeEventListener('keydown',unlock,true);
+    };
+    window.addEventListener('pointerdown',unlock,true);window.addEventListener('keydown',unlock,true);
+    return ()=>{window.removeEventListener('pointerdown',unlock,true);window.removeEventListener('keydown',unlock,true);};
+  },[]);
   useEffect(() => { stateRef.current = save; if (hasSave) localStorage.setItem(STORAGE,JSON.stringify(save)); },[save,hasSave]);
   useEffect(() => { phaseRef.current = phase; },[phase]);
   useEffect(() => { dialogueRef.current = dialogue; },[dialogue]);
@@ -135,10 +148,10 @@ export function App() {
   const update = useCallback((fn: (s: Save) => Save) => { const next = fn(stateRef.current); stateRef.current = next; setSave(next); },[]);
   const stopPath = useCallback(() => { if (pathTimer.current) { clearInterval(pathTimer.current); pathTimer.current = null; } },[]);
   const beep = useCallback((freq=440,duration=0.1,type: OscillatorType='square') => {
-    if (muted) return;
+    if (muted || !audioUnlocked.current) return;
     try { const ctx = audioRef.current ?? new AudioContext(); audioRef.current = ctx; const osc=ctx.createOscillator(), gain=ctx.createGain(); osc.type=type; osc.frequency.value=freq; gain.gain.setValueAtTime(volume*0.12,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+duration); osc.connect(gain).connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+duration); } catch { /* audio is optional */ }
   },[muted,volume]);
-  const toggleSound = () => { if (muted) { try { const ctx=audioRef.current??new AudioContext(); audioRef.current=ctx; void ctx.resume(); } catch { /* audio is optional */ } } setMuted(!muted); };
+  const toggleSound = () => { if (muted) { try { const ctx=audioRef.current??new AudioContext(); audioRef.current=ctx; void ctx.resume().catch(()=>{}); } catch { /* audio is optional */ } } setAudioPreferences(value=>({...value,muted:!value.muted})); };
   useEffect(() => {
     if (muted || phase === 'title' || phase === 'prologue') return;
     const melodies: Record<string,number[]> = {town:[392,494,587,494,440,392,330,392],field:[294,392,440,392,330,392,494,440],dungeon:[220,261,220,196,220,294,261,196],battle:[220,330,294,392,220,330,440,392]};
@@ -486,7 +499,7 @@ export function App() {
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }
-    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>setVolume(Number(e.target.value))}/></label><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
+    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
     {toast&&<div className="toast">✦ {toast}</div>}
   </div>;
