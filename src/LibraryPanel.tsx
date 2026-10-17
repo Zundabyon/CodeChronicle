@@ -14,7 +14,7 @@ export function LibraryPanel({shelf,onClose}:{shelf:LibraryShelf;onClose:()=>voi
       {book?<article className="library-book" aria-live="polite">
         <h3>{book.title}</h3><p>{book.explanation}</p><pre><code>{book.code}</code></pre>
         <p className="library-result"><strong>実行結果・読み方</strong><br/>{book.result}</p><p>{book.takeaway}</p>
-        <div className="library-actions"><button onClick={()=>setIndex(null)}>◀ 目次に戻る</button>{index!==null&&index<shelf.books.length-1&&<button onClick={()=>setIndex(index+1)}>次の本へ ▶</button>}</div>
+        <div className="library-actions"><button onClick={()=>setIndex(null)}>◀ 目次に戻る</button><button disabled={index===0} onClick={()=>setIndex(value=>value===null?null:Math.max(0,value-1))}>◀ 前の本へ</button>{index!==null&&index<shelf.books.length-1&&<button onClick={()=>setIndex(index+1)}>次の本へ ▶</button>}</div>
       </article>:<><p>{shelf.introduction}</p><div className="library-books">{shelf.books.map((item,i)=><button key={item.title} onClick={()=>setIndex(i)}>{item.title}<span>読む ▶</span></button>)}</div><p className="library-note">一冊ずつ、ゆっくり。何度でも読み返せます。</p></>}
       {shelf.source&&<p className="library-note"><a href={shelf.source} target="_blank" rel="noreferrer">{shelf.language}の公式ガイド ↗</a></p>}
       <small className="library-note">矢印キーで選択 / Enterで決定 / Escで閉じる</small>
