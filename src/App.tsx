@@ -1,3 +1,4 @@
+import { ResumeSummary } from './ResumeSummary';
 import { LearningSetupHelp } from './LearningSetupHelp';
 import './learningSetupHelp.css';
 import { loadAudioPreferences, saveAudioPreferences } from './audioPreferences';
@@ -27,7 +28,7 @@ import { items, type Equipment, type Inventory, type ItemId, type ShopType } fro
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';
-type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
+type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
 type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
@@ -95,6 +96,7 @@ export function App() {
   const [enemyPositions,setEnemyPositions] = useState<EnemyPositions>(() => spawnEnemies(save.defeated));
   const [hasSave,setHasSave] = useState(() => !!loadSave());
   const [phase,setPhase] = useState<Phase>('title');
+  const [lastSavedAt,setLastSavedAt]=useState<number|null>(()=>typeof save.lastSavedAt==='number'&&Number.isFinite(save.lastSavedAt)&&save.lastSavedAt>0&&save.lastSavedAt<=8640000000000000?save.lastSavedAt:null);
   const [introIndex,setIntroIndex] = useState(0);
   const [setup,setSetup] = useState<{name:string;track:Track;difficulty:Difficulty;inertia:boolean}>({name:'',track:'react',difficulty:'beginner',inertia:true});
   const [dialogue,setDialogue] = useState<Dialogue | null>(null);
@@ -137,7 +139,12 @@ export function App() {
     window.addEventListener('pointerdown',unlock,true);window.addEventListener('keydown',unlock,true);
     return ()=>{window.removeEventListener('pointerdown',unlock,true);window.removeEventListener('keydown',unlock,true);};
   },[]);
-  useEffect(() => { stateRef.current = save; if (hasSave) localStorage.setItem(STORAGE,JSON.stringify(save)); },[save,hasSave]);
+  useEffect(() => {
+    stateRef.current = save;
+    if(hasSave&&phaseRef.current!=='title') {
+      const savedAt=Date.now();localStorage.setItem(STORAGE,JSON.stringify({...save,lastSavedAt:savedAt}));setLastSavedAt(savedAt);
+    }
+  },[save,hasSave]);
   useEffect(() => { phaseRef.current = phase; },[phase]);
   useEffect(() => { dialogueRef.current = dialogue; },[dialogue]);
   useEffect(() => { enemyPositionsRef.current = enemyPositions; },[enemyPositions]);
@@ -462,7 +469,7 @@ export function App() {
 
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
-    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p><div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
+    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p>{hasSave&&<ResumeSummary save={save} savedAt={lastSavedAt}/>}<div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
     {phase==='prologue' && <main className="prologue-screen">
       <div className="prologue-layout">
         <div className="prologue-art" key={introIndex} role="img" aria-label={intro.title} style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/${introIndex<4?'ancient-and-fall':'family-and-dawn'}.png)`,backgroundPosition:`${introIndex%2?100:0}% ${Math.floor((introIndex%4)/2)?100:0}%`}}>
