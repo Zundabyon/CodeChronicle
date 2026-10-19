@@ -1,0 +1,8 @@
+/* Keep the existing map footprint and foot anchor; only the art extends above it.
+   The transparent 64px canvases include padding around the narrow JRPG figures. */
+.world-character.character-art{position:relative;display:block;width:100%;height:100%;overflow:visible;image-rendering:pixelated;pointer-events:none}
+.character-art>.character-art-image{position:absolute;display:block;left:50%;bottom:0;width:auto;height:112%;max-width:none;object-fit:contain;transform:translateX(-50%);image-rendering:pixelated;pointer-events:none;user-select:none}
+.world-character.character-art.walking{animation:character-art-step .24s steps(2,end) infinite;transform-origin:50% 100%}
+@keyframes character-art-step{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2px) rotate(1deg)}}
+@media(prefers-reduced-motion:reduce){.world-character.character-art.walking{animation:none;transform:none}}
+.world-character.character-art.standing-character{width:120px;height:160px;margin:0 auto}
