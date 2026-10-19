@@ -8,6 +8,7 @@ after(()=>server.close());
 const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt}=await server.ssrLoadModule('/src/world/maps.ts');
 const {maps:legacyMaps,houses,fieldTownGate,fieldRuinsGate,questions}=await server.ssrLoadModule('/src/content.ts');
 const {chipCatalog,terrainSets}=await server.ssrLoadModule('/src/world/catalog.ts');
+const {mapDecorations}=await server.ssrLoadModule('/src/world/decorations.ts');
 const {moveEnemies,spawnEnemies}=await server.ssrLoadModule('/src/enemyMovement.ts');
 const {bossStages,bossGuardHp,bossQuestion,bossQuestionById,bossCommandResult,bossStrike,bossGuardBroken}=await server.ssrLoadModule('/src/bossBattle.ts');
 
@@ -50,11 +51,12 @@ test('boss mistakes remain available as CLI review questions in every difficulty
   assert.equal(bossQuestionById('guardian-repair-3-beginner'),undefined);
 });
 
-test('all existing cells retain player passability, including doors and furniture',()=>{
+test('terrain passability remains unchanged apart from added furniture',()=>{
   for(const [area,legacy] of Object.entries(legacyMaps)) {
     const blocked=['#','r','o','m','k','l','A','R','Z','W','w','U','V','b','c','T',...(area==='field'?[]:['s'])];
     legacy.tiles.forEach((row,y)=>[...row].forEach((tile,x)=>{
-      assert.equal(canWalkOnMap(worldMaps[area],{x,y}),!blocked.includes(tile),`${area} ${x},${y} (${tile})`);
+      const decorBlocks=(mapDecorations[area]??[]).some(p=>chipCatalog.prop[p.chip].blockedCells.some(offset=>p.x+offset.x===x&&p.y+offset.y===y));
+      assert.equal(canWalkOnMap(worldMaps[area],{x,y}),!blocked.includes(tile)&&!decorBlocks,`${area} ${x},${y} (${tile})`);
     }));
     assert.equal(canWalkOnMap(worldMaps[area],{x:-1,y:0}),false);
     assert.equal(canWalkOnMap(worldMaps[area],{x:0,y:worldMaps[area].height}),false);

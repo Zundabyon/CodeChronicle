@@ -3,12 +3,13 @@ import { areaLabel, difficultyLabel, fieldRegion, fieldRuinsGate, fieldTownGate,
 import { positionOf, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment } from './items';
 import { TerrainTile, TerrainTextures } from './TerrainTile';
-import { worldMaps, eventAt, minimapColorAt } from './world/maps';
+import { worldMaps, eventAt, minimapColorAt, canWalkOnMap } from './world/maps';
 import { terrainChips, propChips, buildingChips, characterChips } from './world/catalog';
 import { WorldChip } from './world/WorldChip';
+import { storyNpcs, storyObjective, type StoryStage } from './story';
 
 type WorldSave = {
-  name: string; area: Area; pos: Point; level: number; hp: number; mp: number;
+  story:StoryStage; name: string; area: Area; pos: Point; level: number; hp: number; mp: number;
   xp: number; defeated: string[]; correct: number; total: number; wrong: string[];
   track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment;
 };
@@ -16,9 +17,11 @@ type WorldSave = {
 type Props = {
   save: WorldSave;
   enemyPositions: EnemyPositions;
+  knightVisible?:boolean;
   menu: 'command'|'status'|'quest'|null;
   onMenu: (menu: 'command'|'status'|'quest'|null) => void;
   onTile: (point: Point) => void;
+  onGuide: () => void;
   onChurch: () => void;
   onInventory: () => void;
   onSettings: () => void;
@@ -55,9 +58,12 @@ function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>vo
   </div>;
 }
 
-export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onInventory,onSettings,onSound,muted,walking}:Props) {
+export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
+  const npcs=storyNpcs(map.npcs,save.story);
+  const objective=storyObjective(save.story,save.bossDefeated);
+  const knightPoint=[{x:save.pos.x+2,y:save.pos.y},{x:save.pos.x+1,y:save.pos.y},{x:save.pos.x-1,y:save.pos.y}].find(point=>canWalkOnMap(map,point))??save.pos;
   const {width,height}=map;
   const viewColumns=Math.min(14,width),viewRows=Math.min(9,height);
   const cameraX=Math.max(0,Math.min(save.pos.x-7,width-viewColumns));
@@ -79,13 +85,13 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onIn
   };
   return <main className="world-stage">
     {outdoor&&<TerrainTextures id={textureId}/>}
-    <div className="world-viewport" style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} aria-label={areaLabel[save.area]}>
+    <div className="world-viewport" style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
       <div className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
         {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((tile,columnIndex)=>{
           const x=firstX+columnIndex,y=firstY+rowIndex;
           const inViewport=x>=cameraX&&x<cameraX+viewColumns&&y>=cameraY&&y<cameraY+viewRows;
           const point={x,y};
-          const npc=map.npcs.find(person=>person.x===x&&person.y===y);
+          const npc=npcs.find(person=>person.x===x&&person.y===y);
           const player=save.pos.x===x&&save.pos.y===y;
           const chip=terrainChips[tile];
           const event=eventAt(map,point,'interact')??eventAt(map,point,'enter');
@@ -104,6 +110,7 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onIn
           {map.props.filter(placement=>visible(placement,propChips[placement.chip].visual)).map(placement=>
             <WorldChip key={placement.id} definition={propChips[placement.chip]} point={placement} text={placement.text}/>)}
           {map.characters.map(character=>{
+            if(character.role==='npc'&&!npcs.some(npc=>npc.id===character.id))return null;
             const enemy=character.role==='enemy'?character.enemy:null;
             const point=enemy?positionOf(enemy,enemyPositions):character;
             const definition=characterChips[character.chip];
@@ -112,22 +119,26 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onIn
               className={enemy?`world-enemy ${enemy.boss?'boss':''}`:'world-npc'}
               label={enemy?`${enemy.name}に近づく`:undefined} onClick={enemy?()=>onTile(point):undefined}/>;
           })}
+          {save.story==='knight'&&knightVisible&&<WorldChip definition={characterChips.knight} point={knightPoint} className="world-knight"/>}
           <WorldChip definition={characterChips.hero} point={save.pos} walking={walking} className="world-hero"/>
         </div>
       </div>
     </div>
     <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
     {save.area==='field'&&<FieldMiniMap position={save.pos} onTile={onTile}/>}
+    {save.story!=='legacy'&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p></aside>}
     <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
-    <div className="world-hint">{interior?'玄関から町へ　•　クリック / 十字キーで移動':save.area==='field'?'十字キー / WASD　•　小地図をクリックして移動':'十字キー / WASD で移動　•　扉から家へ入る'}</div>
-    {menu&&<div className="world-menu retro-window">
+    <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
+    <div className="world-hint">矢印 / WASD：移動　•　Enter：話す・調べる　•　クリック：目的地へ</div>
+    {menu&&<div className="world-menu retro-window" role="region" aria-label="コマンドメニュー">
       <div className="world-menu-title">{menu==='command'?'コマンド':menu==='status'?'つよさ': 'たびのもくてき'}</div>
       {menu==='command'&&<div className="world-menu-items">
         <button onClick={()=>onMenu('status')}>▶ つよさ</button>
-        <button onClick={()=>{onMenu(null);onInventory();}}>▶ もちもの</button>
+        <button data-shortcut="i f2" aria-keyshortcuts="I F2" onClick={()=>{onMenu(null);onInventory();}}>▶ もちもの <kbd className="shortcut-key">I / F2</kbd></button>
         <button onClick={()=>onMenu('quest')}>▶ たびのもくてき</button>
         {save.area==='town'&&<button onClick={()=>{onMenu(null);onChurch();}}>▶ きょうかい</button>}
         <button onClick={()=>{onMenu(null);onSettings();}}>▶ 学習設定</button>
+        <button onClick={onGuide}>▶ 操作方法</button>
         <button onClick={onSound}>▶ おと　{muted?'オフ':'オン'}</button>
         <button onClick={()=>onMenu(null)}>▶ とじる</button>
       </div>}
@@ -144,8 +155,8 @@ export function WorldScene({save,enemyPositions,menu,onMenu,onTile,onChurch,onIn
         <button onClick={()=>onMenu('command')}>◀ もどる</button>
       </div>}
       {menu==='quest'&&<div className="world-menu-detail">
-        <strong>失われた知識の扉</strong>
-        <p>{save.bossDefeated?'守護者を倒し、魔法「見極め」を取り戻した。':'東の忘却の遺跡へ。守護者へ挑むには LV 2 が必要。'}</p>
+        <strong>{objective.title}</strong>
+        <p>{objective.text}</p>
         <p>倒した敵　{save.defeated.length}</p>
         <button onClick={()=>onMenu('command')}>◀ もどる</button>
       </div>}

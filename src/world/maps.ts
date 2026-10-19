@@ -2,6 +2,7 @@ import { maps as legacyMaps, houses, fieldTownGate, fieldRuinsGate, type Area, t
 import { npcSprite, enemySprite } from '../PixelSprite';
 import { terrainChips, propChips, buildingChips, characterChips, type TerrainId, type PropId, type BuildingId, type CharacterId, type ObjectDefinition } from './catalog';
 import { nativeMaps } from './nativeMaps';
+import { mapDecorations } from './decorations';
 
 type Placement<Id> = Point & {
   id: string; chip: Id; blocksMovement?: boolean; text?: string;
@@ -104,7 +105,7 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
   if(area==='town') {
     for(const [id,house] of Object.entries(houses)) {
       buildings.push({id:`house-${id}`,chip:'house',x:house.door.x-2,y:house.door.y-3});
-      const text=id==='weaponShop'?'武器':id==='armorShop'?'防具':id==='itemShop'?'道具':undefined;
+      const text=id==='weaponShop'?'武器':id==='armorShop'?'防具':id==='itemShop'?'道具':id==='elderHouse'?'村長':id==='guestHouse'?'旅籠':undefined;
       if(text) props.push({id:`sign-${id}`,chip:'sign',x:house.door.x,y:house.door.y-.63,text});
     }
     buildings.push({id:'church',chip:'church',x:11,y:12});
@@ -120,14 +121,14 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
     ...legacy.npcs.map(npc=>({id:npc.id,chip:npcSprite(npc.id) as CharacterId,x:npc.x,y:npc.y,role:'npc' as const,npc})),
     ...legacy.enemies.map(enemy=>({id:enemy.id,chip:enemySprite(enemy.id) as CharacterId,x:enemy.x,y:enemy.y,role:'enemy' as const,enemy})),
   ];
-  return createWorldMap({environment,terrain,props,buildings,characters,events,entry:legacy.entry,cellOverrides,
+  return createWorldMap({environment,terrain,props:[...props,...mapDecorations[area]??[]],buildings,characters,events,entry:legacy.entry,cellOverrides,
     backdrop:area==='dungeon'?'maps/dungeon-ground.png':undefined});
 }
 
 const areaIds=[...new Set([...Object.keys(legacyMaps),...Object.keys(nativeMaps)])] as Area[];
 export const worldMaps=Object.fromEntries(areaIds.map(area=>{
   const native=nativeMaps[area],legacy=legacyMaps[area];
-  if(native) return [area,createWorldMap(native)];
+  if(native) return [area,createWorldMap({...native,props:[...native.props,...mapDecorations[area]??[]]})];
   if(legacy) return [area,adaptLegacyMap(area,legacy)];
   throw new Error(`マップが未定義です: ${area}`);
 })) as Record<Area,WorldMap>;

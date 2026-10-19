@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { PixelSprite, faceSprite } from './PixelSprite';
+import { MysteriousKnight } from './MysteriousKnight';
 import { WorldCharacter, type CharacterName } from './WorldCharacter';
 
 const locations: Record<string, [number, number]> = {
@@ -8,6 +9,8 @@ const locations: Record<string, [number, number]> = {
 };
 
 export function CharacterPortrait({face,standing=false}:{face:string;standing?:boolean}) {
+  if(face==='knight')return <MysteriousKnight className="knight-portrait"/>;
+  if(face==='corrupted-hanna')return <span className="corrupted-portrait"><CharacterPortrait face="👩"/></span>;
   const name=faceSprite(face);
   const location=locations[name];
   if (!location) return <span className="narrator-portrait"><PixelSprite name={name}/></span>;
