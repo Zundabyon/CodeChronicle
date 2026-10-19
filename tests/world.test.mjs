@@ -135,7 +135,7 @@ test('enemy spawning and movement respect migrated terrain, props and NPCs',()=>
 
 test('registered image assets exist and terrain themes can be extended independently',async()=>{
   for(const collection of Object.values(chipCatalog)) for(const chip of Object.values(collection)) {
-    const paths=[chip.image,chip.visual?.renderer==='image'?chip.visual.src:undefined,chip.overlay?.src].filter(Boolean);
+    const paths=[chip.image,['image','atlas'].includes(chip.visual?.renderer)?chip.visual.src:undefined,chip.overlay?.src].filter(Boolean);
     for(const path of paths) await access(new URL(`../public/${path}`,import.meta.url));
   }
   for(const set of ['snow','space','hell','underworld','otherworld','cave','abyss']) assert.ok(terrainSets[set]);
@@ -192,4 +192,21 @@ test('fill input trims ends but preserves code case and internal whitespace',()=
   assert.equal(inputIsCorrect(expression,'prev+1'),true);
   assert.equal(inputIsCorrect(expression,'prev + 2'),false);
   assert.equal(inputIsCorrect({...input,accepted:["'a b'"]},"'a  b'"),false);
+});
+
+
+test('prop atlas frames stay within the source and retain object collision rules',()=>{
+  const props=chipCatalog.prop;
+  const images=Object.values(props).filter(prop=>prop.visual.renderer==='atlas');
+  assert.equal(images.length,12);
+  for(const prop of images){
+    const {sourceWidth,sourceHeight,frame:[x,y,width,height]}=prop.visual;
+    assert.ok(x>=0&&y>=0&&width>0&&height>0);
+    assert.ok(x+width<=sourceWidth&&y+height<=sourceHeight,prop.label);
+  }
+  assert.equal(props.rug.blockedCells.length,0);
+  assert.equal(props.flowers.blockedCells.length,0);
+  assert.equal(props.diningTable.blockedCells.length,2);
+  assert.equal(props.bench.blockedCells.length,2);
+  assert.equal(props.well.blockedCells.length,4);
 });
