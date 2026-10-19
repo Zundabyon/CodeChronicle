@@ -1,0 +1,15 @@
+CodeChronicle mysterious knight overworld art
+
+Asset: knight-64.png (64 x 64 RGBA PNG).
+Generated on 2026-10-19 with the built-in image_gen tool, using the imagegen skill.
+Existing hero/elder/mother/wanderer PNGs were inspected as style references.
+Visual direction: https://note.com/am0500_lab/n/n50606ae6f6db
+The article was consulted for the 64px, overhead, 16-bit JRPG and clear pixel shading direction; no article image was copied.
+
+Final generation prompt:
+Use case: stylized-concept. Asset type: one transparent overworld character sprite for CodeChronicle. Create a single full-body mysterious knight in polished 16-bit JRPG pixel art, composed on a square transparent canvas and designed to remain readable at 64x64 pixels. Slightly overhead top-down RPG perspective, facing viewer, standing neutral, compact proportions matching a classic JRPG overworld sprite (large helmet, small detailed torso and short legs). Face completely concealed by a closed silver steel helmet with a black horizontal visor, muted cool blue steel armor, silver highlights, dark purple cape, small gold belt, sword at right side pointing down. Crisp stepped pixel contours, distinct limited-palette pixel shading, no antialiasing, no soft gradients. Sprite occupies roughly x=16..48 and y=7..57 of a 64x64 logical grid. Whole head, cape, boots and sword inside canvas. One character only, no floor, no scenery, no text, no watermark. Match the detail and silhouette scale of existing hero and wanderer sprites in this conversation.
+
+Preparation: cropped to the visible alpha bounds (alpha > 128), nearest-neighbor downsampled to fit 36 x 57, and centered at the bottom of a transparent 64 x 64 canvas while retaining source alpha.
+The original generated output remains at /Users/ogasawarayuki/.codex/generated_images/01a15305-e9f0-78b1-9c78-6eecfed18e50/exec-79069afa-c2b7-4681-af18-b19ecfa0e142.png.
+The existing dialogue portrait SVG is intentionally retained in MysteriousKnight.tsx.
+An unmodified copy of the generated source is included as knight-generated-original.png for integration. The coordinator will replace the prepared 64px derivative with a browser SVG crop of this unmodified source.
