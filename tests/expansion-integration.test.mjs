@@ -4,7 +4,7 @@ import { createServer } from 'vite';
 
 const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
 after(()=>server.close());
-const {worldMaps,reachableMapCells,eventAt,canEnemyOccupyMap}=await server.ssrLoadModule('/src/world/maps.ts');
+const {worldMaps,reachableMapCells,eventAt,canEnemyOccupyMap,canWalkOnMap}=await server.ssrLoadModule('/src/world/maps.ts');
 const {mountainVillageGate,mountainVillageReturn}=await server.ssrLoadModule('/src/world/mountainVillage.ts');
 const {dungeonEntry,dungeonExit}=await server.ssrLoadModule('/src/world/caveLayout.ts');
 const {questions}=await server.ssrLoadModule('/src/content.ts');
@@ -29,7 +29,7 @@ test('nearby village joins the existing cave road with a safe return and rest st
 test('expanded cave keeps entry, exit and guardian accessible and its familiar enemy identities',()=>{
   const map=worldMaps.dungeon,reachable=reachableMapCells(map);
   assert.deepEqual(map.entry,dungeonEntry);
-  const floorCells=map.terrain.flatMap((row,y)=>row.map((_,x)=>({x,y}))).filter(point=>map.terrain[point.y][point.x]==='stoneFloor');
+  const floorCells=map.terrain.flatMap((row,y)=>row.map((_,x)=>({x,y}))).filter(point=>map.terrain[point.y][point.x]==='stoneFloor'&&canWalkOnMap(map,point));
   assert.equal(reachable.size,floorCells.length,'every chamber and dead end is reachable');
   const edges=floorCells.reduce((sum,{x,y})=>sum+[{x:x+1,y},{x,y:y+1}].filter(point=>reachable.has(key(point))).length,0);
   assert.ok(edges>=floorCells.length,'the cave has a loop and more than one route');

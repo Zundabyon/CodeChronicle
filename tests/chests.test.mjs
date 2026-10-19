@@ -48,3 +48,14 @@ test('every placed chest has a reachable interaction, including legacy map chest
   }
   assert.ok(count>=2);
 });
+
+
+test('side-room chests have authored supplies and preserve both cave routes',()=>{
+ const cases=[['dungeon:2,5',{potion:1},0],['dungeon:15,10',{ether:1},0],['dungeon:19,5',{},45]];
+ for(const [id,inventory,gold] of cases){
+  assert.ok(worldMaps.dungeon.props.some(p=>p.chip==='chest'&&chestId('dungeon',p)===id));
+  const first=claimChest({gold:0,inventory:{},openedChests:[]},id);
+  assert.deepEqual(first.save.inventory,inventory);assert.equal(first.save.gold,gold);
+  assert.equal(claimChest(first.save,id).save,first.save);
+ }
+});

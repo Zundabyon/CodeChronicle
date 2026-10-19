@@ -55,6 +55,10 @@ export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
     ['potions',1,1],['potions',2,1],['potions',8,1],['barrel',9,2],
     ['shelf',6,4],['shelf',7,4],['shelf',8,4],
   ]),
+  dungeon:props('dungeon',[
+    // Supplies in side rooms reward exploration without blocking either main route.
+    ['chest',2,5],['chest',15,10],['chest',19,5],
+  ]),
   town:props('town',[
     // Small front gardens; avoid scattering indoor fixtures along the streets.
     ['flowers',2,8],['flowers',11,8],['flowers',21,8],
