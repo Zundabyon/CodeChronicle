@@ -28,7 +28,7 @@ npm run dev
 
 ## 世界を構成するチップ
 
-素材の定義と配置は独立しています。素材は [`src/world/catalog.ts`](src/world/catalog.ts) の4分類に登録し、マップは [`src/world/nativeMaps.ts`](src/world/nativeMaps.ts) に配置します。画像を移動・複製する必要はなく、既存の `public/maps`・`public/sprites` とSVGキャラを利用します。
+素材の定義と配置は独立しています。素材は [`src/world/catalog.ts`](src/world/catalog.ts) の4分類に登録し、マップは [`src/world/nativeMaps.ts`](src/world/nativeMaps.ts) に配置します。画像を移動・複製する必要はなく、既存の `public/maps`・`public/sprites` を利用します。品質基準と分類別の注意点は [`docs/art-direction.md`](docs/art-direction.md) を参照してください。
 
 | 分類 | 登録先 | 内容 |
 | --- | --- | --- |
@@ -99,7 +99,7 @@ events: [
 - 教会では穴埋めも元の形式で復習でき、誤答でHPは減りません。ボスは従来の3段階CLI復旧です。
 
 
-家や町の装飾は `src/world/decorations.ts` にまとめています。食卓・椅子・かまど・本・薬瓶・鉢植え・樽・木箱・井戸・ベンチ・花壇・敷物の素材は `public/maps/props/` のSVGで、素材定義は `catalog.ts` に登録しています。敷物と花壇は通行可能、それ以外の家具は定義した範囲を塞ぎます。出入口や住人への道は到達性テストで確認します。
+家や町の装飾は `src/world/decorations.ts` にまとめています。食卓・椅子・かまど・本・薬瓶・鉢植え・樽・木箱・井戸・ベンチ・花壇・敷物の素材は `public/maps/props/props-atlas-v2.png` にまとめ、切り出し範囲を `src/world/propArt.ts`、素材定義を `catalog.ts` に登録しています。元画像を再加工せず、描画時に範囲を切り出して縦横比を保ちます。生成指示と寸法情報は同じフォルダの `.prompt.txt`・`.json` に保存しています。敷物と花壇は通行可能、それ以外の家具は定義した範囲を塞ぎます。出入口や住人への道は到達性テストで確認します。
 
 
 物語の導入は `src/story.ts` にまとめています。新しい冒険では、自宅の朝 → 旅籠の女将ハンナの異変 → 村長の家で依頼 → 遺跡の守護者 → 謎の騎士との遭遇 → 見極めの習得 → 教会で女将を救出、の順で進みます。会話の最後まで読むと次の目的が保存され、途中で再読込しても必要な会話を飛ばしません。旧セーブは導入を強制しない互換モードで読み込みます。新しい導入を見る場合は「新しい冒険を始める」を選んでください。
