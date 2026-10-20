@@ -80,8 +80,6 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
       if(tile==='#') buildings.push({id:`wall-${x}-${y}`,chip:'plasterWall',x,y});
       const furniture:Partial<Record<string,PropId>>={T:'dresser',b:'bed',s:'shelf',c:'chest'};
       if(furniture[tile]) addProp(furniture[tile]!,x,y);
-      if(y===0&&x===2) addProp('toolRack',x,y);
-      if(y===0&&x===8) addProp('wallSword',x,y);
       if(tile==='T') event(x,y,'interact','タンスを調べる',{kind:'dresser'});
       if(tile==='e') event(x,y,'enter','町へ出る',{kind:'transition',to:'town'});
       return 'woodFloor';

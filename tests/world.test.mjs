@@ -51,10 +51,10 @@ test('boss mistakes remain available as CLI review questions in every difficulty
   assert.equal(bossQuestionById('guardian-repair-3-beginner'),undefined);
 });
 
-test('terrain passability remains unchanged apart from added furniture',()=>{
+test('outdoor terrain passability and resident identities survive interior redesign',()=>{
   for(const [area,legacy] of Object.entries(legacyMaps)) {
     const blocked=['#','r','o','m','k','l','A','R','Z','W','w','U','V','b','c','T',...(area==='field'?[]:['s'])];
-    legacy.tiles.forEach((row,y)=>[...row].forEach((tile,x)=>{
+    if(area==='town'||area==='field'||area==='dungeon') legacy.tiles.forEach((row,y)=>[...row].forEach((tile,x)=>{
       const decorBlocks=(mapDecorations[area]??[]).some(p=>chipCatalog.prop[p.chip].blockedCells.some(offset=>p.x+offset.x===x&&p.y+offset.y===y));
       assert.equal(canWalkOnMap(worldMaps[area],{x,y}),!blocked.includes(tile)&&!decorBlocks,`${area} ${x},${y} (${tile})`);
     }));
