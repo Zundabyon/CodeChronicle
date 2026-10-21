@@ -1,3 +1,4 @@
+import { SaveStatus } from './SaveStatus';
 import { nearbyInteraction } from './world/interactions';
 import { ResumeSummary } from './ResumeSummary';
 import { LearningSetupHelp } from './LearningSetupHelp';
@@ -120,6 +121,7 @@ export function App() {
   const {muted,volume}=audioPreferences;
   const [epilogueStep,setEpilogueStep] = useState(0);
   const [toast,setToast] = useState('');
+  const [saveFailed,setSaveFailed]=useState(false);
   const stateRef = useRef(save); const phaseRef = useRef(phase); const dialogueRef = useRef(dialogue);
   const enemyPositionsRef = useRef(enemyPositions);
   const facingRef = useRef<Point>({x:0,y:-1});
@@ -141,12 +143,16 @@ export function App() {
     window.addEventListener('pointerdown',unlock,true);window.addEventListener('keydown',unlock,true);
     return ()=>{window.removeEventListener('pointerdown',unlock,true);window.removeEventListener('keydown',unlock,true);};
   },[]);
+  const persistSave=useCallback((current:Save)=>{
+    try {
+      const savedAt=Date.now();localStorage.setItem(STORAGE,JSON.stringify({...current,lastSavedAt:savedAt}));
+      setLastSavedAt(savedAt);setSaveFailed(false);
+    } catch {setSaveFailed(true);}
+  },[]);
   useEffect(() => {
     stateRef.current = save;
-    if(hasSave&&phaseRef.current!=='title') {
-      const savedAt=Date.now();localStorage.setItem(STORAGE,JSON.stringify({...save,lastSavedAt:savedAt}));setLastSavedAt(savedAt);
-    }
-  },[save,hasSave]);
+    if(hasSave&&phaseRef.current!=='title')persistSave(save);
+  },[save,hasSave,persistSave]);
   useEffect(() => { phaseRef.current = phase; },[phase]);
   useEffect(() => { dialogueRef.current = dialogue; },[dialogue]);
   useEffect(() => { enemyPositionsRef.current = enemyPositions; },[enemyPositions]);
@@ -520,6 +526,7 @@ export function App() {
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }
     {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
+    {hasSave&&<SaveStatus failed={saveFailed} savedAt={lastSavedAt} onRetry={()=>persistSave(stateRef.current)}/>}
     {toast&&<div className="toast">✦ {toast}</div>}
   </div>;
 }
