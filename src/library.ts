@@ -112,3 +112,9 @@ const knownBookIds=new Set(libraryShelves.flatMap(shelf=>shelf.books.map(book=>b
 export function normalizeReadBooks(value:unknown):string[] {
   return Array.isArray(value)?[...new Set(value.filter((id):id is string=>typeof id==='string'&&knownBookIds.has(id)))]:[];
 }
+
+export function normalizeBookmarks(value:unknown):Record<string,string> {
+  if(!value||typeof value!=='object'||Array.isArray(value))return {};
+  return Object.fromEntries(Object.entries(value).filter(([shelfId,bookId])=>
+    typeof bookId==='string'&&libraryShelves.some(shelf=>shelf.id===shelfId&&shelf.books.some(book=>book.id===bookId))));
+}
