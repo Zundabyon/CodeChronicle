@@ -35,11 +35,12 @@ type Dialogue = { speaker: string; face: string; lines: (string|StoryLine)[]; in
 type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
 const STORAGE = 'code-chronicle-save-v1';
+const BACKUP_STORAGE='code-chronicle-save-backup-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
 const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
-const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,openedChests:normalizeOpenedChests(parsed.openedChests),readBooks:normalizeReadBooks(parsed.readBooks),bookmarks:normalizeBookmarks(parsed.bookmarks),story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area]) return {...saved,area:'town',pos:maps.town.entry}; return {...saved,pos:restoreMapPosition(maps[saved.area],saved.pos)}; } catch { return null; } };
+const loadSave = (storageKey=STORAGE): Save | null => { try { const raw = localStorage.getItem(storageKey); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; if(storageKey===BACKUP_STORAGE&&(!parsed||typeof parsed!=='object'||typeof parsed.name!=='string'||typeof parsed.level!=='number'||!Number.isFinite(parsed.level)||!parsed.area||!parsed.pos))return null; const saved={...defaults,...parsed,openedChests:normalizeOpenedChests(parsed.openedChests),readBooks:normalizeReadBooks(parsed.readBooks),bookmarks:normalizeBookmarks(parsed.bookmarks),story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area]) return {...saved,area:'town',pos:maps.town.entry}; return {...saved,pos:restoreMapPosition(maps[saved.area],saved.pos)}; } catch { return null; } };
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
@@ -97,6 +98,7 @@ export function App() {
   const [save,setSave] = useState<Save>(() => loadSave() ?? initialSave());
   const [enemyPositions,setEnemyPositions] = useState<EnemyPositions>(() => spawnEnemies(save.defeated));
   const [hasSave,setHasSave] = useState(() => !!loadSave());
+  const [backup,setBackup]=useState<Save|null>(()=>loadSave(BACKUP_STORAGE));
   const [phase,setPhase] = useState<Phase>('title');
   const [lastSavedAt,setLastSavedAt]=useState<number|null>(()=>typeof save.lastSavedAt==='number'&&Number.isFinite(save.lastSavedAt)&&save.lastSavedAt>0&&save.lastSavedAt<=8640000000000000?save.lastSavedAt:null);
   const [introIndex,setIntroIndex] = useState(0);
@@ -469,7 +471,22 @@ export function App() {
     const item=items[id]; if((stateRef.current.inventory[id]??0)<1 || (item.kind!=='weapon'&&item.kind!=='armor')) return;
     update(s=>({...s,equipment:{...s.equipment,[item.kind]:id}})); setToast(`${item.name}を装備した！`); beep(760,0.12);
   };
-  const startNew = () => { const previous=stateRef.current; const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; setSetup({name:hasSave?previous.name:'',track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}); const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(false);setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowGuide(false);setShowSettings(false); setInventoryOpen(false); setDresserOpen(false); setShopType(null); setIntroIndex(0); setPhase('prologue'); beep(600,0.2); };
+  const restoreBackup=()=>{
+    if(!backup)return;
+    const restored={...backup,lastSavedAt:Date.now()};
+    try {localStorage.setItem(STORAGE,JSON.stringify(restored));}
+    catch {setToast('復元できませんでした。今の冒険は変更していません。');return;}
+    update(()=>restored);setHasSave(true);setLastSavedAt(restored.lastSavedAt);setSaveFailed(false);
+    const positions=spawnEnemies(restored.defeated);enemyPositionsRef.current=positions;setEnemyPositions(positions);
+    npcTalkCounts.current={};setToast('前の冒険を復元しました。「続きから始める」で再開できます。');
+  };
+  const startNew = () => { const previous=stateRef.current;
+    if(hasSave){
+      const snapshot={...previous,lastSavedAt:Date.now()};
+      try {localStorage.setItem(BACKUP_STORAGE,JSON.stringify(snapshot));setBackup(snapshot);}
+      catch {setToast('前の冒険を保護できませんでした。新しい冒険はまだ始めていません。');return;}
+    }
+    const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; setSetup({name:hasSave?previous.name:'',track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}); const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(false);setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowGuide(false);setShowSettings(false); setInventoryOpen(false); setDresserOpen(false); setShopType(null); setIntroIndex(0); setPhase('prologue'); beep(600,0.2); };
   const finishPrologue = () => { setPhase('setup'); beep(620,0.14); };
   const beginAdventure = () => { const name=setup.name.trim(); if(!name) return; update(s=>({...s,name,track:setup.track,difficulty:setup.difficulty,inertia:setup.inertia,area:'home',pos:maps.home.entry})); setHasSave(true); setPhase('world'); playStory(wakingScene); };
   const startReview = (q: Question) => { const enemy: Enemy={id:'review',name:'リトライシャドウ',attackName:'記憶のささやき',x:0,y:0,icon:'♧'}; startBattle(enemy,true,q); };
@@ -484,7 +501,7 @@ export function App() {
 
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
-    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p>{hasSave&&<ResumeSummary save={save} savedAt={lastSavedAt}/>}<div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
+    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p>{hasSave&&<ResumeSummary save={save} savedAt={lastSavedAt}/>}<div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div>{backup&&<details className="resume-summary backup-summary"><summary>保護した前の冒険</summary><p>{backup.name}　LV {backup.level} · {areaLabel[backup.area]}</p><p>復元すると、現在の冒険はこのデータに置き換わります。</p><button onClick={restoreBackup}>この冒険を復元する</button></details>}<p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
     {phase==='prologue' && <main className="prologue-screen">
       <div className="prologue-layout">
         <div className="prologue-art" key={introIndex} role="img" aria-label={intro.title} style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/${introIndex<4?'ancient-and-fall':'family-and-dawn'}.png)`,backgroundPosition:`${introIndex%2?100:0}% ${Math.floor((introIndex%4)/2)?100:0}%`}}>
