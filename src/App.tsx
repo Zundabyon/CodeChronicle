@@ -13,6 +13,8 @@ import { BattleStage } from './BattleStage';
 import { bossStages, bossGuardHp, bossQuestion, bossQuestionById, bossCommandResult, bossStrike, bossGuardBroken } from './bossBattle';
 import { BattleEncounter } from './BattleEncounter';
 import { QuestionCode } from './QuestionCode';
+import { LibraryPanel } from './LibraryPanel';
+import { libraryShelves, type LibraryShelf } from './library';
 import { ReviewRoom } from './ReviewRoom';
 import { selectQuestion, isChoiceQuestion, isFillQuestion, inputIsCorrect } from './questionSelection';
 import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
@@ -30,7 +32,7 @@ const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
 const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
-const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area] || !walkable(saved.area,saved.pos)) return {...saved,area:'town',pos:maps.town.entry}; return saved; } catch { return null; } };
+const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area]) return {...saved,area:'town',pos:maps.town.entry}; if(!walkable(saved.area,saved.pos)) return {...saved,pos:maps[saved.area].entry}; return saved; } catch { return null; } };
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
@@ -39,7 +41,7 @@ function pathfind(area: Area, start: Point, goal: Point, defeated: string[], pos
   for(let head=0;head<queue.length;head++) {
     const p = queue[head];
     if (same(p,goal)) { const path: Point[] = []; let key = `${p.x},${p.y}`; while (key !== `${start.x},${start.y}`) { const [x,y] = key.split(',').map(Number); path.unshift({x,y}); key = parents.get(key)!; } return path; }
-    for (const next of neighbors(p)) { const key = `${next.x},${next.y}`; const blocked=storyNpcs(maps[area].npcs,story).some(n=>same(n,next)) || !!enemyAt(area,next,positions,defeated); if (!seen.has(key) && walkable(area,next) && !blocked) { seen.add(key); parents.set(key,`${p.x},${p.y}`); queue.push(next); } }
+    for (const next of neighbors(p)) { const key = `${next.x},${next.y}`; const blocked=storyNpcs(maps[area].npcs,story).some(n=>same(n,next)) || !!enemyAt(area,next,positions,defeated); if (!seen.has(key) && walkable(area,next) && !blocked && (same(next,goal) || eventAt(maps[area],next,'enter')?.action.kind!=='transition')) { seen.add(key); parents.set(key,`${p.x},${p.y}`); queue.push(next); } }
   }
   return [];
 }
@@ -100,6 +102,7 @@ export function App() {
   const [showGuide,setShowGuide] = useState(false);
   const [worldMenu,setWorldMenu] = useState<'command'|'status'|'quest'|null>(null);
   const [inventoryOpen,setInventoryOpen] = useState(false);
+  const [libraryShelf,setLibraryShelf] = useState<LibraryShelf|null>(null);
   const [dresserOpen,setDresserOpen] = useState(false);
   const [dresserFound,setDresserFound] = useState(false);
   const [readingLetter,setReadingLetter] = useState(false);
@@ -149,6 +152,12 @@ export function App() {
   },[startDialogue]);
   const talkToNpc = useCallback((npc: Npc) => {
     const stage=stateRef.current.story;
+    if(npc.id==='mountainHealer') {
+      startDialogue(npc.name,npc.face,[...npc.lines,'温かな灯りのそばでひと休みした。HPとMPが全回復した。'],undefined,()=>{
+        update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));
+        setToast('HPとMPが全回復した。');
+      }); return;
+    }
     if(npc.id==='innkeeper'&&stage==='breakfast') {
       playStory(breakfastScene,()=>{
         update(s=>({...s,story:'mayor',area:'town',pos:houses.guestHouse.outside}));
@@ -179,6 +188,10 @@ export function App() {
     if(first) { update(s=>({...s,dresserOpened:true,inventory:{...s.inventory,familyLetter:1,herb:(s.inventory.herb??0)+1}})); setToast('家族の手紙とやくそうを手に入れた！'); }
     setDresserFound(first); setReadingLetter(false); setDresserOpen(true); beep(640,0.12);
   },[stopPath,update,beep]);
+  const openBookshelf = useCallback((id:string) => {
+    const shelf=libraryShelves.find(item=>item.id===id);
+    if(shelf) { stopPath(); setLibraryShelf(shelf); beep(640,0.08); }
+  },[stopPath,beep]);
   const advanceDialogue = useCallback(() => {
     const prev=dialogueRef.current;
     if(!prev)return;
@@ -202,7 +215,7 @@ export function App() {
     setBattleInput(''); setBattleNote(''); phaseRef.current='encounter'; setPhase('encounter'); beep(180,0.3);
   },[stopPath,beep,startDialogue]);
   useEffect(() => {
-    if (phase !== 'world' || dialogue || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || shopType || !maps[save.area].enemies.length) return;
+    if (phase !== 'world' || dialogue || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType || !maps[save.area].enemies.length) return;
     const timer = setInterval(() => {
       if (pathTimer.current || phaseRef.current !== 'world' || dialogueRef.current) return;
       const current = enemyPositionsRef.current;
@@ -210,7 +223,7 @@ export function App() {
       if (next !== current) { enemyPositionsRef.current = next; setEnemyPositions(next); }
     },1150);
     return () => clearInterval(timer);
-  },[phase,save.area,save.defeated,dialogue,showSettings,showGuide,worldMenu,inventoryOpen,dresserOpen,shopType]);
+  },[phase,save.area,save.defeated,dialogue,showSettings,showGuide,worldMenu,inventoryOpen,dresserOpen,libraryShelf,shopType]);
   const visitHanna = useCallback(()=>{
     stopPath();setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));
     if(stateRef.current.story==='homecoming') {
@@ -237,10 +250,12 @@ export function App() {
   },[update,stopPath,startDialogue,beep]);
   const step = useCallback((dx: number,dy: number): boolean => {
     const s=stateRef.current;
-    if (phaseRef.current!=='world' || dialogueRef.current || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || shopType) return false;
+    if (phaseRef.current!=='world' || dialogueRef.current || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType) return false;
     facingRef.current={x:dx,y:dy};
     const target={x:s.pos.x+dx,y:s.pos.y+dy};
-    if (eventAt(maps[s.area],target,'interact')?.action.kind==='dresser') { openDresser(); return false; }
+    const interaction=eventAt(maps[s.area],target,'interact')?.action;
+    if(interaction?.kind==='bookshelf') { openBookshelf(interaction.shelf); return false; }
+    if (interaction?.kind==='dresser') { openDresser(); return false; }
     if (!walkable(s.area,target)) { beep(130,0.05); return false; }
     const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target));
     if (npc) { talkToNpc(npc); return false; }
@@ -254,7 +269,7 @@ export function App() {
     if (action?.kind==='church') { enterChurch(); return false; }
     if (action?.kind==='transition') { transition(s.area,action.to,action.position); return false; }
     return true;
-  },[showSettings,showGuide,worldMenu,inventoryOpen,dresserOpen,shopType,openDresser,talkToNpc,startBattle,update,beep,enterChurch,transition]);
+  },[showSettings,showGuide,worldMenu,inventoryOpen,dresserOpen,libraryShelf,shopType,openDresser,openBookshelf,talkToNpc,startBattle,update,beep,enterChurch,transition]);
   const interact = useCallback(() => {
     stopPath();
     const s=stateRef.current, map=maps[s.area];
@@ -263,17 +278,19 @@ export function App() {
     for (const point of targets) {
       const npc=storyNpcs(map.npcs,s.story).find(person=>same(person,point));
       if (npc) { talkToNpc(npc); return; }
-      if (eventAt(map,point,'interact')?.action.kind==='dresser') { openDresser(); return; }
+      const action=eventAt(map,point,'interact')?.action;
+      if(action?.kind==='bookshelf') { openBookshelf(action.shelf); return; }
+      if (action?.kind==='dresser') { openDresser(); return; }
     }
     setToast('隣に人や調べられるものがない。近づいてEnterを押そう。');
-  },[stopPath,talkToNpc,openDresser]);
+  },[stopPath,talkToNpc,openDresser,openBookshelf]);
   const navigationScope = () => Array.from(document.querySelectorAll('.modal-backdrop')).at(-1)
     ?? document.querySelector('.dialogue-overlay')
     ?? document.querySelector('.world-menu')
     ?? document.querySelector('main');
   useEffect(() => {
     const scope=navigationScope();
-    if (phase==='world' && !dialogue && !worldMenu && !showGuide && !showSettings && !inventoryOpen && !dresserOpen && !shopType) {
+    if (phase==='world' && !dialogue && !worldMenu && !showGuide && !showSettings && !inventoryOpen && !dresserOpen && !libraryShelf && !shopType) {
       document.querySelector<HTMLElement>('.world-viewport')?.focus({preventScroll:true});
       return;
     }
@@ -282,11 +299,12 @@ export function App() {
       ?? scope?.querySelector<HTMLElement>('input:not(:disabled):not([type="checkbox"]):not([type="range"])')
       ?? scope?.querySelector<HTMLElement>('button:not(:disabled)');
     target?.focus({preventScroll:true});
-  },[phase,dialogue?.index,!!dialogue,worldMenu,showGuide,showSettings,inventoryOpen,dresserOpen,shopType,battle?.question.id,battle?.answered,attackAnimating]);
+  },[phase,dialogue?.index,!!dialogue,worldMenu,showGuide,showSettings,inventoryOpen,dresserOpen,libraryShelf,shopType,battle?.question.id,battle?.answered,attackAnimating]);
   useEffect(() => { const onKey=(e: KeyboardEvent) => {
     if (e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
     const target=e.target instanceof HTMLElement ? e.target : null;
     if (e.key==='Escape') {
+      if (libraryShelf) { e.preventDefault(); setLibraryShelf(null); return; }
       if (showGuide) { e.preventDefault(); setShowGuide(false); return; }
       if (showSettings) { e.preventDefault(); setShowSettings(false); return; }
       if (inventoryOpen) { e.preventDefault(); setInventoryOpen(false); return; }
@@ -297,7 +315,7 @@ export function App() {
     if (activateButtonShortcut(e,navigationScope())) return;
     if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
     const choosing=!!dialogueRef.current && dialogueRef.current.index===dialogueRef.current.lines.length-1 && !!dialogueRef.current.choices?.length;
-    if (showGuide || showSettings || inventoryOpen || dresserOpen || shopType || worldMenu || choosing || phaseRef.current!=='world') {
+    if (showGuide || showSettings || inventoryOpen || dresserOpen || libraryShelf || shopType || worldMenu || choosing || phaseRef.current!=='world') {
       if (e.key==='Escape' && worldMenu) { e.preventDefault(); setWorldMenu(null); return; }
       moveButtonFocus(e,navigationScope());
       // Native buttons handle Enter / Space; ignore held keys to avoid double decisions.
@@ -312,15 +330,15 @@ export function App() {
     }
     const dirs: Record<string,[number,number]>={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
     if (dirs[e.key.toLowerCase()] ?? dirs[e.key]) { e.preventDefault(); stopPath(); if(target?.closest('button')) document.querySelector<HTMLElement>('.world-viewport')?.focus({preventScroll:true}); step(...(dirs[e.key.toLowerCase()] ?? dirs[e.key])); }
-  }; window.addEventListener('keydown',onKey); return ()=>window.removeEventListener('keydown',onKey); },[step,interact,advanceDialogue,showGuide,showSettings,inventoryOpen,dresserOpen,shopType,stopPath,worldMenu]);
+  }; window.addEventListener('keydown',onKey); return ()=>window.removeEventListener('keydown',onKey); },[step,interact,advanceDialogue,showGuide,showSettings,inventoryOpen,dresserOpen,libraryShelf,shopType,stopPath,worldMenu]);
   useEffect(() => () => { stopPath(); if(walkTimer.current) clearTimeout(walkTimer.current); if(attackTimer.current) clearTimeout(attackTimer.current); },[stopPath]);
   const clickTile = (target: Point) => {
-    if (phase!=='world' || dialogue || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || shopType) return;
-    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const dresser=eventAt(map,target,'interact')?.action.kind==='dresser';
+    if (phase!=='world' || dialogue || showSettings || showGuide || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType) return;
+    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action;
     let destination=target;
-    if (npc || enemy || dresser) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
+    if (npc || enemy || interaction) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
     const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current,s.story); if (!route.length && !same(s.pos,destination)) return;
-    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (dresser) openDresser(); } },105);
+    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='bookshelf') openBookshelf(interaction.shelf); } },105);
   };
   const answer = (value: string | number) => {
     if (!battle || battle.answered) return;
@@ -455,6 +473,7 @@ export function App() {
     {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card"><span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'守護者の目に静かな光が戻った。「私は知識を守る者。魔王の声に、務めさえ忘れていた……」。開いた扉の先から、失われた知識があふれ出す。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'正気に戻った守護者が訓練用の問いを示した。見極めで偽りを見破り、答えよう。この力を、ハンナのもとへ持ち帰るために。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,selectQuestion(questions,stateRef.current,Math.random,true));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><img className="clear-symbol" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>{save.story==='rescued'?'今度は、助けられた。':'最初の扉は、開かれた。'}</h1><p>{save.story==='rescued'?'ハンナの魔物化を止め、あなたのことを思い出してもらえた。世界の知識を救う旅と、騎士の証言を手がかりに両親の行方を確かめる旅が、ここから始まる。':'失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。'}</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&phase==='world'&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogueFace??'📜'}/></div><div className="dialogue-text"><strong>{dialogueSpeaker}</strong><p>{dialogueText}</p>{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<DialogueChoices choices={dialogue.choices} onChoose={choice=>{setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined});beep(720,0.08);}}/>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}
+    {libraryShelf&&<LibraryPanel key={libraryShelf.id} shelf={libraryShelf} onClose={()=>setLibraryShelf(null)}/> }
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }

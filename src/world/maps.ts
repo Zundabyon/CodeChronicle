@@ -1,7 +1,10 @@
 import { maps as legacyMaps, houses, fieldTownGate, fieldRuinsGate, type Area, type MapData, type Point, type Npc, type Enemy } from '../content';
 import { npcSprite, enemySprite } from '../PixelSprite';
 import { terrainChips, propChips, buildingChips, characterChips, type TerrainId, type PropId, type BuildingId, type CharacterId, type ObjectDefinition } from './catalog';
+import { libraryShelves, libraryFloors } from '../library';
 import { nativeMaps } from './nativeMaps';
+import { dungeonExit } from './caveLayout';
+import { mountainVillageGate } from './mountainVillage';
 import { mapDecorations } from './decorations';
 
 type Placement<Id> = Point & {
@@ -13,7 +16,7 @@ export type CharacterPlacement = Placement<CharacterId> & (
   | {role:'npc'; npc:Npc}
   | {role:'enemy'; enemy:Enemy}
 );
-export type MapAction = {kind:'dresser'} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
+export type MapAction = {kind:'bookshelf';shelf:string} | {kind:'dresser'} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
 export type MapEvent = Point & {id:string; trigger:'enter'|'interact'; label:string; action:MapAction};
 export type WorldMapInput = {
   environment:'outdoor'|'interior'|'dungeon';
@@ -69,6 +72,7 @@ export function createWorldMap(input:WorldMapInput):WorldMap {
 // The old letter grids remain source data during migration. Only this function
 // interprets them; gameplay and rendering consume the four-category map.
 export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
+  const libraryFloor=libraryFloors.find(floor=>floor.area===area);
   const environment=area==='town'||area==='field'?'outdoor':area==='dungeon'?'dungeon':'interior';
   const props:PropPlacement[]=[],buildings:BuildingPlacement[]=[],events:MapEvent[]=[];
   const cellOverrides:NonNullable<WorldMapInput['cellOverrides']>={};
@@ -80,8 +84,8 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
       if(tile==='#') buildings.push({id:`wall-${x}-${y}`,chip:'plasterWall',x,y});
       const furniture:Partial<Record<string,PropId>>={T:'dresser',b:'bed',s:'shelf',c:'chest'};
       if(furniture[tile]) addProp(furniture[tile]!,x,y);
-      if(y===0&&x===2) addProp('toolRack',x,y);
-      if(y===0&&x===8) addProp('wallSword',x,y);
+      if(!libraryFloor&&y===0&&x===2) addProp('toolRack',x,y);
+      if(!libraryFloor&&y===0&&x===8) addProp('wallSword',x,y);
       if(tile==='T') event(x,y,'interact','タンスを調べる',{kind:'dresser'});
       if(tile==='e') event(x,y,'enter','町へ出る',{kind:'transition',to:'town'});
       return 'woodFloor';
@@ -102,27 +106,56 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
     }
     return 'gdDf'.includes(tile)?'road':'grass';
   }));
+  if(libraryFloor) {
+    for(const shelf of libraryShelves.filter(shelf=>shelf.wing===libraryFloor.wing&&shelf.floor===libraryFloor.floor)) {
+      event(shelf.x,shelf.y,'interact',`${shelf.language}・${shelf.topic}の本棚を読む`,{kind:'bookshelf',shelf:shelf.id});
+      props.push({id:`label-${shelf.id}`,chip:'sign',x:shelf.x,y:shelf.y-.7,text:shelf.topic});
+    }
+    const stairs=(x:number,label:string,to:Area,position:Point)=>{
+      addProp('stairs',x,6,false);
+      props.push({id:`stairs-label-${x}`,chip:'sign',x,y:5.4,text:label});
+      event(x,6,'enter',label,{kind:'transition',to,position});
+    };
+    const above=libraryFloors.find(floor=>floor.wing===libraryFloor.wing&&floor.floor===libraryFloor.floor+1);
+    const below=libraryFloors.find(floor=>floor.wing===libraryFloor.wing&&floor.floor===libraryFloor.floor-1);
+    if(above) stairs(9,`${above.floor}階へ ▲`,above.area,{x:1,y:5});
+    if(below) stairs(1,`${below.floor}階へ ▼`,below.area,{x:9,y:5});
+    if(area==='scholarHouse'||area==='backendLibrary') {
+      const west=area==='scholarHouse',x=west?10:0;
+      const label=west?'東棟・バックエンドへ':'西棟・フロントエンドへ';
+      event(x,4,'enter',label,{kind:'transition',to:west?'backendLibrary':'scholarHouse',position:{x:west?1:9,y:4}});
+      props.push({id:'connecting-hall-label',chip:'sign',x:west?9:1,y:3.5,text:west?'東棟へ ▶':'◀ 西棟へ'});
+    }
+  }
   if(area==='town') {
     for(const [id,house] of Object.entries(houses)) {
       buildings.push({id:`house-${id}`,chip:'house',x:house.door.x-2,y:house.door.y-3});
-      const text=id==='weaponShop'?'武器':id==='armorShop'?'防具':id==='itemShop'?'道具':id==='elderHouse'?'村長':id==='guestHouse'?'旅籠':undefined;
+      const text=id==='weaponShop'?'武器':id==='armorShop'?'防具':id==='itemShop'?'道具':id==='elderHouse'?'村長':id==='guestHouse'?'旅籠':id==='scholarHouse'?'西棟・フロントエンド':id==='backendLibrary'?'東棟・バックエンド':undefined;
       if(text) props.push({id:`sign-${id}`,chip:'sign',x:house.door.x,y:house.door.y-.63,text});
     }
+    props.push({id:'library-connecting-hall',chip:'libraryHall',x:24.5,y:5.4});
     buildings.push({id:'church',chip:'church',x:11,y:12});
     event(14,31,'enter','平原へ出る',{kind:'transition',to:'field'});
   }
   if(area==='field') {
+    buildings.push({id:'mountain-village-gate',chip:'villageGate',x:mountainVillageGate.x-1,y:mountainVillageGate.y-2});
+    props.push({id:'mountain-village-sign',chip:'sign',x:mountainVillageGate.x,y:mountainVillageGate.y-.6,text:'石灯の村'});
+    event(mountainVillageGate.x,mountainVillageGate.y,'enter','石灯の村へ',{kind:'transition',to:'village'});
     buildings.push({id:'ruins-gate',chip:'ruinsGate',x:fieldRuinsGate.x-1,y:fieldRuinsGate.y-1});
     event(fieldTownGate.x,fieldTownGate.y,'enter','町へ入る',{kind:'transition',to:'town'});
     event(fieldRuinsGate.x,fieldRuinsGate.y,'enter','遺跡への門',{kind:'transition',to:'dungeon'});
   }
-  if(area==='dungeon') event(10,11,'enter','平原へ出る',{kind:'transition',to:'field'});
+  if(area==='dungeon') {
+    event(dungeonExit.x,dungeonExit.y,'enter','平原へ出る',{kind:'transition',to:'field'});
+    props.push({id:'dungeon-exit-sign',chip:'sign',x:dungeonExit.x,y:dungeonExit.y-.45,text:'出口 ▼'});
+    props.push({id:'dungeon-entry-lantern',chip:'lantern',x:dungeonExit.x-1,y:dungeonExit.y-1});
+  }
   const characters:CharacterPlacement[]=[
     ...legacy.npcs.map(npc=>({id:npc.id,chip:npcSprite(npc.id) as CharacterId,x:npc.x,y:npc.y,role:'npc' as const,npc})),
     ...legacy.enemies.map(enemy=>({id:enemy.id,chip:enemySprite(enemy.id) as CharacterId,x:enemy.x,y:enemy.y,role:'enemy' as const,enemy})),
   ];
   return createWorldMap({environment,terrain,props:[...props,...mapDecorations[area]??[]],buildings,characters,events,entry:legacy.entry,cellOverrides,
-    backdrop:area==='dungeon'?'maps/dungeon-ground.png':undefined});
+    backdrop:undefined});
 }
 
 const areaIds=[...new Set([...Object.keys(legacyMaps),...Object.keys(nativeMaps)])] as Area[];

@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import { access } from 'node:fs/promises';
 import { createServer } from 'vite';
 
-const server=await createServer({server:{middlewareMode:true,hmr:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
 after(()=>server.close());
 const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt}=await server.ssrLoadModule('/src/world/maps.ts');
+const {dungeonExit}=await server.ssrLoadModule('/src/world/caveLayout.ts');
 const {maps:legacyMaps,houses,fieldTownGate,fieldRuinsGate,questions}=await server.ssrLoadModule('/src/content.ts');
 const {chipCatalog,terrainSets}=await server.ssrLoadModule('/src/world/catalog.ts');
 const {mapDecorations}=await server.ssrLoadModule('/src/world/decorations.ts');
@@ -76,7 +77,7 @@ test('house, church, field, ruins and dresser actions survive migration',()=>{
   assert.deepEqual(eventAt(worldMaps.field,fieldTownGate,'enter').action,{kind:'transition',to:'town'});
   assert.deepEqual(eventAt(worldMaps.field,fieldRuinsGate,'enter').action,{kind:'transition',to:'dungeon'});
   assert.deepEqual(eventAt(worldMaps.town,{x:14,y:31},'enter').action,{kind:'transition',to:'field'});
-  assert.deepEqual(eventAt(worldMaps.dungeon,{x:10,y:11},'enter').action,{kind:'transition',to:'field'});
+  assert.deepEqual(eventAt(worldMaps.dungeon,dungeonExit,'enter').action,{kind:'transition',to:'field'});
 });
 
 const example=()=>({environment:'outdoor',entry:{x:0,y:0},terrain:Array.from({length:6},()=>Array(7).fill('grass')),

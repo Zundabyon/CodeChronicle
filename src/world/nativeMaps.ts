@@ -1,3 +1,4 @@
+import { mountainVillage } from './mountainVillage';
 import type { Area } from '../content';
 import type { WorldMapInput, BuildingPlacement } from './maps';
 
@@ -8,6 +9,7 @@ const walls:BuildingPlacement[]=Array.from({length:9},(_,y)=>Array.from({length:
   .map(point=>({...point,id:`wall-${point.x}-${point.y}`,chip:'plasterWall'}));
 
 export const nativeMaps:Partial<Record<Area,WorldMapInput>>={
+  village:mountainVillage,
   home:{
     environment:'interior',entry:{x:5,y:7},
     terrain:Array.from({length:9},()=>Array(11).fill('woodFloor')),
