@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "build": "tsc -b && vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "preview": "vite preview --host 0.0.0.0",
+    "check:art": "node scripts/check-art-assets.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

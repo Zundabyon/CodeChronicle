@@ -12,6 +12,14 @@ type Props = {
 function ChipVisual({visual,walking,text}:{visual:Visual;walking:boolean;text?:string}) {
   if(visual.renderer==='person') return <WorldCharacter name={visual.name} walking={walking}/>;
   if(visual.renderer==='sprite') return <PixelSprite name={visual.name}/>;
+  if(visual.renderer==='atlas') {
+    const [x,y,width,height]=visual.frame;
+    return <svg className="world-atlas-sprite" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMax meet" overflow="hidden" aria-hidden="true">
+      <svg width={width} height={height} overflow="hidden">
+        <image href={`${import.meta.env.BASE_URL}${visual.src}`} x={-x} y={-y} width={visual.sourceWidth} height={visual.sourceHeight} imageRendering="pixelated"/>
+      </svg>
+    </svg>;
+  }
   if(visual.renderer==='text') return <span className="world-chip-sign">{text??visual.text}</span>;
   return <img src={`${import.meta.env.BASE_URL}${visual.src}`} alt="" draggable={false}/>;
 }

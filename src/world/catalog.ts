@@ -1,6 +1,7 @@
 import type { CharacterName } from '../WorldCharacter';
 import type { SpriteName } from '../PixelSprite';
 import type { Point } from '../content';
+import { PROP_ATLAS, PROP_ART_FRAMES, type PropArtName } from './propArt';
 
 export const terrainSets = {
   grassland: '草原', river: '川・湖', sea: '海', cave: '洞窟', mountain: '山',
@@ -14,6 +15,7 @@ export type Visual = {
   width: number; height: number; anchor: Point;
 } & (
   | { renderer: 'image'; src: string }
+  | { renderer: 'atlas'; src:string; sourceWidth:number; sourceHeight:number; frame:readonly [number,number,number,number] }
   | { renderer: 'person'; name: CharacterName }
   | { renderer: 'sprite'; name: SpriteName }
   | { renderer: 'text'; text: string }
@@ -31,6 +33,10 @@ export type ObjectDefinition = {
 };
 const image = (src: string, width = 1, height = 1, anchor: Point = {x: .5, y: 1}): Visual =>
   ({renderer: 'image', src: `maps/${src}`, width, height, anchor});
+const propArt=(name:PropArtName,width=1,height=1,anchor:Point={x:.5,y:1}):Visual=>({
+  renderer:'atlas',src:PROP_ATLAS.src,sourceWidth:PROP_ATLAS.width,sourceHeight:PROP_ATLAS.height,
+  frame:PROP_ART_FRAMES[name],width,height,anchor,
+});
 const terrain = (label: string, set: TerrainSet, color: string, minimap: string,
   options: Partial<Omit<TerrainDefinition, 'category' | 'label' | 'set' | 'color' | 'minimap'>> = {},
 ): TerrainDefinition => ({category: 'terrain', label, set, color, minimap, walkable: true, enemyAllowed: true, ...options});
@@ -55,18 +61,18 @@ export type TerrainId = keyof typeof terrainChips;
 export const propChips = {
   libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.3,1.25),false),
   stairs: prop('図書館の階段',image('props/stairs.svg'),false,'ground'),
-  diningTable: {...prop('食卓',image('props/table.svg',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
-  chair: prop('木の椅子',image('props/chair.svg',.8,.9)),
-  rug: prop('織物の敷物',image('props/rug.svg',3,2,{x:0,y:1}),false,'ground'),
-  plant: prop('鉢植え',image('props/plant.svg',.85,1.1)),
-  barrel: prop('樽',image('props/barrel.svg',.9,1)),
-  crate: prop('木箱',image('props/crate.svg',.95,.95)),
-  flowers: prop('花壇',image('props/flowers.svg',1.2,.85),false,'ground'),
-  bench: {...prop('ベンチ',image('props/bench.svg',2,1,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
-  well: {...prop('石造りの井戸',image('props/well.svg',2,2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0},{x:0,y:-1},{x:1,y:-1}]},
-  stove: prop('かまど',image('props/stove.svg',1,1.3)),
-  books: prop('積まれた本',image('props/books.svg',.85,.8)),
-  potions: prop('薬瓶の棚',image('props/potions.svg',1,1.2)),
+  diningTable: {...prop('食卓',propArt('table',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
+  chair: prop('木の椅子',propArt('chair',.8,.9)),
+  rug: prop('織物の敷物',propArt('rug',3,2,{x:0,y:1}),false,'ground'),
+  plant: prop('鉢植え',propArt('plant',.85,1.1)),
+  barrel: prop('樽',propArt('barrel',.9,1)),
+  crate: prop('木箱',propArt('crate',.95,.95)),
+  flowers: prop('花壇',propArt('flowers',1.2,.85),false,'ground'),
+  bench: {...prop('ベンチ',propArt('bench',2,1,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
+  well: {...prop('石造りの井戸',propArt('well',2,2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0},{x:0,y:-1},{x:1,y:-1}]},
+  stove: prop('かまど',propArt('stove',1,1.3)),
+  books: prop('積まれた本',propArt('books',.85,.8)),
+  potions: prop('薬瓶の棚',propArt('potions',1,1.2)),
   tree: prop('木',image('tree-64.png',1.55,1.55),true,'depth','#2d6a3d'),
   cactus: prop('サボテン',image('cactus-64.png',1.15,1.3),true,'depth','#799054'),
   chest: prop('宝箱',image('chest-64.png',.92,.92)),
@@ -85,7 +91,7 @@ const houseFootprint = Array.from({length:20},(_,i)=>({x:i%5,y:Math.floor(i/5)})
 export const buildingChips = {
   house: {category:'building',label:'家',visual:image('house-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
   church: {category:'building',label:'教会',visual:image('church-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
-  villageGate: {category:'building',label:'山里の入口',visual:image('house-town-320x256.png',3,3,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#efcd82'},
+  villageGate: {category:'building',label:'山里の入口',visual:image('house-town-320x256.png',3,2.4,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#efcd82'},
   ruinsGate: {category:'building',label:'遺跡の門',visual:image('ruins-gate-128.png',3,3,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#a675d0'},
   plasterWall: {category:'building',label:'室内の壁',visual:image('plaster-wall-64.png',1,1,{x:0,y:0}),blockedCells:[{x:0,y:0}],layer:'ground'},
 } satisfies Record<string,ObjectDefinition>;
