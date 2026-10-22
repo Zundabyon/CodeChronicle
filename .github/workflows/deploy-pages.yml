@@ -1,7 +1,8 @@
 name: Deploy CodeChronicle
 
 on:
-  # 自動公開は一時停止。公開するときだけ手動実行する。
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

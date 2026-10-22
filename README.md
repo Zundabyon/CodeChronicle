@@ -13,7 +13,7 @@ npm run dev
 
 ## 公開
 
-GitHub Pagesへの公開は手動実行のみです。`main`へのマージ・pushでは自動公開されません。公開するときは、GitHub Actionsの「Deploy CodeChronicle」を手動実行してください。
+GitHub Pagesへは、`main`へのpush時に自動で公開されます。必要に応じて、GitHub Actionsの「Deploy CodeChronicle」を手動実行することもできます。
 
 ## 遊び方
 
