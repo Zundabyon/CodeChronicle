@@ -130,11 +130,13 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
   if(area==='town') {
     for(const [id,house] of Object.entries(houses)) {
       buildings.push({id:`house-${id}`,chip:'house',x:house.door.x-2,y:house.door.y-3});
+      props.push({id:`wall-lantern-${id}`,chip:'wallLantern',x:house.door.x-.55,y:house.door.y-1.15});
       const text=id==='weaponShop'?'武器':id==='armorShop'?'防具':id==='itemShop'?'道具':id==='elderHouse'?'村長':id==='guestHouse'?'旅籠':id==='scholarHouse'?'西棟・フロントエンド':id==='backendLibrary'?'東棟・バックエンド':undefined;
       if(text) props.push({id:`sign-${id}`,chip:'sign',x:house.door.x,y:house.door.y-.63,text});
     }
     props.push({id:'library-connecting-hall',chip:'libraryHall',x:24.5,y:5.4});
     buildings.push({id:'church',chip:'church',x:11,y:12});
+    props.push({id:'wall-lantern-church',chip:'wallLantern',x:12.45,y:13.85});
     event(14,31,'enter','平原へ出る',{kind:'transition',to:'field'});
   }
   if(area==='field') {
@@ -187,6 +189,20 @@ export function reachableMapCells(map:WorldMap):ReadonlySet<string> {
     visit({x:x+1,y}); visit({x:x-1,y}); visit({x,y:y+1}); visit({x,y:y-1});
   }
   return seen;
+}
+// Road updates can leave an old save on isolated grass, even when that tile is walkable.
+export function restoreMapPosition(map:WorldMap,point:Point):Point {
+  const reachable=reachableMapCells(map);
+  if(reachable.has(key(point))) return point;
+  if(!insideMap(map,point)) return map.entry;
+  let nearest=map.entry,distance=Infinity;
+  for(const cell of reachable) {
+    const [x,y]=cell.split(',').map(Number),candidate={x,y};
+    if(map.eventIndex.get(cell)?.some(event=>event.trigger==='enter')) continue;
+    const nextDistance=Math.abs(x-point.x)+Math.abs(y-point.y);
+    if(nextDistance<distance) {nearest=candidate;distance=nextDistance;}
+  }
+  return nearest;
 }
 export const canEnemyOccupyMap=(map:WorldMap,point:Point)=>canWalkOnMap(map,point)&&
   (map.cellOverrides?.[key(point)]?.enemyAllowed??terrainChips[map.terrain[point.y][point.x]].enemyAllowed)&&
