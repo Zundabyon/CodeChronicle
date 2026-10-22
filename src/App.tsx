@@ -1,17 +1,18 @@
+import { validateSave } from './saveValidation';
 import { SaveStatus } from './SaveStatus';
 import { nearbyInteraction } from './world/interactions';
 import { ResumeSummary } from './ResumeSummary';
 import { LearningSetupHelp } from './LearningSetupHelp';
 import './learningSetupHelp.css';
 import { loadAudioPreferences, saveAudioPreferences } from './audioPreferences';
-import { claimChest, normalizeOpenedChests } from './chests';
+import { claimChest } from './chests';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn, restoreMapPosition } from './world/maps';
 import { CharacterPortrait } from './CharacterPortrait';
 import { WorldCharacter } from './WorldCharacter';
 import { WorldScene } from './WorldScene';
-import { canLeaveTown, migrateStoryStage, storyNpcs, wakingScene, breakfastScene, mayorScene, knightScene, rescueScene, type StoryStage, type StoryLine } from './story';
+import { canLeaveTown, storyNpcs, wakingScene, breakfastScene, mayorScene, knightScene, rescueScene, type StoryStage, type StoryLine } from './story';
 import { ControlsGuide } from './ControlsGuide';
 import { DialogueChoices } from './DialogueChoices';
 import { moveButtonFocus } from './keyboardNavigation';
@@ -21,7 +22,7 @@ import { bossStages, bossGuardHp, bossQuestion, bossQuestionById, bossCommandRes
 import { BattleEncounter } from './BattleEncounter';
 import { QuestionCode } from './QuestionCode';
 import { LibraryPanel } from './LibraryPanel';
-import { normalizeBookmarks, normalizeReadBooks, libraryShelves, type LibraryShelf } from './library';
+import { libraryShelves, type LibraryShelf } from './library';
 import { ReviewRoom } from './ReviewRoom';
 import { selectQuestion, isChoiceQuestion, isFillQuestion, inputIsCorrect } from './questionSelection';
 import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
@@ -30,7 +31,7 @@ import { items, type Equipment, type Inventory, type ItemId, type ShopType } fro
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';
-type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
+type Save = { version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
 type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
@@ -39,8 +40,19 @@ const BACKUP_STORAGE='code-chronicle-save-backup-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
-const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
-const loadSave = (storageKey=STORAGE): Save | null => { try { const raw = localStorage.getItem(storageKey); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; if(storageKey===BACKUP_STORAGE&&(!parsed||typeof parsed!=='object'||typeof parsed.name!=='string'||typeof parsed.level!=='number'||!Number.isFinite(parsed.level)||!parsed.area||!parsed.pos))return null; const saved={...defaults,...parsed,openedChests:normalizeOpenedChests(parsed.openedChests),readBooks:normalizeReadBooks(parsed.readBooks),bookmarks:normalizeBookmarks(parsed.bookmarks),story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area]) return {...saved,area:'town',pos:maps.town.entry}; return {...saved,pos:restoreMapPosition(maps[saved.area],saved.pos)}; } catch { return null; } };
+const initialSave = (): Save => ({ version:1, story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
+const loadSave = (storageKey=STORAGE):{save:Save|null;notice:string}=>{
+  try {
+    const raw=localStorage.getItem(storageKey);if(!raw)return {save:null,notice:''};
+    const result=validateSave(JSON.parse(raw),initialSave());
+    if(result.save){
+      const restored=restoreMapPosition(maps[result.save.area],result.save.pos);
+      if(restored.x!==result.save.pos.x||restored.y!==result.save.pos.y)result.notice+=' 現在地を通れる場所に戻しました。';
+      result.save.pos=restored;
+    }
+    return result;
+  }catch{return {save:null,notice:'保存データを読み込めませんでした。元のデータは変更していません。'};}
+};
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
@@ -95,10 +107,12 @@ const npcChoices: Record<string,{label:string;response:string}[]> = {
 };
 
 export function App() {
-  const [save,setSave] = useState<Save>(() => loadSave() ?? initialSave());
+  const [loaded]=useState(()=>loadSave());
+  const [save,setSave] = useState<Save>(() => loaded.save ?? initialSave());
+  const [saveNotice,setSaveNotice]=useState(loaded.notice);
   const [enemyPositions,setEnemyPositions] = useState<EnemyPositions>(() => spawnEnemies(save.defeated));
-  const [hasSave,setHasSave] = useState(() => !!loadSave());
-  const [backup,setBackup]=useState<Save|null>(()=>loadSave(BACKUP_STORAGE));
+  const [hasSave,setHasSave] = useState(() => !!loaded.save);
+  const [backup,setBackup]=useState<Save|null>(()=>loadSave(BACKUP_STORAGE).save);
   const [phase,setPhase] = useState<Phase>('title');
   const [lastSavedAt,setLastSavedAt]=useState<number|null>(()=>typeof save.lastSavedAt==='number'&&Number.isFinite(save.lastSavedAt)&&save.lastSavedAt>0&&save.lastSavedAt<=8640000000000000?save.lastSavedAt:null);
   const [introIndex,setIntroIndex] = useState(0);
@@ -543,6 +557,7 @@ export function App() {
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }
     {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
+    {saveNotice&&<aside className="save-status save-error" role="status"><p>{saveNotice}</p><button onClick={()=>setSaveNotice('')}>確認しました</button></aside>}
     {hasSave&&<SaveStatus failed={saveFailed} savedAt={lastSavedAt} onRetry={()=>persistSave(stateRef.current)}/>}
     {toast&&<div className="toast">✦ {toast}</div>}
   </div>;
