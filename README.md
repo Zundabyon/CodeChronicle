@@ -11,6 +11,10 @@ npm run dev
 
 表示されたローカルURLをブラウザで開いてください。`npm run build` で本番用ビルドを確認できます。
 
+## 公開
+
+GitHub Pagesへの公開は手動実行のみです。`main`へのマージ・pushでは自動公開されません。公開するときは、GitHub Actionsの「Deploy CodeChronicle」を手動実行してください。
+
 ## 遊び方
 
 - タイトルの「学習設定」でReactまたはVue、難易度、Inertia環境の有無、主人公の名前を選べます。冒険中は「コマンド」から変更できます。
