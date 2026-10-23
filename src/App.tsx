@@ -1,4 +1,5 @@
 import { validateSave } from './saveValidation';
+import { SaveTransfer } from './SaveTransfer';
 import { SaveStatus } from './SaveStatus';
 import { nearbyInteraction } from './world/interactions';
 import { ResumeSummary } from './ResumeSummary';
@@ -41,16 +42,19 @@ const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
 const initialSave = (): Save => ({ version:1, story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
+const validateIncomingSave=(value:unknown)=>{
+  const result=validateSave(value,initialSave());
+  if(result.save){
+    const restored=restoreMapPosition(maps[result.save.area],result.save.pos);
+    if(!same(result.save.pos,restored))result.notice+=' 現在地を通れる場所に戻しました。';
+    result.save.pos=restored;
+  }
+  return result;
+};
 const loadSave = (storageKey=STORAGE):{save:Save|null;notice:string}=>{
   try {
     const raw=localStorage.getItem(storageKey);if(!raw)return {save:null,notice:''};
-    const result=validateSave(JSON.parse(raw),initialSave());
-    if(result.save){
-      const restored=restoreMapPosition(maps[result.save.area],result.save.pos);
-      if(restored.x!==result.save.pos.x||restored.y!==result.save.pos.y)result.notice+=' 現在地を通れる場所に戻しました。';
-      result.save.pos=restored;
-    }
-    return result;
+    return validateIncomingSave(JSON.parse(raw));
   }catch{return {save:null,notice:'保存データを読み込めませんでした。元のデータは変更していません。'};}
 };
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
@@ -494,6 +498,18 @@ export function App() {
     const positions=spawnEnemies(restored.defeated);enemyPositionsRef.current=positions;setEnemyPositions(positions);
     npcTalkCounts.current={};setToast('前の冒険を復元しました。「続きから始める」で再開できます。');
   };
+  const importSave=(incoming:Save):string|null=>{
+    const restored={...incoming,lastSavedAt:Date.now()},previous={...stateRef.current,lastSavedAt:Date.now()};
+    try {
+      if(hasSave)localStorage.setItem(BACKUP_STORAGE,JSON.stringify(previous));
+      localStorage.setItem(STORAGE,JSON.stringify(restored));
+    }catch{return '保存先に書き込めませんでした。現在の冒険は変更していません。';}
+    if(hasSave)setBackup(previous);
+    stopPath();update(()=>restored);setHasSave(true);setLastSavedAt(restored.lastSavedAt);setSaveFailed(false);setSaveNotice('');
+    const positions=spawnEnemies(restored.defeated);enemyPositionsRef.current=positions;setEnemyPositions(positions);npcTalkCounts.current={};
+    setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowSettings(false);setLibraryShelf(null);setInventoryOpen(false);setShopType(null);setBattle(null);setPhase('title');
+    setToast('読み込みました。「続きから始める」で再開できます。');return null;
+  };
   const startNew = () => { const previous=stateRef.current;
     if(hasSave){
       const snapshot={...previous,lastSavedAt:Date.now()};
@@ -515,7 +531,7 @@ export function App() {
 
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
-    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p>{hasSave&&<ResumeSummary save={save} savedAt={lastSavedAt}/>}<div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div>{backup&&<details className="resume-summary backup-summary"><summary>保護した前の冒険</summary><p>{backup.name}　LV {backup.level} · {areaLabel[backup.area]}</p><p>復元すると、現在の冒険はこのデータに置き換わります。</p><button onClick={restoreBackup}>この冒険を復元する</button></details>}<p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
+    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p>{hasSave&&<ResumeSummary save={save} savedAt={lastSavedAt}/>}<div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div>{backup&&<details className="resume-summary backup-summary"><summary>保護した前の冒険</summary><p>{backup.name}　LV {backup.level} · {areaLabel[backup.area]}</p><p>復元すると、現在の冒険はこのデータに置き換わります。</p><button onClick={restoreBackup}>この冒険を復元する</button></details>}<SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
     {phase==='prologue' && <main className="prologue-screen">
       <div className="prologue-layout">
         <div className="prologue-art" key={introIndex} role="img" aria-label={intro.title} style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/${introIndex<4?'ancient-and-fall':'family-and-dawn'}.png)`,backgroundPosition:`${introIndex%2?100:0}% ${Math.floor((introIndex%4)/2)?100:0}%`}}>
@@ -555,7 +571,7 @@ export function App() {
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }
-    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
+    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
     {saveNotice&&<aside className="save-status save-error" role="status"><p>{saveNotice}</p><button onClick={()=>setSaveNotice('')}>確認しました</button></aside>}
     {hasSave&&<SaveStatus failed={saveFailed} savedAt={lastSavedAt} onRetry={()=>persistSave(stateRef.current)}/>}
