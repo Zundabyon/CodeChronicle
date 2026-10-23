@@ -59,7 +59,7 @@ export const terrainChips = {
 export type TerrainId = keyof typeof terrainChips;
 
 export const propChips = {
-  libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.3,1.25),false),
+  libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.8,1.1),false,'overhead'),
   stairs: prop('図書館の階段',image('props/stairs.svg'),false,'ground'),
   diningTable: {...prop('食卓',propArt('table',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
   chair: prop('木の椅子',propArt('chair',.8,.9)),
@@ -91,6 +91,8 @@ const houseFootprint = Array.from({length:20},(_,i)=>({x:i%5,y:Math.floor(i/5)})
   .filter(point=>point.x!==2||point.y!==3);
 export const buildingChips = {
   house: {category:'building',label:'家',visual:image('house-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
+  libraryWest: {category:'building',label:'図書館 西棟',visual:image('props/library-west.svg',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
+  libraryEast: {category:'building',label:'図書館 東棟',visual:image('props/library-east.svg',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
   church: {category:'building',label:'教会',visual:image('church-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
   villageGate: {category:'building',label:'山里の入口',visual:image('house-town-320x256.png',3,2.4,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#efcd82'},
   ruinsGate: {category:'building',label:'遺跡の門',visual:image('ruins-gate-128.png',3,3,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#a675d0'},

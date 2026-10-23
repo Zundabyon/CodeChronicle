@@ -138,13 +138,20 @@ test('both library wings connect every floor with safe arrival cells',async()=>{
   assert.equal(libraryShelves.reduce((count,shelf)=>count+shelf.books.length,0),54);
 });
 
-test('west frontend and east backend wings adjoin and have a two-way ground-floor corridor',()=>{
+test('west frontend and east backend wings adjoin and have two-way corridors on both the ground and second floors',()=>{
   const west=houses.scholarHouse,east=houses.backendLibrary;
+  assert.equal(worldMaps.town.buildings.find(building=>building.id==='house-scholarHouse').chip,'libraryWest');
+  assert.equal(worldMaps.town.buildings.find(building=>building.id==='house-backendLibrary').chip,'libraryEast');
+  assert.equal(worldMaps.town.props.filter(prop=>prop.chip==='libraryHall').length,2);
+  for(const area of ['librarySecondFloor','backendSecondFloor'])
+    assert.equal(eventAt(worldMaps[area],{x:5,y:8},'enter'),undefined,'upper floors have no street exit');
   assert.equal(east.door.x-west.door.x,5,'the two five-cell buildings share an edge');
   assert.equal(east.door.y,west.door.y);
   for(const [area,point,to] of [
     ['scholarHouse',{x:10,y:4},'backendLibrary'],
-    ['backendLibrary',{x:0,y:4},'scholarHouse']
+    ['backendLibrary',{x:0,y:4},'scholarHouse'],
+    ['librarySecondFloor',{x:10,y:4},'backendSecondFloor'],
+    ['backendSecondFloor',{x:0,y:4},'librarySecondFloor']
   ]) {
     const map=worldMaps[area],action=eventAt(map,point,'enter').action;
     assert.ok(playerCells(map).has(key(point)));
