@@ -1,4 +1,5 @@
 import './world/interactionHint.css';
+import { TownMap } from './TownMap';
 import { chestId } from './chests';
 import { useEffect, useId, useRef, type CSSProperties } from 'react';
 import { areaLabel, difficultyLabel, fieldRegion, fieldRuinsGate, fieldTownGate, type Area, type Point, type Track, type Difficulty } from './content';
@@ -137,6 +138,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
       </div>
     </div>
     <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
+    {save.area==='town'&&<TownMap position={save.pos}/>}
     {save.area==='field'&&<FieldMiniMap position={save.pos} onTile={onTile}/>}
     {save.story!=='legacy'&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p></aside>}
     <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
