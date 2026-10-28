@@ -14,7 +14,8 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   if(!record(value)||!['area','pos','name'].some(key=>key in value))return {save:null,notice:'保存データの形式を読み取れませんでした。元のデータは変更していません。'};
   if(value.version!==undefined&&value.version!==1)return {save:null,notice:'この保存形式には対応していません。元のデータは変更していません。'};
   const save:Record<string,unknown>={...defaults},repairs=new Set<string>();
-  const fix=(label:string)=>repairs.add(label);
+  const labels:Record<string,string>={gold:'所持金',level:'レベル',hp:'HP',mp:'MP',xp:'経験値',steps:'歩数',correct:'正解数',total:'回答数',wrong:'復習記録',answered:'回答記録',seen:'閲覧記録',defeated:'撃破記録',readBooks:'既読記録',openedChests:'宝箱の記録',name:'名前',story:'物語の進行',track:'学習コース',difficulty:'難易度'};
+  const fix=(label:string)=>repairs.add(labels[label]??label);
   for(const [key,fallback] of Object.entries(defaults)) {
     const candidate=value[key];if(candidate===undefined)continue;
     if(Array.isArray(fallback)) {
@@ -35,6 +36,7 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   if(!['react','vue'].includes(String(save.track))){save.track='react';fix('学習コース');}
   if(!['beginner','intermediate','advanced'].includes(String(save.difficulty))){save.difficulty='beginner';fix('難易度');}
   save.story=migrateStoryStage(value.story);
+  if(value.story!==undefined&&save.story!==value.story)fix('物語の進行');
   const name=typeof save.name==='string'?save.name.trim().slice(0,12):'';
   if(name!==save.name||!name)fix('名前');save.name=name||'旅人';
   if(typeof save.area!=='string'||!Object.hasOwn(areaLabel,save.area)){save.area='town';fix('現在地');}
@@ -64,6 +66,9 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   }
   save.openedChests=normalizeOpenedChests(value.openedChests).filter(id=>{const match=/^([a-zA-Z][a-zA-Z0-9]*):\d+,\d+$/.exec(id);return !!match&&Object.hasOwn(areaLabel,match[1]);});
   save.readBooks=normalizeReadBooks(value.readBooks);save.bookmarks=normalizeBookmarks(value.bookmarks);
+  for(const [key,label] of [['openedChests','宝箱の記録'],['readBooks','既読記録'],['bookmarks','しおり']] as const) {
+    if(value[key]!==undefined&&JSON.stringify(value[key])!==JSON.stringify(save[key]))fix(label);
+  }
   if(value.lastSavedAt!==undefined) {
     if(typeof value.lastSavedAt==='number'&&Number.isFinite(value.lastSavedAt)&&value.lastSavedAt>0&&value.lastSavedAt<=8640000000000000)save.lastSavedAt=value.lastSavedAt;
     else fix('保存時刻');
