@@ -1,0 +1,2 @@
+.save-status{position:fixed;z-index:1500;right:12px;top:84px;padding:4px 7px;background:#101f2be8;border:1px solid #678679;color:#b6d9ca;font-size:10px;line-height:1.5}
+.app-shell:has(.world-stage) .save-status{top:16px}.save-status.save-error{top:84px;max-width:min(380px,calc(100vw - 24px));padding:12px;border:2px solid #ebc36c;color:#fff0c8;font-size:13px}.app-shell:has(.world-stage) .save-status.save-error{top:70px}.save-error p{margin:6px 0 10px}.save-error button{font-size:13px}
