@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 
-type Choice = {label:string; response:string};
+type Choice = {label:string; response:string;onChoose?:()=>void};
 
 export function DialogueChoices({choices,onChoose}:{choices:Choice[];onChoose:(choice:Choice)=>void}) {
   const groupRef=useRef<HTMLDivElement>(null);
