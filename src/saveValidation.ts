@@ -1,3 +1,4 @@
+import { normalizeLearningRecords } from './learningRecords';
 import { areaLabel, questions, type Area, type Point } from './content';
 import { items, type Inventory, type Equipment, type ItemId } from './items';
 import { migrateStoryStage } from './story';
@@ -32,6 +33,8 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
       if(typeof candidate===typeof fallback)save[key]=candidate;else fix(key);
     }
   }
+  save.learningRecords=normalizeLearningRecords(value.learningRecords);
+  if(value.learningRecords!==undefined&&JSON.stringify(value.learningRecords)!==JSON.stringify(save.learningRecords))fix('学習記録');
   save.version=1;
   if(!['react','vue'].includes(String(save.track))){save.track='react';fix('学習コース');}
   if(!['beginner','intermediate','advanced'].includes(String(save.difficulty))){save.difficulty='beginner';fix('難易度');}
