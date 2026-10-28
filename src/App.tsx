@@ -20,7 +20,7 @@ import { bossStages, bossGuardHp, bossQuestion, bossQuestionById, bossCommandRes
 import { BattleEncounter } from './BattleEncounter';
 import { QuestionCode } from './QuestionCode';
 import { LibraryPanel } from './LibraryPanel';
-import { libraryShelves, type LibraryShelf } from './library';
+import { normalizeReadBooks, libraryShelves, type LibraryShelf } from './library';
 import { ReviewRoom } from './ReviewRoom';
 import { selectQuestion, isChoiceQuestion, isFillQuestion, inputIsCorrect } from './questionSelection';
 import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
@@ -29,7 +29,7 @@ import { items, type Equipment, type Inventory, type ItemId, type ShopType } fro
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';
-type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
+type Save = { story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
 type Battle = { enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
@@ -37,8 +37,8 @@ const STORAGE = 'code-chronicle-save-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
-const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
-const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,openedChests:normalizeOpenedChests(parsed.openedChests),story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area]) return {...saved,area:'town',pos:maps.town.entry}; return {...saved,pos:restoreMapPosition(maps[saved.area],saved.pos)}; } catch { return null; } };
+const initialSave = (): Save => ({ story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
+const loadSave = (): Save | null => { try { const raw = localStorage.getItem(STORAGE); if(!raw) return null; const defaults=initialSave(); const parsed=JSON.parse(raw) as Partial<Save>; const saved={...defaults,...parsed,openedChests:normalizeOpenedChests(parsed.openedChests),readBooks:normalizeReadBooks(parsed.readBooks),story:migrateStoryStage(parsed.story),inventory:{...defaults.inventory,...parsed.inventory},equipment:{...defaults.equipment,...parsed.equipment}} as Save; if(!maps[saved.area]) return {...saved,area:'town',pos:maps.town.entry}; return {...saved,pos:restoreMapPosition(maps[saved.area],saved.pos)}; } catch { return null; } };
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point) => canWalkOnMap(maps[area],p);
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
@@ -219,6 +219,7 @@ export function App() {
     if(result.opened) update(()=>result.save);
     setToast(result.message); beep(result.opened?880:320,0.15);
   },[stopPath,update,beep]);
+  const toggleReadBook=useCallback((id:string)=>update(s=>({...s,readBooks:s.readBooks.includes(id)?s.readBooks.filter(value=>value!==id):[...s.readBooks,id]})),[update]);
   const openBookshelf = useCallback((id:string) => {
     const shelf=libraryShelves.find(item=>item.id===id);
     if(shelf) { stopPath(); setLibraryShelf(shelf); beep(640,0.08); }
@@ -512,7 +513,7 @@ export function App() {
     {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card"><span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'守護者の目に静かな光が戻った。「私は知識を守る者。魔王の声に、務めさえ忘れていた……」。開いた扉の先から、失われた知識があふれ出す。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'正気に戻った守護者が訓練用の問いを示した。見極めで偽りを見破り、答えよう。この力を、ハンナのもとへ持ち帰るために。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,selectQuestion(questions,stateRef.current,Math.random,true));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><img className="clear-symbol" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>{save.story==='rescued'?'今度は、助けられた。':'最初の扉は、開かれた。'}</h1><p>{save.story==='rescued'?'ハンナの魔物化を止め、あなたのことを思い出してもらえた。世界の知識を救う旅と、騎士の証言を手がかりに両親の行方を確かめる旅が、ここから始まる。':'失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。'}</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&phase==='world'&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogueFace??'📜'}/></div><div className="dialogue-text"><strong>{dialogueSpeaker}</strong><p>{dialogueText}</p>{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<DialogueChoices choices={dialogue.choices} onChoose={choice=>{setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined});beep(720,0.08);}}/>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}
-    {libraryShelf&&<LibraryPanel key={libraryShelf.id} shelf={libraryShelf} onClose={()=>setLibraryShelf(null)}/> }
+    {libraryShelf&&<LibraryPanel key={libraryShelf.id} shelf={libraryShelf} readBooks={save.readBooks} onToggleRead={toggleReadBook} onClose={()=>setLibraryShelf(null)}/> }
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }
