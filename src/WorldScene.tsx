@@ -31,6 +31,7 @@ type Props = {
   onSound: () => void;
   muted: boolean;
   walking: boolean;
+  facing?: Point;
   nearbyHint?:{point:Point;label:string};
 };
 
@@ -63,7 +64,7 @@ function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>vo
   </div>;
 }
 
-export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking,nearbyHint}:Props) {
+export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const npcs=storyNpcs(map.npcs,save.story);
@@ -131,7 +132,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
               label={enemy?`${enemy.name}に近づく`:undefined} onClick={enemy?()=>onTile(point):undefined}/>;
           })}
           {save.story==='knight'&&knightVisible&&<WorldChip definition={characterChips.knight} point={knightPoint} className="world-knight"/>}
-          <WorldChip definition={characterChips.hero} point={save.pos} walking={walking} className="world-hero"/>
+          <WorldChip definition={characterChips.hero} point={save.pos} walking={walking} direction={facing.x<0?'left':facing.x>0?'right':facing.y<0?'up':'down'} className="world-hero"/>
         </div>
       </div>
     </div>

@@ -6,3 +6,14 @@
 @keyframes character-art-step{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2px) rotate(1deg)}}
 @media(prefers-reduced-motion:reduce){.world-character.character-art.walking{animation:none;transform:none}}
 .world-character.character-art.standing-character{width:120px;height:160px;margin:0 auto}
+
+/* A row for each facing, with left-step / idle / right-step columns. */
+.world-character.hero-directional{--hero-row:0%}
+.world-character.hero-directional[data-direction="left"]{--hero-row:33.333333%}
+.world-character.hero-directional[data-direction="right"]{--hero-row:66.666667%}
+.world-character.hero-directional[data-direction="up"]{--hero-row:100%}
+.character-art>.hero-walk-frame{width:auto;height:112%;aspect-ratio:1;background-size:300% 400%;background-repeat:no-repeat;background-position:50% var(--hero-row)}
+.world-character.hero-directional.walking{animation:none;transform:none}
+.hero-directional.walking>.hero-walk-frame{animation:hero-walk-frames .28s steps(1,end) infinite}
+@keyframes hero-walk-frames{0%{background-position-x:0%}25%,75%{background-position-x:50%}50%{background-position-x:100%}}
+@media(prefers-reduced-motion:reduce){.hero-directional.walking>.hero-walk-frame{animation:none;background-position-x:50%}}
