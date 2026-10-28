@@ -1,3 +1,4 @@
+import { normalizeDialogueLog } from './dialogueLog';
 import { normalizeLearningRecords } from './learningRecords';
 import { areaLabel, questions, type Area, type Point } from './content';
 import { items, type Inventory, type Equipment, type ItemId } from './items';
@@ -18,6 +19,7 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   const labels:Record<string,string>={gold:'所持金',level:'レベル',hp:'HP',mp:'MP',xp:'経験値',steps:'歩数',correct:'正解数',total:'回答数',wrong:'復習記録',answered:'回答記録',seen:'閲覧記録',defeated:'撃破記録',readBooks:'既読記録',openedChests:'宝箱の記録',name:'名前',story:'物語の進行',track:'学習コース',difficulty:'難易度'};
   const fix=(label:string)=>repairs.add(labels[label]??label);
   for(const [key,fallback] of Object.entries(defaults)) {
+    if(key==='dialogueLog')continue;
     const candidate=value[key];if(candidate===undefined)continue;
     if(Array.isArray(fallback)) {
       if(!Array.isArray(candidate)){fix(key);continue;}
@@ -33,6 +35,8 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
       if(typeof candidate===typeof fallback)save[key]=candidate;else fix(key);
     }
   }
+  save.dialogueLog=normalizeDialogueLog(value.dialogueLog);
+  if(value.dialogueLog!==undefined&&JSON.stringify(value.dialogueLog)!==JSON.stringify(save.dialogueLog))fix('会話の履歴');
   save.learningRecords=normalizeLearningRecords(value.learningRecords);
   if(value.learningRecords!==undefined&&JSON.stringify(value.learningRecords)!==JSON.stringify(save.learningRecords))fix('学習記録');
   save.version=1;

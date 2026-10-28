@@ -1,3 +1,5 @@
+import { DialogueHistoryPanel } from './DialogueHistoryPanel';
+import { appendDialogueLog, type DialogueLogEntry } from './dialogueLog';
 import { wrongChoiceReason } from './wrongChoiceReasons';
 import { relatedBook } from './bookQuestions';
 import { recordLearning, type LearningRecords } from './learningRecords';
@@ -37,7 +39,7 @@ import { items, type Equipment, type Inventory, type ItemId, type ShopType } fro
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';
-type Save = { learningRecords:LearningRecords; version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
+type Save = { dialogueLog:DialogueLogEntry[]; learningRecords:LearningRecords; version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string}[]; onEnd?: () => void };
 type Battle = { submitted?:string|number; enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };
 
@@ -46,7 +48,7 @@ const BACKUP_STORAGE='code-chronicle-save-backup-v1';
 const maxHp = (level: number) => 20 + (level - 1) * 5;
 const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);
 const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));
-const initialSave = (): Save => ({ learningRecords:{}, version:1, story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
+const initialSave = (): Save => ({ dialogueLog:[], learningRecords:{}, version:1, story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });
 const validateIncomingSave=(value:unknown)=>{
   const result=validateSave(value,initialSave());
   if(result.save){
@@ -191,6 +193,11 @@ export function App() {
   },[phase]);
   useEffect(() => { if (toast) { const t = setTimeout(() => setToast(''),3500); return () => clearTimeout(t); } },[toast]);
   const update = useCallback((fn: (s: Save) => Save) => { const next = fn(stateRef.current); stateRef.current = next; setSave(next); },[]);
+  useEffect(()=>{
+    if(!dialogue)return;const line=dialogue.lines[dialogue.index];if(!line)return;
+    const text=typeof line==='string'?line:line.text,speaker=typeof line==='string'?dialogue.speaker:line.speaker;
+    update(s=>({...s,dialogueLog:appendDialogueLog(s.dialogueLog,speaker,text)}));
+  },[dialogue,update]);
   const stopPath = useCallback(() => { if (pathTimer.current) { clearInterval(pathTimer.current); pathTimer.current = null; } },[]);
   const beep = useCallback((freq=440,duration=0.1,type: OscillatorType='square') => {
     if (muted || !audioUnlocked.current) return;
@@ -250,7 +257,7 @@ export function App() {
   const openChest = useCallback((id:string) => {
     stopPath();
     const result=claimChest(stateRef.current,id);
-    if(result.opened) update(()=>result.save);
+    if(result.opened) update(()=>({...result.save,dialogueLog:appendDialogueLog(result.save.dialogueLog,'宝箱',result.message)}));
     setToast(result.message); beep(result.opened?880:320,0.15);
   },[stopPath,update,beep]);
   const toggleReadBook=useCallback((id:string)=>update(s=>({...s,readBooks:s.readBooks.includes(id)?s.readBooks.filter(value=>value!==id):[...s.readBooks,id]})),[update]);
@@ -603,7 +610,7 @@ export function App() {
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>setInventoryOpen(false)}/> }
-    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><LearningRecordPanel records={save.learningRecords}/><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
+    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><DialogueHistoryPanel entries={save.dialogueLog}/><LearningRecordPanel records={save.learningRecords}/><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
     {saveNotice&&<aside className="save-status save-error" role="status"><p>{saveNotice}</p><button onClick={()=>setSaveNotice('')}>確認しました</button></aside>}
     {hasSave&&<SaveStatus failed={saveFailed} savedAt={lastSavedAt} onRetry={()=>persistSave(stateRef.current)}/>}
