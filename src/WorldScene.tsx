@@ -1,4 +1,5 @@
 import './world/interactionHint.css';
+import type { MapTab } from './TravelMap';
 import { TownMap } from './TownMap';
 import { chestId } from './chests';
 import { useEffect, useId, useRef, type CSSProperties } from 'react';
@@ -26,6 +27,7 @@ type Props = {
   onMenu: (menu: 'command'|'status'|'quest'|null) => void;
   onTile: (point: Point) => void;
   onGuide: () => void;
+  onMap:(tab?:MapTab)=>void;
   onChurch: () => void;
   onInventory: () => void;
   onSettings: () => void;
@@ -40,7 +42,7 @@ type Props = {
 const hpLimit = (level: number) => 20 + (level - 1) * 5;
 const mpLimit = (level: number) => 3 + Math.floor((level - 1) / 2);
 
-function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>void}) {
+function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   const ref=useRef<HTMLCanvasElement>(null);
   const map=worldMaps.field;
   useEffect(()=>{
@@ -56,17 +58,13 @@ function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>vo
   },[position.x,position.y,map]);
   return <div className="field-minimap retro-window">
     <div className="field-minimap-title">世界地図 <small>{position.x}, {position.y}</small></div>
-    <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡と石灯の村は北東。小地図をクリックして移動`} onClick={event=>{
-      const bounds=event.currentTarget.getBoundingClientRect();
-      const x=Math.min(119,Math.max(0,Math.floor((event.clientX-bounds.left)/bounds.width*120)));
-      const y=Math.min(79,Math.max(0,Math.floor((event.clientY-bounds.top)/bounds.height*80)));
-      onTile({x,y});
-    }}/>
+    <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡と石灯の村は北東。下のボタンで世界地図を拡大`} onClick={onOpen}/>
+    <button className="field-minimap-expand" onClick={onOpen}>世界地図を大きく開く</button>
     <div className="field-minimap-key"><span>● 現在地</span><span>▣ 町</span><span>✦ 遺跡</span><span>▣ 村</span></div>
   </div>;
 }
 
-export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const npcs=storyNpcs(map.npcs,save.story);
@@ -139,10 +137,11 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
       </div>
     </div>
     <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
-    {save.area==='town'&&<TownMap position={save.pos}/>}
-    {save.area==='field'&&<FieldMiniMap position={save.pos} onTile={onTile}/>}
+    {save.area==='town'&&<TownMap position={save.pos} onExpand={()=>onMap('town')}/>}
+    {save.area==='field'&&<FieldMiniMap position={save.pos} onOpen={()=>onMap()}/>}
     {(save.story!=='legacy'||objectiveOverride)&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p></aside>}
     <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
+    <button className="world-map-button retro-window" onClick={()=>onMap()} aria-keyshortcuts="M">地図 <kbd className="shortcut-key">M</kbd></button>
     <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
     <div className="world-hint">矢印 / WASD：移動　•　Enter：話す・調べる　•　クリック：目的地へ</div>
     {menu&&<div className="world-menu retro-window" role="region" aria-label="コマンドメニュー">
@@ -150,6 +149,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
       {menu==='command'&&<div className="world-menu-items">
         <button onClick={()=>onMenu('status')}>▶ つよさ</button>
         <button data-shortcut="i f2" aria-keyshortcuts="I F2" onClick={()=>{onMenu(null);onInventory();}}>▶ もちもの <kbd className="shortcut-key">I / F2</kbd></button>
+        <button onClick={()=>{onMenu(null);onMap();}}>▶ 地図 <kbd className="shortcut-key">M</kbd></button>
         <button onClick={()=>onMenu('quest')}>▶ たびのもくてき</button>
         {save.area==='town'&&<button onClick={()=>{onMenu(null);onChurch();}}>▶ きょうかい</button>}
         <button onClick={()=>{onMenu(null);onSettings();}}>▶ 学習設定</button>

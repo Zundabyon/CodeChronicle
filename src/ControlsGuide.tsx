@@ -13,6 +13,7 @@ export function ControlsGuide({onClose}:{onClose:()=>void}) {
         <div><dt>クリック</dt><dd>マップ上の目的地へ移動。人・タンス・宝箱をクリックすると近づいて話す・調べる。扉には歩いて入れます</dd></div>
         <div><dt><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd></dt><dd>戦闘の選択肢を直接回答（入力欄では文字入力）</dd></div>
         <div><dt><kbd>I</kbd> / <kbd>F2</kbd></dt><dd>戦闘・コマンドから持ち物を開く</dd></div>
+        <div><dt><kbd>M</kbd></dt><dd>探索中：地図を開く・閉じる。コマンドメニューの「地図」からも開けます</dd></div>
         <div><dt><kbd>M</kbd> / <kbd>F3</kbd></dt><dd>戦闘で見極めの魔法を使う（習得後）</dd></div>
         <div><dt><kbd>H</kbd> / <kbd>F4</kbd></dt><dd>ボス戦のヒントを見る</dd></div>
         <div><dt><kbd>N</kbd> / <kbd>R</kbd></dt><dd>回答後に次へ進む / 復習の戦いから部屋へ戻る</dd></div>

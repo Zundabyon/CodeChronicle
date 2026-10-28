@@ -15,6 +15,7 @@ const key='code-chronicle-save-v1';
 async function fixture(t,extra={}){
   const page=await browser.newPage({viewport:{width:1280,height:1000},reducedMotion:'reduce'}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));t.after(async()=>{await page.close();assert.deepEqual(errors,[]);});
+  await page.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//,route=>route.abort());
   await page.addInitScript(()=>{Math.random=()=>0;});await page.goto(url);
   await page.evaluate(({key,extra})=>localStorage.setItem(key,JSON.stringify({area:'home',pos:{x:5,y:7},story:'legacy',name:'確認',...extra})),{key,extra});
   await page.reload();await resume(page);return page;
@@ -69,4 +70,20 @@ test('side quest keeps progress through reading, practice, reporting and reload'
 async function reposition(pos){await page.evaluate(pos=>{const key='code-chronicle-save-v1',s=JSON.parse(localStorage.getItem(key));s.area='scholarHouse';s.pos=pos;localStorage.setItem(key,JSON.stringify(s));},pos);await page.reload();await page.getByRole('button',{name:/続きから/}).click();}
 async function talkUntil(label){await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');for(let i=0;i<10&&!await page.getByRole('button',{name:label}).count();i++)await page.locator('.dialogue-box').click();await page.getByRole('button',{name:label}).click();await page.locator('.dialogue-box').click();}
 const page=await fixture(t);const npc=await page.evaluate(async()=>{const {worldMaps}=await import('/src/world/maps.ts');return worldMaps.scholarHouse.npcs.find(n=>n.id==='assistant')});await reposition({x:npc.x,y:npc.y+1});await talkUntil(/案内板の修理を手伝う/);assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('code-chronicle-save-v1')).quests['library-signboard'].step),'read-route');await reposition({x:2,y:3});await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');await page.getByRole('button',{name:'全館の蔵書を探す'}).click();await page.getByLabel('言語',{exact:true}).selectOption('Laravel');await page.getByLabel('本を検索',{exact:true}).fill('URLに応答する');await page.locator('.library-search li button').click();await page.getByRole('button',{name:'既読にする',exact:true}).click();await page.getByRole('button',{name:'この本の確認問題を解く'}).click();await page.getByRole('region',{name:'本の確認問題'}).getByRole('button',{name:'ルート',exact:true}).click();assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('code-chronicle-save-v1')).quests['library-signboard'].step),'report');await reposition({x:npc.x,y:npc.y+1});await talkUntil(/案内板の修理を報告する/);const s=await page.evaluate(()=>JSON.parse(localStorage.getItem('code-chronicle-save-v1')));assert.equal(s.quests['library-signboard'].step,'complete');assert.equal(s.gold,140);await reposition({x:npc.x,y:npc.y+1});await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');assert.equal(await page.getByRole('button',{name:/案内板の修理を報告する/}).count(),0);assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('code-chronicle-save-v1')).gold),140);
+});
+
+test('command menu opens labelled world and town maps without moving the player',{timeout:45000},async t=>{
+  const page=await fixture(t,{area:'town',pos:{x:13,y:16}});
+  await page.getByRole('button',{name:/コマンド/}).click();
+  await page.getByRole('region',{name:'コマンドメニュー'}).getByRole('button',{name:/地図/}).click();
+  const dialog=page.getByRole('dialog',{name:'旅の地図'});await dialog.waitFor();
+  assert.equal(await dialog.locator('.travel-map-pin').count(),3);
+  await dialog.locator('.travel-map-place-list').getByRole('button',{name:/石灯の村/}).click();
+  await dialog.getByRole('status').filter({hasText:'石灯の村への案内'}).waitFor();
+  assert.ok((await dialog.locator('polyline').first().getAttribute('points')).split(' ').length>1);
+  await page.keyboard.press('ArrowRight');assert.deepEqual((await saved(page)).pos,{x:13,y:16});
+  await dialog.getByRole('tab',{name:'町の施設',exact:true}).click();assert.equal(await dialog.locator('.town-map-pin').count(),10);
+  await dialog.locator('.travel-map-place-list').getByRole('button',{name:/教会/}).click();await dialog.getByRole('status').filter({hasText:'教会'}).waitFor();
+  await page.keyboard.press('Escape');assert.equal(await dialog.count(),0);
+  await page.keyboard.press('m');await dialog.waitFor();await page.keyboard.press('m');assert.equal(await dialog.count(),0);
 });
