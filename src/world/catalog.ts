@@ -52,13 +52,15 @@ export const terrainChips = {
   sea: terrain('海の水面', 'sea', '#1262b4', '#347cb5', {image:'maps/water-64.png',connection:'water',walkable:false,enemyAllowed:false}),
   mountain: terrain('山地', 'mountain', '#606968', '#777985', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
   fieldBoundary: terrain('世界の外縁', 'mountain', '#365453', '#223849', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
-  stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {transparentOnBackdrop:true}),
-  stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {walkable:false,enemyAllowed:false}),
+  stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {image:'maps/props/stone-floor.svg'}),
+  stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {image:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   woodFloor: terrain('板張りの床', 'interior', '#805a3a', '#805a3a', {image:'maps/wood-floor-64.png'}),
 } satisfies Record<string,TerrainDefinition>;
 export type TerrainId = keyof typeof terrainChips;
 
 export const propChips = {
+  libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.8,1.1),false,'overhead'),
+  stairs: prop('図書館の階段',image('props/stairs.svg'),false,'ground'),
   diningTable: {...prop('食卓',propArt('table',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
   chair: prop('木の椅子',propArt('chair',.8,.9)),
   rug: prop('織物の敷物',propArt('rug',3,2,{x:0,y:1}),false,'ground'),
@@ -80,6 +82,7 @@ export const propChips = {
   toolRack: prop('道具掛け',image('tool-rack-64.png',.78,.78),false,'overhead'),
   wallSword: prop('飾り剣',image('wall-sword-64.png',.78,.78),false,'overhead'),
   lantern: prop('灯り',image('lantern-64.png'),false),
+  wallLantern: prop('壁掛けの灯り',image('lantern-64.png',.55,.55),false,'overhead'),
   sign: prop('看板',{renderer:'text',text:'',width:1,height:.4,anchor:{x:.5,y:1}},false,'overhead'),
 } satisfies Record<string,ObjectDefinition>;
 export type PropId = keyof typeof propChips;
@@ -88,7 +91,10 @@ const houseFootprint = Array.from({length:20},(_,i)=>({x:i%5,y:Math.floor(i/5)})
   .filter(point=>point.x!==2||point.y!==3);
 export const buildingChips = {
   house: {category:'building',label:'家',visual:image('house-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
+  libraryWest: {category:'building',label:'図書館 西棟',visual:image('props/library-west.svg',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
+  libraryEast: {category:'building',label:'図書館 東棟',visual:image('props/library-east.svg',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
   church: {category:'building',label:'教会',visual:image('church-town-320x256.png',5,4,{x:0,y:0}),blockedCells:houseFootprint,layer:'depth'},
+  villageGate: {category:'building',label:'山里の入口',visual:image('house-town-320x256.png',3,2.4,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#efcd82'},
   ruinsGate: {category:'building',label:'遺跡の門',visual:image('ruins-gate-128.png',3,3,{x:0,y:0}),blockedCells:[],layer:'depth',minimap:'#a675d0'},
   plasterWall: {category:'building',label:'室内の壁',visual:image('plaster-wall-64.png',1,1,{x:0,y:0}),blockedCells:[{x:0,y:0}],layer:'ground'},
 } satisfies Record<string,ObjectDefinition>;

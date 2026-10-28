@@ -1,3 +1,4 @@
+import { mountainVillage } from './mountainVillage';
 import { maps as legacyMaps, type HouseArea, type Area } from '../content';
 import { npcSprite } from '../PixelSprite';
 import type { WorldMapInput, BuildingPlacement } from './maps';
@@ -8,7 +9,7 @@ import type { CharacterId } from './catalog';
 const walls:BuildingPlacement[]=Array.from({length:9},(_,y)=>Array.from({length:11},(_,x)=>({x,y})))
   .flat().filter(({x,y})=>(x===0||x===10||y===0||y===8)&&!(x===5&&y===8))
   .map(point=>({...point,id:`wall-${point.x}-${point.y}`,chip:'plasterWall'}));
-const houseAreas:HouseArea[]=['home','elderHouse','scholarHouse','childHouse','guestHouse','weaponShop','armorShop','itemShop'];
+const houseAreas:HouseArea[]=['home','elderHouse','childHouse','guestHouse','weaponShop','armorShop','itemShop'];
 
 export const nativeMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEntries(houseAreas.map(area=>{
   const room:WorldMapInput={
@@ -25,3 +26,6 @@ export const nativeMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEntries(h
   };
   return [area,room];
 }));
+
+// The expanded library uses its own shelves, stairs and connecting corridors.
+nativeMaps.village=mountainVillage;

@@ -5,6 +5,10 @@ import type { PropPlacement } from './maps';
 const props=(prefix:string,placements:[PropId,number,number][]):PropPlacement[]=>
   placements.map(([chip,x,y],i)=>({id:`decor-${prefix}-${i}-${chip}`,chip,x,y}));
 
+const libraryRoom=(name:string,extras:[PropId,number,number][])=>props(name,[
+  ['plant',1,1],['lantern',8,1],['rug',4,6],...extras,
+]);
+
 // Coordinates describe useful household areas, not a shared decorative preset.
 // Keep the central route from the south door to the residents open.
 export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
@@ -18,11 +22,14 @@ export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
     ['shelf',1,1],['shelf',2,1],['books',8,2],
     ['diningTable',6,2],['chair',6,3],['bed',2,3],['dresser',1,6],
   ]),
-  scholarHouse:props('scholar',[
-    // Library and work area; supplies stay beside the shelves.
-    ['shelf',1,1],['shelf',2,1],['shelf',3,1],['books',4,2],
-    ['diningTable',6,3],['chair',6,4],['potions',9,1],['bed',1,5],
+  scholarHouse:libraryRoom('scholar',[
+    ['diningTable',2,5],['chair',2,6],['books',9,3],
   ]),
+  librarySecondFloor:libraryRoom('library-second',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  libraryThirdFloor:libraryRoom('library-third',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  libraryFourthFloor:libraryRoom('library-fourth',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  backendLibrary:libraryRoom('backend-first',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
+  backendSecondFloor:libraryRoom('backend-second',[['diningTable',2,5],['chair',2,6],['books',9,3]]),
   childHouse:props('child',[
     // Two sleeping places and a family meal area next to the stove.
     ['bed',1,2],['bed',3,2],['dresser',1,5],
@@ -53,11 +60,11 @@ export const mapDecorations:Partial<Record<Area,PropPlacement[]>>={
     ['flowers',2,8],['flowers',11,8],['flowers',21,8],
     ['flowers',2,17],['flowers',21,17],
     // Water and seating form one public square west of the church.
-    ['well',9,19],['bench',6,18],['flowers',6,20],
+    ['well',9,21],['bench',6,16],['flowers',6,20],
     // A quiet garden east of the church, with room to walk past.
-    ['bench',19,19],['flowers',22,19],
+    ['bench',19,20],['flowers',22,20],
     // Deliveries stay beside the inn and weapons shop, rather than across the road.
     ['barrel',25,15],['crate',1,25],
-    ['bench',8,28],['flowers',18,28],
+    ['bench',8,30],['flowers',18,30],
   ]),
 };
