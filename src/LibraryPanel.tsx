@@ -1,7 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { LibrarySearch } from './LibrarySearch';
 import { libraryWingLabel, type LibraryShelf } from './library';
 
-export function LibraryPanel({shelf,onClose,readBooks,onToggleRead,bookmark,onBookmark}:{shelf:LibraryShelf;onClose:()=>void;readBooks:string[];onToggleRead:(id:string)=>void;bookmark?:string;onBookmark:(shelfId:string,bookId:string)=>void}) {
+export function LibraryPanel({shelf,onClose,readBooks,onToggleRead,bookmark,onBookmark,onSelectBook}:{shelf:LibraryShelf;onClose:()=>void;readBooks:string[];onToggleRead:(id:string)=>void;bookmark?:string;onBookmark:(shelfId:string,bookId:string)=>void;onSelectBook:(shelf:LibraryShelf,bookId:string)=>void}) {
+  const [searching,setSearching]=useState(false);
   const [index,setIndex]=useState<number|null>(()=>{const saved=shelf.books.findIndex(book=>book.id===bookmark);return saved>=0?saved:null;});
   const openBook=(index:number)=>{
     const book=shelf.books[index];if(!book)return;
@@ -22,7 +24,8 @@ export function LibraryPanel({shelf,onClose,readBooks,onToggleRead,bookmark,onBo
   return <div className="modal-backdrop adventure-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}>
     <section ref={panelRef} className="library-panel retro-window" role="dialog" aria-modal="true" aria-labelledby="library-title">
       <div className="library-heading"><div><small>{libraryWingLabel[shelf.wing]} · {shelf.floor}階 · {shelf.language}</small><h2 id="library-title">{shelf.topic}の本棚</h2></div><button onClick={onClose} aria-label="本棚を閉じる">閉じる</button></div>
-      {book?<article className="library-book" aria-live="polite">
+      <button onClick={()=>setSearching(value=>!value)}>{searching?'読書へ戻る':'全館の蔵書を探す'}</button>
+      {searching?<LibrarySearch onSelect={(target,bookId)=>{setSearching(false);if(target.id===shelf.id)openBook(shelf.books.findIndex(b=>b.id===bookId));else onSelectBook(target,bookId);}}/>:book?<article className="library-book" aria-live="polite">
         <h3>{book.title}</h3><p>{book.explanation}</p><pre tabIndex={0} aria-label="本のコード"><code>{book.code}</code></pre><button onClick={()=>void copyCode()}>コードをコピー</button><p role="status">{copyStatus}</p>
         <p className="library-result"><strong>実行結果・読み方</strong><br/>{book.result}</p><p>{book.takeaway}</p>
         <p><button aria-pressed={readBooks.includes(book.id)} onClick={()=>onToggleRead(book.id)}>{readBooks.includes(book.id)?'既読を取り消す':'既読にする'}</button></p><div className="library-actions"><button onClick={()=>setIndex(null)}>◀ 目次に戻る</button><button disabled={index===0} onClick={()=>{if(index!==null)openBook(Math.max(0,index-1));}}>◀ 前の本へ</button>{index!==null&&index<shelf.books.length-1&&<button onClick={()=>openBook(index+1)}>次の本へ ▶</button>}</div>
