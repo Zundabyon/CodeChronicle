@@ -1,4 +1,4 @@
-import { chapterTwoStages } from './chapterTwo';
+import { restoreQuestStates } from './quests/persistence';
 import { normalizeDialogueLog } from './dialogueLog';
 import { normalizeLearningRecords } from './learningRecords';
 import { areaLabel, questions, type Area, type Point } from './content';
@@ -15,7 +15,7 @@ const knownQuestion=(id:string)=>questionIds.has(id)||/^guardian-repair-[0-2]-(b
 
 export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|null;notice:string} {
   if(!record(value)||!['area','pos','name'].some(key=>key in value))return {save:null,notice:'保存データの形式を読み取れませんでした。元のデータは変更していません。'};
-  if(value.version!==undefined&&value.version!==1)return {save:null,notice:'この保存形式には対応していません。元のデータは変更していません。'};
+  if(value.version!==undefined&&value.version!==1&&value.version!==2)return {save:null,notice:'この保存形式には対応していません。元のデータは変更していません。'};
   const save:Record<string,unknown>={...defaults},repairs=new Set<string>();
   const labels:Record<string,string>={gold:'所持金',level:'レベル',hp:'HP',mp:'MP',xp:'経験値',steps:'歩数',correct:'正解数',total:'回答数',wrong:'復習記録',answered:'回答記録',seen:'閲覧記録',defeated:'撃破記録',readBooks:'既読記録',openedChests:'宝箱の記録',name:'名前',story:'物語の進行',track:'学習コース',difficulty:'難易度'};
   const fix=(label:string)=>repairs.add(labels[label]??label);
@@ -40,9 +40,9 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   if(value.dialogueLog!==undefined&&JSON.stringify(value.dialogueLog)!==JSON.stringify(save.dialogueLog))fix('会話の履歴');
   save.learningRecords=normalizeLearningRecords(value.learningRecords);
   if(value.learningRecords!==undefined&&JSON.stringify(value.learningRecords)!==JSON.stringify(save.learningRecords))fix('学習記録');
-  if(!chapterTwoStages.includes(save.chapterTwo as typeof chapterTwoStages[number])||save.completed!==true){if(value.chapterTwo!==undefined&&value.chapterTwo!=='not-started')fix('第二章の進行');save.chapterTwo='not-started';}
-  save.chapterTwoStep=save.chapterTwo==='not-started'?0:save.chapterTwo==='complete'?4:Math.min(4,(save.chapterTwoStep as number)||0);
-  save.version=1;
+  save.quests=restoreQuestStates(value,save.completed===true,normalizeReadBooks(value.readBooks));
+  if(value.quests!==undefined&&JSON.stringify(record(value.quests)?Object.entries(value.quests).sort():value.quests)!==JSON.stringify(Object.entries(save.quests as Record<string,unknown>).sort()))fix('依頼の進行');
+  save.version=2;
   if(!['react','vue'].includes(String(save.track))){save.track='react';fix('学習コース');}
   if(!['beginner','intermediate','advanced'].includes(String(save.difficulty))){save.difficulty='beginner';fix('難易度');}
   save.story=migrateStoryStage(value.story);
@@ -83,6 +83,6 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
     if(typeof value.lastSavedAt==='number'&&Number.isFinite(value.lastSavedAt)&&value.lastSavedAt>0&&value.lastSavedAt<=8640000000000000)save.lastSavedAt=value.lastSavedAt;
     else fix('保存時刻');
   }
-  const notice=[value.version===undefined?'旧形式の保存データを移行しました。':'',repairs.size?`不正な項目を補正しました：${[...repairs].join('、')}。`:''].filter(Boolean).join(' ');
+  const notice=[value.version!==2?'旧形式の保存データを移行しました。':'',repairs.size?`不正な項目を補正しました：${[...repairs].join('、')}。`:''].filter(Boolean).join(' ');
   return {save:save as T,notice};
 }
