@@ -1,0 +1,2 @@
+.world-interaction-hint{position:absolute;z-index:100010;transform:translate(-50%,-100%);width:max-content;max-width:calc(4.5 * var(--tile-size));padding:5px 8px;border:2px solid #f4dc9b;background:#101b28ed;color:#fff3d5;font-size:12px;line-height:1.5;text-align:center;pointer-events:none;box-shadow:0 2px 0 #0008}
+.world-interaction-hint kbd{padding:1px 4px;border:1px solid #8caaa6;margin-right:5px;font-size:10px;color:#c6f3e7}

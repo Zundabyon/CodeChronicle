@@ -1,3 +1,4 @@
+import './world/interactionHint.css';
 import { chestId } from './chests';
 import { useEffect, useId, useRef, type CSSProperties } from 'react';
 import { areaLabel, difficultyLabel, fieldRegion, fieldRuinsGate, fieldTownGate, type Area, type Point, type Track, type Difficulty } from './content';
@@ -30,6 +31,7 @@ type Props = {
   onSound: () => void;
   muted: boolean;
   walking: boolean;
+  nearbyHint?:{point:Point;label:string};
 };
 
 const hpLimit = (level: number) => 20 + (level - 1) * 5;
@@ -61,7 +63,7 @@ function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>vo
   </div>;
 }
 
-export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking}:Props) {
+export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const npcs=storyNpcs(map.npcs,save.story);
@@ -104,6 +106,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
         }))}
         <div className="world-placements">
+          {nearbyHint&&<div className="world-interaction-hint" role="status" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,nearbyHint.point.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.2,nearbyHint.point.y-.1)} * var(--tile-size))`}}><kbd>Enter</kbd>{nearbyHint.label}</div>}
           {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((id,columnIndex)=>{
             const chip=terrainChips[id],point={x:firstX+columnIndex,y:firstY+rowIndex};
             return chip.overlay?<WorldChip key={`terrain-${point.x}-${point.y}`} definition={{category:'terrain',label:chip.label,visual:chip.overlay,layer:'depth'}} point={point}/>:null;
