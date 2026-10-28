@@ -9,6 +9,9 @@ export const normalizeOpenedChests=(value:unknown):string[]=>
 type ChestReward={gold:number;inventory:Inventory};
 const rewards:Record<string,ChestReward>={
   'armorShop:2,2':{gold:30,inventory:{herb:2}},
+  'dungeon:2,5':{gold:0,inventory:{potion:1}},
+  'dungeon:15,10':{gold:0,inventory:{ether:1}},
+  'dungeon:19,5':{gold:45,inventory:{}},
 };
 const defaultReward:ChestReward={gold:20,inventory:{herb:1}};
 type ChestSave={gold:number;inventory:Inventory;openedChests:string[]};
