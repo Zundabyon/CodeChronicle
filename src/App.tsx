@@ -368,7 +368,11 @@ export function App() {
     stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action;
     let destination=target;
     if (npc || enemy || interaction) { const options=neighbors(target).filter(p=>walkable(s.area,p)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
-    const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current,s.story); if (!route.length && !same(s.pos,destination)) return;
+    const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current,s.story);
+    if (!route.length && !same(s.pos,destination)) {
+      setToast(npc||enemy||interaction?'近づける道が見つからない。':'そこへは行けない。通れる場所を選ぼう。');
+      return;
+    }
     let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='chest') openChest(interaction.id); else if (interaction?.kind==='bookshelf') openBookshelf(interaction.shelf); } },105);
   };
   const answer = (value: string | number) => {
