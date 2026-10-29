@@ -18,60 +18,6 @@ const sprites: Partial<Record<SpriteName,SpriteData>> = {
   priest: { rows:[
     '....yyyy....','...ywwwwy...','..ywwwwwwy..','...wffffw...','...fefef....','...ffffff...','....ffff....','..wwwwwwww..','..wwywwyww..','..wwwwwwww..','...ww..ww...','..www..www..',
   ],colors:{y:'#d7b775',w:'#f1eadb',f:'#e3b291',e:'#3c3240'} },
-  slime: { rows:[
-    '............','.....pp.....','....pppp....','...pppppp...','..pppppppp..','.pppppppppp.','.ppweppwepp.','.pppppppppp.','..pppppppp..','...pppppp...','....dddd....','............',
-  ],colors:{p:'#d58ca3',w:'#fff0e6',e:'#473447',d:'#8f5d77'} },
-  bat: { rows:[
-    '............','pp........pp','ppp......ppp','pppp.pp.pppp','.pppppppppp.','..pppppppp..','...pweewp...','....pppp....','...pp..pp...','..pp....pp..','............','............',
-  ],colors:{p:'#77618b',w:'#eee2d5',e:'#d8a26f'} },
-  ghost: { rows:[
-    '....bbbb....','...bbbbbb...','..bbbbbbbb..','..bbbbbbbb..','..bbweewbb..','..bbbbbbbb..','..bbbbbbbb..','...bbbbbb...','...bbbbbb...','..bb.bb.bb..','..b...b..b..','............',
-  ],colors:{b:'#a7d3cf',w:'#f4f6e8',e:'#284657'} },
-  shadow: { rows:[
-    '....pppp....','...pppppp...','..pppppppp..','..pppppppp..','..ppreerpp..','..pppppppp..','...pppppp...','..pppppppp..','..pppppppp..','...pppppp...','....p..p....','............',
-  ],colors:{p:'#6b557e',r:'#da7995',e:'#f7bd84'} },
-  crab: { rows:[
-    '............','rr........rr','rrr......rrr','.rrr....rrr.','..rrr..rrr..','...rrrrrr...','..rroorrrr..','..rrerrerr..','...rrrrrr...','..r.r..r.r..','.r..r..r..r.','............',
-  ],colors:{r:'#d96952',o:'#f7b76d',e:'#352d47'} },
-  wolf: { rows:[
-    '..dd....dd..','..ddd..ddd..','...dddddd...','..dddddddd..','..ddeeeddd..','.ddwwddwwdd.','.dddddddddd.','..ddnndddd..','...dddddd...','..dd.dd.dd..','.dd..dd..dd.','............',
-  ],colors:{d:'#777b85',w:'#eee4d2',e:'#3d3346',n:'#d29883'} },
-  treant: { rows:[
-    '..gg....gg..','.gggg..gggg.','..gggggggg..','...gggggg...','..ggttttgg..','..ttweewtt..','..tttttttt..','.tttttttttt.','.ttt.tt.ttt.','..tt.tt.tt..','..bb....bb..','.bbb....bbb.',
-  ],colors:{g:'#6e9d56',t:'#79573e',w:'#ded299',e:'#382d38',b:'#4c3b38'} },
-  moth: { rows:[
-    '............','ppp......ppp','pppp....pppp','.pppp..pppp.','..pppppppp..','..ppwppwpp..','...ppddpp...','..ppdwwdpp..','.pppddddppp.','..pp....pp..','...p....p...','............',
-  ],colors:{p:'#ad8abc',w:'#eee4be',d:'#7e6b9b'} },
-  beetle: { rows:[
-    '............','....gggg....','..gggggggg..','.gggddddggg.','.gddggggddg.','..ddweewdd..','..ddggggdd..','..dddddddd..','.g.dddd.dd.g','g..dddddd..g','...g....g...','............',
-  ],colors:{g:'#8ab884',d:'#365966',w:'#d8b978',e:'#272e40'} },
-  scorpion: { rows:[
-    '............','..rr........','.rrrr.......','..r.r...rr..','...rrrrrrrr.','..rrrooorr..','..rrweewrr..','...rrrrrr...','..rr.r..r.rr','.r...r..r..r','r..........r','............',
-  ],colors:{r:'#b97850',o:'#e3bd78',w:'#eddfba',e:'#3a3242'} },
-  cactus: { rows:[
-    '....gggg....','...gggggg...','r..gggggg..r','rr.gggggg.rr','rgggweewgggr','rggggggggggr','.gggggggggg.','..gggggggg..','...gggggg...','....gggg....','...bb..bb...','..bbb..bbb..',
-  ],colors:{g:'#679859',r:'#b67455',w:'#e7cf92',e:'#363847',b:'#82634a'} },
-  serpent: { rows:[
-    '............','..gggggg....','.ggwwweegg..','..gggggggg..','......gggg..','....ggggg...','...gggg.....','..ggggggg...','.ggg..gggg..','..g.....ggg.','.........ggg','..........g.',
-  ],colors:{g:'#9a7a60',w:'#e7d196',e:'#382f41'} },
-  golem: { rows:[
-    '..ss....ss..','.ssss..ssss.','..ssssssss..','..sshhhhss..','..shweewhs..','..shhhhhss..','.ssssssssss.','.ssshhhhsss.','..ssssssss..','..sss..sss..','.ssss..ssss.','............',
-  ],colors:{s:'#8d9293',h:'#596c77',w:'#dcd5ae',e:'#d5a26e'} },
-  wisp: { rows:[
-    '.....y......','....yyy.....','...yyyyy....','..yywwwyy...','...yweewy...','..yywwwwyy..','..yyyyyyyy..','...yyyyyy...','....yyyy....','...y.yy.y...','..y......y..','............',
-  ],colors:{y:'#f1bf68',w:'#fff0be',e:'#677491'} },
-  skeleton: { rows:[
-    '....wwww....','...wwwwww...','...wweeww...','...wwnnww...','....wwww....','..w.wwww.w..','.w..wwww..w.','....wwww....','...ww..ww...','...ww..ww...','..www..www..','............',
-  ],colors:{w:'#e5ddc7',e:'#4b4558',n:'#9f7181'} },
-  mimic: { rows:[
-    '............','..yyyyyyyy..','.yyyyyyyyyy.','.ywwwwwwwyy.','.yeeeeeeeyy.','.dddddddddd.','.dwwwwwwwwd.','.ddeeddeedd.','.dddddddddd.','..dd....dd..','..dd....dd..','............',
-  ],colors:{y:'#d5a95b',w:'#f1e5c2',e:'#684354',d:'#76513d'} },
-  guardian: { rows:[
-    '..yyy..yyy..','..yyyyyyyy..','...yppppy...','..pppppppp..','..ppweewpp..','..pppppppp..','...yppppy...','..yyyyyyyy..','.yyypyyypyy.','..yy.yyyy...','..dd.dd.dd..','.ddd.dd.ddd.',
-  ],colors:{y:'#d9b870',p:'#5d425f',w:'#fff0d2',e:'#e78d77',d:'#332e4b'} },
-  memory: { rows:[
-    '............','.....yy.....','....yyyy....','...yyyyyy...','..yyywwyyy..','..yyweewyy..','..yyywwyyy..','...yyyyyy...','....yyyy....','.....yy.....','............','............',
-  ],colors:{y:'#e8c886',w:'#f8ecce',e:'#a17d91'} },
   father: { rows:[
     '...hhhhhh...','..hhhhhhhh..','..hhffffhh..','...fefef....','...ffffff...','....hhhh....','..cccccccc..','..ccaccacc..','..cccccccc..','...cccccc...','...dd..dd...','..ddd..ddd..',
   ],colors:{h:'#503849',f:'#d2a17f',e:'#2d2a3a',c:'#6b536c',a:'#dab780',d:'#3b3044'} },
@@ -83,24 +29,42 @@ const sprites: Partial<Record<SpriteName,SpriteData>> = {
   ],colors:{y:'#b8945e',w:'#e8d8ad',d:'#866d59'} },
 };
 
+// All enemy kinds use detailed artwork in both the world and battles.
+const enemyArt: Record<EnemyKind,string> = {
+  slime:'/sprites/slime-right.png',
+  bat:'/sprites/bat-right.png',
+  ghost:'/sprites/ghost-right.png',
+  shadow:'/sprites/shadow-right.png',
+  guardian:'/sprites/guardian-right.png',
+  crab:'/sprites/crab-right.png',
+  wolf:'/sprites/wolf-right.png',
+  treant:'/sprites/treant-right.png',
+  moth:'/sprites/moth-right.png',
+  beetle:'/sprites/beetle-right.png',
+  scorpion:'/sprites/scorpion-right.png',
+  cactus:'/sprites/cactus-right.png',
+  serpent:'/sprites/serpent-right.png',
+  golem:'/sprites/golem-right.png',
+  wisp:'/sprites/wisp-right.png',
+  skeleton:'/sprites/skeleton-right.png',
+  mimic:'/sprites/mimic-right.png',
+  memory:'/sprites/memory-right.png',
+};
+
 const rasterSprites: Partial<Record<SpriteName,string>> = {
+  ...enemyArt,
   hero:'/sprites/hero-64.png',
   elder:'/sprites/elder-64.png',
   scholar:'/sprites/scholar-64.png',
   child:'/sprites/child-64.png',
   priest:'/sprites/priest-64.png',
   wanderer:'/sprites/wanderer-64.png',
-  slime:'/sprites/slime-64.png',
-  bat:'/sprites/bat-64.png',
-  ghost:'/sprites/ghost-64.png',
-  shadow:'/sprites/shadow-64.png',
-  guardian:'/sprites/guardian-64.png',
   father:'/sprites/father-64.png',
   mother:'/sprites/mother-64.png',
 };
 
-export function PixelSprite({name,className=''}:{name:SpriteName;className?:string}) {
-  const raster=rasterSprites[name];
+export function PixelSprite({name,className='',variant='default'}:{name:SpriteName;className?:string;variant?:'default'|'battle'}) {
+  const raster=name==='hero'&&variant==='battle'?'/sprites/hero-battle-left.png':rasterSprites[name];
   if(raster) return <img className={`pixel-sprite ${className}`} src={`${import.meta.env.BASE_URL}${raster.slice(1)}`} alt="" aria-hidden="true" draggable={false}/>;
   const sprite=sprites[name]!;
   return <svg className={`pixel-sprite ${className}`} viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
