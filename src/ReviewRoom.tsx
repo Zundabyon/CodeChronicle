@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { difficultyLabel, type Question } from './content';
+import { difficultyLabel, questions as allQuestions, type Question } from './content';
 import { WorldCharacter } from './WorldCharacter';
 import './reviewRoom.css';
 
@@ -9,12 +9,13 @@ type Props = {
   onLeave: () => void;
   onStartCourse:(questions:Question[])=>void;
   courseResult?:string;
+  schedule:{id:string;dueAt:number;due:boolean}[];
 };
 
 const formatLabels:Record<Question['kind'],string>={choice:'4択',cli:'CLI入力','fill-choice':'穴埋め選択','fill-input':'穴埋め入力'};
 const subjectOf=(q:Question)=>q.topic==='frontend'?q.track??'common':q.topic;
 const subjectLabels:Record<string,string>={react:'React',vue:'Vue',common:'共通の基礎',laravel:'Laravel',connection:'画面とサーバの連携'};
-export function ReviewRoom({ questions, onStart, onLeave, onStartCourse, courseResult }: Props) {
+export function ReviewRoom({ questions, onStart, onLeave, onStartCourse, courseResult, schedule }: Props) {
   const [subject,setSubject]=useState('all'),[difficulty,setDifficulty]=useState('all'),[format,setFormat]=useState('all');
   const filtered=questions.filter(q=>(subject==='all'||subjectOf(q)===subject)&&(difficulty==='all'||q.difficulty===difficulty)&&(format==='all'||q.kind===format));
   const reset=()=>{setSubject('all');setDifficulty('all');setFormat('all');};
@@ -35,6 +36,7 @@ export function ReviewRoom({ questions, onStart, onLeave, onStartCourse, courseR
     <section className="church-card review-room-card" aria-label="復習する問題">
       <div className="review-room-list-heading"><h3>記憶の書</h3><span>{questions.length} 問</span></div>
       <p className="review-room-guide">答えを見ずに、もう一度挑戦してみましょう。回答後に正解と解説が表示されます。間違えても HP は減りません。</p>
+      <details><summary>日を空けた再確認の予定</summary><p>間違えたあと正解できた問題を、24時間後にもう一度確かめます。通常の冒険では未回答の問題を優先するしくみを保ちます。</p>{schedule.length===0?<p>今のところ予定はありません。</p>:<ul>{schedule.map(entry=><li key={entry.id}>{allQuestions.find(q=>q.id===entry.id)?.prompt??'門の復旧問題'}：{entry.due?'再確認できます':new Date(entry.dueAt).toLocaleString('ja-JP')}</li>)}</ul>}</details>
       {courseResult&&<p role="status">{courseResult}</p>}
       {filtered.length>0&&<button className="primary" onClick={()=>onStartCourse(filtered.slice(0,3))}>まとめて{Math.min(3,filtered.length)}問を復習する</button>}
       {questions.length>0&&<fieldset className="review-room-filters"><legend>復習する問題を選ぶ</legend>
@@ -46,7 +48,7 @@ export function ReviewRoom({ questions, onStart, onLeave, onStartCourse, courseR
       {questions.length===0 ? <div className="empty-review"><span aria-hidden="true">✧</span><h3>復習する問題はありません</h3><p>思い出した知識を胸に、冒険を続けましょう。</p><button className="secondary" onClick={onLeave}>教会の本堂へ戻る</button></div> : filtered.length===0 ? <div className="empty-review"><h3>条件に合う問題はありません</h3><p>絞り込みを変えると、ほかの復習問題を表示できます。</p><button onClick={reset}>すべての復習問題を表示</button></div> : <div className="review-room-list">
         {filtered.map(q=><article className="review-room-question" key={q.id}>
           <span className="review-room-topic">{subjectLabels[subjectOf(q)]} · {difficultyLabel[q.difficulty]} · {formatLabels[q.kind]}</span>
-          <h4>{q.prompt}</h4>
+          <h4>{q.prompt}</h4>{schedule.find(entry=>entry.id===q.id)?.due&&<p>再確認の期日：{new Date(schedule.find(entry=>entry.id===q.id)!.dueAt).toLocaleString('ja-JP')}</p>}
           <button className="primary" onClick={()=>onStart(q)}>答えを見ずに再挑戦する ▶</button>
           <details><summary>答えと解説を見る</summary><div className="review-room-explanation"><strong>答え：{q.reveal}</strong><p>{q.explanation}</p></div></details>
         </article>)}
