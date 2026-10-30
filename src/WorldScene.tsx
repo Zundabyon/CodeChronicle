@@ -1,3 +1,5 @@
+import './worldAmbient.css';
+import './chestRewardCue.css';
 import { LevelUpCue, type LevelUpEvent } from './LevelUpCue';
 import { RecoveryCue, type RecoveryEvent } from './RecoveryCue';
 import './world/interactionHint.css';
@@ -25,6 +27,7 @@ type Props = {
   save: WorldSave;
   recovery?:RecoveryEvent|null;
   levelUp?:LevelUpEvent|null;
+  chestReward?:{id:string;message:string}|null;
   enemyPositions: EnemyPositions;
   knightVisible?:boolean;
   menu: 'command'|'status'|'quest'|null;
@@ -68,9 +71,10 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </div>;
 }
 
-export function WorldScene({save,recovery,levelUp,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
+  const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
   const npcs=storyNpcs(map.npcs,save.story);
   const objective=objectiveOverride??storyObjective(save.story,save.bossDefeated);
   const knightPoint=[{x:save.pos.x+2,y:save.pos.y},{x:save.pos.x+1,y:save.pos.y},{x:save.pos.x-1,y:save.pos.y}].find(point=>canWalkOnMap(map,point))??save.pos;
@@ -96,6 +100,7 @@ export function WorldScene({save,recovery,levelUp,enemyPositions,knightVisible=t
   return <main className="world-stage">
     {outdoor&&<TerrainTextures id={textureId}/>}
     <div className="world-viewport" style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
+      {outdoor&&<div className={`world-ambient world-ambient-${save.area}`} aria-hidden="true"><i/><i/><i/></div>}
       <div key={save.area} className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
         {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((tile,columnIndex)=>{
           const x=firstX+columnIndex,y=firstY+rowIndex;
@@ -111,8 +116,9 @@ export function WorldScene({save,recovery,levelUp,enemyPositions,knightVisible=t
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
         }))}
         <div className="world-placements">
-          {levelUp&&<div className="world-level-up" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><LevelUpCue event={levelUp}/></div>}
-          {recovery&&<div className="world-recovery" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><RecoveryCue key={recovery.sequence} event={recovery}/></div>}
+          {openedChest&&chestReward&&<div key={chestReward.id} className="chest-reward-cue" aria-hidden="true" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),openedChest.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,openedChest.y+.1)} * var(--tile-size))`}}><i/><i/><i/><i/>{chestReward.message}</div>}
+          {levelUp&&<div className="world-level-up" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><LevelUpCue event={levelUp}/></div>}
+          {recovery&&<div className="world-recovery" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><RecoveryCue key={recovery.sequence} event={recovery}/></div>}
           {nearbyHint&&<div className="world-interaction-hint" role="status" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,nearbyHint.point.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.2,nearbyHint.point.y-.1)} * var(--tile-size))`}}><kbd>Enter</kbd>{nearbyHint.label}</div>}
           {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((id,columnIndex)=>{
             const chip=terrainChips[id],point={x:firstX+columnIndex,y:firstY+rowIndex};
