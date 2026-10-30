@@ -1,3 +1,4 @@
+import { LevelUpCue, type LevelUpEvent } from './LevelUpCue';
 import { RecoveryCue, type RecoveryEvent } from './RecoveryCue';
 import './world/interactionHint.css';
 import type { MapTab } from './TravelMap';
@@ -23,6 +24,7 @@ type WorldSave = {
 type Props = {
   save: WorldSave;
   recovery?:RecoveryEvent|null;
+  levelUp?:LevelUpEvent|null;
   enemyPositions: EnemyPositions;
   knightVisible?:boolean;
   menu: 'command'|'status'|'quest'|null;
@@ -66,7 +68,7 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </div>;
 }
 
-export function WorldScene({save,recovery,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({save,recovery,levelUp,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const npcs=storyNpcs(map.npcs,save.story);
@@ -109,7 +111,8 @@ export function WorldScene({save,recovery,enemyPositions,knightVisible=true,menu
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
         }))}
         <div className="world-placements">
-          {recovery&&<div className="world-recovery" style={{left:`calc(${save.pos.x+.5} * var(--tile-size))`,top:`calc(${save.pos.y+.3} * var(--tile-size))`}}><RecoveryCue key={recovery.sequence} event={recovery}/></div>}
+          {levelUp&&<div className="world-level-up" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><LevelUpCue event={levelUp}/></div>}
+          {recovery&&<div className="world-recovery" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><RecoveryCue key={recovery.sequence} event={recovery}/></div>}
           {nearbyHint&&<div className="world-interaction-hint" role="status" style={{left:`calc(${Math.max(cameraX+2,Math.min(cameraX+viewColumns-2,nearbyHint.point.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.2,nearbyHint.point.y-.1)} * var(--tile-size))`}}><kbd>Enter</kbd>{nearbyHint.label}</div>}
           {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((id,columnIndex)=>{
             const chip=terrainChips[id],point={x:firstX+columnIndex,y:firstY+rowIndex};
