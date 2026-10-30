@@ -410,17 +410,17 @@
 /* Pose drawings provide the sword swing; this movement closes the distance. */
 .battlefield-hero-attack .battle-hero-sprite {
   --hero-lunge: max(0px, calc(55cqw - 135px));
-  animation: battle-hero-cut 1.2s steps(8, end) both;
+  animation: battle-hero-cut var(--battle-hero-duration,1200ms) steps(8, end) both;
 }
 
 .battlefield-hero-move-1 .battle-hero-sprite { animation-name: battle-hero-sweep; }
 .battlefield-hero-move-2 .battle-hero-sprite { animation-name: battle-hero-thrust; }
-.battlefield-hero-attack .battle-foe-sprite { animation: battle-foe-sword-hit .55s .45s steps(1, end) both; }
+.battlefield-hero-attack .battle-foe-sprite { animation: battle-foe-sword-hit .55s var(--battle-hero-impact,450ms) steps(1, end) both; }
 
 .battle-slash-effect { top: 28%; height: 41%; }
-.battle-slash-effect i { animation-duration: .4s; animation-delay: .34s; }
-.battle-slash-effect i:nth-child(2) { animation-delay: .37s; }
-.battle-slash-effect i:nth-child(3) { animation-delay: .4s; }
+.battle-slash-effect i { animation-duration: .4s; animation-delay: calc(var(--battle-hero-impact,450ms) - 110ms); }
+.battle-slash-effect i:nth-child(2) { animation-delay: calc(var(--battle-hero-impact,450ms) - 80ms); }
+.battle-slash-effect i:nth-child(3) { animation-delay: calc(var(--battle-hero-impact,450ms) - 50ms); }
 .battle-slash-effect b {
   position: absolute;
   left: 40%;
@@ -431,7 +431,7 @@
   border-radius: 50%;
   box-shadow: 0 0 18px #fff1a5;
   opacity: 0;
-  animation: battle-sword-impact .32s .43s steps(4, end) both;
+  animation: battle-sword-impact .32s calc(var(--battle-hero-impact,450ms) - 20ms) steps(4, end) both;
 }
 .battlefield-hero-move-1 .battle-slash-effect i { --slash-angle: 86deg; }
 .battlefield-hero-move-1 .battle-slash-effect i:nth-child(2) { --slash-angle: 78deg; top: 22%; }
@@ -753,3 +753,12 @@
 }
 
 @media (min-width: 701px) and (max-width: 979px) { body:has(.fill-battle) { min-width: 0; } }
+
+/* A local spark and floating number mark the moment damage lands. */
+.battle-impact-indicator{position:absolute;z-index:8;left:46%;top:22%;pointer-events:none;color:#fff1b0;text-shadow:2px 2px 0 #34202d,-1px -1px 0 #34202d;font:bold 24px 'DotGothic16',monospace;animation:battle-damage-float .78s ease-out both}
+.battle-impact-indicator b{position:relative;z-index:2}
+.battle-impact-indicator i{position:absolute;left:-11px;top:2px;width:38px;height:38px;background:#fff5bd;clip-path:polygon(50% 0,58% 35%,88% 12%,66% 42%,100% 50%,66% 58%,88% 88%,58% 66%,50% 100%,42% 66%,12% 88%,34% 58%,0 50%,34% 42%,12% 12%,42% 34%);animation:battle-impact-spark .35s steps(3,end) both}
+.battle-impact-hero{color:#ffb4aa}
+@keyframes battle-damage-float{0%{opacity:0;translate:0 8px;scale:.7}18%{opacity:1;translate:0 -3px;scale:1.15}60%{opacity:1;translate:0 -18px;scale:1}100%{opacity:0;translate:0 -30px}}
+@keyframes battle-impact-spark{0%{opacity:1;scale:.3}35%{opacity:1;scale:1.4}100%{opacity:0;scale:1.8}}
+@media(prefers-reduced-motion:reduce){.battle-impact-indicator{animation:none;opacity:1;translate:0;scale:1}.battle-impact-indicator i{display:none}}
