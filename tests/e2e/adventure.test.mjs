@@ -50,3 +50,17 @@ test('review keeps HP, retains mistakes and removes a corrected question',{timeo
 test('saved adventure resumes with possessions and position intact',{timeout:45000},async t=>{
   const page=await fixture(t,{gold:321,readBooks:['js-variables-01']});await page.locator('.world-viewport').focus();await page.keyboard.press('ArrowLeft');const first=await saved(page);await page.reload();await resume(page);const second=await saved(page);assert.deepEqual(second.pos,first.pos);assert.equal(second.gold,321);assert.deepEqual(second.readBooks,['js-variables-01']);
 });
+
+test('second chapter survives pauses, opened chests and completion without altering chapter one',{timeout:45000},async t=>{
+const storage='code-chronicle-save-v1';
+async function data(){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),storage);}
+async function advance(){for(let i=0;i<40&&await page.locator('.dialogue-box').count()&&!await page.locator('.dialogue-choices button').count();i++)await page.locator('.dialogue-box').click();}
+async function relocate(area,pos){await page.evaluate(({key,area,pos})=>{const s=JSON.parse(localStorage.getItem(key));s.area=area;s.pos=pos;localStorage.setItem(key,JSON.stringify(s));},{key:storage,area,pos});await page.reload();const notice=page.getByRole('button',{name:'確認しました'});if(await notice.count())await notice.click();await page.getByRole('button',{name:/続きから/}).click();}
+async function interact(){await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');}
+const page=await fixture(t,{completed:true,story:'rescued',bossDefeated:true,gold:321,openedChests:['dungeon:19,5']});await page.getByRole('button',{name:'第二章「消えた名簿」を始める',exact:true}).click();await advance();assert.equal((await data()).chapterTwo,'village');await relocate('village',{x:4,y:8});await interact();await advance();assert.equal((await data()).chapterTwo,'cave');await relocate('dungeon',{x:20,y:5});await interact();await advance();assert.equal((await data()).chapterTwo,'restore');assert.equal((await data()).gold,321);await relocate('village',{x:4,y:8});await interact();await advance();
+const qs=await page.evaluate(async()=>{const {chapterTwoTasks}=await import('/src/chapterTwo.ts');const {questions}=await import('/src/content.ts');return chapterTwoTasks.map(task=>questions.find(q=>q.id===task.id));});
+await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:qs[0].options[(qs[0].answer+1)%4],exact:false}).click();await advance();assert.equal((await data()).chapterTwoStep,0);
+await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:qs[0].options[qs[0].answer],exact:false}).click();await advance();await page.getByRole('button',{name:/あとで続ける/}).click();await advance();assert.equal((await data()).chapterTwoStep,1);await relocate('village',{x:4,y:8});await interact();await advance();
+for(const q of qs.slice(1)){await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:q.options[q.answer],exact:false}).click();await advance();}
+const result=await data();assert.equal(result.chapterTwo,'complete');assert.equal(result.chapterTwoStep,4);assert.equal(result.gold,391);assert.equal(result.inventory.ether,1);assert.equal(result.story,'rescued');assert.equal(result.completed,true);await relocate('village',{x:4,y:8});assert.ok(await page.locator('.world-stage').count());await interact();await advance();assert.equal((await data()).gold,391);
+});

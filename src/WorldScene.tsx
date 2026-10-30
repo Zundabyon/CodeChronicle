@@ -33,6 +33,7 @@ type Props = {
   muted: boolean;
   walking: boolean;
   facing?: Point;
+  objectiveOverride?:{title:string;text:string};
   nearbyHint?:{point:Point;label:string};
 };
 
@@ -65,11 +66,11 @@ function FieldMiniMap({position,onTile}:{position:Point;onTile:(point:Point)=>vo
   </div>;
 }
 
-export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},nearbyHint}:Props) {
+export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const npcs=storyNpcs(map.npcs,save.story);
-  const objective=storyObjective(save.story,save.bossDefeated);
+  const objective=objectiveOverride??storyObjective(save.story,save.bossDefeated);
   const knightPoint=[{x:save.pos.x+2,y:save.pos.y},{x:save.pos.x+1,y:save.pos.y},{x:save.pos.x-1,y:save.pos.y}].find(point=>canWalkOnMap(map,point))??save.pos;
   const {width,height}=map;
   const viewColumns=Math.min(14,width),viewRows=Math.min(9,height);
@@ -140,7 +141,7 @@ export function WorldScene({save,enemyPositions,knightVisible=true,menu,onMenu,o
     <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
     {save.area==='town'&&<TownMap position={save.pos}/>}
     {save.area==='field'&&<FieldMiniMap position={save.pos} onTile={onTile}/>}
-    {save.story!=='legacy'&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p></aside>}
+    {(save.story!=='legacy'||objectiveOverride)&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p></aside>}
     <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
     <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
     <div className="world-hint">矢印 / WASD：移動　•　Enter：話す・調べる　•　クリック：目的地へ</div>

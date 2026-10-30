@@ -1,3 +1,4 @@
+import { chapterTwoStages } from './chapterTwo';
 import { normalizeDialogueLog } from './dialogueLog';
 import { normalizeLearningRecords } from './learningRecords';
 import { areaLabel, questions, type Area, type Point } from './content';
@@ -39,6 +40,8 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   if(value.dialogueLog!==undefined&&JSON.stringify(value.dialogueLog)!==JSON.stringify(save.dialogueLog))fix('会話の履歴');
   save.learningRecords=normalizeLearningRecords(value.learningRecords);
   if(value.learningRecords!==undefined&&JSON.stringify(value.learningRecords)!==JSON.stringify(save.learningRecords))fix('学習記録');
+  if(!chapterTwoStages.includes(save.chapterTwo as typeof chapterTwoStages[number])||save.completed!==true){if(value.chapterTwo!==undefined&&value.chapterTwo!=='not-started')fix('第二章の進行');save.chapterTwo='not-started';}
+  save.chapterTwoStep=save.chapterTwo==='not-started'?0:save.chapterTwo==='complete'?4:Math.min(4,(save.chapterTwoStep as number)||0);
   save.version=1;
   if(!['react','vue'].includes(String(save.track))){save.track='react';fix('学習コース');}
   if(!['beginner','intermediate','advanced'].includes(String(save.difficulty))){save.difficulty='beginner';fix('難易度');}
