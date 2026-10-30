@@ -788,3 +788,12 @@
 .battle-enemy-pixel{display:block;width:100%;height:100%;image-rendering:pixelated}
 .battle-enemy-effect-splash i,.battle-enemy-effect-curse i,.battle-enemy-effect-drain i{border-radius:0;box-shadow:4px 4px 0 #273f4b}
 .battle-enemy-effect-wave i,.battle-enemy-effect-lightning i,.battle-enemy-effect-shock i{border-radius:12%;box-shadow:none}
+
+/* The insight spell marks only the option it actually eliminates. */
+.options button.eliminated{position:relative;overflow:hidden;opacity:1;border-color:#8c81b8;background:#28243c;color:#e9dfff}
+.options button.eliminated::before,.options button.eliminated::after{content:'';position:absolute;pointer-events:none;inset:50% auto auto 50%;opacity:0}
+.options button.eliminated::before{width:58px;height:58px;border:3px solid #d4c5ff;outline:2px dotted #9ce7e0;outline-offset:-9px;transform:translate(-50%,-50%) rotate(45deg) scale(1.9);animation:insight-rune .8s steps(6,end) both}
+.options button.eliminated::after{width:14px;height:14px;background:#f0e5ff;box-shadow:-22px -16px #a6eee5,22px -16px #c8b2ff,-22px 16px #c8b2ff,22px 16px #a6eee5;transform:translate(-50%,-50%) scale(2);animation:insight-sparks .75s steps(6,end) both}
+@keyframes insight-rune{0%{opacity:0;transform:translate(-50%,-50%) rotate(-45deg) scale(2)}35%{opacity:.8}75%{opacity:.7;transform:translate(-50%,-50%) rotate(45deg) scale(.75)}100%{opacity:0;transform:translate(-50%,-50%) rotate(45deg) scale(.5)}}
+@keyframes insight-sparks{0%{opacity:0;transform:translate(-50%,-50%) scale(2)}25%{opacity:1}80%{opacity:.8;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(0)}}
+@media(prefers-reduced-motion:reduce){.options button.eliminated::before,.options button.eliminated::after{display:none}}
