@@ -69,7 +69,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
         <span className="battlefield-scenery-front" />
       </div>
       {attack && <span key={`banner-${attackRound}`} className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の「${heroTechnique?.name ?? heroMoves[heroMove]}」！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
-      {attack === 'hero' && <div key={`slash-${attackRound}`} className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /></div>}
+      {attack === 'hero' && <div key={`slash-${attackRound}`} className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /><em className="battle-sword-trail" /></div>}
       {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
       <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''}`}>
