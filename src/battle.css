@@ -1,4 +1,5 @@
 .battlefield {
+  container-type: inline-size;
   position: relative;
   isolation: isolate;
   height: 330px;
@@ -406,48 +407,20 @@
   .battlefield-enemy-attack .battle-hero-sprite { animation: none; }
 }
 
-/* Each answer has a full windup, strike and recovery. The weapon stays attached
-   to the hero sprite, so its swing follows the lunge on narrow screens too. */
+/* Pose drawings provide the sword swing; this movement closes the distance. */
 .battlefield-hero-attack .battle-hero-sprite {
-  --hero-lunge: clamp(80px, 18vw, 175px);
+  --hero-lunge: max(0px, calc(55cqw - 135px));
   animation: battle-hero-cut 1.2s steps(8, end) both;
 }
 
 .battlefield-hero-move-1 .battle-hero-sprite { animation-name: battle-hero-sweep; }
 .battlefield-hero-move-2 .battle-hero-sprite { animation-name: battle-hero-thrust; }
-.battlefield-hero-attack .battle-foe-sprite { animation: battle-foe-hit .75s .4s steps(3, end) both; }
+.battlefield-hero-attack .battle-foe-sprite { animation: battle-foe-sword-hit .55s .45s steps(1, end) both; }
 
-.battle-hero-weapon {
-  position: absolute;
-  z-index: 2;
-  left: 40%;
-  top: 33%;
-  width: 13px;
-  height: 92px;
-  transform-origin: 50% 88%;
-  background: linear-gradient(90deg, #6689a0 0 20%, #fffbea 21% 48%, #c1e5e8 49% 72%, #577b9d 73%);
-  border: 2px solid #31475e;
-  filter: drop-shadow(0 0 7px #efffff);
-  animation: battle-weapon-cut 1.2s steps(8, end) both;
-}
-
-.battle-hero-weapon::after {
-  content: '';
-  position: absolute;
-  left: -11px;
-  bottom: 15px;
-  width: 31px;
-  height: 7px;
-  border: 2px solid #63473c;
-  background: #f8cf7f;
-}
-
-.battlefield-hero-move-1 .battle-hero-weapon { animation-name: battle-weapon-sweep; }
-.battlefield-hero-move-2 .battle-hero-weapon { animation-name: battle-weapon-thrust; }
 .battle-slash-effect { top: 28%; height: 41%; }
-.battle-slash-effect i { animation-duration: 1.15s; animation-delay: 0s; }
-.battle-slash-effect i:nth-child(2) { animation-delay: .08s; }
-.battle-slash-effect i:nth-child(3) { animation-delay: .14s; }
+.battle-slash-effect i { animation-duration: .4s; animation-delay: .34s; }
+.battle-slash-effect i:nth-child(2) { animation-delay: .37s; }
+.battle-slash-effect i:nth-child(3) { animation-delay: .4s; }
 .battle-slash-effect b {
   position: absolute;
   left: 40%;
@@ -458,7 +431,7 @@
   border-radius: 50%;
   box-shadow: 0 0 18px #fff1a5;
   opacity: 0;
-  animation: battle-sword-impact .6s .4s steps(4, end) both;
+  animation: battle-sword-impact .32s .43s steps(4, end) both;
 }
 .battlefield-hero-move-1 .battle-slash-effect i { --slash-angle: 86deg; }
 .battlefield-hero-move-1 .battle-slash-effect i:nth-child(2) { --slash-angle: 78deg; top: 22%; }
@@ -467,49 +440,32 @@
 .battlefield-hero-move-2 .battle-slash-effect i:nth-child(2) { left: 54%; top: 36%; }
 .battlefield-hero-move-2 .battle-slash-effect i:nth-child(3) { left: 33%; top: 19%; }
 
+@keyframes battle-foe-sword-hit {
+  0%, 8%, 100% { translate: 0 0; filter: none; }
+  9%, 35% { translate: -12px 0; filter: brightness(1.8); }
+  36%, 60% { translate: 6px 0; filter: brightness(1.3); }
+}
+
 @keyframes battle-hero-cut {
-  0%, 100% { translate: 0 0; rotate: 0deg; }
-  16% { translate: 17px -4px; rotate: 8deg; }
-  43% { translate: calc(-1 * var(--hero-lunge)) -11px; rotate: -10deg; }
-  62% { translate: calc(-.85 * var(--hero-lunge)) 0; rotate: 4deg; }
-  82% { translate: -22px 0; rotate: 0deg; }
+  0%, 100% { translate: 0 0; }
+  16% { translate: 17px -4px; }
+  43% { translate: calc(-1 * var(--hero-lunge)) -11px; }
+  62% { translate: calc(-.85 * var(--hero-lunge)) 0; }
+  82% { translate: -22px 0; }
 }
 @keyframes battle-hero-sweep {
-  0%, 100% { translate: 0 0; rotate: 0deg; }
-  18% { translate: 11px -5px; rotate: -8deg; }
-  45% { translate: calc(-1 * var(--hero-lunge)) 1px; rotate: 6deg; }
-  65% { translate: calc(-.8 * var(--hero-lunge)) -6px; rotate: -5deg; }
-  84% { translate: -17px 0; rotate: 0deg; }
+  0%, 100% { translate: 0 0; }
+  18% { translate: 11px -5px; }
+  45% { translate: calc(-1 * var(--hero-lunge)) 1px; }
+  65% { translate: calc(-.8 * var(--hero-lunge)) -6px; }
+  84% { translate: -17px 0; }
 }
 @keyframes battle-hero-thrust {
-  0%, 100% { translate: 0 0; rotate: 0deg; }
-  23% { translate: 22px 0; rotate: 3deg; }
-  48% { translate: calc(-1.12 * var(--hero-lunge)) -3px; rotate: -3deg; }
-  58% { translate: calc(-.96 * var(--hero-lunge)) -3px; rotate: -3deg; }
-  82% { translate: -18px 0; rotate: 0deg; }
-}
-@keyframes battle-weapon-cut {
-  0%, 100% { transform: translate(13px, 9px) rotate(37deg); opacity: 0; }
-  13% { transform: translate(13px, 9px) rotate(37deg); opacity: 1; }
-  30% { transform: translate(24px, -3px) rotate(76deg); }
-  47% { transform: translate(-38px, -21px) rotate(-53deg); }
-  70% { transform: translate(-36px, 6px) rotate(-77deg); opacity: 1; }
-  86% { opacity: 0; }
-}
-@keyframes battle-weapon-sweep {
-  0%, 100% { transform: translate(7px, 10px) rotate(-38deg); opacity: 0; }
-  15% { opacity: 1; }
-  32% { transform: translate(20px, 12px) rotate(-40deg); }
-  51% { transform: translate(-40px, -22px) rotate(83deg); }
-  68% { transform: translate(-45px, -27px) rotate(103deg); opacity: 1; }
-  85% { opacity: 0; }
-}
-@keyframes battle-weapon-thrust {
-  0%, 100% { transform: translate(13px, 6px) rotate(50deg); opacity: 0; }
-  16% { opacity: 1; }
-  30% { transform: translate(19px, 4px) rotate(55deg); }
-  49%, 60% { transform: translate(-76px, -16px) rotate(82deg); opacity: 1; }
-  85% { opacity: 0; }
+  0%, 100% { translate: 0 0; }
+  23% { translate: 22px 0; }
+  48% { translate: calc(-1.12 * var(--hero-lunge)) -3px; }
+  58% { translate: calc(-.96 * var(--hero-lunge)) -3px; }
+  82% { translate: -18px 0; }
 }
 @keyframes battle-sword-impact {
   0%, 100% { opacity: 0; transform: scale(.2); }
@@ -662,7 +618,6 @@
 @keyframes battle-shock-ring { 0%, 100% { opacity: 0; scale: .2; } 30% { opacity: 1; scale: 1; } 70% { opacity: .4; scale: 1.6; } }
 
 @media (max-width: 700px) {
-  .battle-hero-weapon { width: 10px; height: 72px; }
   .battle-enemy-effect-lightning .battle-enemy-projectile { top: -112px; height: 142px; }
   .battle-enemy-effect-wave .battle-enemy-projectile { width: 51px; height: 50px; top: -25px; }
   .battle-enemy-effect-blade .battle-enemy-projectile,
@@ -674,7 +629,6 @@
   .battlefield-hero-attack .battle-foe-sprite,
   .battlefield-enemy-attack .battle-foe-sprite,
   .battlefield-enemy-attack .battle-hero-sprite { animation: none; }
-  .battle-hero-weapon,
   .battle-slash-effect,
   .battle-enemy-effect { display: none; }
 }

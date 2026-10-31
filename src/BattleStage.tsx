@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { HeroBattleSprite } from './HeroBattleSprite';
 import { enemyKinds, type Area, type Enemy } from './content';
 import { enemySprite, PixelSprite } from './PixelSprite';
 import { battleBanter, type BattleMoment } from './battleBanter';
@@ -56,12 +57,12 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
         <span className="battlefield-scenery-back" />
         <span className="battlefield-scenery-front" />
       </div>
-      {attack && <span className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の「${heroTechnique?.name ?? heroMoves[heroMove]}」！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
-      {attack === 'hero' && <div className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /></div>}
+      {attack && <span key={`banner-${attackRound}`} className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の「${heroTechnique?.name ?? heroMoves[heroMove]}」！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
+      {attack === 'hero' && <div key={`slash-${attackRound}`} className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /></div>}
       {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
       <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''}`}>
-        <div className="battle-combatant-sprite battle-foe-sprite">
+        <div key={`foe-${attackRound}`} className="battle-combatant-sprite battle-foe-sprite">
           <PixelSprite name={enemySprite(enemy.id)} />
         </div>
         <div className="battle-combatant-status battle-foe-status">
@@ -74,9 +75,8 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
       </div>
 
       <div className="battle-combatant battle-hero">
-        <div className="battle-combatant-sprite battle-hero-sprite">
-          <PixelSprite name="hero" variant="battle" />
-          {attack === 'hero' && <span className="battle-hero-weapon" aria-hidden="true" />}
+        <div key={`hero-${attackRound}`} className="battle-combatant-sprite battle-hero-sprite">
+          <HeroBattleSprite motion={heroMove} attacking={attack==='hero'&&attackAnimating} attackId={attackRound}/>
         </div>
         <div className="battle-combatant-status battle-hero-status">
           <strong>{hero.name} <small>LV {hero.level}</small></strong>

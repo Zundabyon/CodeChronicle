@@ -1,0 +1,22 @@
+.hero-battle-art{position:relative;display:block}
+.hero-battle-idle{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.hero-attack-pose{position:absolute;inset:0;width:100%;height:100%;overflow:visible;visibility:hidden;opacity:0;pointer-events:none;transform:scale(var(--pose-scale));transform-origin:56% 84%}
+.hero-battle-art[data-ready=true] .hero-battle-idle{visibility:hidden}
+.hero-battle-art[data-ready=true][data-attacking=false] .hero-atlas-cut.pose-0{visibility:visible;opacity:1}
+.hero-battle-art[data-attacking=true] .hero-attack-pose.is-current{visibility:visible;animation-duration:1.2s;animation-timing-function:steps(1,end);animation-fill-mode:both}
+.hero-battle-art[data-attacking=true] .is-current.pose-0{animation-name:hero-pose-ready}
+.hero-battle-art[data-attacking=true] .is-current.pose-1{animation-name:hero-pose-windup}
+.hero-battle-art[data-attacking=true] .is-current.pose-2{animation-name:hero-pose-strike}
+.hero-battle-art[data-attacking=true] .is-current.pose-3{animation-name:hero-pose-follow}
+.hero-battle-art[data-attacking=true] .is-current.pose-4{animation-name:hero-pose-recover}
+.hero-battle-art[data-attacking=true] .is-current.pose-5{animation-name:hero-pose-return}
+@keyframes hero-pose-ready{0%{opacity:1}12%,100%{opacity:0}}
+@keyframes hero-pose-windup{0%{opacity:0}12%{opacity:1}38%,100%{opacity:0}}
+@keyframes hero-pose-strike{0%{opacity:0}38%{opacity:1}53%,100%{opacity:0}}
+@keyframes hero-pose-follow{0%{opacity:0}53%{opacity:1}72%,100%{opacity:0}}
+@keyframes hero-pose-recover{0%{opacity:0}72%{opacity:1}90%,100%{opacity:0}}
+@keyframes hero-pose-return{0%{opacity:0}90%,100%{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  .hero-battle-art[data-attacking=true] .hero-attack-pose.is-current{animation:none;visibility:hidden;opacity:0}
+  .hero-battle-art[data-ready=true][data-attacking=true] .hero-atlas-cut.pose-0{visibility:visible;opacity:1}
+}

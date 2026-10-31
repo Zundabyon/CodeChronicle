@@ -1,4 +1,5 @@
 import type { Enemy } from './content';
+import { HeroBattleSprite } from './HeroBattleSprite';
 import { battleBanter } from './battleBanter';
 import { enemySprite, PixelSprite } from './PixelSprite';
 
@@ -21,7 +22,7 @@ export function BattleEncounter({ enemy, heroName, banterSeed=0, onEnter }: Batt
       <div className="encounter-duo" aria-hidden="true">
         <div className="encounter-sprite encounter-foe-sprite"><PixelSprite name={enemySprite(enemy.id)} /></div>
         <span>VS</span>
-        <div className="encounter-sprite encounter-hero-sprite"><PixelSprite name="hero" variant="battle" /></div>
+        <div className="encounter-sprite encounter-hero-sprite"><HeroBattleSprite/></div>
       </div>
       <div className="encounter-banter">
         <div className="battle-voice battle-voice-enemy"><strong>{enemy.name}</strong><p>「{voices.enemy}」</p></div>
