@@ -75,7 +75,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
 
       <div className="battle-combatant battle-hero">
         <div className="battle-combatant-sprite battle-hero-sprite">
-          <PixelSprite name="hero" />
+          <PixelSprite name="hero" variant="battle" />
           {attack === 'hero' && <span className="battle-hero-weapon" aria-hidden="true" />}
         </div>
         <div className="battle-combatant-status battle-hero-status">

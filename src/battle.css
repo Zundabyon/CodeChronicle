@@ -134,9 +134,9 @@
   filter: none;
 }
 
-.battle-foe-sprite .pixel-sprite { transform: scaleX(-1) scale(1.13); }
-.battle-hero-sprite .pixel-sprite { transform: scaleX(-1) scale(1.48); }
-.battle-foe-boss .battle-foe-sprite .pixel-sprite { transform: scaleX(-1) scale(1.35); }
+.battle-foe-sprite .pixel-sprite { transform: scale(1.13); }
+.battle-hero-sprite .pixel-sprite { transform: scale(1.13); }
+.battle-foe-boss .battle-foe-sprite .pixel-sprite { transform: scale(1.35); }
 
 .battle-combatant-status {
   width: min(100%, 235px);
@@ -420,7 +420,7 @@
 .battle-hero-weapon {
   position: absolute;
   z-index: 2;
-  left: 62%;
+  left: 40%;
   top: 33%;
   width: 13px;
   height: 92px;
@@ -733,7 +733,7 @@
 }
 .encounter-duo .encounter-sprite { flex: none; margin: 0; }
 .encounter-foe-sprite .pixel-sprite,
-.encounter-hero-sprite .pixel-sprite { transform: scaleX(-1); }
+.encounter-hero-sprite .pixel-sprite { transform: none; }
 .encounter-duo > span {
   color: #f9d59d;
   font: 20px 'Press Start 2P', monospace;
