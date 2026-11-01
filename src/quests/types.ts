@@ -1,6 +1,7 @@
 import type { Area } from '../content';
 import type { ItemId } from '../items';
 import type { StoryLine } from '../story';
+import type { QuestStudy } from './studyTypes';
 export type AnswerSource='book'|'quest'|'battle';
 export type QuestTrigger=
   | {type:'npc-talked';npcId:string}
@@ -13,9 +14,9 @@ export type QuestEvent=
   | {type:'npc-talked'|'reported';npcId:string;questId:string}
   | Exclude<QuestTrigger,{type:'npc-talked'|'reported'}>;
 export type QuestStep={
-  id:string;title:string;description:string;reminder?:string;
+  id:string;title:string;description:string;reminder?:string;npcId?:string;
   trigger:QuestTrigger;
-  lines?:StoryLine[];questionIntro?:string;requiresReadBook?:string;after?:StoryLine[];
+  lines?:StoryLine[];questionIntro?:string;requiresReadBook?:string;after?:StoryLine[];study?:QuestStudy;
 };
 export type QuestDefinition={
   id:string;category:'side'|'chapter';title:string;description:string;
@@ -23,5 +24,5 @@ export type QuestDefinition={
   startLabel?:string;offer?:string;acceptLabel?:string;acceptResponse?:string;reportLabel?:string;reportResponse?:string;completedText:string;completionObjective?:string;pauseResponse?:string;
   steps:QuestStep[];reward:{gold:number;items:Partial<Record<ItemId,number>>};
 };
-export type QuestProgress={step:string};
+export type QuestProgress={step:string;reviewStep?:string};
 export type QuestStates=Record<string,QuestProgress>;

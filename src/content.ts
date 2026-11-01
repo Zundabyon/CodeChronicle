@@ -1,3 +1,5 @@
+import { resourceQuestions } from './resourceQuestions';
+import { chapterTwoQuestions } from './chapterTwoQuestions';
 import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
 import { beginnerQuestions } from './beginnerQuestions';
@@ -7,7 +9,7 @@ import { mountainVillageGate, mountainVillageReturn } from './world/mountainVill
 export type Track = 'react' | 'vue';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse' | 'weaponShop' | 'armorShop' | 'itemShop' | 'backendLibrary';
-export type Area = 'town' | 'field' | 'dungeon' | 'village' | 'librarySecondFloor' | 'libraryThirdFloor' | 'libraryFourthFloor' | 'backendSecondFloor' | HouseArea;
+export type Area = 'crudCreate' | 'crudRead' | 'crudUpdate' | 'crudDelete' | 'town' | 'field' | 'dungeon' | 'village' | 'librarySecondFloor' | 'libraryThirdFloor' | 'libraryFourthFloor' | 'backendSecondFloor' | HouseArea;
 export type Question = {
   id: string;
   difficulty: Difficulty;
@@ -84,12 +86,14 @@ export const questions: Question[] = [
   choice('api-a-1','advanced','connection','APIが401を返した。まず確認すべき意味は？',['認証が必要、または認証できない','必ずサーバが落ちた','CSSに構文エラー','JSON配列が空'],0,'401は認証に関するHTTPステータスです。',{inertia:false}),
   choice('api-a-2','advanced','connection','APIへの書き込みでフロント側だけの検証では足りない理由は？',['サーバへ直接リクエストできるから','TypeScriptが無効になるから','画面が必ず白くなるから','GETしか使えないから'],0,'クライアント側を迂回できるため、サーバ側でも検証します。',{inertia:false}),
   ...beginnerQuestions,
+  ...chapterTwoQuestions,
+  ...resourceQuestions,
   ...moreQuestions,
   ...fillQuestions,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
-export const areaLabel: Record<Area, string> = { town: '黎明の町', village:'石灯の村', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'西棟 1階・JavaScript', librarySecondFloor:'西棟 2階・TypeScript', libraryThirdFloor:'西棟 3階・React', libraryFourthFloor:'西棟 4階・Vue', backendLibrary:'東棟 1階・PHP', backendSecondFloor:'東棟 2階・Laravel', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
+export const areaLabel: Record<Area, string> = { crudCreate:'創生の工房', crudRead:'読解の書庫', crudUpdate:'改変の回廊', crudDelete:'忘却の墓所', town: '黎明の町', village:'石灯の村', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'西棟 1階・JavaScript', librarySecondFloor:'西棟 2階・TypeScript', libraryThirdFloor:'西棟 3階・React', libraryFourthFloor:'西棟 4階・Vue', backendLibrary:'東棟 1階・PHP', backendSecondFloor:'東棟 2階・Laravel', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
@@ -333,6 +337,10 @@ export const maps: Partial<Record<Area, MapData>> = {
 
 // Encounter identity is shared by map sprites, battle animation and dialogue.
 export const enemyKinds: Record<string, EnemyKind> = {
+  'memory-c-enemy-0':'mimic','memory-c-enemy-1':'shadow','memory-c-enemy-2':'slime',
+  'memory-r-enemy-0':'ghost','memory-r-enemy-1':'wisp','memory-r-enemy-2':'bat',
+  'memory-u-enemy-0':'golem','memory-u-enemy-1':'shadow','memory-u-enemy-2':'mimic',
+  'memory-d-enemy-0':'skeleton','memory-d-enemy-1':'ghost','memory-d-enemy-2':'golem',
   f1:'slime',f2:'bat',f3:'ghost',f4:'treant',f5:'slime',f6:'scorpion',f7:'serpent',f8:'bat',f9:'golem',
   f10:'crab',f11:'bat',f12:'wisp',f13:'crab',f14:'wolf',f15:'treant',f16:'moth',f17:'beetle',f18:'wolf',
   f19:'moth',f20:'scorpion',f21:'cactus',f22:'serpent',f23:'wisp',f24:'golem',f25:'ghost',f26:'beetle',f27:'golem',
