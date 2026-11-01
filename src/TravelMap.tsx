@@ -37,17 +37,17 @@ export function TravelMap({area,position,inChurch=false,initialTab='world',onClo
       <p className="travel-map-location"><span className="travel-map-dot"/>現在地：<strong>{location.label}</strong>{area==='field'&&<span>（{position.x}, {position.y}）</span>}</p>
       <div className="travel-map-tabs" role="tablist" aria-label="地図の種類"><button id="map-tab-world" role="tab" aria-controls="travel-map-content" aria-selected={tab==='world'} onClick={()=>setTab('world')}>世界地図</button><button id="map-tab-town" role="tab" aria-controls="travel-map-content" aria-selected={tab==='town'} onClick={()=>setTab('town')}>町の施設</button></div>
       <div className="travel-map-layout" id="travel-map-content" role="tabpanel" aria-labelledby={`map-tab-${tab}`}>
-        <div className="travel-map-main"><div className={`travel-map-surface map-surface-${tab}`} style={{aspectRatio:`${map.width}/${map.height}`}} role="group" aria-label={tab==='world'?'町・村・遺跡の位置':'町の施設の位置'}>
+        <div className="travel-map-main"><div className={`travel-map-surface map-surface-${tab}`} style={{aspectRatio:`${map.width}/${map.height}`}} role="group" aria-label={tab==='world'?'町・村・ダンジョンの位置':'町の施設の位置'}>
           <MapTerrain map={map}/><span className="travel-map-compass">↑ 北</span>
           {tab==='world'?<>
             <svg className="travel-map-route" viewBox={`0 0 ${map.width} ${map.height}`} aria-hidden="true"><polyline points={route.map(p=>`${p.x+.5},${p.y+.5}`).join(' ')} fill="none" stroke="#2b201c" strokeWidth={1.3} strokeLinejoin="round"/><polyline points={route.map(p=>`${p.x+.5},${p.y+.5}`).join(' ')} fill="none" stroke="#ffe7a3" strokeWidth={.6} strokeLinejoin="round"/></svg>
-            {worldPlaces.map(p=><button key={p.id} className={`travel-map-pin world-pin-${p.id} ${destination===p.id?'selected':''}`} style={pinPosition(p.point,map)} onClick={()=>setDestination(p.id)} aria-label={`${p.name}を地図で確認`} aria-pressed={destination===p.id}><span className="travel-map-pin-icon">{p.id==='dungeon'?'◆':'▣'}</span><span className="travel-map-pin-label">{p.name}</span></button>)}
+            {worldPlaces.map(p=><button key={p.id} className={`travel-map-pin world-pin-${p.id} ${destination===p.id?'selected':''}`} style={pinPosition(p.point,map)} onClick={()=>setDestination(p.id)} aria-label={`${p.name}を地図で確認`} aria-pressed={destination===p.id}><span className="travel-map-pin-icon">{p.id==='town'||p.id==='village'?'▣':'◆'}</span><span className="travel-map-pin-label">{p.name}</span></button>)}
             <span className="travel-map-player" style={pinPosition(location.world,map)} aria-label="世界地図の現在地">●</span>
           </>:<>
             {townEntrances.map((entry,i)=><button key={entry.id} className={`travel-map-pin town-map-pin ${facility===entry.id?'selected':''}`} style={pinPosition(entry,map)} onClick={()=>setFacility(entry.id)} aria-label={`${entry.label}を地図で確認`} aria-pressed={facility===entry.id}>{i+1}</button>)}
             {location.town&&<span className="travel-map-player" style={pinPosition(location.town,map)} aria-label="町の地図の現在地">●</span>}
           </>}
-        </div><p className="travel-map-key"><span><i className="travel-map-dot"/>現在地</span><span>▣ 町・村 / ◆ 遺跡</span>{tab==='world'&&<span>━ 選んだ行き先への道筋</span>}</p><p className="travel-map-note">場所の名前や印を選ぶと、案内を確認できます。</p></div>
+        </div><p className="travel-map-key"><span><i className="travel-map-dot"/>現在地</span><span>▣ 町・村 / ◆ ダンジョン</span>{tab==='world'&&<span>━ 選んだ行き先への道筋</span>}</p><p className="travel-map-note">場所の名前や印を選ぶと、案内を確認できます。</p></div>
         <aside className="travel-map-destinations" aria-label={tab==='world'?'世界の行き先':'町の施設案内'}>
           <h3>{tab==='world'?'どこへ行く？':'施設を探す'}</h3>
           <div className="travel-map-place-list">{tab==='world'?worldPlaces.map(p=><button key={p.id} aria-pressed={destination===p.id} onClick={()=>setDestination(p.id)}>{p.name}<small>{p.description}</small></button>):townEntrances.map((entry,i)=><button key={entry.id} aria-pressed={facility===entry.id} onClick={()=>setFacility(entry.id)}><b>{i+1}</b> {entry.label}</button>)}</div>

@@ -52,6 +52,10 @@ export const terrainChips = {
   sea: terrain('海の水面', 'sea', '#1262b4', '#347cb5', {image:'maps/water-64.png',connection:'water',walkable:false,enemyAllowed:false}),
   mountain: terrain('山地', 'mountain', '#606968', '#777985', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
   fieldBoundary: terrain('世界の外縁', 'mountain', '#365453', '#223849', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
+  creationFloor: terrain('創生の床','ruins','#725237','#a98250',{enemyAllowed:true}),
+  readingFloor: terrain('読解の床','ruins','#344f72','#6388bc',{enemyAllowed:true}),
+  updatingFloor: terrain('改変の床','ruins','#345d55','#5f9c8b',{enemyAllowed:true}),
+  deletionFloor: terrain('忘却の床','ruins','#503e63','#9276ac',{enemyAllowed:true}),
   stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {image:'maps/props/stone-floor.svg'}),
   stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {image:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   woodFloor: terrain('板張りの床', 'interior', '#805a3a', '#805a3a', {image:'maps/wood-floor-64.png'}),
@@ -59,6 +63,9 @@ export const terrainChips = {
 export type TerrainId = keyof typeof terrainChips;
 
 export const propChips = {
+  memoryDoor: prop('記憶の封印扉',image('props/memory-door.svg',1,1.45),false,'depth','#ddbb74'),
+  memoryDoorOpen: prop('開いた記憶の扉',image('props/memory-door-open.svg',1,1.45),false,'depth','#87c8ac'),
+  memorySpring: prop('記憶の回復泉',image('props/memory-spring.svg',1.6,1.4),true,'depth','#7bddf0'),
   libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.8,1.1),false,'overhead'),
   stairs: prop('図書館の階段',image('props/stairs.svg'),false,'ground'),
   diningTable: {...prop('食卓',propArt('table',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},

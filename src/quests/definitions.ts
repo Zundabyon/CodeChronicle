@@ -1,3 +1,4 @@
+import { chapterTwoLessons } from './chapterTwoLessons';
 import { chapterTwoOpening, chapterTwoFound, chapterTwoEnding } from './chapterScenes';
 import type { QuestDefinition } from './types';
 const guide=(text:string)=>({speaker:'記録係 オル',face:'👴',text});
@@ -15,18 +16,13 @@ export const questDefinitions:QuestDefinition[]=[
     ],reward:{gold:40,items:{herb:1}},
   },
   {
-    id:'village-ledger',category:'chapter',startLabel:'第二章「消えた名簿」を始める',title:'第二章：消えた名簿',description:'村と遺跡を巡り、CRUDの知識で名簿を取り戻す短い冒険。',npcId:'mountainGuide',npcLocation:'石灯の村の記録係オル',requiresFirstChapter:true,startAt:'town',opening:chapterTwoOpening,
-    pauseResponse:'控えは預かっておく。続きは、また話しかけてくれ。',completionObjective:'村人の暮らしを支える記録を取り戻した。自由に探索を続けよう。',completedText:'名簿は元通りじゃ。名前を呼び合う声が戻った。ありがとう、忘れぬよう書き留めておくよ。',
+    id:'village-ledger',category:'chapter',startLabel:'第二章「消えた名簿」を始める',title:'第二章：消えた名簿',description:'四つのダンジョンの44問で七つの役割を学び、掲示板の総合実習7問へ。封印扉を開き、C・R・U・Dの記憶の欠片を集めて名簿を復元する冒険。',npcId:'mountainGuide',npcLocation:'石灯の村の記録係オル',requiresFirstChapter:true,startAt:'town',opening:chapterTwoOpening,
+    pauseResponse:'ここまでの記憶は残っている。同じ封印に触れれば、続きから挑める。',completionObjective:'村人の暮らしを支える記録を取り戻した。自由に探索を続けよう。',completedText:'名簿は元通りじゃ。名前を呼び合う声が戻った。ありがとう、忘れぬよう書き留めておくよ。',
     steps:[
-      {id:'visit-village',title:'第二章：消えた名簿',description:'石灯の村で、記録係オルから名簿の異変について聞こう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:[guide('名簿の名前が消え、住所も書き換わってしまった。だが、遺跡へ納めた古い控えが残っているかもしれん。'),guide('忘却の遺跡の東の小部屋に宝箱がある。すでに宝を取った箱でも、底板まで調べてほしい。')]},
+      {id:'visit-village',title:'第二章：消えた名簿',description:'石灯の村で、記録係オルから名簿の異変について聞こう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:[guide('名簿の名前が消え、住所も書き換わってしまった。だが、遺跡へ納めた古い控えが残っているかもしれん。名簿を扱う四つの記憶は、各地のダンジョンに散ってしまった。'),guide('忘却の遺跡の東の小部屋に宝箱がある。すでに宝を取った箱でも、底板まで調べてほしい。控えを見つけたら、まず鏡の湖の「読解の書庫」へ。読む力を取り戻すのじゃ。')]},
       {id:'find-copy',title:'第二章：名簿の控えを探す',description:'忘却の遺跡の東の小部屋で宝箱を調べよう。開けたことがある箱も確かめよう。',reminder:'遺跡の東の小部屋の宝箱じゃ。控えが見つかったら、ここへ戻っておいで。',trigger:{type:'chest-examined',chestId:'dungeon:19,5'},after:chapterTwoFound},
-      ...[
-        ['read-records','basics-crud-r','まず控えの情報を読み、今の名簿と照らし合わせよう。'],
-        ['update-address','basics-crud-u','登録済みの村人の、間違った住所を直そう。'],
-        ['create-family','basics-crud-c','まだ名簿にいない家族の情報を新しく登録しよう。'],
-        ['delete-duplicate','basics-crud-d','正しい行を残し、不要な重複データだけを削除しよう。'],
-      ].map(([id,questionId,questionIntro])=>({id,title:'第二章：村の名簿を直す',description:'石灯の村のオルと、名簿の修復を進めよう。',questionIntro,trigger:{type:'question-answered' as const,questionId,correct:true,source:'quest' as const}})),
-      {id:'return-names',title:'第二章：名簿を取り戻した',description:'オルと修復した名簿を確かめよう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:chapterTwoEnding},
+      ...chapterTwoLessons,
+      {id:'return-names',title:'第二章：名簿を取り戻した',description:'四つの欠片を持って石灯の村のオルへ戻り、名簿を復元しよう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:chapterTwoEnding},
     ],reward:{gold:70,items:{ether:1}},
   },
 ];
