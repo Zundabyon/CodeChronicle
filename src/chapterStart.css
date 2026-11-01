@@ -1,0 +1,6 @@
+.chapter-start{position:relative;width:min(100%,420px);margin:20px auto 0;padding:14px 16px;border:1px dashed #8b7454;border-radius:6px;background:#211f30;text-align:left;color:#e9d9b8}
+.chapter-start summary{cursor:pointer;font-size:14px}
+.chapter-start p{font-size:12px;line-height:1.8;color:#c5bdc8;margin:12px 0}
+.chapter-start-options{display:grid;gap:10px}
+.chapter-start-options button{display:grid;gap:5px;width:100%;text-align:left;padding:12px;border:1px solid #8b7454;border-radius:4px;background:#302b40;color:#f4e4bd}
+.chapter-start-options small{font-size:11px;line-height:1.6;color:#c5bdc8}
