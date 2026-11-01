@@ -762,3 +762,11 @@
 @keyframes battle-damage-float{0%{opacity:0;translate:0 8px;scale:.7}18%{opacity:1;translate:0 -3px;scale:1.15}60%{opacity:1;translate:0 -18px;scale:1}100%{opacity:0;translate:0 -30px}}
 @keyframes battle-impact-spark{0%{opacity:1;scale:.3}35%{opacity:1;scale:1.4}100%{opacity:0;scale:1.8}}
 @media(prefers-reduced-motion:reduce){.battle-impact-indicator{animation:none;opacity:1;translate:0;scale:1}.battle-impact-indicator i{display:none}}
+
+/* Sword trails follow the shape of each of the three attack poses. */
+.battle-sword-trail{position:absolute;left:21%;top:9%;width:65%;height:80%;border:5px solid transparent;border-left-color:#f0fcff;border-top-color:#b9f5ff;border-radius:50%;filter:drop-shadow(0 0 5px #9beeff);opacity:0;transform:rotate(-38deg) scale(.55);animation:battle-trail-arc .45s calc(var(--battle-hero-impact,450ms) - 100ms) steps(4,end) both}
+.battlefield-hero-move-1 .battle-sword-trail{left:4%;top:28%;width:94%;height:48%;border-width:6px;transform:rotate(4deg) scale(.55);animation-name:battle-trail-sweep}
+.battlefield-hero-move-2 .battle-sword-trail{left:4%;top:47%;width:87%;height:6px;border:0;border-radius:0;background:linear-gradient(90deg,transparent,#c9f9ff 30%,#fff 80%,transparent);box-shadow:0 0 9px #87f1ff;transform:scaleX(.3);transform-origin:right;animation-name:battle-trail-thrust}
+@keyframes battle-trail-arc{0%{opacity:0;transform:rotate(-38deg) scale(.55)}35%{opacity:1;transform:rotate(-8deg) scale(1)}100%{opacity:0;transform:rotate(30deg) scale(1.15)}}
+@keyframes battle-trail-sweep{0%{opacity:0;transform:rotate(4deg) scale(.55)}35%{opacity:1;transform:rotate(4deg) scale(1)}100%{opacity:0;transform:rotate(4deg) scale(1.15)}}
+@keyframes battle-trail-thrust{0%{opacity:0;transform:scaleX(.3)}35%{opacity:1;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1.15)}}
