@@ -44,6 +44,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const impactReached=!attackAnimating||impactRound===attackRound;
   const displayedEnemyHp=attack==='hero'&&impact&&!impactReached?impact.enemyBefore:enemyHp;
   const displayedHeroHp=attack==='enemy'&&impact&&!impactReached?impact.heroBefore:hero.hp;
+  const defeated=attack==='hero'&&enemyHp<=0&&impactReached;
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : 'town';
   const location = terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
@@ -72,10 +73,11 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
       {attack === 'hero' && <div key={`slash-${attackRound}`} className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /><em className="battle-sword-trail" /></div>}
       {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
-      <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''}`}>
+      <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''} ${defeated ? 'is-defeated' : ''}`}>
         <div key={`foe-${attackRound}`} className="battle-combatant-sprite battle-foe-sprite">
           <PixelSprite name={enemySprite(enemy.id)} />
           {attack==='hero'&&impactReached&&!!impact?.enemyDamage&&<span key={`impact-${attackRound}`} className="battle-impact-indicator" aria-hidden="true"><i/><b>−{impact.enemyDamage}</b></span>}
+          {defeated&&<span className="battle-defeat-effect" aria-hidden="true"><i/><i/><i/><i/><b>撃破</b></span>}
         </div>
         <div className="battle-combatant-status battle-foe-status">
           <strong>{enemy.name}</strong>
