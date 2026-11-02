@@ -1,0 +1,3454 @@
+{
+  "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
+  "scope": "git cached and untracked non-ignored existing files; generated architecture report excluded",
+  "count": 222,
+  "groups": {
+    "作問の仕組み": 5,
+    "公開": 1,
+    "設定": 7,
+    "説明資料": 4,
+    "画像・素材": 95,
+    "検証": 14,
+    "アイテム": 3,
+    "ゲーム進行": 1,
+    "戦闘表示": 11,
+    "図書館": 5,
+    "探索画面": 7,
+    "会話・操作": 6,
+    "学習・記録": 5,
+    "学習・採点": 5,
+    "保存・復元": 5,
+    "地図・移動": 3,
+    "表示スタイル": 22,
+    "教材・共通データ": 4,
+    "起動": 1,
+    "クエスト": 7,
+    "物語": 1,
+    "世界の定義": 10
+  },
+  "files": [
+    {
+      "path": ".agents/skills/question-author/SKILL.md",
+      "bytes": 6610,
+      "suffix": ".md",
+      "group": "作問の仕組み",
+      "role": "作問手順・入力の公平さ・誤答の根拠・難易度・検証・円卓連携の管理元。"
+    },
+    {
+      "path": ".agents/skills/question-author/agents/openai.yaml",
+      "bytes": 342,
+      "suffix": ".yaml",
+      "group": "作問の仕組み",
+      "role": "Skillの表示名・短い説明・呼び出し例。専用エージェントの定義ではない。"
+    },
+    {
+      "path": ".agents/skills/question-author/references/question-formats.md",
+      "bytes": 5277,
+      "suffix": ".md",
+      "group": "作問の仕組み",
+      "role": "4形式の契約、フィルタ、CLIの別判定、登録先とテスト制約をまとめる。"
+    },
+    {
+      "path": ".codex/agents/question_author.toml",
+      "bytes": 639,
+      "suffix": ".toml",
+      "group": "作問の仕組み",
+      "role": "問題作成担当を定義する薄い入口。作問ルールはSkillから読む。"
+    },
+    {
+      "path": ".github/workflows/deploy-pages.yml",
+      "bytes": 747,
+      "suffix": ".yml",
+      "group": "公開",
+      "role": "依存導入→型検査とViteビルド→Pages成果物→公開。現ファイルはmainへのpushと手動実行がトリガー。"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 42,
+      "suffix": "",
+      "group": "設定",
+      "role": "node_modules、dist、tsbuildinfo、OSメタデータを管理対象から除外する。"
+    },
+    {
+      "path": "README.md",
+      "bytes": 12375,
+      "suffix": ".md",
+      "group": "説明資料",
+      "role": "起動方法、遊び方、素材・マップ・問題の追加方法を説明する。"
+    },
+    {
+      "path": "docs/art-direction.md",
+      "bytes": 11821,
+      "suffix": ".md",
+      "group": "説明資料",
+      "role": "素材4分類、64pxの論理基準、元画像の扱い、機械検査の範囲を記述する。過去監査の件数は現時点の数ではない。"
+    },
+    {
+      "path": "docs/issues/enemy-programming-dialogue.md",
+      "bytes": 8304,
+      "suffix": ".md",
+      "group": "説明資料",
+      "role": "敵のプログラミング名・会話に関する仕様や作業内容を記録する。"
+    },
+    {
+      "path": "docs/question-authoring.md",
+      "bytes": 853,
+      "suffix": ".md",
+      "group": "作問の仕組み",
+      "role": "人向けの入口。作問Skillと形式資料への参照、呼び出し例のみを置く。"
+    },
+    {
+      "path": "docs/quests.md",
+      "bytes": 2140,
+      "suffix": ".md",
+      "group": "説明資料",
+      "role": "クエストの責務分離、イベントモデル、保存形式と移行方針を明文化する。"
+    },
+    {
+      "path": "index.html",
+      "bytes": 396,
+      "suffix": ".html",
+      "group": "設定",
+      "role": "ブラウザが読むHTML入口。root要素とmain.tsxを指定する。"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 62325,
+      "suffix": ".json",
+      "group": "設定",
+      "role": "npm依存の解決結果と整合性を固定する。自作機能のソースとしては集計しない。"
+    },
+    {
+      "path": "package.json",
+      "bytes": 711,
+      "suffix": ".json",
+      "group": "設定",
+      "role": "依存パッケージと開発・テスト・ビルドのコマンドを定義する。"
+    },
+    {
+      "path": "public/maps/bed-64.png",
+      "bytes": 6844,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/cactus-64.png",
+      "bytes": 463552,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/chest-64.png",
+      "bytes": 8764,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/ChestSprite.tsx",
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/church-128.png",
+      "bytes": 18981,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/church-town-320x256.png",
+      "bytes": 1965815,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/App.tsx",
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/church.png",
+      "bytes": 1033443,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/desert-sand-64.png",
+      "bytes": 1913547,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/dresser-64.png",
+      "bytes": 8407,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/AdventurePanels.tsx",
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/dungeon-ground.png",
+      "bytes": 2715114,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/BattleStage.tsx",
+        "src/style.css"
+      ]
+    },
+    {
+      "path": "public/maps/field-ground.png",
+      "bytes": 2689273,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/BattleStage.tsx",
+        "src/style.css"
+      ]
+    },
+    {
+      "path": "public/maps/grass-64.png",
+      "bytes": 9820,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/house-128.png",
+      "bytes": 20674,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/house-town-320x256.png",
+      "bytes": 156228,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/house.png",
+      "bytes": 1097696,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/lantern-64.png",
+      "bytes": 2733,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/mountain-64.png",
+      "bytes": 6906,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/mountain.png",
+      "bytes": 1282914,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/path-64.png",
+      "bytes": 9878,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/plaster-wall-64.png",
+      "bytes": 7912,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/barrel.svg",
+      "bytes": 804,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/bench.svg",
+      "bytes": 578,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/books.svg",
+      "bytes": 691,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/chair.svg",
+      "bytes": 578,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/crate.svg",
+      "bytes": 918,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/flowers.svg",
+      "bytes": 1144,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/library-east.svg",
+      "bytes": 4269,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/library-hall.svg",
+      "bytes": 556,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/library-west.svg",
+      "bytes": 5303,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/plant.svg",
+      "bytes": 802,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/potions.svg",
+      "bytes": 1367,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/props-atlas-v2.json",
+      "bytes": 1049,
+      "suffix": ".json",
+      "group": "画像・素材",
+      "role": "小物アトラスの寸法・切り出し等の制作情報。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/props-atlas-v2.png",
+      "bytes": 1992277,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "複数の小物をまとめた透過画像。propArt.tsの矩形で表示時に切り出す。",
+      "staticReferenceHints": [
+        "src/world/propArt.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/props-atlas-v2.prompt.txt",
+      "bytes": 1937,
+      "suffix": ".txt",
+      "group": "画像・素材",
+      "role": "小物アトラスを制作した際の生成指示の記録。実行時のプログラムではない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/rug.svg",
+      "bytes": 1646,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/stairs.svg",
+      "bytes": 404,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/stone-floor.svg",
+      "bytes": 380,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/stone-wall.svg",
+      "bytes": 399,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/props/stove.svg",
+      "bytes": 693,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/table.svg",
+      "bytes": 863,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/props/well.svg",
+      "bytes": 1035,
+      "suffix": ".svg",
+      "group": "画像・素材",
+      "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/river.png",
+      "bytes": 1193987,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/ruins-gate-128.png",
+      "bytes": 1787719,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/App.tsx",
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/shelf-64.png",
+      "bytes": 7373,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/tool-rack-64.png",
+      "bytes": 8508,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/town-ground.png",
+      "bytes": 2268843,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/BattleStage.tsx",
+        "src/style.css"
+      ]
+    },
+    {
+      "path": "public/maps/tree-64.png",
+      "bytes": 6181,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/tree.png",
+      "bytes": 886802,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/maps/wall-sword-64.png",
+      "bytes": 4092,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/water-64.png",
+      "bytes": 9844,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/maps/wood-floor-64.png",
+      "bytes": 6999,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
+      "staticReferenceHints": [
+        "src/world/catalog.ts"
+      ]
+    },
+    {
+      "path": "public/portraits/faces.png",
+      "bytes": 2677231,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "会話用の顔画像をまとめた素材。",
+      "staticReferenceHints": [
+        "src/CharacterPortrait.tsx"
+      ]
+    },
+    {
+      "path": "public/portraits/standing.png",
+      "bytes": 2456392,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "会話用の立ち絵をまとめた素材。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/prologue/ancient-and-fall.png",
+      "bytes": 3154657,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "序章用の場面画像。物語の導入に使う静的素材。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/prologue/family-and-dawn.png",
+      "bytes": 3242243,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "序章用の場面画像。物語の導入に使う静的素材。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/bat-64.png",
+      "bytes": 5161,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/bat-right.png",
+      "bytes": 821460,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/battle-art.json",
+      "bytes": 34639,
+      "suffix": ".json",
+      "group": "画像・素材",
+      "role": "スプライト寸法・フレーム等の制作メタデータ。採用状態はコードの参照先で確認する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/beetle-right.png",
+      "bytes": 1259379,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/cactus-right.png",
+      "bytes": 1408201,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/child-64.png",
+      "bytes": 3512,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/crab-right.png",
+      "bytes": 1121903,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/elder-64.png",
+      "bytes": 4062,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/father-64.png",
+      "bytes": 4137,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/ghost-64.png",
+      "bytes": 8594,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/ghost-right.png",
+      "bytes": 1185006,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/golem-right.png",
+      "bytes": 1582421,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/guardian-64.png",
+      "bytes": 10580,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/guardian-right.png",
+      "bytes": 1335855,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/hero-64.png",
+      "bytes": 3462,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/hero-attack-art.json",
+      "bytes": 11210,
+      "suffix": ".json",
+      "group": "画像・素材",
+      "role": "スプライト寸法・フレーム等の制作メタデータ。採用状態はコードの参照先で確認する。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/hero-attack-cut.png",
+      "bytes": 1928912,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公の攻撃素材。heroAttackArt.ts等でフレームを扱う。",
+      "staticReferenceHints": [
+        "src/heroAttackArt.ts"
+      ]
+    },
+    {
+      "path": "public/sprites/hero-attack-sweep.png",
+      "bytes": 1918993,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公の攻撃素材。heroAttackArt.ts等でフレームを扱う。",
+      "staticReferenceHints": [
+        "src/heroAttackArt.ts"
+      ]
+    },
+    {
+      "path": "public/sprites/hero-attack-thrust.png",
+      "bytes": 1847776,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公の攻撃素材。heroAttackArt.ts等でフレームを扱う。",
+      "staticReferenceHints": [
+        "src/heroAttackArt.ts"
+      ]
+    },
+    {
+      "path": "public/sprites/hero-battle-left.png",
+      "bytes": 558554,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/HeroBattleSprite.tsx",
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/hero-walk-art.txt",
+      "bytes": 2024,
+      "suffix": ".txt",
+      "group": "画像・素材",
+      "role": "人物・歩行素材等の制作仕様メモ。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/hero-walk.png",
+      "bytes": 44035,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/WorldCharacter.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/knight-art.txt",
+      "bytes": 2063,
+      "suffix": ".txt",
+      "group": "画像・素材",
+      "role": "人物・歩行素材等の制作仕様メモ。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/knight-generated-original.png",
+      "bytes": 615222,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "謎の騎士の生成元画像。表示側で利用する原画を保持する。",
+      "staticReferenceHints": [
+        "src/MysteriousKnight.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/memory-right.png",
+      "bytes": 1342793,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/mimic-right.png",
+      "bytes": 1381273,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/moth-right.png",
+      "bytes": 1413555,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/mother-64.png",
+      "bytes": 3861,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/priest-64.png",
+      "bytes": 3863,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/scholar-64.png",
+      "bytes": 3650,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/scorpion-right.png",
+      "bytes": 1096079,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/serpent-right.png",
+      "bytes": 1507662,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/shadow-64.png",
+      "bytes": 7455,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/shadow-right.png",
+      "bytes": 1113431,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/skeleton-right.png",
+      "bytes": 1126929,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/slime-64.png",
+      "bytes": 6302,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": []
+    },
+    {
+      "path": "public/sprites/slime-right.png",
+      "bytes": 898348,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/treant-right.png",
+      "bytes": 1729144,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/wanderer-64.png",
+      "bytes": 4124,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/wisp-right.png",
+      "bytes": 1234683,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "public/sprites/wolf-right.png",
+      "bytes": 1222131,
+      "suffix": ".png",
+      "group": "画像・素材",
+      "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
+      "staticReferenceHints": [
+        "src/PixelSprite.tsx"
+      ]
+    },
+    {
+      "path": "scripts/check-art-assets.mjs",
+      "bytes": 8191,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "PNGヘッダ、画像参照、カタログ、配置枠、通行範囲、アトラスの矩形を機械検証する。美観の保証ではない。"
+    },
+    {
+      "path": "src/AdventurePanels.tsx",
+      "bytes": 5797,
+      "suffix": ".tsx",
+      "group": "アイテム",
+      "role": "タンス、持ち物、装備、買い物の画面を提供する。",
+      "lines": 33,
+      "imports": [
+        {
+          "specifier": "./RecoveryCue",
+          "kind": "value",
+          "line": 1,
+          "target": "src/RecoveryCue.tsx"
+        },
+        {
+          "specifier": "./items",
+          "kind": "value",
+          "line": 2,
+          "target": "src/items.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 75506,
+      "suffix": ".tsx",
+      "group": "ゲーム進行",
+      "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
+      "lines": 663,
+      "imports": [
+        {
+          "specifier": "./LevelUpCue",
+          "kind": "value",
+          "line": 1,
+          "target": "src/LevelUpCue.tsx"
+        },
+        {
+          "specifier": "./RecoveryCue",
+          "kind": "value",
+          "line": 2,
+          "target": "src/RecoveryCue.tsx"
+        },
+        {
+          "specifier": "./battleTiming",
+          "kind": "value",
+          "line": 3,
+          "target": "src/battleTiming.ts"
+        },
+        {
+          "specifier": "./TravelMap",
+          "kind": "value",
+          "line": 4,
+          "target": "src/TravelMap.tsx"
+        },
+        {
+          "specifier": "./quests/QuestJournal",
+          "kind": "value",
+          "line": 5,
+          "target": "src/quests/QuestJournal.tsx"
+        },
+        {
+          "specifier": "./quests/useQuests",
+          "kind": "value",
+          "line": 6,
+          "target": "src/quests/useQuests.ts"
+        },
+        {
+          "specifier": "./quests/engine",
+          "kind": "value",
+          "line": 7,
+          "target": "src/quests/engine.ts"
+        },
+        {
+          "specifier": "./quests/types",
+          "kind": "type",
+          "line": 8,
+          "target": "src/quests/types.ts"
+        },
+        {
+          "specifier": "./reviewSchedule",
+          "kind": "value",
+          "line": 9,
+          "target": "src/reviewSchedule.ts"
+        },
+        {
+          "specifier": "./DialogueHistoryPanel",
+          "kind": "value",
+          "line": 10,
+          "target": "src/DialogueHistoryPanel.tsx"
+        },
+        {
+          "specifier": "./dialogueLog",
+          "kind": "value",
+          "line": 11,
+          "target": "src/dialogueLog.ts"
+        },
+        {
+          "specifier": "./wrongChoiceReasons",
+          "kind": "value",
+          "line": 12,
+          "target": "src/wrongChoiceReasons.ts"
+        },
+        {
+          "specifier": "./bookQuestions",
+          "kind": "value",
+          "line": 13,
+          "target": "src/bookQuestions.ts"
+        },
+        {
+          "specifier": "./learningRecords",
+          "kind": "value",
+          "line": 14,
+          "target": "src/learningRecords.ts"
+        },
+        {
+          "specifier": "./LearningRecordPanel",
+          "kind": "value",
+          "line": 15,
+          "target": "src/LearningRecordPanel.tsx"
+        },
+        {
+          "specifier": "./saveValidation",
+          "kind": "value",
+          "line": 16,
+          "target": "src/saveValidation.ts"
+        },
+        {
+          "specifier": "./LearningSession",
+          "kind": "value",
+          "line": 17,
+          "target": "src/LearningSession.tsx"
+        },
+        {
+          "specifier": "./SaveTransfer",
+          "kind": "value",
+          "line": 18,
+          "target": "src/SaveTransfer.tsx"
+        },
+        {
+          "specifier": "./SaveStatus",
+          "kind": "value",
+          "line": 19,
+          "target": "src/SaveStatus.tsx"
+        },
+        {
+          "specifier": "./world/interactions",
+          "kind": "value",
+          "line": 20,
+          "target": "src/world/interactions.ts"
+        },
+        {
+          "specifier": "./ResumeSummary",
+          "kind": "value",
+          "line": 21,
+          "target": "src/ResumeSummary.tsx"
+        },
+        {
+          "specifier": "./LearningSetupHelp",
+          "kind": "value",
+          "line": 22,
+          "target": "src/LearningSetupHelp.tsx"
+        },
+        {
+          "specifier": "./learningSetupHelp.css",
+          "kind": "value",
+          "line": 23,
+          "target": "src/learningSetupHelp.css"
+        },
+        {
+          "specifier": "./audioPreferences",
+          "kind": "value",
+          "line": 24,
+          "target": "src/audioPreferences.ts"
+        },
+        {
+          "specifier": "./chests",
+          "kind": "value",
+          "line": 25,
+          "target": "src/chests.ts"
+        },
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 26,
+          "target": null
+        },
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 27,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./world/maps",
+          "kind": "value",
+          "line": 28,
+          "target": "src/world/maps.ts"
+        },
+        {
+          "specifier": "./CharacterPortrait",
+          "kind": "value",
+          "line": 29,
+          "target": "src/CharacterPortrait.tsx"
+        },
+        {
+          "specifier": "./WorldCharacter",
+          "kind": "value",
+          "line": 30,
+          "target": "src/WorldCharacter.tsx"
+        },
+        {
+          "specifier": "./WorldScene",
+          "kind": "value",
+          "line": 31,
+          "target": "src/WorldScene.tsx"
+        },
+        {
+          "specifier": "./story",
+          "kind": "value",
+          "line": 32,
+          "target": "src/story.ts"
+        },
+        {
+          "specifier": "./ControlsGuide",
+          "kind": "value",
+          "line": 33,
+          "target": "src/ControlsGuide.tsx"
+        },
+        {
+          "specifier": "./DialogueChoices",
+          "kind": "value",
+          "line": 34,
+          "target": "src/DialogueChoices.tsx"
+        },
+        {
+          "specifier": "./keyboardNavigation",
+          "kind": "value",
+          "line": 35,
+          "target": "src/keyboardNavigation.ts"
+        },
+        {
+          "specifier": "./keyboardShortcuts",
+          "kind": "value",
+          "line": 36,
+          "target": "src/keyboardShortcuts.ts"
+        },
+        {
+          "specifier": "./BattleStage",
+          "kind": "value",
+          "line": 37,
+          "target": "src/BattleStage.tsx"
+        },
+        {
+          "specifier": "./bossBattle",
+          "kind": "value",
+          "line": 38,
+          "target": "src/bossBattle.ts"
+        },
+        {
+          "specifier": "./BattleEncounter",
+          "kind": "value",
+          "line": 39,
+          "target": "src/BattleEncounter.tsx"
+        },
+        {
+          "specifier": "./QuestionCode",
+          "kind": "value",
+          "line": 40,
+          "target": "src/QuestionCode.tsx"
+        },
+        {
+          "specifier": "./LibraryPanel",
+          "kind": "value",
+          "line": 41,
+          "target": "src/LibraryPanel.tsx"
+        },
+        {
+          "specifier": "./library",
+          "kind": "value",
+          "line": 42,
+          "target": "src/library.ts"
+        },
+        {
+          "specifier": "./ReviewRoom",
+          "kind": "value",
+          "line": 43,
+          "target": "src/ReviewRoom.tsx"
+        },
+        {
+          "specifier": "./questionSelection",
+          "kind": "value",
+          "line": 44,
+          "target": "src/questionSelection.ts"
+        },
+        {
+          "specifier": "./heroTechniques",
+          "kind": "value",
+          "line": 45,
+          "target": "src/heroTechniques.ts"
+        },
+        {
+          "specifier": "./enemyMovement",
+          "kind": "value",
+          "line": 46,
+          "target": "src/enemyMovement.ts"
+        },
+        {
+          "specifier": "./items",
+          "kind": "value",
+          "line": 47,
+          "target": "src/items.ts"
+        },
+        {
+          "specifier": "./AdventurePanels",
+          "kind": "value",
+          "line": 48,
+          "target": "src/AdventurePanels.tsx"
+        }
+      ]
+    },
+    {
+      "path": "src/BattleEncounter.tsx",
+      "bytes": 1489,
+      "suffix": ".tsx",
+      "group": "戦闘表示",
+      "role": "敵との遭遇時の立ち姿と会話、戦闘へ進む入口を表示する。",
+      "lines": 34,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./HeroBattleSprite",
+          "kind": "value",
+          "line": 2,
+          "target": "src/HeroBattleSprite.tsx"
+        },
+        {
+          "specifier": "./battleBanter",
+          "kind": "value",
+          "line": 3,
+          "target": "src/battleBanter.ts"
+        },
+        {
+          "specifier": "./PixelSprite",
+          "kind": "value",
+          "line": 4,
+          "target": "src/PixelSprite.tsx"
+        }
+      ]
+    },
+    {
+      "path": "src/BattleStage.tsx",
+      "bytes": 7435,
+      "suffix": ".tsx",
+      "group": "戦闘表示",
+      "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
+      "lines": 113,
+      "imports": [
+        {
+          "specifier": "./bossBreakEffect.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/bossBreakEffect.css"
+        },
+        {
+          "specifier": "./bossBattle",
+          "kind": "value",
+          "line": 2,
+          "target": "src/bossBattle.ts"
+        },
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 3,
+          "target": null
+        },
+        {
+          "specifier": "./battleTiming",
+          "kind": "value",
+          "line": 4,
+          "target": "src/battleTiming.ts"
+        },
+        {
+          "specifier": "./HeroBattleSprite",
+          "kind": "value",
+          "line": 5,
+          "target": "src/HeroBattleSprite.tsx"
+        },
+        {
+          "specifier": "./EnemyEffectSprite",
+          "kind": "value",
+          "line": 6,
+          "target": "src/EnemyEffectSprite.tsx"
+        },
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 7,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./PixelSprite",
+          "kind": "value",
+          "line": 8,
+          "target": "src/PixelSprite.tsx"
+        },
+        {
+          "specifier": "./battleBanter",
+          "kind": "value",
+          "line": 9,
+          "target": "src/battleBanter.ts"
+        },
+        {
+          "specifier": "./heroTechniques",
+          "kind": "type",
+          "line": 10,
+          "target": "src/heroTechniques.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/BookPractice.tsx",
+      "bytes": 1192,
+      "suffix": ".tsx",
+      "group": "図書館",
+      "role": "本に関連する4択の回答・正解・補足解説を表示する。",
+      "lines": 11,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./wrongChoiceReasons",
+          "kind": "value",
+          "line": 2,
+          "target": "src/wrongChoiceReasons.ts"
+        },
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 3,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/CharacterPortrait.tsx",
+      "bytes": 1269,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
+      "lines": 24,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "type",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./PixelSprite",
+          "kind": "value",
+          "line": 2,
+          "target": "src/PixelSprite.tsx"
+        },
+        {
+          "specifier": "./MysteriousKnight",
+          "kind": "value",
+          "line": 3,
+          "target": "src/MysteriousKnight.tsx"
+        },
+        {
+          "specifier": "./WorldCharacter",
+          "kind": "value",
+          "line": 4,
+          "target": "src/WorldCharacter.tsx"
+        }
+      ]
+    },
+    {
+      "path": "src/ChestSprite.tsx",
+      "bytes": 583,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "開封状態を含む宝箱の見た目を表示する。",
+      "lines": 13,
+      "imports": [
+        {
+          "specifier": "./chestSprite.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/chestSprite.css"
+        }
+      ]
+    },
+    {
+      "path": "src/ControlsGuide.tsx",
+      "bytes": 2628,
+      "suffix": ".tsx",
+      "group": "会話・操作",
+      "role": "探索、戦闘、会話などの操作案内を表示する。",
+      "lines": 26,
+      "imports": []
+    },
+    {
+      "path": "src/DialogueChoices.tsx",
+      "bytes": 1410,
+      "suffix": ".tsx",
+      "group": "会話・操作",
+      "role": "会話の選択肢を表示し、初期フォーカスを調整する。",
+      "lines": 24,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        }
+      ]
+    },
+    {
+      "path": "src/DialogueHistoryPanel.tsx",
+      "bytes": 690,
+      "suffix": ".tsx",
+      "group": "会話・操作",
+      "role": "保存した会話の履歴を表示する。",
+      "lines": 4,
+      "imports": [
+        {
+          "specifier": "./dialogueLog",
+          "kind": "type",
+          "line": 1,
+          "target": "src/dialogueLog.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/EnemyEffectSprite.tsx",
+      "bytes": 2493,
+      "suffix": ".tsx",
+      "group": "戦闘表示",
+      "role": "敵の種類に応じた攻撃効果を表示する。",
+      "lines": 14,
+      "imports": []
+    },
+    {
+      "path": "src/HeroBattleSprite.tsx",
+      "bytes": 1845,
+      "suffix": ".tsx",
+      "group": "戦闘表示",
+      "role": "主人公の戦闘姿と攻撃のコマを表示する。",
+      "lines": 21,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./heroAttackArt",
+          "kind": "value",
+          "line": 2,
+          "target": "src/heroAttackArt.ts"
+        },
+        {
+          "specifier": "./heroBattleSprite.css",
+          "kind": "value",
+          "line": 3,
+          "target": "src/heroBattleSprite.css"
+        }
+      ]
+    },
+    {
+      "path": "src/LearningRecordPanel.tsx",
+      "bytes": 1920,
+      "suffix": ".tsx",
+      "group": "学習・記録",
+      "role": "回答成績と分野ごとの誤答傾向を表示する。",
+      "lines": 12,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./learningRecords",
+          "kind": "type",
+          "line": 2,
+          "target": "src/learningRecords.ts"
+        },
+        {
+          "specifier": "./learningRecords.css",
+          "kind": "value",
+          "line": 3,
+          "target": "src/learningRecords.css"
+        }
+      ]
+    },
+    {
+      "path": "src/LearningSession.tsx",
+      "bytes": 1258,
+      "suffix": ".tsx",
+      "group": "学習・記録",
+      "role": "その回の学習時間と回答一覧を表示する。",
+      "lines": 11,
+      "imports": [
+        {
+          "specifier": "./learningSession.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/learningSession.css"
+        }
+      ]
+    },
+    {
+      "path": "src/LearningSetupHelp.tsx",
+      "bytes": 954,
+      "suffix": ".tsx",
+      "group": "学習・記録",
+      "role": "React/Vue、難易度、Inertia/APIの学習設定を説明する。",
+      "lines": 11,
+      "imports": []
+    },
+    {
+      "path": "src/LevelUpCue.tsx",
+      "bytes": 451,
+      "suffix": ".tsx",
+      "group": "戦闘表示",
+      "role": "レベルアップ時の増分を表示する。",
+      "lines": 11,
+      "imports": [
+        {
+          "specifier": "./levelUpCue.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/levelUpCue.css"
+        }
+      ]
+    },
+    {
+      "path": "src/LibraryPanel.tsx",
+      "bytes": 4983,
+      "suffix": ".tsx",
+      "group": "図書館",
+      "role": "本を読む、既読を付ける、しおりを置く、練習問題を開く操作をまとめる。",
+      "lines": 44,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 2,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./BookPractice",
+          "kind": "value",
+          "line": 3,
+          "target": "src/BookPractice.tsx"
+        },
+        {
+          "specifier": "./bookQuestions",
+          "kind": "value",
+          "line": 4,
+          "target": "src/bookQuestions.ts"
+        },
+        {
+          "specifier": "./LibrarySearch",
+          "kind": "value",
+          "line": 5,
+          "target": "src/LibrarySearch.tsx"
+        },
+        {
+          "specifier": "./library",
+          "kind": "value",
+          "line": 6,
+          "target": "src/library.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/LibrarySearch.tsx",
+      "bytes": 1826,
+      "suffix": ".tsx",
+      "group": "図書館",
+      "role": "蔵書を言語やキーワードで検索し、本を選択する。",
+      "lines": 15,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./library",
+          "kind": "value",
+          "line": 2,
+          "target": "src/library.ts"
+        },
+        {
+          "specifier": "./librarySearch.css",
+          "kind": "value",
+          "line": 3,
+          "target": "src/librarySearch.css"
+        }
+      ]
+    },
+    {
+      "path": "src/MysteriousKnight.tsx",
+      "bytes": 1726,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "元の生成画像を利用して謎の騎士をワールドや場面内に表示する。",
+      "lines": 22,
+      "imports": []
+    },
+    {
+      "path": "src/PixelSprite.tsx",
+      "bytes": 5193,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "敵・人物などのスプライトと、敵種別・顔から表示名への対応を持つ。",
+      "lines": 77,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/QuestionCode.tsx",
+      "bytes": 899,
+      "suffix": ".tsx",
+      "group": "学習・採点",
+      "role": "コードを行番号付きで表示し、回答後に空欄をrevealへ置き換える。",
+      "lines": 11,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/RecoveryCue.tsx",
+      "bytes": 470,
+      "suffix": ".tsx",
+      "group": "戦闘表示",
+      "role": "教会・道具などでのHP/MP回復量を表示する。",
+      "lines": 10,
+      "imports": [
+        {
+          "specifier": "./recoveryCue.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/recoveryCue.css"
+        }
+      ]
+    },
+    {
+      "path": "src/ResumeSummary.tsx",
+      "bytes": 869,
+      "suffix": ".tsx",
+      "group": "保存・復元",
+      "role": "再開時に現在地・次の目的・保存時刻を表示する。",
+      "lines": 14,
+      "imports": [
+        {
+          "specifier": "./quests/engine",
+          "kind": "value",
+          "line": 1,
+          "target": "src/quests/engine.ts"
+        },
+        {
+          "specifier": "./quests/types",
+          "kind": "type",
+          "line": 2,
+          "target": "src/quests/types.ts"
+        },
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 3,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./story",
+          "kind": "value",
+          "line": 4,
+          "target": "src/story.ts"
+        },
+        {
+          "specifier": "./resumeSummary.css",
+          "kind": "value",
+          "line": 5,
+          "target": "src/resumeSummary.css"
+        }
+      ]
+    },
+    {
+      "path": "src/ReviewRoom.tsx",
+      "bytes": 5963,
+      "suffix": ".tsx",
+      "group": "学習・採点",
+      "role": "誤答の復習、復習コース、解説・期限情報を表示する。",
+      "lines": 58,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 2,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./WorldCharacter",
+          "kind": "value",
+          "line": 3,
+          "target": "src/WorldCharacter.tsx"
+        },
+        {
+          "specifier": "./reviewRoom.css",
+          "kind": "value",
+          "line": 4,
+          "target": "src/reviewRoom.css"
+        }
+      ]
+    },
+    {
+      "path": "src/SaveStatus.tsx",
+      "bytes": 726,
+      "suffix": ".tsx",
+      "group": "保存・復元",
+      "role": "保存時刻や失敗・再試行操作を表示する。",
+      "lines": 11,
+      "imports": [
+        {
+          "specifier": "./saveStatus.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/saveStatus.css"
+        }
+      ]
+    },
+    {
+      "path": "src/SaveTransfer.tsx",
+      "bytes": 2509,
+      "suffix": ".tsx",
+      "group": "保存・復元",
+      "role": "JSONでのセーブ書き出し・読み込み・内容確認を提供する。",
+      "lines": 32,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./saveTransfer.css",
+          "kind": "value",
+          "line": 2,
+          "target": "src/saveTransfer.css"
+        }
+      ]
+    },
+    {
+      "path": "src/TerrainTile.tsx",
+      "bytes": 3505,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "地形の接続輪郭・テクスチャを描く。素材画像そのものを書き換えない。",
+      "lines": 68,
+      "imports": [
+        {
+          "specifier": "./world/catalog",
+          "kind": "value",
+          "line": 1,
+          "target": "src/world/catalog.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/TownMap.tsx",
+      "bytes": 1565,
+      "suffix": ".tsx",
+      "group": "地図・移動",
+      "role": "町の施設と現在地を小地図に表示する。",
+      "lines": 17,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./world/maps",
+          "kind": "value",
+          "line": 2,
+          "target": "src/world/maps.ts"
+        },
+        {
+          "specifier": "./townMap.css",
+          "kind": "value",
+          "line": 3,
+          "target": "src/townMap.css"
+        }
+      ]
+    },
+    {
+      "path": "src/TravelMap.tsx",
+      "bytes": 7685,
+      "suffix": ".tsx",
+      "group": "地図・移動",
+      "role": "ワールド・町の拡大地図、現在地と移動案内を表示する。",
+      "lines": 59,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 2,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./world/catalog",
+          "kind": "value",
+          "line": 3,
+          "target": "src/world/catalog.ts"
+        },
+        {
+          "specifier": "./world/maps",
+          "kind": "value",
+          "line": 4,
+          "target": "src/world/maps.ts"
+        },
+        {
+          "specifier": "./world/mapGuide",
+          "kind": "value",
+          "line": 5,
+          "target": "src/world/mapGuide.ts"
+        },
+        {
+          "specifier": "./travelMap.css",
+          "kind": "value",
+          "line": 6,
+          "target": "src/travelMap.css"
+        }
+      ]
+    },
+    {
+      "path": "src/WorldCharacter.tsx",
+      "bytes": 1086,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "主人公・住民・騎士の方向と歩行状態を描画する。",
+      "lines": 17,
+      "imports": [
+        {
+          "specifier": "./MysteriousKnight",
+          "kind": "value",
+          "line": 1,
+          "target": "src/MysteriousKnight.tsx"
+        },
+        {
+          "specifier": "./characterArt.css",
+          "kind": "value",
+          "line": 2,
+          "target": "src/characterArt.css"
+        }
+      ]
+    },
+    {
+      "path": "src/WorldScene.tsx",
+      "bytes": 14726,
+      "suffix": ".tsx",
+      "group": "探索画面",
+      "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
+      "lines": 192,
+      "imports": [
+        {
+          "specifier": "./worldAmbient.css",
+          "kind": "value",
+          "line": 1,
+          "target": "src/worldAmbient.css"
+        },
+        {
+          "specifier": "./chestRewardCue.css",
+          "kind": "value",
+          "line": 2,
+          "target": "src/chestRewardCue.css"
+        },
+        {
+          "specifier": "./LevelUpCue",
+          "kind": "value",
+          "line": 3,
+          "target": "src/LevelUpCue.tsx"
+        },
+        {
+          "specifier": "./RecoveryCue",
+          "kind": "value",
+          "line": 4,
+          "target": "src/RecoveryCue.tsx"
+        },
+        {
+          "specifier": "./world/interactionHint.css",
+          "kind": "value",
+          "line": 5,
+          "target": "src/world/interactionHint.css"
+        },
+        {
+          "specifier": "./TravelMap",
+          "kind": "type",
+          "line": 6,
+          "target": "src/TravelMap.tsx"
+        },
+        {
+          "specifier": "./TownMap",
+          "kind": "value",
+          "line": 7,
+          "target": "src/TownMap.tsx"
+        },
+        {
+          "specifier": "./chests",
+          "kind": "value",
+          "line": 8,
+          "target": "src/chests.ts"
+        },
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 9,
+          "target": null
+        },
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 10,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./enemyMovement",
+          "kind": "value",
+          "line": 11,
+          "target": "src/enemyMovement.ts"
+        },
+        {
+          "specifier": "./items",
+          "kind": "value",
+          "line": 12,
+          "target": "src/items.ts"
+        },
+        {
+          "specifier": "./TerrainTile",
+          "kind": "value",
+          "line": 13,
+          "target": "src/TerrainTile.tsx"
+        },
+        {
+          "specifier": "./world/mountainVillage",
+          "kind": "value",
+          "line": 14,
+          "target": "src/world/mountainVillage.ts"
+        },
+        {
+          "specifier": "./world/maps",
+          "kind": "value",
+          "line": 15,
+          "target": "src/world/maps.ts"
+        },
+        {
+          "specifier": "./world/catalog",
+          "kind": "value",
+          "line": 16,
+          "target": "src/world/catalog.ts"
+        },
+        {
+          "specifier": "./world/WorldChip",
+          "kind": "value",
+          "line": 17,
+          "target": "src/world/WorldChip.tsx"
+        },
+        {
+          "specifier": "./story",
+          "kind": "value",
+          "line": 18,
+          "target": "src/story.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/audioPreferences.ts",
+      "bytes": 909,
+      "suffix": ".ts",
+      "group": "保存・復元",
+      "role": "音量・ミュートを冒険のセーブと別キーで保存する。保存不能でもゲームを止めない。",
+      "lines": 16,
+      "imports": []
+    },
+    {
+      "path": "src/base.css",
+      "bytes": 19274,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "全体の基礎スタイルのCSS。",
+      "lines": 12
+    },
+    {
+      "path": "src/battle.css",
+      "bytes": 36021,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "戦闘画面・攻撃演出のCSS。",
+      "lines": 799
+    },
+    {
+      "path": "src/battleBanter.ts",
+      "bytes": 9302,
+      "suffix": ".ts",
+      "group": "戦闘表示",
+      "role": "敵種別と戦闘場面に応じて敵・主人公の台詞を組み立てる。",
+      "lines": 198,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./heroBanter",
+          "kind": "value",
+          "line": 2,
+          "target": "src/heroBanter.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/battleTiming.ts",
+      "bytes": 350,
+      "suffix": ".ts",
+      "group": "戦闘表示",
+      "role": "攻撃時間と衝撃タイミング、表示するダメージ前後の値の型を共有する。結果確定と表示時間を区別する。",
+      "lines": 13,
+      "imports": []
+    },
+    {
+      "path": "src/beginnerQuestions.ts",
+      "bytes": 10599,
+      "suffix": ".ts",
+      "group": "教材・共通データ",
+      "role": "MVC・CRUDなど、初級の共通知識を4択で定義する。",
+      "lines": 49,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/bookQuestions.ts",
+      "bytes": 824,
+      "suffix": ".ts",
+      "group": "図書館",
+      "role": "本と確認問題のIDを対応づけ、関連本・練習問題を検索する。",
+      "lines": 15,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./library",
+          "kind": "value",
+          "line": 2,
+          "target": "src/library.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/bossBattle.ts",
+      "bytes": 5680,
+      "suffix": ".ts",
+      "group": "学習・採点",
+      "role": "3段階のボス復旧問題、CLI専用判定、防御段階の進行を定義する。コマンドは実行しない。",
+      "lines": 69,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/bossBreakEffect.css",
+      "bytes": 752,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "ボスの防御崩壊演出のCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/characterArt.css",
+      "bytes": 1933,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "ワールド人物の描画・歩行のCSS。",
+      "lines": 19
+    },
+    {
+      "path": "src/chestRewardCue.css",
+      "bytes": 952,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "宝箱報酬の通知のCSS。",
+      "lines": 5
+    },
+    {
+      "path": "src/chestSprite.css",
+      "bytes": 683,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "宝箱の表示のCSS。",
+      "lines": 6
+    },
+    {
+      "path": "src/chests.ts",
+      "bytes": 1595,
+      "suffix": ".ts",
+      "group": "アイテム",
+      "role": "座標に基づく宝箱ID、報酬、開封済み状態を持ち、報酬の重複取得を防ぐ。",
+      "lines": 32,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./items",
+          "kind": "value",
+          "line": 2,
+          "target": "src/items.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/content.ts",
+      "bytes": 34436,
+      "suffix": ".ts",
+      "group": "教材・共通データ",
+      "role": "QuestionやAreaなどの共通型、基本問題と問題配列の集約、旧マップ、住民・敵の定義を持つ。教材専用ファイルには分離しきれていない。",
+      "lines": 341,
+      "imports": [
+        {
+          "specifier": "./moreQuestions",
+          "kind": "value",
+          "line": 1,
+          "target": "src/moreQuestions.ts"
+        },
+        {
+          "specifier": "./fillQuestions",
+          "kind": "value",
+          "line": 2,
+          "target": "src/fillQuestions.ts"
+        },
+        {
+          "specifier": "./beginnerQuestions",
+          "kind": "value",
+          "line": 3,
+          "target": "src/beginnerQuestions.ts"
+        },
+        {
+          "specifier": "./world/caveLayout",
+          "kind": "value",
+          "line": 4,
+          "target": "src/world/caveLayout.ts"
+        },
+        {
+          "specifier": "./world/mountainVillage",
+          "kind": "value",
+          "line": 5,
+          "target": "src/world/mountainVillage.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/dialogueLog.ts",
+      "bytes": 720,
+      "suffix": ".ts",
+      "group": "会話・操作",
+      "role": "会話履歴を追記・正規化し、保持数を制限する。",
+      "lines": 6,
+      "imports": []
+    },
+    {
+      "path": "src/enemyMovement.ts",
+      "bytes": 3149,
+      "suffix": ".ts",
+      "group": "地図・移動",
+      "role": "敵の初期配置、現在位置、接触判定、移動を管理する。",
+      "lines": 61,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./world/maps",
+          "kind": "value",
+          "line": 2,
+          "target": "src/world/maps.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/fillQuestions.ts",
+      "bytes": 26393,
+      "suffix": ".ts",
+      "group": "教材・共通データ",
+      "role": "穴埋め選択・穴埋め入力のコード、選択肢、別解、解説を定義する。",
+      "lines": 518,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/heroAttackArt.ts",
+      "bytes": 1772,
+      "suffix": ".ts",
+      "group": "戦闘表示",
+      "role": "攻撃画像のフレーム矩形・基準点・表示倍率を定義する。",
+      "lines": 31,
+      "imports": []
+    },
+    {
+      "path": "src/heroBanter.ts",
+      "bytes": 3751,
+      "suffix": ".ts",
+      "group": "戦闘表示",
+      "role": "主人公の戦闘中の台詞を場面別に定義する。",
+      "lines": 96,
+      "imports": []
+    },
+    {
+      "path": "src/heroBattleSprite.css",
+      "bytes": 1961,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "主人公の戦闘スプライトのCSS。",
+      "lines": 22
+    },
+    {
+      "path": "src/heroTechniques.ts",
+      "bytes": 1529,
+      "suffix": ".ts",
+      "group": "戦闘表示",
+      "role": "プログラミング名の主人公の技と、攻撃モーションの抽選を定義する。",
+      "lines": 38,
+      "imports": []
+    },
+    {
+      "path": "src/items.ts",
+      "bytes": 2138,
+      "suffix": ".ts",
+      "group": "アイテム",
+      "role": "装備・消耗品、能力、店の品揃え、所持品の型を定義する。",
+      "lines": 27,
+      "imports": []
+    },
+    {
+      "path": "src/keyboardNavigation.ts",
+      "bytes": 1491,
+      "suffix": ".ts",
+      "group": "会話・操作",
+      "role": "矢印キーで、表示されたボタンの位置や順序に沿ってフォーカスを移動する。",
+      "lines": 22,
+      "imports": []
+    },
+    {
+      "path": "src/keyboardShortcuts.ts",
+      "bytes": 801,
+      "suffix": ".ts",
+      "group": "会話・操作",
+      "role": "入力中や修飾キーを考慮し、現在の画面内にあるボタンのショートカットを実行する。",
+      "lines": 13,
+      "imports": []
+    },
+    {
+      "path": "src/learningRecords.css",
+      "bytes": 345,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "学習記録パネルのCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/learningRecords.ts",
+      "bytes": 2341,
+      "suffix": ".ts",
+      "group": "学習・記録",
+      "role": "問題ごとの通常・復習の回答成績を更新し、保存値を正規化する。",
+      "lines": 24,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/learningSession.css",
+      "bytes": 485,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "学習セッション表示のCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/learningSetupHelp.css",
+      "bytes": 351,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "学習設定の説明のCSS。",
+      "lines": 2
+    },
+    {
+      "path": "src/levelUpCue.css",
+      "bytes": 1198,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "レベルアップ通知のCSS。",
+      "lines": 7
+    },
+    {
+      "path": "src/library.ts",
+      "bytes": 23708,
+      "suffix": ".ts",
+      "group": "図書館",
+      "role": "東西の棟・階・本棚・本の教材を定義し、既読としおりを正規化する。",
+      "lines": 120,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/librarySearch.css",
+      "bytes": 417,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "蔵書検索のCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/main.tsx",
+      "bytes": 285,
+      "suffix": ".tsx",
+      "group": "起動",
+      "role": "Reactの起動点。Appと全体CSSを読み込み、StrictModeで描画する。",
+      "lines": 12,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "react-dom/client",
+          "kind": "value",
+          "line": 2,
+          "target": null
+        },
+        {
+          "specifier": "./App",
+          "kind": "value",
+          "line": 3,
+          "target": "src/App.tsx"
+        },
+        {
+          "specifier": "./base.css",
+          "kind": "value",
+          "line": 4,
+          "target": "src/base.css"
+        },
+        {
+          "specifier": "./style.css",
+          "kind": "value",
+          "line": 5,
+          "target": "src/style.css"
+        },
+        {
+          "specifier": "./battle.css",
+          "kind": "value",
+          "line": 6,
+          "target": "src/battle.css"
+        }
+      ]
+    },
+    {
+      "path": "src/moreQuestions.ts",
+      "bytes": 31131,
+      "suffix": ".ts",
+      "group": "教材・共通データ",
+      "role": "React・Vue・Laravel・Inertia・APIの追加4択とCLIを定義する。",
+      "lines": 141,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/questionSelection.ts",
+      "bytes": 1825,
+      "suffix": ".ts",
+      "group": "学習・採点",
+      "role": "学習設定で候補を絞り、未回答と形式の重みに基づき抽選する。一般の入力判定も担当する。",
+      "lines": 26,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/QuestJournal.tsx",
+      "bytes": 1715,
+      "suffix": ".tsx",
+      "group": "クエスト",
+      "role": "依頼一覧、進行状況、開始ボタンを表示する。",
+      "lines": 18,
+      "imports": [
+        {
+          "specifier": "../items",
+          "kind": "value",
+          "line": 1,
+          "target": "src/items.ts"
+        },
+        {
+          "specifier": "./definitions",
+          "kind": "value",
+          "line": 2,
+          "target": "src/quests/definitions.ts"
+        },
+        {
+          "specifier": "./engine",
+          "kind": "value",
+          "line": 3,
+          "target": "src/quests/engine.ts"
+        },
+        {
+          "specifier": "./engine",
+          "kind": "type",
+          "line": 4,
+          "target": "src/quests/engine.ts"
+        },
+        {
+          "specifier": "../items",
+          "kind": "type",
+          "line": 5,
+          "target": "src/items.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/chapterScenes.ts",
+      "bytes": 1748,
+      "suffix": ".ts",
+      "group": "クエスト",
+      "role": "第二章の導入・発見・結末の会話を定義する。",
+      "lines": 5,
+      "imports": [
+        {
+          "specifier": "../story",
+          "kind": "type",
+          "line": 1,
+          "target": "src/story.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/definitions.ts",
+      "bytes": 4660,
+      "suffix": ".ts",
+      "group": "クエスト",
+      "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
+      "lines": 33,
+      "imports": [
+        {
+          "specifier": "./chapterScenes",
+          "kind": "value",
+          "line": 1,
+          "target": "src/quests/chapterScenes.ts"
+        },
+        {
+          "specifier": "./types",
+          "kind": "type",
+          "line": 2,
+          "target": "src/quests/types.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/engine.ts",
+      "bytes": 3931,
+      "suffix": ".ts",
+      "group": "クエスト",
+      "role": "状態とイベントから次の状態・場面を返す純粋な進行処理。完了済みへのイベントで報酬を再付与しない。",
+      "lines": 102,
+      "imports": [
+        {
+          "specifier": "../items",
+          "kind": "type",
+          "line": 1,
+          "target": "src/items.ts"
+        },
+        {
+          "specifier": "../story",
+          "kind": "type",
+          "line": 2,
+          "target": "src/story.ts"
+        },
+        {
+          "specifier": "./definitions",
+          "kind": "value",
+          "line": 3,
+          "target": "src/quests/definitions.ts"
+        },
+        {
+          "specifier": "./types",
+          "kind": "type",
+          "line": 4,
+          "target": "src/quests/types.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/persistence.ts",
+      "bytes": 1826,
+      "suffix": ".ts",
+      "group": "クエスト",
+      "role": "クエストIDと段階IDを検証し、旧フラグをversion 2の状態へ移行する。",
+      "lines": 31,
+      "imports": [
+        {
+          "specifier": "./definitions",
+          "kind": "value",
+          "line": 1,
+          "target": "src/quests/definitions.ts"
+        },
+        {
+          "specifier": "./engine",
+          "kind": "value",
+          "line": 2,
+          "target": "src/quests/engine.ts"
+        },
+        {
+          "specifier": "./types",
+          "kind": "type",
+          "line": 3,
+          "target": "src/quests/types.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/types.ts",
+      "bytes": 1391,
+      "suffix": ".ts",
+      "group": "クエスト",
+      "role": "クエスト定義・段階・状態・イベントの型を定義する。",
+      "lines": 27,
+      "imports": [
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "../items",
+          "kind": "type",
+          "line": 2,
+          "target": "src/items.ts"
+        },
+        {
+          "specifier": "../story",
+          "kind": "type",
+          "line": 3,
+          "target": "src/story.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/quests/useQuests.ts",
+      "bytes": 4321,
+      "suffix": ".ts",
+      "group": "クエスト",
+      "role": "Reactの会話・回答・場面再生と、クエストエンジンをつなぐ。",
+      "lines": 53,
+      "imports": [
+        {
+          "specifier": "react",
+          "kind": "value",
+          "line": 1,
+          "target": null
+        },
+        {
+          "specifier": "../content",
+          "kind": "value",
+          "line": 2,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "../story",
+          "kind": "type",
+          "line": 3,
+          "target": "src/story.ts"
+        },
+        {
+          "specifier": "../world/maps",
+          "kind": "value",
+          "line": 4,
+          "target": "src/world/maps.ts"
+        },
+        {
+          "specifier": "./definitions",
+          "kind": "value",
+          "line": 5,
+          "target": "src/quests/definitions.ts"
+        },
+        {
+          "specifier": "./engine",
+          "kind": "value",
+          "line": 6,
+          "target": "src/quests/engine.ts"
+        },
+        {
+          "specifier": "./types",
+          "kind": "type",
+          "line": 7,
+          "target": "src/quests/types.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/recoveryCue.css",
+      "bytes": 1106,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "回復通知のCSS。",
+      "lines": 8
+    },
+    {
+      "path": "src/resumeSummary.css",
+      "bytes": 393,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "再開時の要約のCSS。",
+      "lines": 3
+    },
+    {
+      "path": "src/reviewRoom.css",
+      "bytes": 5039,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "復習の部屋のCSS。",
+      "lines": 14
+    },
+    {
+      "path": "src/reviewSchedule.ts",
+      "bytes": 439,
+      "suffix": ".ts",
+      "group": "学習・記録",
+      "role": "誤答経験があり直近に正解した問題の、24時間後の復習予定を計算する。高度な適応型反復ではない。",
+      "lines": 5,
+      "imports": [
+        {
+          "specifier": "./learningRecords",
+          "kind": "type",
+          "line": 1,
+          "target": "src/learningRecords.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/saveStatus.css",
+      "bytes": 489,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "保存状態の表示のCSS。",
+      "lines": 2
+    },
+    {
+      "path": "src/saveTransfer.css",
+      "bytes": 456,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "セーブの入出力のCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/saveValidation.ts",
+      "bytes": 6918,
+      "suffix": ".ts",
+      "group": "保存・復元",
+      "role": "セーブの型・値・IDを検証し、安全な値への補正と旧データ移行を行う。",
+      "lines": 88,
+      "imports": [
+        {
+          "specifier": "./quests/persistence",
+          "kind": "value",
+          "line": 1,
+          "target": "src/quests/persistence.ts"
+        },
+        {
+          "specifier": "./dialogueLog",
+          "kind": "value",
+          "line": 2,
+          "target": "src/dialogueLog.ts"
+        },
+        {
+          "specifier": "./learningRecords",
+          "kind": "value",
+          "line": 3,
+          "target": "src/learningRecords.ts"
+        },
+        {
+          "specifier": "./content",
+          "kind": "value",
+          "line": 4,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./items",
+          "kind": "value",
+          "line": 5,
+          "target": "src/items.ts"
+        },
+        {
+          "specifier": "./story",
+          "kind": "value",
+          "line": 6,
+          "target": "src/story.ts"
+        },
+        {
+          "specifier": "./library",
+          "kind": "value",
+          "line": 7,
+          "target": "src/library.ts"
+        },
+        {
+          "specifier": "./chests",
+          "kind": "value",
+          "line": 8,
+          "target": "src/chests.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/story.ts",
+      "bytes": 9651,
+      "suffix": ".ts",
+      "group": "物語",
+      "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
+      "lines": 96,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/style.css",
+      "bytes": 28306,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
+      "lines": 284
+    },
+    {
+      "path": "src/townMap.css",
+      "bytes": 482,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "町の小地図のCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/travelMap.css",
+      "bytes": 5244,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "拡大地図のCSS。",
+      "lines": 14
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "bytes": 38,
+      "suffix": ".ts",
+      "group": "設定",
+      "role": "Vite固有のクライアント型宣言を参照する。",
+      "lines": 1,
+      "imports": []
+    },
+    {
+      "path": "src/world/WorldChip.tsx",
+      "bytes": 2725,
+      "suffix": ".tsx",
+      "group": "世界の定義",
+      "role": "カタログと配置を受け取り、画像・アトラス・人物などの表示方式を選ぶ。",
+      "lines": 42,
+      "imports": [
+        {
+          "specifier": "../ChestSprite",
+          "kind": "value",
+          "line": 1,
+          "target": "src/ChestSprite.tsx"
+        },
+        {
+          "specifier": "react",
+          "kind": "type",
+          "line": 2,
+          "target": null
+        },
+        {
+          "specifier": "../WorldCharacter",
+          "kind": "value",
+          "line": 3,
+          "target": "src/WorldCharacter.tsx"
+        },
+        {
+          "specifier": "../PixelSprite",
+          "kind": "value",
+          "line": 4,
+          "target": "src/PixelSprite.tsx"
+        },
+        {
+          "specifier": "./catalog",
+          "kind": "type",
+          "line": 5,
+          "target": "src/world/catalog.ts"
+        },
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 6,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/catalog.ts",
+      "bytes": 8865,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
+      "lines": 120,
+      "imports": [
+        {
+          "specifier": "../WorldCharacter",
+          "kind": "type",
+          "line": 1,
+          "target": "src/WorldCharacter.tsx"
+        },
+        {
+          "specifier": "../PixelSprite",
+          "kind": "type",
+          "line": 2,
+          "target": "src/PixelSprite.tsx"
+        },
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 3,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./propArt",
+          "kind": "value",
+          "line": 4,
+          "target": "src/world/propArt.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/caveLayout.ts",
+      "bytes": 1916,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "遺跡のセル配置、入口・出口・敵を定義する。",
+      "lines": 40,
+      "imports": [
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/decorations.ts",
+      "bytes": 3557,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "家や町などの家具・装飾の配置を定義する。",
+      "lines": 74,
+      "imports": [
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./catalog",
+          "kind": "type",
+          "line": 2,
+          "target": "src/world/catalog.ts"
+        },
+        {
+          "specifier": "./maps",
+          "kind": "type",
+          "line": 3,
+          "target": "src/world/maps.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/interactionHint.css",
+      "bytes": 433,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "隣接対象を調べる案内のCSS。",
+      "lines": 2
+    },
+    {
+      "path": "src/world/interactions.ts",
+      "bytes": 1032,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "向きや隣接位置、物語のNPC条件を踏まえて調べる対象を選ぶ。",
+      "lines": 19,
+      "imports": [
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "../story",
+          "kind": "value",
+          "line": 2,
+          "target": "src/story.ts"
+        },
+        {
+          "specifier": "./maps",
+          "kind": "type",
+          "line": 3,
+          "target": "src/world/maps.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/mapGuide.ts",
+      "bytes": 2697,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "地名、施設入口、経路、方角など地図の案内情報を計算する。",
+      "lines": 36,
+      "imports": [
+        {
+          "specifier": "../content",
+          "kind": "value",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "../library",
+          "kind": "value",
+          "line": 2,
+          "target": "src/library.ts"
+        },
+        {
+          "specifier": "./maps",
+          "kind": "value",
+          "line": 3,
+          "target": "src/world/maps.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/maps.ts",
+      "bytes": 13837,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "旧形式を新形式に変換し、配置検証・通行・イベント・到達性・小地図の共通情報を作る。",
+      "lines": 222,
+      "imports": [
+        {
+          "specifier": "../chests",
+          "kind": "value",
+          "line": 1,
+          "target": "src/chests.ts"
+        },
+        {
+          "specifier": "../content",
+          "kind": "value",
+          "line": 2,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "../PixelSprite",
+          "kind": "value",
+          "line": 3,
+          "target": "src/PixelSprite.tsx"
+        },
+        {
+          "specifier": "./catalog",
+          "kind": "value",
+          "line": 4,
+          "target": "src/world/catalog.ts"
+        },
+        {
+          "specifier": "../library",
+          "kind": "value",
+          "line": 5,
+          "target": "src/library.ts"
+        },
+        {
+          "specifier": "./nativeMaps",
+          "kind": "value",
+          "line": 6,
+          "target": "src/world/nativeMaps.ts"
+        },
+        {
+          "specifier": "./caveLayout",
+          "kind": "value",
+          "line": 7,
+          "target": "src/world/caveLayout.ts"
+        },
+        {
+          "specifier": "./mountainVillage",
+          "kind": "value",
+          "line": 8,
+          "target": "src/world/mountainVillage.ts"
+        },
+        {
+          "specifier": "./decorations",
+          "kind": "value",
+          "line": 9,
+          "target": "src/world/decorations.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/mountainVillage.ts",
+      "bytes": 4111,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "石灯の村の地形・住民・建物と、入口・戻り位置を定義する。",
+      "lines": 69,
+      "imports": [
+        {
+          "specifier": "../content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "./catalog",
+          "kind": "type",
+          "line": 2,
+          "target": "src/world/catalog.ts"
+        },
+        {
+          "specifier": "./maps",
+          "kind": "type",
+          "line": 3,
+          "target": "src/world/maps.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/nativeMaps.ts",
+      "bytes": 1662,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "新形式の室内・村などを登録する。家の壁を共有し、家具は配置データから加える。",
+      "lines": 31,
+      "imports": [
+        {
+          "specifier": "./mountainVillage",
+          "kind": "value",
+          "line": 1,
+          "target": "src/world/mountainVillage.ts"
+        },
+        {
+          "specifier": "../content",
+          "kind": "value",
+          "line": 2,
+          "target": "src/content.ts"
+        },
+        {
+          "specifier": "../PixelSprite",
+          "kind": "value",
+          "line": 3,
+          "target": "src/PixelSprite.tsx"
+        },
+        {
+          "specifier": "./maps",
+          "kind": "type",
+          "line": 4,
+          "target": "src/world/maps.ts"
+        },
+        {
+          "specifier": "./catalog",
+          "kind": "type",
+          "line": 5,
+          "target": "src/world/catalog.ts"
+        }
+      ]
+    },
+    {
+      "path": "src/world/propArt.ts",
+      "bytes": 997,
+      "suffix": ".ts",
+      "group": "世界の定義",
+      "role": "小物アトラスの元寸法と、各物体の切り出し矩形を定義する。",
+      "lines": 78,
+      "imports": []
+    },
+    {
+      "path": "src/worldAmbient.css",
+      "bytes": 679,
+      "suffix": ".css",
+      "group": "表示スタイル",
+      "role": "探索画面の環境演出のCSS。",
+      "lines": 1
+    },
+    {
+      "path": "src/wrongChoiceReasons.ts",
+      "bytes": 2968,
+      "suffix": ".ts",
+      "group": "学習・採点",
+      "role": "一部問題の誤答ごとの補足説明。選択肢の文字列に対応づける。",
+      "lines": 14,
+      "imports": [
+        {
+          "specifier": "./content",
+          "kind": "type",
+          "line": 1,
+          "target": "src/content.ts"
+        }
+      ]
+    },
+    {
+      "path": "tests/audio-preferences.test.mjs",
+      "bytes": 1799,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "音設定の保存・不正値・保存不能時の継続を検証する。"
+    },
+    {
+      "path": "tests/chests.test.mjs",
+      "bytes": 3068,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "宝箱の一度きりの報酬・ID・配置の到達性を検証する。"
+    },
+    {
+      "path": "tests/e2e/README.md",
+      "bytes": 666,
+      "suffix": ".md",
+      "group": "検証",
+      "role": "ブラウザテストの起動、使用ブラウザ、保存データ分離などを説明する。"
+    },
+    {
+      "path": "tests/e2e/adventure.test.mjs",
+      "bytes": 13761,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "ブラウザで宝箱、本、通常戦、復習、セーブ・再開、クエストなどを確認する。"
+    },
+    {
+      "path": "tests/expansion-integration.test.mjs",
+      "bytes": 3661,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "村と遺跡の接続・敵IDの互換性・初級問題の出題を検証する。"
+    },
+    {
+      "path": "tests/interactions.test.mjs",
+      "bytes": 1129,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "向きを優先する隣接対象選択と物語条件を検証する。"
+    },
+    {
+      "path": "tests/library-progress.test.mjs",
+      "bytes": 1447,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "蔵書ID、既読、棚としおりの整合性を検証する。"
+    },
+    {
+      "path": "tests/map-reachability.test.mjs",
+      "bytes": 9838,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "出入口・NPC・敵・家具配置の到達性と復帰位置を検証する。"
+    },
+    {
+      "path": "tests/quests.test.mjs",
+      "bytes": 5874,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "イベント順序・参照ID・二重報酬防止・旧セーブ移行を検証する。"
+    },
+    {
+      "path": "tests/save-validation.test.mjs",
+      "bytes": 3011,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "保存データの補正・不正形式拒否・移行を検証する。"
+    },
+    {
+      "path": "tests/story.test.mjs",
+      "bytes": 2157,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "旧セーブの互換性・第一章の移動制限・NPC配置を検証する。"
+    },
+    {
+      "path": "tests/street-layout.test.mjs",
+      "bytes": 4508,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "道・建物入口・村と遺跡への接続・旧位置の復元を検証する。"
+    },
+    {
+      "path": "tests/world.test.mjs",
+      "bytes": 11814,
+      "suffix": ".mjs",
+      "group": "検証",
+      "role": "ボス採点・旧世界との互換・素材分類・穴埋め形式・出題の抽選を検証する。"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 468,
+      "suffix": ".json",
+      "group": "設定",
+      "role": "TypeScriptのstrict設定、ES2022、JSX、未使用チェックなどを指定する。"
+    },
+    {
+      "path": "vite.config.ts",
+      "bytes": 133,
+      "suffix": ".ts",
+      "group": "設定",
+      "role": "ViteにReactプラグインを登録する。"
+    }
+  ]
+}

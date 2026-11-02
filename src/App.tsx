@@ -32,7 +32,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, houses, questions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn, restoreMapPosition } from './world/maps';
 import { CharacterPortrait } from './CharacterPortrait';
-import { WorldCharacter } from './WorldCharacter';
+import { TitleScreen } from './TitleScreen';
 import { WorldScene } from './WorldScene';
 import { canLeaveTown, storyNpcs, wakingScene, breakfastScene, mayorScene, knightScene, rescueScene, type StoryStage, type StoryLine } from './story';
 import { ControlsGuide } from './ControlsGuide';
@@ -640,7 +640,13 @@ export function App() {
 
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{['world','church','review-room'].includes(phase)&&<button onClick={()=>{stopPath();setMapView('world');}}>地図</button>}{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
-    {phase==='title' && <main className="title-screen"><div className="stars"/><div className="title-art"><div className="moon"/><div className="castle"><i/><i/><i/></div><div className="title-hero"><WorldCharacter name="hero"/></div></div><p className="eyebrow">THE LOST ART OF CODING</p><h1>コードクロニクル</h1><h2>― コードの扉を開く者達 ―</h2><p className="title-copy">知識が失われた世界で、もう一度、魔法を取り戻す。</p>{hasSave&&<ResumeSummary save={save} savedAt={lastSavedAt}/>}<div className="title-menu"><button className="primary" onClick={startNew}>新しい冒険を始める <span>▶</span></button>{hasSave && <button onClick={()=>{setPhase(hasStartedChapter(save.quests)?'world':save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world'); beep(640,0.1);}}>続きから始める <span>▶</span></button>}</div>{backup&&<details className="resume-summary backup-summary"><summary>保護した前の冒険</summary><p>{backup.name}　LV {backup.level} · {areaLabel[backup.area]}</p><p>復元すると、現在の冒険はこのデータに置き換わります。</p><button onClick={restoreBackup}>この冒険を復元する</button></details>}<SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><p className="title-foot">React / Vue × Laravel × TypeScript</p></main>}
+    {phase==='title' && <TitleScreen hasSave={hasSave} onNew={startNew}
+      onResume={()=>{setPhase(hasStartedChapter(save.quests)?'world':save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world');beep(640,0.1);}}
+      resume={<ResumeSummary save={save} savedAt={lastSavedAt}/>}
+      management={<>
+        {backup&&<details className="resume-summary backup-summary"><summary>保護した前の冒険</summary><p>{backup.name}　LV {backup.level} · {areaLabel[backup.area]}</p><p>復元すると、現在の冒険はこのデータに置き換わります。</p><button onClick={restoreBackup}>この冒険を復元する</button></details>}
+        <SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/>
+      </>}/>}
     {phase==='prologue' && <main className="prologue-screen">
       <div className="prologue-layout">
         <div className="prologue-art" key={introIndex} role="img" aria-label={intro.title} style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/${introIndex<4?'ancient-and-fall':'family-and-dawn'}.png)`,backgroundPosition:`${introIndex%2?100:0}% ${Math.floor((introIndex%4)/2)?100:0}%`}}>

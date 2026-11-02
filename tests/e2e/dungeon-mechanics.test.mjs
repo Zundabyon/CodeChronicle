@@ -93,7 +93,7 @@ test('all twelve new monster designs appear consistently on the map, encounter a
     const {worldMaps,canWalkOnMap,eventAt}=await import('/src/world/maps.ts');
     const {memoryDungeons}=await import('/src/world/memoryDungeons.ts');
     const positions=spawnEnemies();
-    return memoryDungeons.flatMap(d=>worldMaps[d.area].enemies.map(enemy=>{
+    return memoryDungeons.flatMap(d=>worldMaps[d.area].enemies.filter(enemy=>!enemy.id.includes('-copy-')).map(enemy=>{
       const target=positions[enemy.id],map=worldMaps[d.area];
       const pos=[{x:target.x+1,y:target.y},{x:target.x-1,y:target.y},{x:target.x,y:target.y+1},{x:target.x,y:target.y-1}].find(p=>
         canWalkOnMap(map,p)&&!enemyAt(d.area,p,positions,[])&&!map.npcs.some(n=>n.x===p.x&&n.y===p.y)&&!eventAt(map,p,'enter'));

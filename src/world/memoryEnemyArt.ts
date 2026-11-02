@@ -1,3 +1,4 @@
+import { memoryEnemyBaseId } from './memoryEnemyIdentity';
 import type { Visual } from './catalog';
 
 export const memoryEnemyAtlas = {
@@ -22,7 +23,7 @@ export const memoryEnemyFrames:Record<string,readonly [number,number,number,numb
 };
 
 export function memoryEnemyVisual(enemyId:string):Extract<Visual,{renderer:'atlas'}>|undefined {
-  const frame=memoryEnemyFrames[enemyId];
+  const frame=memoryEnemyFrames[memoryEnemyBaseId(enemyId)];
   return frame?{renderer:'atlas',src:memoryEnemyAtlas.src,sourceWidth:memoryEnemyAtlas.width,
     sourceHeight:memoryEnemyAtlas.height,frame,width:.95,height:.95,anchor:{x:.5,y:.5}}:undefined;
 }

@@ -1,0 +1,33 @@
+import {useRef,type ReactNode} from 'react';
+
+type Props={hasSave:boolean;onNew:()=>void;onResume:()=>void;resume:ReactNode;management:ReactNode};
+
+export function TitleScreen({hasSave,onNew,onResume,resume,management}:Props){
+  const dialog=useRef<HTMLDialogElement>(null);
+  return <main className="title-screen title-journey">
+    <img className="title-background" src={`${import.meta.env.BASE_URL}title/knowledge-journey-v1.png`} alt="" fetchPriority="high"/>
+    <div className="title-shade" aria-hidden="true"/>
+    <div className="title-content">
+      <header className="title-heading">
+        <p className="eyebrow">THE LOST ART OF CODING</p>
+        <h1>コードクロニクル</h1>
+        <h2>コードの扉を開く者達</h2>
+        <p className="title-copy">知識が失われた世界で、<br/>もう一度、魔法を取り戻す。</p>
+      </header>
+      <section className="title-adventure" aria-label="冒険を始める">
+        {hasSave&&resume}
+        <div className="title-menu">
+          {hasSave&&<button className="primary" onClick={onResume}>続きから始める <span aria-hidden="true">▶</span></button>}
+          <button className={hasSave?'title-new':'primary'} onClick={onNew}>新しい冒険を始める <span aria-hidden="true">▶</span></button>
+        </div>
+        <button className="title-manage" onClick={()=>dialog.current?.showModal()}>冒険の管理 <span aria-hidden="true">＋</span></button>
+      </section>
+      <p className="title-note">学びが、世界を動かす。</p>
+    </div>
+    <dialog ref={dialog} className="title-management" aria-labelledby="title-management-heading" onClick={event=>{if(event.target===event.currentTarget)dialog.current?.close();}}>
+      <div className="title-management-heading"><h2 id="title-management-heading">冒険の管理</h2><form method="dialog"><button aria-label="冒険の管理を閉じる">閉じる ×</button></form></div>
+      <p>セーブの持ち運びや、前の冒険の復元ができます。</p>
+      {management}
+    </dialog>
+  </main>;
+}

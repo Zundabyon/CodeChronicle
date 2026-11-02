@@ -199,7 +199,7 @@ test('fill input trims ends but preserves code case and internal whitespace',()=
 test('prop atlas frames stay within the source and retain object collision rules',()=>{
   const props=chipCatalog.prop;
   const images=Object.values(props).filter(prop=>prop.visual.renderer==='atlas');
-  assert.equal(images.length,12);
+  assert.equal(images.length,15);
   for(const prop of images){
     const {sourceWidth,sourceHeight,frame:[x,y,width,height]}=prop.visual;
     assert.ok(x>=0&&y>=0&&width>0&&height>0);
@@ -210,4 +210,8 @@ test('prop atlas frames stay within the source and retain object collision rules
   assert.equal(props.diningTable.blockedCells.length,2);
   assert.equal(props.bench.blockedCells.length,2);
   assert.equal(props.well.blockedCells.length,4);
+  assert.equal(props.memorySpring.blockedCells.length,1);
+  assert.equal(props.memoryDoor.blockedCells.length,0);
+  assert.equal(props.memoryDoorOpen.blockedCells.length,0);
+  assert.deepEqual(props.memoryDoor.visual.frame,props.memoryDoorOpen.visual.frame);
 });
