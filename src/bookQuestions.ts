@@ -1,4 +1,4 @@
-import { questions } from './content';
+import { questions, type Question } from './content';
 import { libraryShelves } from './library';
 // Curated matches: each book directly explains the linked question's concept.
 export const questionBookLinks:Record<string,string>={
@@ -12,4 +12,4 @@ export function relatedBook(questionId:string) {
   const book=shelf?.books.find(b=>b.id===bookId);
   return shelf&&book?{shelf,book}:null;
 }
-export function practiceQuestion(bookId:string){return questions.find(q=>questionBookLinks[q.id]===bookId)??null;}
+export function practiceQuestion(bookId:string,questionBank:Question[]=questions){return questionBank.find(q=>questionBookLinks[q.id]===bookId)??null;}

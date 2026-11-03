@@ -1,7 +1,7 @@
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 const originalStorage=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
 after(()=>{if(originalStorage===undefined)delete globalThis.localStorage;else Object.defineProperty(globalThis,'localStorage',originalStorage);return server.close();});
 const {loadAudioPreferences,saveAudioPreferences,AUDIO_PREFERENCES_KEY}=await server.ssrLoadModule('/src/audioPreferences.ts');

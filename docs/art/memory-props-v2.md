@@ -1,5 +1,7 @@
 # 記憶ダンジョン小物 v2
 
+再利用する手順は[環境素材](../production/uses/environment-art.md)と[状態差分](../production/uses/state-variants.md)。以下は採用した素材と実際の生成指示の履歴。
+
 2026-11-02。泉と封印扉の描き込みを既存の `props-atlas-v2.png` に合わせて更新。
 
 ## 見直した設定と設計意図

@@ -1,5 +1,7 @@
 # CodeChronicle 素材分類・品質基準
 
+アプリ全体の分類は[制作の入口](production/index.md)、人物名に依存しない画像制作の仕様は[用途別の一覧](production/index.md#共通の用途別仕様)、過去の生成結果は[記録の索引](production/records.md)を参照する。本書は美術の共通基準を管理し、生成履歴や実測metadataを重複管理しない。
+
 制作・差し替え・品質レビューには [game-art Skill](../.agents/skills/game-art/SKILL.md) を使う。本書は分類・寸法・描画の基準、Skillは生成と採用判断の手順を管理する。人物はマップと会話、敵はマップと遭遇・戦闘の参照先をそれぞれ確認し、簡易SVGなど古い描画が一部だけ残っていないかも点検する。
 
 監査日: 2026-10-19。対象は `src/world/catalog.ts`、`TerrainTile.tsx`、`WorldScene.tsx`、`world/WorldChip.tsx`、`style.css` と `public` の画像。既存の精細な家・教会・ベッドの描写を品質基準として維持する。低解像度のキャラクターや簡素な小道具をこの基準へ近づける。既存画像を単純な図形や粗いドットへ置換しない。

@@ -1,5 +1,5 @@
 import {test,after} from 'node:test';import assert from 'node:assert/strict';import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});after(()=>server.close());
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});after(()=>server.close());
 const {libraryShelves,normalizeReadBooks,normalizeBookmarks}=await server.ssrLoadModule('/src/library.ts');
 test('all library books have unique authored IDs independent of titles and display order',()=>{
  const books=libraryShelves.flatMap(s=>s.books);assert.equal(books.length,54);assert.equal(new Set(books.map(b=>b.id)).size,54);

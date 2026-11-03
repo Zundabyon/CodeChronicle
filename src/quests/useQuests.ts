@@ -1,5 +1,5 @@
 import { useCallback, type RefObject } from 'react';
-import { questions, type Area, type Npc, type Point, type Question } from '../content';
+import { questions as bundledQuestions, type Area, type Npc, type Point, type Question } from '../content';
 import type { StoryLine } from '../story';
 import { worldMaps } from '../world/maps';
 import { questDefinitions } from './definitions';
@@ -9,11 +9,13 @@ import type { QuestStudy } from './studyTypes';
 import { startQuestReview, applyQuestReviewAnswer, questReviewSteps } from './review';
 type Choice={label:string;response:string;onChoose?:()=>void;correct?:boolean};
 type Options<T>={
+  questionBank?:Question[];
   stateRef:RefObject<T>;update:(fn:(save:T)=>T)=>void;
   startDialogue:(speaker:string,face:string,lines:(string|StoryLine)[],choices?:Choice[],onEnd?:()=>void,question?:Question,study?:QuestStudy)=>void;
   playStory:(lines:StoryLine[])=>void;onChapterStart:()=>void;recordPractice:(question:Question,correct:boolean)=>void;
 };
-export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({stateRef,update,startDialogue,playStory,onChapterStart,recordPractice}:Options<T>){
+export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBank=bundledQuestions,stateRef,update,startDialogue,playStory,onChapterStart,recordPractice}:Options<T>){
+  const questions=questionBank;
   const sendQuestEvent=useCallback((event:QuestEvent)=>{
     const result=applyQuestEvent(stateRef.current,event);let next=result.save;
     if(result.started?.startAt){const area=result.started.startAt;next={...next,area,pos:worldMaps[area].entry};}
@@ -52,7 +54,7 @@ export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({stateRef,u
       startDialogue('記憶の案内人','📜',[`復習 ${index+1}/${steps.length}：${step.questionIntro??step.description}`,q.prompt],choices,()=>{if(!paused)present();},q,step.study);
     }
     present();
-  },[stateRef,update,recordPractice,startDialogue]);
+  },[stateRef,update,recordPractice,startDialogue,questions]);
   const talkToQuestNpc=useCallback((npc:Npc,normalChoices:Choice[]=[]):boolean=>{
     const candidates=questDefinitions.filter(def=>(def.npcId===npc.id||def.steps.some(step=>step.npcId===npc.id))&&(stateRef.current.quests[def.id]||def.offer));
     const selected=candidates.find(def=>{const p=stateRef.current.quests[def.id];return p&&p.step!==COMPLETE;})??candidates.find(def=>!stateRef.current.quests[def.id])??candidates[0];if(!selected)return false;
@@ -87,6 +89,6 @@ export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({stateRef,u
       startDialogue(npc.name,npc.face,[...npc.lines,step.reminder??step.description],choices);
     }
     present();return true;
-  },[stateRef,startDialogue,startQuest,answerQuestQuestion,sendQuestEvent]);
+  },[stateRef,startDialogue,startQuest,answerQuestQuestion,sendQuestEvent,questions]);
   return {sendQuestEvent,startQuest,talkToQuestNpc,answerQuestQuestion,reviewQuest};
 }

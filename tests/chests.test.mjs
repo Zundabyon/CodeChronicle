@@ -2,7 +2,7 @@ import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
-const server=await createServer({server:{middlewareMode:true,hmr:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 after(()=>server.close());
 const {chestId,claimChest,normalizeOpenedChests}=await server.ssrLoadModule('/src/chests.ts');
 const {worldMaps,eventAt,reachableMapCells,adaptLegacyMap}=await server.ssrLoadModule('/src/world/maps.ts');

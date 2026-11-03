@@ -1,5 +1,7 @@
 # CRUDダンジョンの敵：新規ドット絵 v1
 
+再利用する手順は[マップ用画像](../production/uses/map-sprites.md)と[攻撃・戦闘表現](../production/uses/combat-art.md)。以下はこの敵アトラスの制作履歴。
+
 Built-in image_genで透明な一枚のアトラスとして生成。生成後の画像加工は行わず、SVGのviewBoxでキャラクターごとの表示範囲を指定して使用する。
 
 - 画像：public/sprites/memory-dungeon-enemies-v1.png（1086×1448、RGBA、12種類）

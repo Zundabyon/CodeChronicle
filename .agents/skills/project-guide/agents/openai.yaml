@@ -1,0 +1,4 @@
+interface:
+  display_name: "CodeChronicle 制作の案内"
+  short_description: "全要素の分類から用途別仕様・固有設定・登録先・検証方法へ案内する"
+  default_prompt: "$project-guide を使って、新しいNPCに会話と歩行を追加するための共通仕様、固有設定、登録先、検証方法を確認してください。"

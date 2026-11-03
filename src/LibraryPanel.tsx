@@ -5,7 +5,7 @@ import { practiceQuestion } from './bookQuestions';
 import { LibrarySearch } from './LibrarySearch';
 import { libraryWingLabel, type LibraryShelf } from './library';
 
-export function LibraryPanel({shelf,onClose,readBooks,onToggleRead,bookmark,onBookmark,onSelectBook,onPracticeAnswer}:{shelf:LibraryShelf;onClose:()=>void;readBooks:string[];onToggleRead:(id:string)=>void;bookmark?:string;onBookmark:(shelfId:string,bookId:string)=>void;onSelectBook:(shelf:LibraryShelf,bookId:string)=>void;onPracticeAnswer:(question:Question,correct:boolean)=>void}) {
+export function LibraryPanel({questionBank,shelf,onClose,readBooks,onToggleRead,bookmark,onBookmark,onSelectBook,onPracticeAnswer}:{questionBank?:Question[];shelf:LibraryShelf;onClose:()=>void;readBooks:string[];onToggleRead:(id:string)=>void;bookmark?:string;onBookmark:(shelfId:string,bookId:string)=>void;onSelectBook:(shelf:LibraryShelf,bookId:string)=>void;onPracticeAnswer:(question:Question,correct:boolean)=>void}) {
   const [practicing,setPracticing]=useState(false);
   const [searching,setSearching]=useState(false);
   const [index,setIndex]=useState<number|null>(()=>{const saved=shelf.books.findIndex(book=>book.id===bookmark);return saved>=0?saved:null;});
@@ -20,7 +20,7 @@ export function LibraryPanel({shelf,onClose,readBooks,onToggleRead,bookmark,onBo
     panelRef.current?.querySelector<HTMLButtonElement>('.library-actions button, .library-books button')?.focus({preventScroll:true});
   },[index]);
   const book=index===null?null:shelf.books[index];
-  const question=book?practiceQuestion(book.id):null;
+  const question=book?practiceQuestion(book.id,questionBank):null;
   const copyCode=async()=>{
     if(!book)return;
     try {await navigator.clipboard.writeText(book.code);setCopyStatus('コードをコピーしました。');}

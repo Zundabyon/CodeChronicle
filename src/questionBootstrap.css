@@ -1,0 +1,4 @@
+.catalog-screen{min-height:100dvh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at top,#26344b,#0b1220 75%);color:#f3ebd2}
+.catalog-screen section{width:min(100%,600px);padding:clamp(24px,5vw,48px);line-height:1.9}
+.catalog-screen small{letter-spacing:.2em;color:#d9bc78}
+.catalog-screen h1{font-size:clamp(20px,4vw,28px)}

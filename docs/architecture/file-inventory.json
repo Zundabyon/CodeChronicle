@@ -1,129 +1,656 @@
 {
-  "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
-  "scope": "git cached and untracked non-ignored existing files; generated architecture report excluded",
-  "count": 222,
+  "snapshot": "2026-11-03 / 7e908ef + current working tree",
+  "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
+  "detailSnapshot": {
+    "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
+    "fields": [
+      "lines",
+      "imports",
+      "staticReferenceHints"
+    ],
+    "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
+  },
+  "count": 329,
   "groups": {
+    "アイテム": 3,
+    "クエスト": 7,
+    "ゲームルール": 1,
+    "ゲーム進行": 1,
+    "世界の定義": 10,
+    "世界・場所": 13,
+    "人物・生物": 12,
+    "会話・操作": 6,
     "作問の仕組み": 5,
+    "保存・復元": 5,
     "公開": 1,
+    "制作・運用": 47,
+    "動き・演出": 3,
+    "図書館": 5,
+    "地図・移動": 3,
+    "学習・採点": 5,
+    "学習・記録": 5,
+    "戦闘表示": 11,
+    "探索画面": 7,
+    "教材・共通データ": 4,
+    "教材・学習": 11,
+    "検証": 14,
+    "物語": 1,
+    "物語・進行": 4,
+    "状態・保存": 4,
+    "画像・素材": 95,
+    "画面・表現・操作": 12,
+    "表示スタイル": 22,
     "設定": 7,
     "説明資料": 4,
-    "画像・素材": 95,
-    "検証": 14,
-    "アイテム": 3,
-    "ゲーム進行": 1,
-    "戦闘表示": 11,
-    "図書館": 5,
-    "探索画面": 7,
-    "会話・操作": 6,
-    "学習・記録": 5,
-    "学習・採点": 5,
-    "保存・復元": 5,
-    "地図・移動": 3,
-    "表示スタイル": 22,
-    "教材・共通データ": 4,
-    "起動": 1,
-    "クエスト": 7,
-    "物語": 1,
-    "世界の定義": 10
+    "起動": 1
+  },
+  "genres": {
+    "world": {
+      "label": "世界・場所",
+      "guide": "docs/production/world.md",
+      "count": 81
+    },
+    "characters": {
+      "label": "人物・生物",
+      "guide": "docs/production/characters.md",
+      "count": 53
+    },
+    "motion": {
+      "label": "動き・演出",
+      "guide": "docs/production/motion.md",
+      "count": 22
+    },
+    "narrative": {
+      "label": "物語・進行",
+      "guide": "docs/production/narrative.md",
+      "count": 19
+    },
+    "learning": {
+      "label": "教材・学習",
+      "guide": "docs/production/learning.md",
+      "count": 35
+    },
+    "gameplay": {
+      "label": "ゲームルール",
+      "guide": "docs/production/gameplay.md",
+      "count": 11
+    },
+    "presentation": {
+      "label": "画面・表現・操作",
+      "guide": "docs/production/presentation.md",
+      "count": 19
+    },
+    "persistence": {
+      "label": "状態・保存",
+      "guide": "docs/production/persistence.md",
+      "count": 12
+    },
+    "operations": {
+      "label": "制作・運用",
+      "guide": "docs/production/operations.md",
+      "count": 77
+    }
   },
   "files": [
     {
+      "path": ".agents/skills/code-review/SKILL.md",
+      "bytes": 5857,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": ".agents/skills/code-review/agents/openai.yaml",
+      "bytes": 347,
+      "suffix": ".yaml",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": ".agents/skills/game-art/SKILL.md",
+      "bytes": 4342,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": ".agents/skills/game-art/agents/openai.yaml",
+      "bytes": 357,
+      "suffix": ".yaml",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": ".agents/skills/project-guide/SKILL.md",
+      "bytes": 2336,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": ".agents/skills/project-guide/agents/openai.yaml",
+      "bytes": 368,
+      "suffix": ".yaml",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": ".agents/skills/question-author/SKILL.md",
-      "bytes": 6610,
+      "bytes": 6762,
       "suffix": ".md",
       "group": "作問の仕組み",
-      "role": "作問手順・入力の公平さ・誤答の根拠・難易度・検証・円卓連携の管理元。"
+      "role": "作問手順・入力の公平さ・誤答の根拠・難易度・検証・円卓連携の管理元。",
+      "genre": "operations"
     },
     {
       "path": ".agents/skills/question-author/agents/openai.yaml",
       "bytes": 342,
       "suffix": ".yaml",
       "group": "作問の仕組み",
-      "role": "Skillの表示名・短い説明・呼び出し例。専用エージェントの定義ではない。"
+      "role": "Skillの表示名・短い説明・呼び出し例。専用エージェントの定義ではない。",
+      "genre": "operations"
     },
     {
       "path": ".agents/skills/question-author/references/question-formats.md",
       "bytes": 5277,
       "suffix": ".md",
       "group": "作問の仕組み",
-      "role": "4形式の契約、フィルタ、CLIの別判定、登録先とテスト制約をまとめる。"
+      "role": "4形式の契約、フィルタ、CLIの別判定、登録先とテスト制約をまとめる。",
+      "genre": "operations"
+    },
+    {
+      "path": ".codex/agents/code_reviewer.toml",
+      "bytes": 637,
+      "suffix": ".toml",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": ".codex/agents/question_author.toml",
       "bytes": 639,
       "suffix": ".toml",
       "group": "作問の仕組み",
-      "role": "問題作成担当を定義する薄い入口。作問ルールはSkillから読む。"
+      "role": "問題作成担当を定義する薄い入口。作問ルールはSkillから読む。",
+      "genre": "operations"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 13,
+      "suffix": "",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": ".github/workflows/deploy-pages.yml",
       "bytes": 747,
       "suffix": ".yml",
       "group": "公開",
-      "role": "依存導入→型検査とViteビルド→Pages成果物→公開。現ファイルはmainへのpushと手動実行がトリガー。"
+      "role": "依存導入→型検査とViteビルド→Pages成果物→公開。現ファイルはmainへのpushと手動実行がトリガー。",
+      "genre": "operations"
     },
     {
       "path": ".gitignore",
-      "bytes": 42,
+      "bytes": 84,
       "suffix": "",
       "group": "設定",
-      "role": "node_modules、dist、tsbuildinfo、OSメタデータを管理対象から除外する。"
+      "role": "node_modules、dist、tsbuildinfo、OSメタデータを管理対象から除外する。",
+      "genre": "operations"
     },
     {
       "path": "README.md",
-      "bytes": 12375,
+      "bytes": 7923,
       "suffix": ".md",
       "group": "説明資料",
-      "role": "起動方法、遊び方、素材・マップ・問題の追加方法を説明する。"
+      "role": "起動方法、遊び方、素材・マップ・問題の追加方法を説明する。",
+      "genre": "operations"
     },
     {
       "path": "docs/art-direction.md",
-      "bytes": 11821,
+      "bytes": 12595,
       "suffix": ".md",
       "group": "説明資料",
-      "role": "素材4分類、64pxの論理基準、元画像の扱い、機械検査の範囲を記述する。過去監査の件数は現時点の数ではない。"
+      "role": "素材4分類、64pxの論理基準、元画像の扱い、機械検査の範囲を記述する。過去監査の件数は現時点の数ではない。",
+      "genre": "presentation"
+    },
+    {
+      "path": "docs/art/knight-portrait-v2.md",
+      "bytes": 3422,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/art/memory-enemies-v1.md",
+      "bytes": 4035,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/art/memory-props-v2.md",
+      "bytes": 6162,
+      "suffix": ".md",
+      "group": "世界・場所",
+      "role": "世界・場所に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "docs/art/title-journey-v1.md",
+      "bytes": 6115,
+      "suffix": ".md",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "docs/articles/qiita-structure-for-development.md",
+      "bytes": 11435,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/chapter-two-learning.md",
+      "bytes": 5908,
+      "suffix": ".md",
+      "group": "教材・学習",
+      "role": "教材・学習に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "docs/issues/enemy-programming-dialogue.md",
       "bytes": 8304,
       "suffix": ".md",
       "group": "説明資料",
-      "role": "敵のプログラミング名・会話に関する仕様や作業内容を記録する。"
+      "role": "敵のプログラミング名・会話に関する仕様や作業内容を記録する。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/learning/cloudflare-api-progress.md",
+      "bytes": 10114,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/learning/cloudflare-deployment-textbook.html",
+      "bytes": 121026,
+      "suffix": ".html",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/learning/cloudflare-migration-textbook.md",
+      "bytes": 41699,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/characters.md",
+      "bytes": 2155,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/production/characters/hero.md",
+      "bytes": 1601,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/production/characters/knight.md",
+      "bytes": 1485,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/production/common.md",
+      "bytes": 3269,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/gameplay.md",
+      "bytes": 1788,
+      "suffix": ".md",
+      "group": "ゲームルール",
+      "role": "ゲームルールに関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "gameplay"
+    },
+    {
+      "path": "docs/production/index.md",
+      "bytes": 5369,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/learning.md",
+      "bytes": 2621,
+      "suffix": ".md",
+      "group": "教材・学習",
+      "role": "教材・学習に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "docs/production/motion.md",
+      "bytes": 2240,
+      "suffix": ".md",
+      "group": "動き・演出",
+      "role": "動き・演出に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
+    },
+    {
+      "path": "docs/production/narrative.md",
+      "bytes": 2143,
+      "suffix": ".md",
+      "group": "物語・進行",
+      "role": "物語・進行に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
+      "path": "docs/production/operations.md",
+      "bytes": 3026,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/persistence.md",
+      "bytes": 2057,
+      "suffix": ".md",
+      "group": "状態・保存",
+      "role": "状態・保存に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "persistence"
+    },
+    {
+      "path": "docs/production/presentation.md",
+      "bytes": 2805,
+      "suffix": ".md",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "docs/production/records.md",
+      "bytes": 2553,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/templates/change.md",
+      "bytes": 1103,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/templates/character.md",
+      "bytes": 1096,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/templates/record.md",
+      "bytes": 1381,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/uses/backgrounds.md",
+      "bytes": 1568,
+      "suffix": ".md",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "docs/production/uses/combat-art.md",
+      "bytes": 2042,
+      "suffix": ".md",
+      "group": "動き・演出",
+      "role": "動き・演出に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
+    },
+    {
+      "path": "docs/production/uses/dialogue-portraits.md",
+      "bytes": 2592,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/production/uses/environment-art.md",
+      "bytes": 1834,
+      "suffix": ".md",
+      "group": "世界・場所",
+      "role": "世界・場所に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "docs/production/uses/map-sprites.md",
+      "bytes": 1666,
+      "suffix": ".md",
+      "group": "人物・生物",
+      "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "docs/production/uses/state-variants.md",
+      "bytes": 1456,
+      "suffix": ".md",
+      "group": "世界・場所",
+      "role": "世界・場所に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "docs/production/uses/walking.md",
+      "bytes": 2487,
+      "suffix": ".md",
+      "group": "動き・演出",
+      "role": "動き・演出に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
+    },
+    {
+      "path": "docs/production/world.md",
+      "bytes": 2176,
+      "suffix": ".md",
+      "group": "世界・場所",
+      "role": "世界・場所に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
     },
     {
       "path": "docs/question-authoring.md",
       "bytes": 853,
       "suffix": ".md",
       "group": "作問の仕組み",
-      "role": "人向けの入口。作問Skillと形式資料への参照、呼び出し例のみを置く。"
+      "role": "人向けの入口。作問Skillと形式資料への参照、呼び出し例のみを置く。",
+      "genre": "learning"
     },
     {
       "path": "docs/quests.md",
-      "bytes": 2140,
+      "bytes": 2928,
       "suffix": ".md",
       "group": "説明資料",
-      "role": "クエストの責務分離、イベントモデル、保存形式と移行方針を明文化する。"
+      "role": "クエストの責務分離、イベントモデル、保存形式と移行方針を明文化する。",
+      "genre": "narrative"
     },
     {
       "path": "index.html",
       "bytes": 396,
       "suffix": ".html",
       "group": "設定",
-      "role": "ブラウザが読むHTML入口。root要素とmain.tsxを指定する。"
+      "role": "ブラウザが読むHTML入口。root要素とmain.tsxを指定する。",
+      "genre": "operations"
+    },
+    {
+      "path": "migrations/0001_init_catalog.sql",
+      "bytes": 971,
+      "suffix": ".sql",
+      "group": "状態・保存",
+      "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "persistence"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-01.png",
+      "bytes": 1925380,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-02.png",
+      "bytes": 1836073,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-03.png",
+      "bytes": 2035909,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-04.png",
+      "bytes": 2320208,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-05.png",
+      "bytes": 2069956,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-06.png",
+      "bytes": 1989010,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-07.png",
+      "bytes": 2139728,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-08.png",
+      "bytes": 1988981,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-09.png",
+      "bytes": 2391611,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/talk/codechronicle-10slides/slide-10.png",
+      "bytes": 2107364,
+      "suffix": ".png",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "output/whiteboard/CodeChronicle-Cloudflare-D1-Plan.whiteboard",
+      "bytes": 50308,
+      "suffix": ".whiteboard",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "package-lock.json",
-      "bytes": 62325,
+      "bytes": 111698,
       "suffix": ".json",
       "group": "設定",
-      "role": "npm依存の解決結果と整合性を固定する。自作機能のソースとしては集計しない。"
+      "role": "npm依存の解決結果と整合性を固定する。自作機能のソースとしては集計しない。",
+      "genre": "operations"
     },
     {
       "path": "package.json",
-      "bytes": 711,
+      "bytes": 1279,
       "suffix": ".json",
       "group": "設定",
-      "role": "依存パッケージと開発・テスト・ビルドのコマンドを定義する。"
+      "role": "依存パッケージと開発・テスト・ビルドのコマンドを定義する。",
+      "genre": "operations"
+    },
+    {
+      "path": "public/fonts/shippori-mincho-OFL.txt",
+      "bytes": 4399,
+      "suffix": ".txt",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "public/fonts/shippori-mincho-title-500.ttf",
+      "bytes": 37304,
+      "suffix": ".ttf",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "public/fonts/shippori-mincho-title-800.ttf",
+      "bytes": 36760,
+      "suffix": ".ttf",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
     },
     {
       "path": "public/maps/bed-64.png",
@@ -133,7 +660,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/cactus-64.png",
@@ -143,7 +671,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/chest-64.png",
@@ -154,7 +683,8 @@
       "staticReferenceHints": [
         "src/ChestSprite.tsx",
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/church-128.png",
@@ -162,7 +692,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/church-town-320x256.png",
@@ -173,7 +704,8 @@
       "staticReferenceHints": [
         "src/App.tsx",
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/church.png",
@@ -181,7 +713,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/desert-sand-64.png",
@@ -191,7 +724,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/dresser-64.png",
@@ -202,7 +736,8 @@
       "staticReferenceHints": [
         "src/AdventurePanels.tsx",
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/dungeon-ground.png",
@@ -213,7 +748,8 @@
       "staticReferenceHints": [
         "src/BattleStage.tsx",
         "src/style.css"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/field-ground.png",
@@ -224,7 +760,8 @@
       "staticReferenceHints": [
         "src/BattleStage.tsx",
         "src/style.css"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/grass-64.png",
@@ -234,7 +771,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/house-128.png",
@@ -242,7 +780,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/house-town-320x256.png",
@@ -252,7 +791,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/house.png",
@@ -260,7 +800,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/lantern-64.png",
@@ -270,7 +811,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/mountain-64.png",
@@ -280,7 +822,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/mountain.png",
@@ -288,7 +831,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/path-64.png",
@@ -298,7 +842,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/plaster-wall-64.png",
@@ -308,7 +853,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/barrel.svg",
@@ -316,7 +862,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/bench.svg",
@@ -324,7 +871,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/books.svg",
@@ -332,7 +880,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/chair.svg",
@@ -340,7 +889,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/crate.svg",
@@ -348,7 +898,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/flowers.svg",
@@ -356,7 +907,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/library-east.svg",
@@ -366,7 +918,8 @@
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/library-hall.svg",
@@ -376,7 +929,8 @@
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/library-west.svg",
@@ -386,7 +940,56 @@
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/props/memory-door-open-v2.png",
+      "bytes": 1116891,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/props/memory-door-open.svg",
+      "bytes": 340,
+      "suffix": ".svg",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/props/memory-door-v2.png",
+      "bytes": 1819564,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/props/memory-door.svg",
+      "bytes": 469,
+      "suffix": ".svg",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/props/memory-spring-v2.png",
+      "bytes": 1696093,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/props/memory-spring.svg",
+      "bytes": 518,
+      "suffix": ".svg",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
     },
     {
       "path": "public/maps/props/plant.svg",
@@ -394,7 +997,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/potions.svg",
@@ -402,7 +1006,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/props-atlas-v2.json",
@@ -410,7 +1015,8 @@
       "suffix": ".json",
       "group": "画像・素材",
       "role": "小物アトラスの寸法・切り出し等の制作情報。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/props-atlas-v2.png",
@@ -420,15 +1026,17 @@
       "role": "複数の小物をまとめた透過画像。propArt.tsの矩形で表示時に切り出す。",
       "staticReferenceHints": [
         "src/world/propArt.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/props-atlas-v2.prompt.txt",
-      "bytes": 1937,
+      "bytes": 2114,
       "suffix": ".txt",
       "group": "画像・素材",
       "role": "小物アトラスを制作した際の生成指示の記録。実行時のプログラムではない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/rug.svg",
@@ -436,7 +1044,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/stairs.svg",
@@ -446,7 +1055,8 @@
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/stone-floor.svg",
@@ -456,7 +1066,8 @@
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/stone-wall.svg",
@@ -466,7 +1077,8 @@
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/stove.svg",
@@ -474,7 +1086,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/table.svg",
@@ -482,7 +1095,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/props/well.svg",
@@ -490,7 +1104,8 @@
       "suffix": ".svg",
       "group": "画像・素材",
       "role": "家具・建築・装飾等のSVG素材。元画像の存在とコード内の参照文字列を一覧で追跡する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/river.png",
@@ -498,7 +1113,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/ruins-gate-128.png",
@@ -509,7 +1125,8 @@
       "staticReferenceHints": [
         "src/App.tsx",
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/shelf-64.png",
@@ -519,7 +1136,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/tool-rack-64.png",
@@ -529,7 +1147,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/town-ground.png",
@@ -540,7 +1159,8 @@
       "staticReferenceHints": [
         "src/BattleStage.tsx",
         "src/style.css"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/tree-64.png",
@@ -550,7 +1170,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/tree.png",
@@ -558,7 +1179,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "world"
     },
     {
       "path": "public/maps/wall-sword-64.png",
@@ -568,7 +1190,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/water-64.png",
@@ -578,7 +1201,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/maps/wood-floor-64.png",
@@ -588,7 +1212,8 @@
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [
         "src/world/catalog.ts"
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "public/portraits/faces.png",
@@ -598,7 +1223,16 @@
       "role": "会話用の顔画像をまとめた素材。",
       "staticReferenceHints": [
         "src/CharacterPortrait.tsx"
-      ]
+      ],
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/knight-v2.png",
+      "bytes": 2083677,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
     },
     {
       "path": "public/portraits/standing.png",
@@ -606,7 +1240,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "会話用の立ち絵をまとめた素材。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/prologue/ancient-and-fall.png",
@@ -614,7 +1249,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "序章用の場面画像。物語の導入に使う静的素材。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "narrative"
     },
     {
       "path": "public/prologue/family-and-dawn.png",
@@ -622,7 +1258,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "序章用の場面画像。物語の導入に使う静的素材。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "narrative"
     },
     {
       "path": "public/sprites/bat-64.png",
@@ -630,7 +1267,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/bat-right.png",
@@ -640,7 +1278,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/battle-art.json",
@@ -648,7 +1287,8 @@
       "suffix": ".json",
       "group": "画像・素材",
       "role": "スプライト寸法・フレーム等の制作メタデータ。採用状態はコードの参照先で確認する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/beetle-right.png",
@@ -658,7 +1298,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/cactus-right.png",
@@ -668,7 +1309,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/child-64.png",
@@ -678,7 +1320,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/crab-right.png",
@@ -688,7 +1331,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/elder-64.png",
@@ -698,7 +1342,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/father-64.png",
@@ -708,7 +1353,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/ghost-64.png",
@@ -716,7 +1362,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/ghost-right.png",
@@ -726,7 +1373,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/golem-right.png",
@@ -736,7 +1384,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/guardian-64.png",
@@ -744,7 +1393,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/guardian-right.png",
@@ -754,7 +1404,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/hero-64.png",
@@ -764,7 +1415,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/hero-attack-art.json",
@@ -772,7 +1424,8 @@
       "suffix": ".json",
       "group": "画像・素材",
       "role": "スプライト寸法・フレーム等の制作メタデータ。採用状態はコードの参照先で確認する。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "motion"
     },
     {
       "path": "public/sprites/hero-attack-cut.png",
@@ -782,7 +1435,8 @@
       "role": "主人公の攻撃素材。heroAttackArt.ts等でフレームを扱う。",
       "staticReferenceHints": [
         "src/heroAttackArt.ts"
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "public/sprites/hero-attack-sweep.png",
@@ -792,7 +1446,8 @@
       "role": "主人公の攻撃素材。heroAttackArt.ts等でフレームを扱う。",
       "staticReferenceHints": [
         "src/heroAttackArt.ts"
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "public/sprites/hero-attack-thrust.png",
@@ -802,7 +1457,8 @@
       "role": "主人公の攻撃素材。heroAttackArt.ts等でフレームを扱う。",
       "staticReferenceHints": [
         "src/heroAttackArt.ts"
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "public/sprites/hero-battle-left.png",
@@ -813,15 +1469,17 @@
       "staticReferenceHints": [
         "src/HeroBattleSprite.tsx",
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/hero-walk-art.txt",
-      "bytes": 2024,
+      "bytes": 2231,
       "suffix": ".txt",
       "group": "画像・素材",
       "role": "人物・歩行素材等の制作仕様メモ。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "motion"
     },
     {
       "path": "public/sprites/hero-walk.png",
@@ -831,15 +1489,17 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/WorldCharacter.tsx"
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "public/sprites/knight-art.txt",
-      "bytes": 2063,
+      "bytes": 2414,
       "suffix": ".txt",
       "group": "画像・素材",
       "role": "人物・歩行素材等の制作仕様メモ。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/knight-generated-original.png",
@@ -849,7 +1509,16 @@
       "role": "謎の騎士の生成元画像。表示側で利用する原画を保持する。",
       "staticReferenceHints": [
         "src/MysteriousKnight.tsx"
-      ]
+      ],
+      "genre": "characters"
+    },
+    {
+      "path": "public/sprites/memory-dungeon-enemies-v1.png",
+      "bytes": 2069615,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
     },
     {
       "path": "public/sprites/memory-right.png",
@@ -859,7 +1528,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/mimic-right.png",
@@ -869,7 +1539,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/moth-right.png",
@@ -879,7 +1550,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/mother-64.png",
@@ -889,7 +1561,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/priest-64.png",
@@ -899,7 +1572,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/scholar-64.png",
@@ -909,7 +1583,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/scorpion-right.png",
@@ -919,7 +1594,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/serpent-right.png",
@@ -929,7 +1605,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/shadow-64.png",
@@ -937,7 +1614,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/shadow-right.png",
@@ -947,7 +1625,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/skeleton-right.png",
@@ -957,7 +1636,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/slime-64.png",
@@ -965,7 +1645,8 @@
       "suffix": ".png",
       "group": "画像・素材",
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
-      "staticReferenceHints": []
+      "staticReferenceHints": [],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/slime-right.png",
@@ -975,7 +1656,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/treant-right.png",
@@ -985,7 +1667,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/wanderer-64.png",
@@ -995,7 +1678,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/wisp-right.png",
@@ -1005,7 +1689,8 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "public/sprites/wolf-right.png",
@@ -1015,14 +1700,56 @@
       "role": "主人公・住民・敵などのスプライト素材。向き別・旧版を含み、表示は参照コードが決める。",
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
-      ]
+      ],
+      "genre": "characters"
+    },
+    {
+      "path": "public/title/knowledge-journey-v1.png",
+      "bytes": 2790168,
+      "suffix": ".png",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
     },
     {
       "path": "scripts/check-art-assets.mjs",
-      "bytes": 8191,
+      "bytes": 8418,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "PNGヘッダ、画像参照、カタログ、配置枠、通行範囲、アトラスの矩形を機械検証する。美観の保証ではない。"
+      "role": "PNGヘッダ、画像参照、カタログ、配置枠、通行範囲、アトラスの矩形を機械検証する。美観の保証ではない。",
+      "genre": "operations"
+    },
+    {
+      "path": "scripts/export-question-catalog.mjs",
+      "bytes": 3675,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "scripts/production-inventory.mjs",
+      "bytes": 8764,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "seed.game.sql",
+      "bytes": 554593,
+      "suffix": ".sql",
+      "group": "状態・保存",
+      "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "persistence"
+    },
+    {
+      "path": "seed.lab.sql",
+      "bytes": 1072,
+      "suffix": ".sql",
+      "group": "状態・保存",
+      "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "persistence"
     },
     {
       "path": "src/AdventurePanels.tsx",
@@ -1044,11 +1771,12 @@
           "line": 2,
           "target": "src/items.ts"
         }
-      ]
+      ],
+      "genre": "gameplay"
     },
     {
       "path": "src/App.tsx",
-      "bytes": 75506,
+      "bytes": 79795,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -1342,11 +2070,12 @@
           "line": 48,
           "target": "src/AdventurePanels.tsx"
         }
-      ]
+      ],
+      "genre": "operations"
     },
     {
       "path": "src/BattleEncounter.tsx",
-      "bytes": 1489,
+      "bytes": 1465,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "敵との遭遇時の立ち姿と会話、戦闘へ進む入口を表示する。",
@@ -1376,11 +2105,12 @@
           "line": 4,
           "target": "src/PixelSprite.tsx"
         }
-      ]
+      ],
+      "genre": "gameplay"
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 7435,
+      "bytes": 7508,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -1446,7 +2176,8 @@
           "line": 10,
           "target": "src/heroTechniques.ts"
         }
-      ]
+      ],
+      "genre": "gameplay"
     },
     {
       "path": "src/BookPractice.tsx",
@@ -1474,7 +2205,8 @@
           "line": 3,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/CharacterPortrait.tsx",
@@ -1508,7 +2240,8 @@
           "line": 4,
           "target": "src/WorldCharacter.tsx"
         }
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "src/ChestSprite.tsx",
@@ -1524,7 +2257,8 @@
           "line": 1,
           "target": "src/chestSprite.css"
         }
-      ]
+      ],
+      "genre": "gameplay"
     },
     {
       "path": "src/ControlsGuide.tsx",
@@ -1533,11 +2267,12 @@
       "group": "会話・操作",
       "role": "探索、戦闘、会話などの操作案内を表示する。",
       "lines": 26,
-      "imports": []
+      "imports": [],
+      "genre": "presentation"
     },
     {
       "path": "src/DialogueChoices.tsx",
-      "bytes": 1410,
+      "bytes": 1427,
       "suffix": ".tsx",
       "group": "会話・操作",
       "role": "会話の選択肢を表示し、初期フォーカスを調整する。",
@@ -1549,7 +2284,8 @@
           "line": 1,
           "target": null
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/DialogueHistoryPanel.tsx",
@@ -1565,7 +2301,8 @@
           "line": 1,
           "target": "src/dialogueLog.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/EnemyEffectSprite.tsx",
@@ -1574,7 +2311,16 @@
       "group": "戦闘表示",
       "role": "敵の種類に応じた攻撃効果を表示する。",
       "lines": 14,
-      "imports": []
+      "imports": [],
+      "genre": "motion"
+    },
+    {
+      "path": "src/EnemySprite.tsx",
+      "bytes": 703,
+      "suffix": ".tsx",
+      "group": "人物・生物",
+      "role": "人物・生物に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
     },
     {
       "path": "src/HeroBattleSprite.tsx",
@@ -1602,11 +2348,12 @@
           "line": 3,
           "target": "src/heroBattleSprite.css"
         }
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "src/LearningRecordPanel.tsx",
-      "bytes": 1920,
+      "bytes": 2073,
       "suffix": ".tsx",
       "group": "学習・記録",
       "role": "回答成績と分野ごとの誤答傾向を表示する。",
@@ -1630,7 +2377,8 @@
           "line": 3,
           "target": "src/learningRecords.css"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/LearningSession.tsx",
@@ -1646,7 +2394,8 @@
           "line": 1,
           "target": "src/learningSession.css"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/LearningSetupHelp.tsx",
@@ -1655,7 +2404,8 @@
       "group": "学習・記録",
       "role": "React/Vue、難易度、Inertia/APIの学習設定を説明する。",
       "lines": 11,
-      "imports": []
+      "imports": [],
+      "genre": "learning"
     },
     {
       "path": "src/LevelUpCue.tsx",
@@ -1671,11 +2421,12 @@
           "line": 1,
           "target": "src/levelUpCue.css"
         }
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "src/LibraryPanel.tsx",
-      "bytes": 4983,
+      "bytes": 5034,
       "suffix": ".tsx",
       "group": "図書館",
       "role": "本を読む、既読を付ける、しおりを置く、練習問題を開く操作をまとめる。",
@@ -1717,7 +2468,8 @@
           "line": 6,
           "target": "src/library.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/LibrarySearch.tsx",
@@ -1745,16 +2497,18 @@
           "line": 3,
           "target": "src/librarySearch.css"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/MysteriousKnight.tsx",
-      "bytes": 1726,
+      "bytes": 998,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "元の生成画像を利用して謎の騎士をワールドや場面内に表示する。",
       "lines": 22,
-      "imports": []
+      "imports": [],
+      "genre": "characters"
     },
     {
       "path": "src/PixelSprite.tsx",
@@ -1770,7 +2524,16 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "characters"
+    },
+    {
+      "path": "src/QuestionBootstrap.tsx",
+      "bytes": 1548,
+      "suffix": ".tsx",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
     },
     {
       "path": "src/QuestionCode.tsx",
@@ -1786,7 +2549,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/RecoveryCue.tsx",
@@ -1802,7 +2566,8 @@
           "line": 1,
           "target": "src/recoveryCue.css"
         }
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "src/ResumeSummary.tsx",
@@ -1842,11 +2607,12 @@
           "line": 5,
           "target": "src/resumeSummary.css"
         }
-      ]
+      ],
+      "genre": "persistence"
     },
     {
       "path": "src/ReviewRoom.tsx",
-      "bytes": 5963,
+      "bytes": 6018,
       "suffix": ".tsx",
       "group": "学習・採点",
       "role": "誤答の復習、復習コース、解説・期限情報を表示する。",
@@ -1876,7 +2642,8 @@
           "line": 4,
           "target": "src/reviewRoom.css"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/SaveStatus.tsx",
@@ -1892,7 +2659,8 @@
           "line": 1,
           "target": "src/saveStatus.css"
         }
-      ]
+      ],
+      "genre": "persistence"
     },
     {
       "path": "src/SaveTransfer.tsx",
@@ -1914,7 +2682,8 @@
           "line": 2,
           "target": "src/saveTransfer.css"
         }
-      ]
+      ],
+      "genre": "persistence"
     },
     {
       "path": "src/TerrainTile.tsx",
@@ -1930,7 +2699,16 @@
           "line": 1,
           "target": "src/world/catalog.ts"
         }
-      ]
+      ],
+      "genre": "world"
+    },
+    {
+      "path": "src/TitleScreen.tsx",
+      "bytes": 2072,
+      "suffix": ".tsx",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
     },
     {
       "path": "src/TownMap.tsx",
@@ -1958,11 +2736,12 @@
           "line": 3,
           "target": "src/townMap.css"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/TravelMap.tsx",
-      "bytes": 7685,
+      "bytes": 7718,
       "suffix": ".tsx",
       "group": "地図・移動",
       "role": "ワールド・町の拡大地図、現在地と移動案内を表示する。",
@@ -2004,7 +2783,8 @@
           "line": 6,
           "target": "src/travelMap.css"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/WorldCharacter.tsx",
@@ -2026,11 +2806,12 @@
           "line": 2,
           "target": "src/characterArt.css"
         }
-      ]
+      ],
+      "genre": "characters"
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 14726,
+      "bytes": 16209,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -2144,7 +2925,8 @@
           "line": 18,
           "target": "src/story.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/audioPreferences.ts",
@@ -2153,7 +2935,8 @@
       "group": "保存・復元",
       "role": "音量・ミュートを冒険のセーブと別キーで保存する。保存不能でもゲームを止めない。",
       "lines": 16,
-      "imports": []
+      "imports": [],
+      "genre": "presentation"
     },
     {
       "path": "src/base.css",
@@ -2161,7 +2944,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "全体の基礎スタイルのCSS。",
-      "lines": 12
+      "lines": 12,
+      "genre": "presentation"
     },
     {
       "path": "src/battle.css",
@@ -2169,7 +2953,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "戦闘画面・攻撃演出のCSS。",
-      "lines": 799
+      "lines": 799,
+      "genre": "gameplay"
     },
     {
       "path": "src/battleBanter.ts",
@@ -2191,7 +2976,8 @@
           "line": 2,
           "target": "src/heroBanter.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/battleTiming.ts",
@@ -2200,7 +2986,8 @@
       "group": "戦闘表示",
       "role": "攻撃時間と衝撃タイミング、表示するダメージ前後の値の型を共有する。結果確定と表示時間を区別する。",
       "lines": 13,
-      "imports": []
+      "imports": [],
+      "genre": "motion"
     },
     {
       "path": "src/beginnerQuestions.ts",
@@ -2216,11 +3003,12 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/bookQuestions.ts",
-      "bytes": 824,
+      "bytes": 876,
       "suffix": ".ts",
       "group": "図書館",
       "role": "本と確認問題のIDを対応づけ、関連本・練習問題を検索する。",
@@ -2238,7 +3026,8 @@
           "line": 2,
           "target": "src/library.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/bossBattle.ts",
@@ -2254,7 +3043,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "gameplay"
     },
     {
       "path": "src/bossBreakEffect.css",
@@ -2262,7 +3052,32 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "ボスの防御崩壊演出のCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "motion"
+    },
+    {
+      "path": "src/catalogRelease.ts",
+      "bytes": 122,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "src/chapterStart.css",
+      "bytes": 606,
+      "suffix": ".css",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/chapterTwoQuestions.ts",
+      "bytes": 16722,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/characterArt.css",
@@ -2270,7 +3085,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "ワールド人物の描画・歩行のCSS。",
-      "lines": 19
+      "lines": 19,
+      "genre": "motion"
     },
     {
       "path": "src/chestRewardCue.css",
@@ -2278,7 +3094,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "宝箱報酬の通知のCSS。",
-      "lines": 5
+      "lines": 5,
+      "genre": "motion"
     },
     {
       "path": "src/chestSprite.css",
@@ -2286,7 +3103,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "宝箱の表示のCSS。",
-      "lines": 6
+      "lines": 6,
+      "genre": "gameplay"
     },
     {
       "path": "src/chests.ts",
@@ -2308,11 +3126,12 @@
           "line": 2,
           "target": "src/items.ts"
         }
-      ]
+      ],
+      "genre": "gameplay"
     },
     {
       "path": "src/content.ts",
-      "bytes": 34436,
+      "bytes": 35464,
       "suffix": ".ts",
       "group": "教材・共通データ",
       "role": "QuestionやAreaなどの共通型、基本問題と問題配列の集約、旧マップ、住民・敵の定義を持つ。教材専用ファイルには分離しきれていない。",
@@ -2348,7 +3167,8 @@
           "line": 5,
           "target": "src/world/mountainVillage.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/dialogueLog.ts",
@@ -2357,11 +3177,12 @@
       "group": "会話・操作",
       "role": "会話履歴を追記・正規化し、保持数を制限する。",
       "lines": 6,
-      "imports": []
+      "imports": [],
+      "genre": "narrative"
     },
     {
       "path": "src/enemyMovement.ts",
-      "bytes": 3149,
+      "bytes": 3211,
       "suffix": ".ts",
       "group": "地図・移動",
       "role": "敵の初期配置、現在位置、接触判定、移動を管理する。",
@@ -2379,7 +3200,8 @@
           "line": 2,
           "target": "src/world/maps.ts"
         }
-      ]
+      ],
+      "genre": "motion"
     },
     {
       "path": "src/fillQuestions.ts",
@@ -2395,7 +3217,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/heroAttackArt.ts",
@@ -2404,7 +3227,8 @@
       "group": "戦闘表示",
       "role": "攻撃画像のフレーム矩形・基準点・表示倍率を定義する。",
       "lines": 31,
-      "imports": []
+      "imports": [],
+      "genre": "motion"
     },
     {
       "path": "src/heroBanter.ts",
@@ -2413,7 +3237,8 @@
       "group": "戦闘表示",
       "role": "主人公の戦闘中の台詞を場面別に定義する。",
       "lines": 96,
-      "imports": []
+      "imports": [],
+      "genre": "narrative"
     },
     {
       "path": "src/heroBattleSprite.css",
@@ -2421,7 +3246,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "主人公の戦闘スプライトのCSS。",
-      "lines": 22
+      "lines": 22,
+      "genre": "motion"
     },
     {
       "path": "src/heroTechniques.ts",
@@ -2430,7 +3256,8 @@
       "group": "戦闘表示",
       "role": "プログラミング名の主人公の技と、攻撃モーションの抽選を定義する。",
       "lines": 38,
-      "imports": []
+      "imports": [],
+      "genre": "gameplay"
     },
     {
       "path": "src/items.ts",
@@ -2439,7 +3266,8 @@
       "group": "アイテム",
       "role": "装備・消耗品、能力、店の品揃え、所持品の型を定義する。",
       "lines": 27,
-      "imports": []
+      "imports": [],
+      "genre": "gameplay"
     },
     {
       "path": "src/keyboardNavigation.ts",
@@ -2448,7 +3276,8 @@
       "group": "会話・操作",
       "role": "矢印キーで、表示されたボタンの位置や順序に沿ってフォーカスを移動する。",
       "lines": 22,
-      "imports": []
+      "imports": [],
+      "genre": "presentation"
     },
     {
       "path": "src/keyboardShortcuts.ts",
@@ -2457,7 +3286,8 @@
       "group": "会話・操作",
       "role": "入力中や修飾キーを考慮し、現在の画面内にあるボタンのショートカットを実行する。",
       "lines": 13,
-      "imports": []
+      "imports": [],
+      "genre": "presentation"
     },
     {
       "path": "src/learningRecords.css",
@@ -2465,7 +3295,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "学習記録パネルのCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "learning"
     },
     {
       "path": "src/learningRecords.ts",
@@ -2481,7 +3312,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/learningSession.css",
@@ -2489,7 +3321,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "学習セッション表示のCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "learning"
     },
     {
       "path": "src/learningSetupHelp.css",
@@ -2497,7 +3330,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "学習設定の説明のCSS。",
-      "lines": 2
+      "lines": 2,
+      "genre": "learning"
     },
     {
       "path": "src/levelUpCue.css",
@@ -2505,7 +3339,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "レベルアップ通知のCSS。",
-      "lines": 7
+      "lines": 7,
+      "genre": "motion"
     },
     {
       "path": "src/library.ts",
@@ -2521,7 +3356,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/librarySearch.css",
@@ -2529,11 +3365,12 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "蔵書検索のCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "learning"
     },
     {
       "path": "src/main.tsx",
-      "bytes": 285,
+      "bytes": 433,
       "suffix": ".tsx",
       "group": "起動",
       "role": "Reactの起動点。Appと全体CSSを読み込み、StrictModeで描画する。",
@@ -2575,7 +3412,8 @@
           "line": 6,
           "target": "src/battle.css"
         }
-      ]
+      ],
+      "genre": "operations"
     },
     {
       "path": "src/moreQuestions.ts",
@@ -2591,7 +3429,32 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
+    },
+    {
+      "path": "src/questLearning.css",
+      "bytes": 3262,
+      "suffix": ".css",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "src/questionBootstrap.css",
+      "bytes": 357,
+      "suffix": ".css",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/questionCatalog.ts",
+      "bytes": 3779,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/questionSelection.ts",
@@ -2607,11 +3470,20 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
+    },
+    {
+      "path": "src/quests/MemoryFragments.tsx",
+      "bytes": 1181,
+      "suffix": ".tsx",
+      "group": "物語・進行",
+      "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
     },
     {
       "path": "src/quests/QuestJournal.tsx",
-      "bytes": 1715,
+      "bytes": 2363,
       "suffix": ".tsx",
       "group": "クエスト",
       "role": "依頼一覧、進行状況、開始ボタンを表示する。",
@@ -2647,11 +3519,20 @@
           "line": 5,
           "target": "src/items.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
+    },
+    {
+      "path": "src/quests/QuestStudyPanel.tsx",
+      "bytes": 1825,
+      "suffix": ".tsx",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 1748,
+      "bytes": 2082,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -2663,11 +3544,20 @@
           "line": 1,
           "target": "src/story.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
+    },
+    {
+      "path": "src/quests/chapterTwoLessons.ts",
+      "bytes": 26253,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 4660,
+      "bytes": 4363,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -2685,11 +3575,12 @@
           "line": 2,
           "target": "src/quests/types.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/quests/engine.ts",
-      "bytes": 3931,
+      "bytes": 3955,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "状態とイベントから次の状態・場面を返す純粋な進行処理。完了済みへのイベントで報酬を再付与しない。",
@@ -2719,11 +3610,28 @@
           "line": 4,
           "target": "src/quests/types.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
+    },
+    {
+      "path": "src/quests/memoryBattleQuestion.ts",
+      "bytes": 1286,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "src/quests/memoryGates.ts",
+      "bytes": 2699,
+      "suffix": ".ts",
+      "group": "物語・進行",
+      "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
     },
     {
       "path": "src/quests/persistence.ts",
-      "bytes": 1826,
+      "bytes": 2067,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "クエストIDと段階IDを検証し、旧フラグをversion 2の状態へ移行する。",
@@ -2747,11 +3655,28 @@
           "line": 3,
           "target": "src/quests/types.ts"
         }
-      ]
+      ],
+      "genre": "persistence"
+    },
+    {
+      "path": "src/quests/review.ts",
+      "bytes": 1374,
+      "suffix": ".ts",
+      "group": "物語・進行",
+      "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
+      "path": "src/quests/studyTypes.ts",
+      "bytes": 346,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/quests/types.ts",
-      "bytes": 1391,
+      "bytes": 1490,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "クエスト定義・段階・状態・イベントの型を定義する。",
@@ -2775,11 +3700,12 @@
           "line": 3,
           "target": "src/story.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/quests/useQuests.ts",
-      "bytes": 4321,
+      "bytes": 7928,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "Reactの会話・回答・場面再生と、クエストエンジンをつなぐ。",
@@ -2827,7 +3753,8 @@
           "line": 7,
           "target": "src/quests/types.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/recoveryCue.css",
@@ -2835,7 +3762,16 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "回復通知のCSS。",
-      "lines": 8
+      "lines": 8,
+      "genre": "motion"
+    },
+    {
+      "path": "src/resourceQuestions.ts",
+      "bytes": 34558,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/resumeSummary.css",
@@ -2843,7 +3779,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "再開時の要約のCSS。",
-      "lines": 3
+      "lines": 3,
+      "genre": "persistence"
     },
     {
       "path": "src/reviewRoom.css",
@@ -2851,7 +3788,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "復習の部屋のCSS。",
-      "lines": 14
+      "lines": 14,
+      "genre": "learning"
     },
     {
       "path": "src/reviewSchedule.ts",
@@ -2867,7 +3805,8 @@
           "line": 1,
           "target": "src/learningRecords.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "src/saveStatus.css",
@@ -2875,7 +3814,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "保存状態の表示のCSS。",
-      "lines": 2
+      "lines": 2,
+      "genre": "persistence"
     },
     {
       "path": "src/saveTransfer.css",
@@ -2883,7 +3823,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "セーブの入出力のCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "persistence"
     },
     {
       "path": "src/saveValidation.ts",
@@ -2941,7 +3882,8 @@
           "line": 8,
           "target": "src/chests.ts"
         }
-      ]
+      ],
+      "genre": "persistence"
     },
     {
       "path": "src/story.ts",
@@ -2957,7 +3899,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "narrative"
     },
     {
       "path": "src/style.css",
@@ -2965,7 +3908,16 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
-      "lines": 284
+      "lines": 284,
+      "genre": "presentation"
+    },
+    {
+      "path": "src/titleScreen.css",
+      "bytes": 5594,
+      "suffix": ".css",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
     },
     {
       "path": "src/townMap.css",
@@ -2973,7 +3925,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "町の小地図のCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "world"
     },
     {
       "path": "src/travelMap.css",
@@ -2981,7 +3934,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "拡大地図のCSS。",
-      "lines": 14
+      "lines": 14,
+      "genre": "world"
     },
     {
       "path": "src/vite-env.d.ts",
@@ -2990,7 +3944,8 @@
       "group": "設定",
       "role": "Vite固有のクライアント型宣言を参照する。",
       "lines": 1,
-      "imports": []
+      "imports": [],
+      "genre": "operations"
     },
     {
       "path": "src/world/WorldChip.tsx",
@@ -3036,11 +3991,12 @@
           "line": 6,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/catalog.ts",
-      "bytes": 8865,
+      "bytes": 9585,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
@@ -3070,7 +4026,8 @@
           "line": 4,
           "target": "src/world/propArt.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/caveLayout.ts",
@@ -3086,7 +4043,8 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/decorations.ts",
@@ -3114,7 +4072,8 @@
           "line": 3,
           "target": "src/world/maps.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/interactionHint.css",
@@ -3122,7 +4081,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "隣接対象を調べる案内のCSS。",
-      "lines": 2
+      "lines": 2,
+      "genre": "world"
     },
     {
       "path": "src/world/interactions.ts",
@@ -3150,11 +4110,12 @@
           "line": 3,
           "target": "src/world/maps.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/mapGuide.ts",
-      "bytes": 2697,
+      "bytes": 2991,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地名、施設入口、経路、方角など地図の案内情報を計算する。",
@@ -3178,11 +4139,12 @@
           "line": 3,
           "target": "src/world/maps.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/maps.ts",
-      "bytes": 13837,
+      "bytes": 14315,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "旧形式を新形式に変換し、配置検証・通行・イベント・到達性・小地図の共通情報を作る。",
@@ -3242,7 +4204,48 @@
           "line": 9,
           "target": "src/world/decorations.ts"
         }
-      ]
+      ],
+      "genre": "world"
+    },
+    {
+      "path": "src/world/memoryDungeonMaps.ts",
+      "bytes": 7738,
+      "suffix": ".ts",
+      "group": "世界・場所",
+      "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "src/world/memoryDungeons.ts",
+      "bytes": 5778,
+      "suffix": ".ts",
+      "group": "世界・場所",
+      "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "src/world/memoryEnemyArt.ts",
+      "bytes": 1219,
+      "suffix": ".ts",
+      "group": "人物・生物",
+      "role": "人物・生物に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "src/world/memoryEnemyIdentity.ts",
+      "bytes": 406,
+      "suffix": ".ts",
+      "group": "人物・生物",
+      "role": "人物・生物に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "src/world/memoryPropArt.ts",
+      "bytes": 767,
+      "suffix": ".ts",
+      "group": "世界・場所",
+      "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
     },
     {
       "path": "src/world/mountainVillage.ts",
@@ -3270,11 +4273,12 @@
           "line": 3,
           "target": "src/world/maps.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/nativeMaps.ts",
-      "bytes": 1662,
+      "bytes": 1765,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "新形式の室内・村などを登録する。家の壁を共有し、家具は配置データから加える。",
@@ -3310,7 +4314,8 @@
           "line": 5,
           "target": "src/world/catalog.ts"
         }
-      ]
+      ],
+      "genre": "world"
     },
     {
       "path": "src/world/propArt.ts",
@@ -3319,7 +4324,8 @@
       "group": "世界の定義",
       "role": "小物アトラスの元寸法と、各物体の切り出し矩形を定義する。",
       "lines": 78,
-      "imports": []
+      "imports": [],
+      "genre": "world"
     },
     {
       "path": "src/worldAmbient.css",
@@ -3327,7 +4333,8 @@
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "探索画面の環境演出のCSS。",
-      "lines": 1
+      "lines": 1,
+      "genre": "world"
     },
     {
       "path": "src/wrongChoiceReasons.ts",
@@ -3343,112 +4350,248 @@
           "line": 1,
           "target": "src/content.ts"
         }
-      ]
+      ],
+      "genre": "learning"
     },
     {
       "path": "tests/audio-preferences.test.mjs",
-      "bytes": 1799,
+      "bytes": 1842,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "音設定の保存・不正値・保存不能時の継続を検証する。"
+      "role": "音設定の保存・不正値・保存不能時の継続を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/chests.test.mjs",
-      "bytes": 3068,
+      "bytes": 3111,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "宝箱の一度きりの報酬・ID・配置の到達性を検証する。"
+      "role": "宝箱の一度きりの報酬・ID・配置の到達性を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/e2e/README.md",
       "bytes": 666,
       "suffix": ".md",
       "group": "検証",
-      "role": "ブラウザテストの起動、使用ブラウザ、保存データ分離などを説明する。"
+      "role": "ブラウザテストの起動、使用ブラウザ、保存データ分離などを説明する。",
+      "genre": "operations"
     },
     {
       "path": "tests/e2e/adventure.test.mjs",
-      "bytes": 13761,
+      "bytes": 18843,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "ブラウザで宝箱、本、通常戦、復習、セーブ・再開、クエストなどを確認する。"
+      "role": "ブラウザで宝箱、本、通常戦、復習、セーブ・再開、クエストなどを確認する。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/catalog.test.mjs",
+      "bytes": 8389,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/chapter-start.test.mjs",
+      "bytes": 5916,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/dungeon-density-art.test.mjs",
+      "bytes": 6816,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/dungeon-mechanics.test.mjs",
+      "bytes": 10972,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/title-screen.test.mjs",
+      "bytes": 5905,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "tests/expansion-integration.test.mjs",
-      "bytes": 3661,
+      "bytes": 3704,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "村と遺跡の接続・敵IDの互換性・初級問題の出題を検証する。"
+      "role": "村と遺跡の接続・敵IDの互換性・初級問題の出題を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/interactions.test.mjs",
-      "bytes": 1129,
+      "bytes": 1172,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "向きを優先する隣接対象選択と物語条件を検証する。"
+      "role": "向きを優先する隣接対象選択と物語条件を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/library-progress.test.mjs",
-      "bytes": 1447,
+      "bytes": 1490,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "蔵書ID、既読、棚としおりの整合性を検証する。"
+      "role": "蔵書ID、既読、棚としおりの整合性を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/map-reachability.test.mjs",
-      "bytes": 9838,
+      "bytes": 9881,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "出入口・NPC・敵・家具配置の到達性と復帰位置を検証する。"
+      "role": "出入口・NPC・敵・家具配置の到達性と復帰位置を検証する。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/memory-dungeons.test.mjs",
+      "bytes": 5194,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/memory-gates.test.mjs",
+      "bytes": 10128,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/quest-review.test.mjs",
+      "bytes": 3022,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/question-catalog.test.mjs",
+      "bytes": 5549,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "tests/quests.test.mjs",
-      "bytes": 5874,
+      "bytes": 8449,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "イベント順序・参照ID・二重報酬防止・旧セーブ移行を検証する。"
+      "role": "イベント順序・参照ID・二重報酬防止・旧セーブ移行を検証する。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/resource-curriculum.test.mjs",
+      "bytes": 2695,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "tests/save-validation.test.mjs",
-      "bytes": 3011,
+      "bytes": 3054,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "保存データの補正・不正形式拒否・移行を検証する。"
+      "role": "保存データの補正・不正形式拒否・移行を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/story.test.mjs",
-      "bytes": 2157,
+      "bytes": 2200,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "旧セーブの互換性・第一章の移動制限・NPC配置を検証する。"
+      "role": "旧セーブの互換性・第一章の移動制限・NPC配置を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tests/street-layout.test.mjs",
-      "bytes": 4508,
+      "bytes": 4551,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "道・建物入口・村と遺跡への接続・旧位置の復元を検証する。"
+      "role": "道・建物入口・村と遺跡への接続・旧位置の復元を検証する。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/worker-catalog.test.mjs",
+      "bytes": 5245,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "tests/world.test.mjs",
-      "bytes": 11814,
+      "bytes": 12116,
       "suffix": ".mjs",
       "group": "検証",
-      "role": "ボス採点・旧世界との互換・素材分類・穴埋め形式・出題の抽選を検証する。"
+      "role": "ボス採点・旧世界との互換・素材分類・穴埋め形式・出題の抽選を検証する。",
+      "genre": "operations"
     },
     {
       "path": "tsconfig.json",
       "bytes": 468,
       "suffix": ".json",
       "group": "設定",
-      "role": "TypeScriptのstrict設定、ES2022、JSX、未使用チェックなどを指定する。"
+      "role": "TypeScriptのstrict設定、ES2022、JSX、未使用チェックなどを指定する。",
+      "genre": "operations"
+    },
+    {
+      "path": "tsconfig.worker.json",
+      "bytes": 281,
+      "suffix": ".json",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "vite.config.ts",
-      "bytes": 133,
+      "bytes": 294,
       "suffix": ".ts",
       "group": "設定",
-      "role": "ViteにReactプラグインを登録する。"
+      "role": "ViteにReactプラグインを登録する。",
+      "genre": "operations"
+    },
+    {
+      "path": "worker-configuration.d.ts",
+      "bytes": 625970,
+      "suffix": ".ts",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "worker/index.ts",
+      "bytes": 2423,
+      "suffix": ".ts",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "wrangler.staging.jsonc",
+      "bytes": 482,
+      "suffix": ".jsonc",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     }
   ]
 }

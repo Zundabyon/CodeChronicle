@@ -1,5 +1,7 @@
 # 謎の騎士の会話肖像 v2
 
+再利用する手順は[キャラクターの会話用画像](../production/uses/dialogue-portraits.md)、人物固有の特徴は[騎士の設定](../production/characters/knight.md)を参照する。以下はこの素材を採用した時点の履歴。
+
 2026-11-03。最終指定はツノなし。マップ用の既存PNGは維持し、会話用の32×40簡易SVGを専用の細密な胸像PNGへ差し替えた。兜で顔を隠す特徴、青銀の鎧、紫のマント、金の留め具を共有する。
 
 - 方法：組み込み `image_gen`、`transparent_background:true`。`game-art` と `imagegen` スキルを使用。

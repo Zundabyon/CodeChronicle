@@ -1,7 +1,7 @@
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 after(()=>server.close());
 const {worldMaps,canWalkOnMap,eventAt,reachableMapCells,restoreMapPosition}=await server.ssrLoadModule('/src/world/maps.ts');
 const {houses,fieldRuinsGate}=await server.ssrLoadModule('/src/content.ts');

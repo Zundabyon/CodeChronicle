@@ -1,5 +1,5 @@
 import {test,after} from 'node:test';import assert from 'node:assert/strict';import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});after(()=>server.close());
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});after(()=>server.close());
 const {nearbyInteraction}=await server.ssrLoadModule('/src/world/interactions.ts');
 const npc={id:'neighbor',name:'隣人',x:2,y:1};const chest={id:'box',x:1,y:0,label:'宝箱を開ける',trigger:'interact',action:{kind:'chest',id:'test'}};
 const map={npcs:[npc],eventIndex:new Map([['1,0',[chest]]])};

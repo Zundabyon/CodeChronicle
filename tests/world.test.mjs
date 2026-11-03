@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { access } from 'node:fs/promises';
 import { createServer } from 'vite';
 
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 after(()=>server.close());
 const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt}=await server.ssrLoadModule('/src/world/maps.ts');
 const {dungeonExit}=await server.ssrLoadModule('/src/world/caveLayout.ts');
