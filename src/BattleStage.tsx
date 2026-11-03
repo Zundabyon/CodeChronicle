@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { battleTiming, type BattleImpact } from './battleTiming';
 import { HeroBattleSprite } from './HeroBattleSprite';
+import { EnemyEffectSprite, type EnemyAttackStyle } from './EnemyEffectSprite';
 import { enemyKinds, type Area, type Enemy } from './content';
 import { enemySprite, PixelSprite } from './PixelSprite';
 import { battleBanter, type BattleMoment } from './battleBanter';
@@ -22,8 +23,6 @@ type BattleStageProps = {
   banterSeed?: number;
   heroTechnique?: HeroTechnique | null;
 };
-
-type EnemyAttackStyle = 'splash' | 'wave' | 'curse' | 'blade' | 'drain' | 'lightning' | 'shock';
 
 const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
   slime:'splash',bat:'wave',ghost:'curse',shadow:'blade',memory:'drain',guardian:'lightning',
@@ -71,7 +70,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
       </div>
       {attack && <span key={`banner-${attackRound}`} className="battle-action-banner" aria-hidden="true">{attack === 'hero' ? `${hero.name}の「${heroTechnique?.name ?? heroMoves[heroMove]}」！` : `${enemy.name}の「${enemy.attackName}」！`}</span>}
       {attack === 'hero' && <div key={`slash-${attackRound}`} className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /><em className="battle-sword-trail" /></div>}
-      {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile" /><span className="battle-enemy-impact" /><i /><i /><i /></div>}
+      {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile"><EnemyEffectSprite style={enemyAttackStyle}/></span><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
       <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''} ${defeated ? 'is-defeated' : ''}`}>
         <div key={`foe-${attackRound}`} className="battle-combatant-sprite battle-foe-sprite">
