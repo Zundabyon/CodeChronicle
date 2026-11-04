@@ -29,3 +29,9 @@ An absent quest is not started. `complete` means the completion reward has alrea
 ## Boundaries
 
 Chapter one continues to use its existing story progression. This refactor unifies the optional library quest and chapter two; it does not change chapter one's story or the storage backend.
+
+## Chapter-two learning and saved review
+
+Chapter two has 51 choice exercises across four memory dungeons and a seven-action board exercise. Each seal NPC can own multiple sequential question steps. A memory door opens only when progress has moved beyond the final question belonging to its NPC; the door is also checked by movement and path finding. Springs and optional conversations do not advance quest events.
+
+Optional resource review uses an independently validated reviewStep on the existing quest progress. It never calls the adventure completion transition, so it cannot grant duplicate gold, items or fragments. Old completed adventures may review new content without resetting their completion. See chapter-two-learning.md for the lesson structure and file responsibilities.

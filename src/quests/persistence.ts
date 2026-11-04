@@ -9,7 +9,10 @@ export function restoreQuestStates(value:Record<string,unknown>,firstChapterComp
     for(const def of questDefinitions){
       const progress=value.quests[def.id];
       if(def.requiresFirstChapter&&!firstChapterComplete||!record(progress))continue;
-      if(progress.step===COMPLETE||def.steps.some(step=>step.id===progress.step))quests[def.id]={step:progress.step as string};
+      if(progress.step===COMPLETE||def.steps.some(step=>step.id===progress.step)){
+        const reviewStep=progress.reviewStep===COMPLETE||def.steps.some(step=>step.id===progress.reviewStep&&step.trigger.type==='question-answered')?progress.reviewStep as string:undefined;
+        quests[def.id]={step:progress.step as string,...(reviewStep?{reviewStep}:{})};
+      }
     }
     return quests;
   }

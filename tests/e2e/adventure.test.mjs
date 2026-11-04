@@ -52,18 +52,103 @@ test('saved adventure resumes with possessions and position intact',{timeout:450
   const page=await fixture(t,{gold:321,readBooks:['js-variables-01']});await page.locator('.world-viewport').focus();await page.keyboard.press('ArrowLeft');const first=await saved(page);await page.reload();await resume(page);const second=await saved(page);assert.deepEqual(second.pos,first.pos);assert.equal(second.gold,321);assert.deepEqual(second.readBooks,['js-variables-01']);
 });
 
-test('second chapter survives pauses, opened chests and completion without altering chapter one',{timeout:45000},async t=>{
-const storage='code-chronicle-save-v1';
-async function data(){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),storage);}
-async function advance(){for(let i=0;i<40&&await page.locator('.dialogue-box').count()&&!await page.locator('.dialogue-choices button').count();i++)await page.locator('.dialogue-box').click();}
-async function relocate(area,pos){await page.evaluate(({key,area,pos})=>{const s=JSON.parse(localStorage.getItem(key));s.area=area;s.pos=pos;localStorage.setItem(key,JSON.stringify(s));},{key:storage,area,pos});await page.reload();const notice=page.getByRole('button',{name:'確認しました'});if(await notice.count())await notice.click();await page.getByRole('button',{name:/続きから/}).click();}
-async function interact(){await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');}
-const page=await fixture(t,{completed:true,story:'rescued',bossDefeated:true,gold:321,openedChests:['dungeon:19,5']});await page.getByRole('button',{name:'第二章「消えた名簿」を始める',exact:true}).click();await advance();assert.equal((await data()).quests['village-ledger'].step,'visit-village');await relocate('village',{x:4,y:8});await interact();await advance();assert.equal((await data()).quests['village-ledger'].step,'find-copy');await relocate('dungeon',{x:20,y:5});await interact();await advance();assert.equal((await data()).quests['village-ledger'].step,'read-records');assert.equal((await data()).gold,321);await relocate('village',{x:4,y:8});await interact();await advance();
-const qs=await page.evaluate(async()=>{const {questDefinitions}=await import('/src/quests/definitions.ts');const {questions}=await import('/src/content.ts');return questDefinitions.find(def=>def.id==='village-ledger').steps.filter(step=>step.trigger.type==='question-answered').map(step=>questions.find(q=>q.id===step.trigger.questionId));});
-await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:qs[0].options[(qs[0].answer+1)%4],exact:false}).click();await advance();assert.equal((await data()).quests['village-ledger'].step,'read-records');
-await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:qs[0].options[qs[0].answer],exact:false}).click();await advance();await page.getByRole('button',{name:/あとで続ける/}).click();await advance();assert.equal((await data()).quests['village-ledger'].step,'update-address');await relocate('village',{x:4,y:8});await interact();await advance();
-for(const q of qs.slice(1)){await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:q.options[q.answer],exact:false}).click();await advance();}
-const result=await data();assert.equal(result.quests['village-ledger'].step,'complete');assert.equal(result.gold,391);assert.equal(result.inventory.ether,1);assert.equal(result.story,'rescued');assert.equal(result.completed,true);await relocate('village',{x:4,y:8});assert.ok(await page.locator('.world-stage').count());await interact();await advance();assert.equal((await data()).gold,391);
+test('second chapter visits four dungeons, resumes seals and completes seven board actions',{timeout:240000},async t=>{
+  const page=await fixture(t,{completed:true,story:'rescued',bossDefeated:true,gold:321,openedChests:['dungeon:19,5']});
+  async function advance(){for(let i=0;i<40&&await page.locator('.dialogue-box').count()&&!await page.locator('.dialogue-choices button').count();i++)await page.locator('.dialogue-text > p').first().click();}
+  async function relocate(area,pos){
+    await page.evaluate(({key,area,pos})=>{const s=JSON.parse(localStorage.getItem(key));s.area=area;s.pos=pos;localStorage.setItem(key,JSON.stringify(s));},{key,area,pos});
+    await page.reload();await resume(page);
+  }
+  async function interact(){await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');}
+  const course=await page.evaluate(async()=>{
+    const {questDefinitions}=await import('/src/quests/definitions.ts');
+    const {questions}=await import('/src/content.ts');
+    const {memoryDungeons}=await import('/src/world/memoryDungeons.ts');
+    const {worldMaps}=await import('/src/world/maps.ts');
+    return {dungeons:memoryDungeons,steps:questDefinitions.find(d=>d.id==='village-ledger').steps.slice(2,-1).map(step=>{
+      const area=Object.keys(worldMaps).find(area=>worldMaps[area].npcs.some(n=>n.id===step.npcId));
+      const npc=worldMaps[area].npcs.find(n=>n.id===step.npcId);
+      return {step,area,npc,q:questions.find(q=>q.id===step.trigger.questionId)};
+    })};
+  });
+  await page.getByRole('button',{name:'第二章「消えた名簿」を始める',exact:true}).click();await advance();
+  await relocate('village',{x:4,y:8});await interact();await advance();
+  assert.equal((await saved(page)).quests['village-ledger'].step,'find-copy');
+  await relocate('dungeon',{x:20,y:5});await interact();await advance();
+  assert.equal((await saved(page)).quests['village-ledger'].step,'read-records');
+  for(const dungeon of course.dungeons){
+    await relocate('field',{x:dungeon.gate.x,y:dungeon.gate.y+1});
+    await page.keyboard.press('ArrowUp');assert.equal((await saved(page)).area,dungeon.area);
+    await page.keyboard.press('ArrowDown');await page.keyboard.press('ArrowDown');
+    const returned=await saved(page);assert.equal(returned.area,'field');assert.deepEqual(returned.pos,{x:dungeon.gate.x,y:dungeon.gate.y+1});
+  }
+  const firstAltar=course.steps.find(s=>s.step.id==='collect-r');
+  await relocate(firstAltar.area,{x:firstAltar.npc.x,y:firstAltar.npc.y+1});
+  await interact();await advance();assert.equal((await saved(page)).quests['village-ledger'].step,'read-records');
+  assert.equal(await page.locator('.memory-fragments [data-collected=true]').count(),0);
+  let fragments=0;
+  for(const [index,{step,area,npc,q}] of course.steps.entries()){
+    await relocate(area,{x:npc.x,y:npc.y+1});await interact();await advance();
+    if(q){
+      if(step.id==='ledger-read-filter'){
+        await page.getByRole('button',{name:/あとで続ける/}).click();await advance();
+        assert.equal((await saved(page)).quests['village-ledger'].step,step.id);
+        await page.reload();await resume(page);await interact();await advance();
+        await page.setViewportSize({width:390,height:844});
+        assert.equal((await page.locator('.quest-question-code').innerText()).trimEnd(),q.code.trimEnd());
+        assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+        const firstAnswer=page.getByRole('group',{name:'会話の選択肢'}).getByRole('button').first();
+        await firstAnswer.scrollIntoViewIfNeeded();
+        assert.ok(await firstAnswer.evaluate(button=>{
+          const r=button.getBoundingClientRect(),top=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+          return top===button||button.contains(top);
+        }));
+        await page.screenshot({path:'/private/tmp/codechronicle-crud-mobile.png'});
+        await page.setViewportSize({width:1280,height:1000});
+      }
+      if(q.code){
+        assert.equal((await page.locator('.quest-question-code').innerText()).trimEnd(),q.code.trimEnd());
+        await page.locator('.quest-question-code').click();assert.equal((await saved(page)).quests['village-ledger'].step,step.id);
+      }
+      if(index===0||step.id==='ledger-read-filter'){
+        await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:q.options[(q.answer+1)%4],exact:false}).click();
+        assert.equal(await page.locator('.quest-question-code').count(),0);assert.equal(await page.locator('.quest-study-result').count(),0);
+        await advance();assert.equal((await saved(page)).quests['village-ledger'].step,step.id);
+      }
+      await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:q.options[q.answer],exact:false}).click();await advance();
+      assert.equal((await saved(page)).gold,step.id==='resource-checkpoint-destroy'?391:321);
+    }else{
+      fragments++;assert.equal(await page.locator('.memory-fragments [data-collected=true]').count(),fragments);
+      const progress=(await saved(page)).quests['village-ledger'].step;
+      await interact();await advance();assert.equal((await saved(page)).quests['village-ledger'].step,progress);
+    }
+  }
+  assert.equal(fragments,4);assert.equal((await saved(page)).quests['village-ledger'].step,'complete');
+  await relocate('village',{x:4,y:8});await interact();await advance();
+  const result=await saved(page);
+  assert.equal(result.quests['village-ledger'].step,'complete');assert.equal(result.gold,391);assert.equal(result.inventory.ether,1);
+  assert.equal(result.story,'rescued');assert.equal(result.completed,true);
+  await page.reload();await resume(page);await interact();await advance();assert.equal((await saved(page)).gold,391);
+});
+
+test('a completed adventure can resume resource review without losing fragments or receiving rewards',{timeout:60000},async t=>{
+  const page=await fixture(t,{area:'town',pos:{x:13,y:16},completed:true,story:'rescued',bossDefeated:true,gold:321,inventory:{ether:1},quests:{'village-ledger':{step:'complete'}}});
+  async function advance(){for(let i=0;i<12&&await page.locator('.dialogue-box').count()&&!await page.locator('.dialogue-choices button').count();i++)await page.locator('.dialogue-text > p').first().click();}
+  async function review(){
+    await page.getByRole('button',{name:/コマンド/}).click();
+    await page.getByRole('region',{name:'コマンドメニュー'}).getByRole('button',{name:/学習設定/}).click();
+    await page.locator('summary').filter({hasText:/^第二章：消えた名簿$/}).click();
+    await page.getByRole('button',{name:/7つの役割.*復習/}).click();await advance();
+  }
+  const steps=await page.evaluate(async()=>{const {questReviewSteps}=await import('/src/quests/review.ts');const {questions}=await import('/src/content.ts');return questReviewSteps('village-ledger').slice(0,2).map(s=>({id:s.id,q:questions.find(q=>q.id===s.trigger.questionId)}));});
+  await review();
+  await page.getByRole('group',{name:'会話の選択肢'}).getByRole('button',{name:steps[0].q.options[steps[0].q.answer],exact:false}).click();await advance();
+  await page.getByRole('button',{name:/あとで続ける/}).click();await advance();
+  let progress=await saved(page);assert.equal(progress.quests['village-ledger'].reviewStep,steps[1].id);
+  await page.reload();await resume(page);await review();
+  assert.ok((await page.locator('.dialogue-text > p').first().innerText()).includes(steps[1].q.prompt));
+  progress=await saved(page);assert.equal(progress.quests['village-ledger'].step,'complete');assert.equal(progress.gold,321);assert.equal(progress.inventory.ether,1);
+  assert.equal(await page.locator('.memory-fragments [data-collected=true]').count(),4);
 });
 
 test('side quest keeps progress through reading, practice, reporting and reload',{timeout:45000},async t=>{
@@ -77,7 +162,13 @@ test('command menu opens labelled world and town maps without moving the player'
   await page.getByRole('button',{name:/コマンド/}).click();
   await page.getByRole('region',{name:'コマンドメニュー'}).getByRole('button',{name:/地図/}).click();
   const dialog=page.getByRole('dialog',{name:'旅の地図'});await dialog.waitFor();
-  assert.equal(await dialog.locator('.travel-map-pin').count(),3);
+  assert.equal(await dialog.locator('.travel-map-pin').count(),7);
+  for(const name of ['創生の工房','読解の書庫','改変の回廊','忘却の墓所']){
+    await dialog.locator('.travel-map-place-list').getByRole('button',{name:new RegExp(name)}).click();
+    await dialog.getByRole('status').filter({hasText:name+'への案内'}).waitFor();
+    assert.ok((await dialog.locator('polyline').first().getAttribute('points')).split(' ').length>1);
+  }
+  await page.screenshot({path:'/private/tmp/codechronicle-crud-world-map.png'});
   await dialog.locator('.travel-map-place-list').getByRole('button',{name:/石灯の村/}).click();
   await dialog.getByRole('status').filter({hasText:'石灯の村への案内'}).waitFor();
   assert.ok((await dialog.locator('polyline').first().getAttribute('points')).split(' ').length>1);

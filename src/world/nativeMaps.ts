@@ -1,3 +1,4 @@
+import { memoryDungeonMaps } from './memoryDungeonMaps';
 import { mountainVillage } from './mountainVillage';
 import { maps as legacyMaps, type HouseArea, type Area } from '../content';
 import { npcSprite } from '../PixelSprite';
@@ -29,3 +30,5 @@ export const nativeMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEntries(h
 
 // The expanded library uses its own shelves, stairs and connecting corridors.
 nativeMaps.village=mountainVillage;
+
+Object.assign(nativeMaps,memoryDungeonMaps);

@@ -4,8 +4,8 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { battleTiming, type BattleImpact } from './battleTiming';
 import { HeroBattleSprite } from './HeroBattleSprite';
 import { EnemyEffectSprite, type EnemyAttackStyle } from './EnemyEffectSprite';
-import { enemyKinds, type Area, type Enemy } from './content';
-import { enemySprite, PixelSprite } from './PixelSprite';
+import { areaLabel, enemyKinds, type Area, type Enemy } from './content';
+import { EnemySprite } from './EnemySprite';
 import { battleBanter, type BattleMoment } from './battleBanter';
 import type { HeroTechnique } from './heroTechniques';
 
@@ -48,8 +48,8 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const displayedHeroHp=attack==='enemy'&&impact&&!impactReached?impact.heroBefore:hero.hp;
   const guardBreak=!!enemy.boss&&attack==='hero'&&!!impact?.enemyDamage&&impactReached&&!bossGuardBroken(impact.enemyBefore,bossStage)&&bossGuardBroken(enemyHp,bossStage);
   const defeated=attack==='hero'&&enemyHp<=0&&impactReached;
-  const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : 'town';
-  const location = terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
+  const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : area.startsWith('crud')?'dungeon':'town';
+  const location = area.startsWith('crud') ? areaLabel[area as Area] : terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
   const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'];
   const heroMove = heroTechnique?.motion ?? (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
@@ -78,7 +78,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
 
       <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''} ${defeated ? 'is-defeated' : ''}`}>
         <div key={`foe-${attackRound}`} className="battle-combatant-sprite battle-foe-sprite">
-          <PixelSprite name={enemySprite(enemy.id)} />
+          <EnemySprite enemyId={enemy.id}/>
           {attack==='hero'&&impactReached&&!!impact?.enemyDamage&&<span key={`impact-${attackRound}`} className="battle-impact-indicator" aria-hidden="true"><i/><b>−{impact.enemyDamage}</b></span>}
           {guardBreak&&<span key={`break-${attackRound}`} className="boss-break-effect" aria-hidden="true"><i/><b>{enemyHp<=0?'決着':'防御突破'}</b></span>}
           {defeated&&<span className="battle-defeat-effect" aria-hidden="true"><i/><i/><i/><i/><b>撃破</b></span>}

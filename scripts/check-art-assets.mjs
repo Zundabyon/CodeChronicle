@@ -79,8 +79,8 @@ const hooks = registerHooks({
     return next(url, context);
   },
 });
-let catalog;
-try { catalog = await import(pathToFileURL(resolve(root, 'src/world/catalog.ts')).href); }
+let catalog,memoryArt;
+try { catalog = await import(pathToFileURL(resolve(root, 'src/world/catalog.ts')).href); memoryArt = await import(pathToFileURL(resolve(root, 'src/world/memoryEnemyArt.ts')).href); }
 finally { hooks.deregister(); }
 
 function visualCheck(visual, owner, blocked = []) {
@@ -121,6 +121,8 @@ function visualCheck(visual, owner, blocked = []) {
   if (dimensions.width < width*64 || dimensions.height < height*64)
     warn(`${owner}: source ${dimensions.width}x${dimensions.height} smaller than logical box ${width*64}x${height*64}px`);
 }
+
+for (const id of Object.keys(memoryArt.memoryEnemyFrames)) visualCheck(memoryArt.memoryEnemyVisual(id), 'memoryEnemy.'+id);
 
 for (const [category, chips] of Object.entries(catalog.chipCatalog)) for (const [id, chip] of Object.entries(chips)) {
   const owner = `${category}.${id}`;

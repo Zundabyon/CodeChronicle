@@ -72,7 +72,7 @@ export function applyQuestEvent<T extends QuestSave>(save: T, event: QuestEvent)
     }
 
     const step = def.steps[index]?.id ?? COMPLETE;
-    next = { ...next, quests: { ...next.quests, [def.id]: { step } } };
+    next = { ...next, quests: { ...next.quests, [def.id]: { ...next.quests[def.id], step } } };
     if (step === COMPLETE) {
       const inventory = { ...next.inventory };
       for (const [id, count] of Object.entries(def.reward.items)) {
