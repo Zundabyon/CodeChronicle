@@ -1,3 +1,5 @@
+import './bossBreakEffect.css';
+import { bossGuardBroken } from './bossBattle';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { battleTiming, type BattleImpact } from './battleTiming';
 import { HeroBattleSprite } from './HeroBattleSprite';
@@ -12,6 +14,7 @@ type BattleStageProps = {
   enemy: Enemy;
   enemyHp: number;
   enemyMaxHp: number;
+  bossStage?: number;
   hero: { name: string; level: number; hp: number; mp: number };
   heroMaxHp: number;
   heroMaxMp: number;
@@ -33,7 +36,7 @@ const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
 
 const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
 
-export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique }: BattleStageProps) {
+export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0 }: BattleStageProps) {
   const [impactRound,setImpactRound]=useState<number|null>(null);
   useEffect(()=>{
     if(!attack||!attackAnimating||!impact)return;
@@ -43,6 +46,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const impactReached=!attackAnimating||impactRound===attackRound;
   const displayedEnemyHp=attack==='hero'&&impact&&!impactReached?impact.enemyBefore:enemyHp;
   const displayedHeroHp=attack==='enemy'&&impact&&!impactReached?impact.heroBefore:hero.hp;
+  const guardBreak=!!enemy.boss&&attack==='hero'&&!!impact?.enemyDamage&&impactReached&&!bossGuardBroken(impact.enemyBefore,bossStage)&&bossGuardBroken(enemyHp,bossStage);
   const defeated=attack==='hero'&&enemyHp<=0&&impactReached;
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : 'town';
   const location = terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
@@ -76,6 +80,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
         <div key={`foe-${attackRound}`} className="battle-combatant-sprite battle-foe-sprite">
           <PixelSprite name={enemySprite(enemy.id)} />
           {attack==='hero'&&impactReached&&!!impact?.enemyDamage&&<span key={`impact-${attackRound}`} className="battle-impact-indicator" aria-hidden="true"><i/><b>−{impact.enemyDamage}</b></span>}
+          {guardBreak&&<span key={`break-${attackRound}`} className="boss-break-effect" aria-hidden="true"><i/><b>{enemyHp<=0?'決着':'防御突破'}</b></span>}
           {defeated&&<span className="battle-defeat-effect" aria-hidden="true"><i/><i/><i/><i/><b>撃破</b></span>}
         </div>
         <div className="battle-combatant-status battle-foe-status">
