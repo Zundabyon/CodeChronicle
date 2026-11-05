@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-05 / b852495 + current working tree",
+  "snapshot": "2026-11-05 / c4b904c + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -262,7 +262,7 @@
     },
     {
       "path": "docs/art/title-motion-v1.md",
-      "bytes": 5238,
+      "bytes": 6618,
       "suffix": ".md",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -494,7 +494,7 @@
     },
     {
       "path": "docs/production/uses/object-motion.md",
-      "bytes": 4245,
+      "bytes": 4370,
       "suffix": ".md",
       "group": "動き・演出",
       "role": "動き・演出に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -2760,7 +2760,7 @@
     },
     {
       "path": "src/TitleScreen.tsx",
-      "bytes": 3463,
+      "bytes": 3935,
       "suffix": ".tsx",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4017,7 +4017,7 @@
     },
     {
       "path": "src/titleMotion.ts",
-      "bytes": 595,
+      "bytes": 698,
       "suffix": ".ts",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4531,7 +4531,7 @@
     },
     {
       "path": "tests/e2e/object-motion.test.mjs",
-      "bytes": 7185,
+      "bytes": 8843,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

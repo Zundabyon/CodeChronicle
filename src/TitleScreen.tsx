@@ -1,4 +1,4 @@
-import {useRef,useState,type ReactNode} from 'react';
+import {useId,useRef,useState,type ReactNode} from 'react';
 import {ObjectMotion,ObjectMotionScene,useObjectMotionPlayback} from './motion/ObjectMotion';
 import {ArtworkMotionLayer} from './motion/ArtworkMotionLayer';
 import {titleArtwork,titleLights} from './titleMotion';
@@ -10,12 +10,14 @@ export function TitleScreen({hasSave,onNew,onResume,resume,management}:Props){
   const artwork=useRef<HTMLDivElement>(null);
   const playback=useObjectMotionPlayback();
   const [artworkReady,setArtworkReady]=useState(false);
+  const lightId=useId();
   return <main className="title-screen title-journey">
     <div ref={artwork} className="title-artwork" aria-hidden="true">
       <img className="title-background" src={`${import.meta.env.BASE_URL}title/knowledge-journey-v1.png`} alt="" fetchPriority="high" onLoad={event=>setArtworkReady(event.currentTarget.naturalWidth===titleArtwork.width&&event.currentTarget.naturalHeight===titleArtwork.height)} onError={()=>setArtworkReady(false)}/>
       <ObjectMotionScene active={playback.active&&artworkReady}>
         <ArtworkMotionLayer frame={artwork} source={titleArtwork}>
-          {titleLights.map(light=><ObjectMotion key={light.id} as="g" motion={light.motion} className={`title-light title-light-${light.id}`}><path d={light.path} fill={light.color} fillRule="evenodd"/></ObjectMotion>)}
+          <defs>{titleLights.map(light=><radialGradient key={light.id} id={`${lightId}-${light.id}`}><stop offset="0" stopColor={light.color}/><stop offset=".35" stopColor={light.color} stopOpacity=".65"/><stop offset="1" stopColor={light.color} stopOpacity="0"/></radialGradient>)}</defs>
+          {titleLights.map(light=><ObjectMotion key={light.id} as="g" motion={light.motion} className={`title-light title-light-${light.id}`}><ellipse className="title-light-halo" cx={light.halo.x} cy={light.halo.y} rx={light.halo.rx} ry={light.halo.ry} fill={`url(#${lightId}-${light.id})`}/><path d={light.path} fill={light.color} fillRule="evenodd"/></ObjectMotion>)}
         </ArtworkMotionLayer>
       </ObjectMotionScene>
     </div>
