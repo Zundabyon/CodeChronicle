@@ -1,6 +1,8 @@
 import {test,before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {chromium} from 'playwright-core';
 import {createServer} from 'vite';
 let server,browser,url;
@@ -44,7 +46,7 @@ test('desktop title keeps the main action above the fold for new, saved and back
     }
   }
   await page.setViewportSize({width:1280,height:800});await seed(page,true,true);
-  await page.screenshot({path:'/private/tmp/cc-title-refined-desktop.png'});
+  await page.screenshot({path:join(tmpdir(),'cc-title-refined-desktop.png')});
   await page.getByRole('button',{name:'続きから始める',exact:true}).click();await page.locator('.world-stage').waitFor();
 });
 test('adventure management preserves import confirmation, backup restore, Escape focus and mobile usability',{timeout:60000},async t=>{
@@ -68,7 +70,7 @@ test('adventure management preserves import confirmation, backup restore, Escape
   await page.setViewportSize({width:390,height:844});
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  await page.screenshot({path:'/private/tmp/cc-title-refined-mobile.png',fullPage:true});
+  await page.screenshot({path:join(tmpdir(),'cc-title-refined-mobile.png'),fullPage:true});
   await opener.click();assert.equal(await dialog.isVisible(),true);await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'新しい冒険を始める',exact:true}).click();await page.locator('.prologue-screen').waitFor();
   assert.equal(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).name,backupKey),'前の旅人');
