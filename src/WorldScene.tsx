@@ -1,3 +1,8 @@
+import { memoryEnemyVisual } from './world/memoryEnemyArt';
+import { isMemoryDoorOpen } from './quests/memoryGates';
+import { memoryDungeons } from './world/memoryDungeons';
+import { MemoryFragments } from './quests/MemoryFragments';
+import type { QuestStates } from './quests/types';
 import './worldAmbient.css';
 import './chestRewardCue.css';
 import { LevelUpCue, type LevelUpEvent } from './LevelUpCue';
@@ -18,7 +23,7 @@ import { WorldChip } from './world/WorldChip';
 import { storyNpcs, storyObjective, type StoryStage } from './story';
 
 type WorldSave = {
-  story:StoryStage; name: string; area: Area; pos: Point; level: number; hp: number; mp: number;
+  quests:QuestStates; story:StoryStage; name: string; area: Area; pos: Point; level: number; hp: number; mp: number;
   xp: number; defeated: string[]; correct: number; total: number; wrong: string[];
   track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment; openedChests:string[];
 };
@@ -60,14 +65,15 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
     ctx.fillStyle='#f7e8bb';ctx.fillRect(fieldTownGate.x-1,fieldTownGate.y-2,3,2);
     ctx.fillStyle='#ecb9ff';ctx.fillRect(fieldRuinsGate.x-1,fieldRuinsGate.y-1,3,3);
     ctx.fillStyle='#efcd82';ctx.fillRect(mountainVillageGate.x-1,mountainVillageGate.y-1,3,3);
+    for(const dungeon of memoryDungeons){ctx.fillStyle=dungeon.color;ctx.fillRect(dungeon.gate.x-1,dungeon.gate.y-1,3,3);}
     ctx.fillStyle='#151721';ctx.fillRect(position.x-2,position.y-2,5,5);
     ctx.fillStyle='#ffe18d';ctx.fillRect(position.x-1,position.y-1,3,3);
   },[position.x,position.y,map]);
   return <div className="field-minimap retro-window">
     <div className="field-minimap-title">世界地図 <small>{position.x}, {position.y}</small></div>
-    <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡と石灯の村は北東。下のボタンで世界地図を拡大`} onClick={onOpen}/>
+    <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡と石灯の村は北東。色付きの印は四つの記憶のダンジョン。下のボタンで世界地図を拡大`} onClick={onOpen}/>
     <button className="field-minimap-expand" onClick={onOpen}>世界地図を大きく開く</button>
-    <div className="field-minimap-key"><span>● 現在地</span><span>▣ 町</span><span>✦ 遺跡</span><span>▣ 村</span></div>
+    <div className="field-minimap-key"><span>● 現在地</span><span>▣ 町</span><span>✦ 遺跡</span><span>▣ 村</span><span>◆ 記憶</span></div>
   </div>;
 }
 
@@ -110,7 +116,9 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
           const player=save.pos.x===x&&save.pos.y===y;
           const chip=terrainChips[tile];
           const event=eventAt(map,point,'interact')??eventAt(map,point,'enter');
-          const destination=event?.action.kind==='chest'&&save.openedChests.includes(event.action.id)?'空の宝箱を調べる':event?.label??'移動';
+          const door=event?.action.kind==='memory-door'?event.action:undefined;
+          const doorLabel=door?(isMemoryDoorOpen(save.quests,door.npcId)?'開いた記憶の扉を通る':'閉じた記憶の扉を調べる'):undefined;
+          const destination=doorLabel??(event?.action.kind==='chest'&&save.openedChests.includes(event.action.id)?'空の宝箱を調べる':event?.label??'移動');
           const background=outdoor&&chip.connection?'none':map.backdrop&&chip.transparentOnBackdrop?'transparent':
             `${chip.color}${chip.image?` url('${import.meta.env.BASE_URL}${chip.image}') center / 100% 100%`:''}`;
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
@@ -128,16 +136,21 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
             <WorldChip key={placement.id} definition={buildingChips[placement.chip]} point={placement}/>)}
           {map.props.filter(placement=>visible(placement,propChips[placement.chip].visual)).map(placement=>{
             const chest=placement.chip==='chest';
+            const action=eventAt(map,placement,'interact')?.action;
+            const door=action?.kind==='memory-door'?action:undefined;
+            const doorOpen=door?isMemoryDoorOpen(save.quests,door.npcId):false;
+            const interactive=chest||!!door||action?.kind==='spring';
             const opened=chest&&save.openedChests.includes(chestId(save.area,placement));
-            return <WorldChip key={placement.id} definition={propChips[placement.chip]} point={placement} text={placement.text}
-              chestOpen={chest?opened:undefined} label={chest?(opened?'空の宝箱を調べる':'宝箱を開ける'):undefined}
-              onClick={chest?()=>onTile(placement):undefined}/>;
+            return <WorldChip key={placement.id} definition={propChips[door&&doorOpen?'memoryDoorOpen':placement.chip]} point={placement} text={placement.text} className={door?`memory-door-${doorOpen?'open':'closed'}`:undefined}
+              chestOpen={chest?opened:undefined} label={door?(doorOpen?'開いた記憶の扉を調べる':'閉じた記憶の扉を調べる'):action?.kind==='spring'?`${action.name}で休む`:chest?(opened?'空の宝箱を調べる':'宝箱を開ける'):undefined}
+              onClick={interactive?()=>onTile(placement):undefined}/>;
           })}
           {map.characters.map(character=>{
             if(character.role==='npc'&&!npcs.some(npc=>npc.id===character.id))return null;
             const enemy=character.role==='enemy'?character.enemy:null;
             const point=enemy?positionOf(enemy,enemyPositions):character;
-            const definition=characterChips[character.chip];
+            const base=characterChips[character.chip],customArt=enemy?memoryEnemyVisual(enemy.id):undefined;
+            const definition=customArt?{...base,visual:customArt}:base;
             if(enemy&&save.defeated.includes(enemy.id)||!visible(point,definition.visual)) return null;
             return <WorldChip key={character.id} definition={definition} point={point}
               className={enemy?`world-enemy ${enemy.boss?'boss':''}`:'world-npc'}
@@ -151,7 +164,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
     <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
     {save.area==='town'&&<TownMap position={save.pos} onExpand={()=>onMap('town')}/>}
     {save.area==='field'&&<FieldMiniMap position={save.pos} onOpen={()=>onMap()}/>}
-    {(save.story!=='legacy'||objectiveOverride)&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p></aside>}
+    {(save.story!=='legacy'||objectiveOverride)&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p><MemoryFragments quests={save.quests}/></aside>}
     <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
     <button className="world-map-button retro-window" onClick={()=>onMap()} aria-keyshortcuts="M">地図 <kbd className="shortcut-key">M</kbd></button>
     <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
@@ -183,7 +196,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
       </div>}
       {menu==='quest'&&<div className="world-menu-detail">
         <strong>{objective.title}</strong>
-        <p>{objective.text}</p>
+        <p>{objective.text}</p><MemoryFragments quests={save.quests}/>
         <p>倒した敵　{save.defeated.length}</p>
         <button onClick={()=>onMenu('command')}>◀ もどる</button>
       </div>}

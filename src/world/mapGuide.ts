@@ -1,15 +1,17 @@
+import { memoryDungeons } from './memoryDungeons';
 import { areaLabel, fieldRegion, houses, type Area, type Point } from '../content';
 import { libraryFloors } from '../library';
 import { canWalkOnMap, eventAt, worldMaps } from './maps';
 
 const descriptions:Record<string,string>={town:'南の町。教会・商店・図書館で旅の支度ができます。',village:'北東の村。灯守のもとでHP・MPを無料で回復できます。',dungeon:'村のさらに北東。山道の先にある遺跡です。'};
+for(const dungeon of memoryDungeons)descriptions[dungeon.area]=dungeon.region+'：'+dungeon.operation+'の記憶の欠片。五つの実習部屋・封印扉・無料の回復泉。'+dungeon.summary;
 export const worldPlaces=worldMaps.field.events.flatMap(event=>event.action.kind==='transition'&&descriptions[event.action.to]?[{id:event.action.to,name:areaLabel[event.action.to],point:{x:event.x,y:event.y},description:descriptions[event.action.to]}]:[]);
 export const townEntrances=worldMaps.town.events.filter(event=>event.action.kind==='church'||event.action.kind==='transition'&&Object.hasOwn(houses,event.action.to));
 
 export function mapLocation(area:Area,pos:Point,inChurch=false){
   const floor=libraryFloors.find(floor=>floor.area===area);
   const house=houses[area as keyof typeof houses]??(floor?houses[floor.wing==='frontend'?'scholarHouse':'backendLibrary']:undefined);
-  const worldArea=area==='village'?'village':area==='dungeon'?'dungeon':'town';
+  const worldArea=memoryDungeons.some(d=>d.area===area)?area:area==='village'?'village':area==='dungeon'?'dungeon':'town';
   const outside=area==='field'?pos:worldPlaces.find(place=>place.id===worldArea)!.point;
   const church=townEntrances.find(event=>event.action.kind==='church');
   return {world:outside,worldLabel:areaLabel[worldArea],town:inChurch&&church?{x:church.x,y:church.y}:area==='town'?pos:house?.door??null,label:inChurch?'黎明の教会':area==='field'?fieldRegion(pos):areaLabel[area]};

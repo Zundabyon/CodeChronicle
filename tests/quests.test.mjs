@@ -24,6 +24,7 @@ test('quest definitions reference real NPCs, books, questions, chests and reward
       if(t.type==='npc-talked'||t.type==='reported')assert.ok(npcs.has(t.npcId));
       if(t.type==='chest-examined')assert.ok(Object.values(worldMaps).some(m=>m.events.some(e=>e.action.kind==='chest'&&e.action.id===t.chestId)));
       if(step.requiresReadBook)assert.ok(books.has(step.requiresReadBook));
+      if(step.npcId)assert.ok(npcs.has(step.npcId));
     }
     for(const [id,count] of Object.entries(def.reward.items)){assert.ok(items[id]);assert.ok(count>0);}
   }
@@ -50,7 +51,7 @@ test('chapter progress and rewards are independent from side quests',()=>{
   save=send(save,{type:'accepted',questId:'library-signboard'});
   save=send(save,{type:'npc-talked',npcId:'mountainGuide',questId:'village-ledger'});
   save=send(save,{type:'chest-examined',chestId:'dungeon:19,5'});
-  for(const id of ['basics-crud-r','basics-crud-u','basics-crud-c','basics-crud-d'])save=send(save,{type:'question-answered',questionId:id,correct:true,source:'quest'});
+  for(const step of questDefinitions.find(q=>q.id==='village-ledger').steps.slice(2,-1))save=send(save,{...step.trigger,...(step.trigger.type==='npc-talked'?{questId:'village-ledger'}:{})});
   assert.equal(save.gold,100);save=send(save,{type:'npc-talked',npcId:'mountainGuide',questId:'village-ledger'});
   assert.equal(save.gold,170);assert.equal(save.inventory.ether,1);assert.equal(save.quests['library-signboard'].step,'read-route');assert.equal(save.completed,true);assert.equal(hasStartedChapter(save.quests),true);
   assert.strictEqual(send(save,{type:'npc-talked',npcId:'mountainGuide',questId:'village-ledger'}),save);
@@ -63,4 +64,40 @@ test('legacy progress migrates without replaying rewards, including completed an
   const quests=restoreQuestStates({chapterTwo:'complete'},true,[]),save={...fresh(),completed:true,quests};assert.strictEqual(send(save,{type:'npc-talked',npcId:'mountainGuide',questId:'village-ledger'}),save);
   assert.deepEqual(restoreQuestStates({quests:{unknown:{step:'complete'},'village-ledger':{step:'bad'}}},true,[]),{});
   assert.deepEqual(restoreQuestStates({quests:{'library-signboard':{step:'complete'}},scholarQuestAccepted:true},false,[]),{'library-signboard':{step:'complete'}});
+});
+
+test('expanded chapter requires all 51 exercises, all four altars and the board transfer practice',()=>{
+  const def=questDefinitions.find(q=>q.id==='village-ledger');
+  const lessons=def.steps.filter(s=>s.trigger.type==='question-answered');
+  assert.equal(lessons.length,51);
+  assert.deepEqual(lessons.filter(s=>['read-records','update-address','create-family','delete-duplicate'].includes(s.id)).map(s=>s.id),['read-records','update-address','create-family','delete-duplicate']);
+  for(const key of ['r','u','c','d'])assert.equal(lessons.filter(s=>s.npcId?.startsWith('memory-'+key+'-trial-')).length,11);
+  const checkpoint=lessons.filter(s=>s.npcId==='mountainGuide');
+  assert.equal(checkpoint.length,7);
+  assert.deepEqual(new Set(checkpoint.map(s=>s.study.action)),new Set(['index','show','create','store','edit','update','destroy']));
+  let save=send({...fresh(),completed:true},{type:'accepted',questId:def.id});
+  save=send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id});
+  save=send(save,{type:'chest-examined',chestId:'dungeon:19,5'});
+  const answers=new Set();
+  for(const step of def.steps.slice(2,-1)){
+    assert.equal(save.quests[def.id].step,step.id);
+    if(step.trigger.type==='question-answered'){
+      const q=questions.find(q=>q.id===step.trigger.questionId);
+      assert.equal(q.kind,'choice');assert.equal(new Set(q.options).size,4);assert.equal(q.reveal,q.options[q.answer]);
+      assert.ok(step.study.objective);assert.ok(step.study.before);assert.ok(step.study.after);answers.add(q.answer);
+      assert.strictEqual(send(save,{...step.trigger,correct:false}),save);
+      assert.strictEqual(send(save,{...step.trigger,source:'battle'}),save);
+      assert.strictEqual(send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id}),save);
+      save=send(save,{...step.trigger});
+    }else{
+      assert.ok(step.id.startsWith('collect-'));
+      assert.strictEqual(send(save,{type:'question-answered',questionId:lessons[0].trigger.questionId,correct:true,source:'quest'}),save);
+      save=send(save,{...step.trigger,questId:def.id});
+    }
+    assert.deepEqual(restoreQuestStates(JSON.parse(JSON.stringify(save)),true,[]),save.quests);
+    assert.equal(save.gold,100);
+  }
+  assert.equal(answers.size,4);assert.equal(save.quests[def.id].step,'return-names');
+  save=send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id});
+  assert.equal(save.quests[def.id].step,'complete');assert.equal(save.gold,170);
 });

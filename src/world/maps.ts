@@ -1,3 +1,4 @@
+import { memoryDungeons } from './memoryDungeons';
 import { chestId } from '../chests';
 import { maps as legacyMaps, houses, fieldTownGate, fieldRuinsGate, type Area, type MapData, type Point, type Npc, type Enemy } from '../content';
 import { npcSprite, enemySprite } from '../PixelSprite';
@@ -17,7 +18,7 @@ export type CharacterPlacement = Placement<CharacterId> & (
   | {role:'npc'; npc:Npc}
   | {role:'enemy'; enemy:Enemy}
 );
-export type MapAction = {kind:'bookshelf';shelf:string} | {kind:'dresser'} | {kind:'chest';id:string} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
+export type MapAction = {kind:'spring';name:string} | {kind:'memory-door';npcId:string} | {kind:'bookshelf';shelf:string} | {kind:'dresser'} | {kind:'chest';id:string} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
 export type MapEvent = Point & {id:string; trigger:'enter'|'interact'; label:string; action:MapAction};
 export type WorldMapInput = {
   environment:'outdoor'|'interior'|'dungeon';
@@ -149,6 +150,12 @@ export function adaptLegacyMap(area:Area,legacy:MapData):WorldMap {
     event(14,31,'enter','平原へ出る',{kind:'transition',to:'field'});
   }
   if(area==='field') {
+    for(const dungeon of memoryDungeons) {
+      const {x,y}=dungeon.gate;
+      buildings.push({id:'gate-'+dungeon.area,chip:'ruinsGate',x:x-1,y:y-2});
+      props.push({id:'label-'+dungeon.area,chip:'sign',x,y:y-1.5,text:dungeon.name+' ['+dungeon.key.toUpperCase()+']'});
+      event(x,y,'enter',dungeon.name+'へ',{kind:'transition',to:dungeon.area});
+    }
     buildings.push({id:'mountain-village-gate',chip:'villageGate',x:mountainVillageGate.x-1,y:mountainVillageGate.y-2});
     props.push({id:'mountain-village-sign',chip:'sign',x:mountainVillageGate.x,y:mountainVillageGate.y-.6,text:'石灯の村'});
     event(mountainVillageGate.x,mountainVillageGate.y,'enter','石灯の村へ',{kind:'transition',to:'village'});

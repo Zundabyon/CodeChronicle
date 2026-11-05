@@ -15,6 +15,7 @@ export function enemyAt(area: Area, point: Point, positions: EnemyPositions, def
 const canOccupy = (area: Area, point: Point) => canEnemyOccupyMap(maps[area],point);
 
 const withinTerritory = (area:Area, enemy: Enemy, point: Point) =>
+  enemy.id.startsWith('memory-') ? distance(enemy,point)<=2 :
   maps[area].environment==='outdoor' ? distance(enemy,point)<=7 : area!=='dungeon' || !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
 
 export function spawnEnemies(defeated: string[] = []): EnemyPositions {

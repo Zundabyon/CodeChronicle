@@ -1,7 +1,7 @@
 import type { Enemy } from './content';
 import { HeroBattleSprite } from './HeroBattleSprite';
 import { battleBanter } from './battleBanter';
-import { enemySprite, PixelSprite } from './PixelSprite';
+import { EnemySprite } from './EnemySprite';
 
 type BattleEncounterProps = {
   enemy: Enemy;
@@ -20,7 +20,7 @@ export function BattleEncounter({ enemy, heroName, banterSeed=0, onEnter }: Batt
       <span className="encounter-kicker">ENCOUNTER!</span>
       <h2>{enemy.name}が現れた！</h2>
       <div className="encounter-duo" aria-hidden="true">
-        <div className="encounter-sprite encounter-foe-sprite"><PixelSprite name={enemySprite(enemy.id)} /></div>
+        <div className="encounter-sprite encounter-foe-sprite"><EnemySprite enemyId={enemy.id}/></div>
         <span>VS</span>
         <div className="encounter-sprite encounter-hero-sprite"><HeroBattleSprite/></div>
       </div>
