@@ -1,3 +1,4 @@
+import { memoryEnemyCopies, memoryEnemyInstanceId } from './world/memoryEnemyIdentity';
 import { resourceQuestions } from './resourceQuestions';
 import { chapterTwoQuestions } from './chapterTwoQuestions';
 import { moreQuestions } from './moreQuestions';
@@ -336,7 +337,7 @@ export const maps: Partial<Record<Area, MapData>> = {
 };
 
 // Encounter identity is shared by map sprites, battle animation and dialogue.
-export const enemyKinds: Record<string, EnemyKind> = {
+const canonicalEnemyKinds: Record<string, EnemyKind> = {
   'memory-c-enemy-0':'mimic','memory-c-enemy-1':'shadow','memory-c-enemy-2':'slime',
   'memory-r-enemy-0':'ghost','memory-r-enemy-1':'wisp','memory-r-enemy-2':'bat',
   'memory-u-enemy-0':'golem','memory-u-enemy-1':'shadow','memory-u-enemy-2':'mimic',
@@ -347,3 +348,6 @@ export const enemyKinds: Record<string, EnemyKind> = {
   d1:'shadow',d2:'ghost',d3:'memory',d4:'skeleton',d5:'mimic',d6:'wisp',d7:'skeleton',
   boss:'guardian',review:'shadow','after-gate':'memory',
 };
+
+export const enemyKinds:Record<string,EnemyKind>=Object.fromEntries(Object.entries(canonicalEnemyKinds).flatMap(([id,kind])=>
+  id.startsWith('memory-')?Array.from({length:memoryEnemyCopies},(_,copy)=>[memoryEnemyInstanceId(id,copy),kind]):[[id,kind]]));

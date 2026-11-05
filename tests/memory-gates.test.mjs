@@ -77,7 +77,7 @@ for(const dungeon of memoryDungeons){
       assert.ok(canInteract(seen,spring),'spring must be accessible');
       const travelers=map.npcs.filter(npc=>!npc.id.includes('-trial-')&&npc.id!==altarNpcId(dungeon.key));
       assert.ok(travelers.length>0);
-      assert.equal(map.enemies.length,3,'each dungeon has three optional enemy types');
+      assert.equal(map.enemies.length,12,'each dungeon has four individuals of three optional species');
       for(const target of [...map.npcs,...map.enemies])assert.ok(canInteract(seen,target),`${step}: ${target.id}`);
     }
     const noQuest=reachableWithProgress(map,{});
@@ -123,19 +123,48 @@ test('legacy positions beyond closed doors resume on the accessible side while c
 });
 
 
-test('optional dungeon enemies spawn and stay near their side-room origins',()=>{
-  let positions=spawnEnemies();
+test('all 48 individuals spawn without collisions, keep their territory and respect individual defeats across random seeds',()=>{
   const enemies=memoryDungeons.flatMap(dungeon=>worldMaps[dungeon.area].enemies);
-  assert.equal(enemies.length,12);
-  for(const enemy of enemies)assert.ok(positions[enemy.id],`${enemy.id} must spawn`);
+  assert.equal(enemies.length,48);assert.equal(new Set(enemies.map(e=>e.id)).size,48);
+  const originalRandom=Math.random;
+  try {
+    for(let seed=1;seed<=12;seed++){
+      let state=seed;
+      Math.random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
+      let positions=spawnEnemies();
+      for(const dungeon of memoryDungeons){
+        const map=worldMaps[dungeon.area];
+        for(let tick=0;tick<25;tick++){
+          const cells=new Set();
+          for(const enemy of map.enemies){
+            const position=positions[enemy.id];
+            assert.ok(position,`${enemy.id} must spawn`);
+            assert.ok(canWalkOnMap(map,position));
+            assert.ok(Math.abs(position.x-enemy.x)+Math.abs(position.y-enemy.y)<=2,`${enemy.id} must stay in its optional alcove`);
+            assert.ok(position.y<29||position.y>37,'the third room must remain free of enemies');
+            assert.ok(!map.npcs.some(npc=>key(npc)===key(position)),'enemies cannot occupy NPC cells');
+            assert.ok(!cells.has(key(position)),'enemies cannot overlap');cells.add(key(position));
+          }
+          positions=moveEnemies(dungeon.area,positions,[],map.entry);
+        }
+      }
+      const defeated=['memory-c-enemy-0','memory-r-enemy-1-copy-2'];
+      positions=spawnEnemies(defeated);
+      for(const enemy of enemies)assert.equal(Boolean(positions[enemy.id]),!defeated.includes(enemy.id),'only defeated individuals disappear');
+    }
+  } finally {Math.random=originalRandom;}
+});
+
+test('enemy territories leave a permanent walkable route to every seal, spring, traveler and altar',()=>{
   for(const dungeon of memoryDungeons){
     const map=worldMaps[dungeon.area];
-    for(let tick=0;tick<30;tick++){
-      positions=moveEnemies(dungeon.area,positions,[],map.entry);
-      for(const enemy of map.enemies){
-        const position=positions[enemy.id];
-        assert.ok(Math.abs(position.x-enemy.x)+Math.abs(position.y-enemy.y)<=2,`${enemy.id} must stay in its optional alcove`);
-      }
+    const npcCells=new Set(map.npcs.map(key)),seen=new Set(),queue=[map.entry];
+    for(let i=0;i<queue.length;i++){
+      const point=queue[i],cell=key(point);
+      if(seen.has(cell)||!canWalkOnMap(map,point)||npcCells.has(cell)||map.enemies.some(enemy=>Math.abs(point.x-enemy.x)+Math.abs(point.y-enemy.y)<=2))continue;
+      seen.add(cell);queue.push(...adjacent(point));
     }
+    for(const target of [...map.npcs,...map.events.filter(e=>e.action.kind==='spring')])assert.ok(canInteract(seen,target),`${target.id} must remain accessible without battles`);
+    for(const door of map.events.filter(e=>e.action.kind==='memory-door'))assert.ok(seen.has(key(door)),'enemies cannot block sealed doors');
   }
 });

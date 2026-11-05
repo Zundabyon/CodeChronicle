@@ -1,0 +1,4 @@
+interface:
+  display_name: "CodeChronicle 問題作成"
+  short_description: "4形式の採点・難易度・誤答の根拠を守り、学習問題を作成・追加・レビューする"
+  default_prompt: "$question-author を使って、React初級の4択問題を8問、既存形式と品質基準に沿って追加してください。"

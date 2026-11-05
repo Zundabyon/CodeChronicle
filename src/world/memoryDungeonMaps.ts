@@ -1,6 +1,7 @@
 import type { Area } from '../content';
 import type { TerrainId } from './catalog';
 import type { WorldMapInput, CharacterPlacement, PropPlacement, MapEvent } from './maps';
+import { memoryEnemyInstanceId } from './memoryEnemyIdentity';
 import { memoryDungeons, trialNpcId, altarNpcId } from './memoryDungeons';
 
 const advice = {
@@ -66,10 +67,19 @@ export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEn
   props.push({id:'rest-spring',chip:'memorySpring',x:3,y:34});
   props.push({id:'rest-label',chip:'sign',x:3,y:32.6,text:'回復泉 HP・MP / 無料'});
   events.push({id:'rest-spring-interact',x:3,y:34,trigger:'interact',label:'記憶の回復泉で休む',action:{kind:'spring',name:'記憶の回復泉'}});
-  enemies[dungeon.key].forEach(([name,attackName,chip],i)=>{
-    // Enemies sit in optional alcoves, with floor cells to walk around them.
-    const [x,y]=[[3,44],[27,24],[27,14]][i],id='memory-'+dungeon.key+'-enemy-'+i;
-    characters.push({id,role:'enemy',chip,x,y,enemy:{id,name,attackName,x,y,icon:i===0?'👾':'👻'}});
+  // Four individuals per species; the original three IDs and origins remain stable.
+  // Rooms 1, 2, 4 and 5 each contain three optional foes. Room 3 is a safe rest stop.
+  // The two-cell territory stays away from the central route and all sealed doors.
+  const enemyOrigins = [
+    [[3,44],[3,54],[3,24],[3,12]],
+    [[27,24],[27,54],[27,44],[25,12]],
+    [[27,14],[5,52],[5,42],[25,22]],
+  ];
+  enemies[dungeon.key].forEach(([name,attackName,chip],species)=>{
+    enemyOrigins[species].forEach(([x,y],copy)=>{
+      const id=memoryEnemyInstanceId('memory-'+dungeon.key+'-enemy-'+species,copy);
+      characters.push({id,role:'enemy',chip,x,y,enemy:{id,name,attackName,x,y,icon:species===0?'👾':'👻'}});
+    });
   });
   const id=altarNpcId(dungeon.key);
   characters.push({id,role:'npc',chip:'memory',x:15,y:3,npc:{id,name:dungeon.operation+'の記憶の祭壇',x:15,y:3,face:'📜',lines:[

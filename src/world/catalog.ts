@@ -2,6 +2,7 @@ import type { CharacterName } from '../WorldCharacter';
 import type { SpriteName } from '../PixelSprite';
 import type { Point } from '../content';
 import { PROP_ATLAS, PROP_ART_FRAMES, type PropArtName } from './propArt';
+import { memoryPropVisual } from './memoryPropArt';
 
 export const terrainSets = {
   grassland: '草原', river: '川・湖', sea: '海', cave: '洞窟', mountain: '山',
@@ -63,9 +64,9 @@ export const terrainChips = {
 export type TerrainId = keyof typeof terrainChips;
 
 export const propChips = {
-  memoryDoor: prop('記憶の封印扉',image('props/memory-door.svg',1,1.45),false,'depth','#ddbb74'),
-  memoryDoorOpen: prop('開いた記憶の扉',image('props/memory-door-open.svg',1,1.45),false,'depth','#87c8ac'),
-  memorySpring: prop('記憶の回復泉',image('props/memory-spring.svg',1.6,1.4),true,'depth','#7bddf0'),
+  memoryDoor: prop('記憶の封印扉',memoryPropVisual('door',1,1.45),false,'depth','#ddbb74'),
+  memoryDoorOpen: prop('開いた記憶の扉',memoryPropVisual('doorOpen',1,1.45),false,'depth','#87c8ac'),
+  memorySpring: prop('記憶の回復泉',memoryPropVisual('spring',1.6,1.4),true,'depth','#7bddf0'),
   libraryHall: prop('図書館の渡り廊下',image('props/library-hall.svg',1.8,1.1),false,'overhead'),
   stairs: prop('図書館の階段',image('props/stairs.svg'),false,'ground'),
   diningTable: {...prop('食卓',propArt('table',2,1.2,{x:0,y:1})),blockedCells:[{x:0,y:0},{x:1,y:0}]},
