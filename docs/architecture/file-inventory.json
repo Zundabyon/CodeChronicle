@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-03 / 7e908ef + current working tree",
+  "snapshot": "2026-11-05 / 183336a + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 329,
+  "count": 344,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,8 +23,8 @@
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 47,
-    "動き・演出": 3,
+    "制作・運用": 55,
+    "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
     "学習・採点": 5,
@@ -38,7 +38,7 @@
     "物語・進行": 4,
     "状態・保存": 4,
     "画像・素材": 95,
-    "画面・表現・操作": 12,
+    "画面・表現・操作": 14,
     "表示スタイル": 22,
     "設定": 7,
     "説明資料": 4,
@@ -58,7 +58,7 @@
     "motion": {
       "label": "動き・演出",
       "guide": "docs/production/motion.md",
-      "count": 22
+      "count": 27
     },
     "narrative": {
       "label": "物語・進行",
@@ -78,7 +78,7 @@
     "presentation": {
       "label": "画面・表現・操作",
       "guide": "docs/production/presentation.md",
-      "count": 19
+      "count": 21
     },
     "persistence": {
       "label": "状態・保存",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 77
+      "count": 85
     }
   },
   "files": [
@@ -189,6 +189,14 @@
       "genre": "operations"
     },
     {
+      "path": ".github/workflows/deploy-cloudflare.yml",
+      "bytes": 1790,
+      "suffix": ".yml",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": ".github/workflows/deploy-pages.yml",
       "bytes": 747,
       "suffix": ".yml",
@@ -206,7 +214,7 @@
     },
     {
       "path": "README.md",
-      "bytes": 7923,
+      "bytes": 8374,
       "suffix": ".md",
       "group": "説明資料",
       "role": "起動方法、遊び方、素材・マップ・問題の追加方法を説明する。",
@@ -253,6 +261,14 @@
       "genre": "presentation"
     },
     {
+      "path": "docs/art/title-motion-v1.md",
+      "bytes": 5238,
+      "suffix": ".md",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
       "path": "docs/articles/qiita-structure-for-development.md",
       "bytes": 11435,
       "suffix": ".md",
@@ -279,6 +295,14 @@
     {
       "path": "docs/learning/cloudflare-api-progress.md",
       "bytes": 10114,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/learning/cloudflare-cicd.md",
+      "bytes": 2586,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -342,7 +366,7 @@
     },
     {
       "path": "docs/production/index.md",
-      "bytes": 5369,
+      "bytes": 5525,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -358,7 +382,7 @@
     },
     {
       "path": "docs/production/motion.md",
-      "bytes": 2240,
+      "bytes": 2444,
       "suffix": ".md",
       "group": "動き・演出",
       "role": "動き・演出に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -374,7 +398,7 @@
     },
     {
       "path": "docs/production/operations.md",
-      "bytes": 3026,
+      "bytes": 3152,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -390,7 +414,7 @@
     },
     {
       "path": "docs/production/presentation.md",
-      "bytes": 2805,
+      "bytes": 2980,
       "suffix": ".md",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -398,7 +422,7 @@
     },
     {
       "path": "docs/production/records.md",
-      "bytes": 2553,
+      "bytes": 2736,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -467,6 +491,14 @@
       "group": "人物・生物",
       "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
       "genre": "characters"
+    },
+    {
+      "path": "docs/production/uses/object-motion.md",
+      "bytes": 4245,
+      "suffix": ".md",
+      "group": "動き・演出",
+      "role": "動き・演出に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
     },
     {
       "path": "docs/production/uses/state-variants.md",
@@ -622,7 +654,7 @@
     },
     {
       "path": "package.json",
-      "bytes": 1279,
+      "bytes": 1619,
       "suffix": ".json",
       "group": "設定",
       "role": "依存パッケージと開発・テスト・ビルドのコマンドを定義する。",
@@ -1720,6 +1752,14 @@
       "genre": "operations"
     },
     {
+      "path": "scripts/check-cloudflare-deployment.mjs",
+      "bytes": 2224,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "scripts/export-question-catalog.mjs",
       "bytes": 3675,
       "suffix": ".mjs",
@@ -1728,8 +1768,24 @@
       "genre": "operations"
     },
     {
+      "path": "scripts/measure-object-motion.mjs",
+      "bytes": 3003,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "scripts/object-motion-harness.html",
+      "bytes": 298,
+      "suffix": ".html",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 8764,
+      "bytes": 8899,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -2704,7 +2760,7 @@
     },
     {
       "path": "src/TitleScreen.tsx",
-      "bytes": 2072,
+      "bytes": 3463,
       "suffix": ".tsx",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3171,6 +3227,22 @@
       "genre": "learning"
     },
     {
+      "path": "src/dev/ObjectMotionHarness.tsx",
+      "bytes": 3852,
+      "suffix": ".tsx",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "src/dev/objectMotionHarness.css",
+      "bytes": 1226,
+      "suffix": ".css",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "src/dialogueLog.ts",
       "bytes": 720,
       "suffix": ".ts",
@@ -3431,6 +3503,38 @@
         }
       ],
       "genre": "learning"
+    },
+    {
+      "path": "src/motion/ArtworkMotionLayer.tsx",
+      "bytes": 1499,
+      "suffix": ".tsx",
+      "group": "動き・演出",
+      "role": "動き・演出に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
+    },
+    {
+      "path": "src/motion/ObjectMotion.tsx",
+      "bytes": 3213,
+      "suffix": ".tsx",
+      "group": "動き・演出",
+      "role": "動き・演出に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
+    },
+    {
+      "path": "src/motion/artworkViewport.ts",
+      "bytes": 507,
+      "suffix": ".ts",
+      "group": "動き・演出",
+      "role": "動き・演出に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
+    },
+    {
+      "path": "src/motion/objectMotion.css",
+      "bytes": 1015,
+      "suffix": ".css",
+      "group": "動き・演出",
+      "role": "動き・演出に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "motion"
     },
     {
       "path": "src/questLearning.css",
@@ -3912,8 +4016,16 @@
       "genre": "presentation"
     },
     {
+      "path": "src/titleMotion.ts",
+      "bytes": 595,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
       "path": "src/titleScreen.css",
-      "bytes": 5594,
+      "bytes": 6220,
       "suffix": ".css",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4412,6 +4524,14 @@
     {
       "path": "tests/e2e/dungeon-mechanics.test.mjs",
       "bytes": 10972,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/object-motion.test.mjs",
+      "bytes": 7185,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

@@ -10,11 +10,15 @@
     "preview": "vite preview --host 0.0.0.0",
     "check:art": "node scripts/check-art-assets.mjs",
     "check:worker": "tsc -p tsconfig.worker.json",
+    "check:deployed": "node scripts/check-cloudflare-deployment.mjs",
     "test:e2e": "node --test --test-concurrency=1 tests/e2e/*.test.mjs",
     "catalog:export": "node scripts/export-question-catalog.mjs",
     "build:staging": "npm run catalog:export && tsc -b && vite build --base=/ --mode staging",
     "db:local": "wrangler d1 migrations apply codechronicle-staging --local --config wrangler.staging.jsonc && wrangler d1 execute codechronicle-staging --local --file seed.game.sql --config wrangler.staging.jsonc",
-    "dev:staging": "npm run build:staging && npm run db:local && wrangler dev --config wrangler.staging.jsonc"
+    "dev:staging": "npm run build:staging && npm run db:local && wrangler dev --config wrangler.staging.jsonc",
+    "dev:motion": "vite --host 127.0.0.1 --open /scripts/object-motion-harness.html",
+    "test:motion": "node --test --test-concurrency=1 tests/e2e/object-motion.test.mjs tests/e2e/title-screen.test.mjs",
+    "measure:motion": "node scripts/measure-object-motion.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

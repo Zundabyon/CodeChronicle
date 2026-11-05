@@ -1,12 +1,19 @@
 @font-face{font-family:'Chronicle Mincho';font-style:normal;font-weight:500;font-display:swap;src:url('/fonts/shippori-mincho-title-500.ttf') format('truetype')}
 @font-face{font-family:'Chronicle Mincho';font-style:normal;font-weight:800;font-display:swap;src:url('/fonts/shippori-mincho-title-800.ttf') format('truetype')}
+body:has(.title-journey){min-width:0}
 /* Title-only layout: the landscape does not consume vertical content space. */
 .app-shell:has(.title-journey)>.topbar{position:absolute;inset:0 0 auto;height:64px;z-index:3;justify-content:flex-end;background:transparent;border:0;padding:12px 4vw}
 .app-shell:has(.title-journey)>.topbar .brand,.app-shell:has(.title-journey)>.topbar .top-location{display:none}
 .app-shell:has(.title-journey)>.topbar button{background:#091625b8;border-color:#b4c6ca66;border-radius:2px;font-size:12px}
 .title-screen.title-journey{isolation:isolate;min-height:100svh;display:grid;grid-template-columns:minmax(0,520px) 1fr;align-items:center;text-align:left;padding:88px clamp(28px,6vw,110px) 32px;background:#101d30;overflow:clip}
-.title-background,.title-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-2}
-.title-background{object-fit:cover;object-position:65% center;image-rendering:pixelated}
+.title-artwork,.title-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-2}
+.title-artwork{--art-position-x:65%;--art-position-y:50%;overflow:hidden}
+.title-background,.title-artwork>.object-motion-scene{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.title-background{object-fit:cover;object-position:var(--art-position-x) var(--art-position-y);image-rendering:pixelated}
+.title-footer{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:32px}
+.title-footer .title-note{margin:0}
+.title-motion-toggle{display:block;width:auto;min-height:0;margin:0;padding:4px 0;border:0;background:transparent;color:#b8c9cb;font-size:11px;text-align:left}
+.title-motion-toggle:disabled{color:#b8c9cb;cursor:default}
 .title-shade{z-index:-1;background:linear-gradient(90deg,#07111eeb 0%,#0b1728c9 25%,#0a14266b 44%,transparent 68%),linear-gradient(0deg,#07111e88,transparent 25%)}
 .title-content{width:100%;max-width:520px}
 .title-heading .eyebrow{font-family:'Chronicle Mincho',Georgia,serif;font-weight:500;color:#b8cbd4;font-size:10px;letter-spacing:.24em;margin:0 0 18px}
@@ -40,11 +47,11 @@
  .title-journey h1{font-size:46px}
  .title-journey .title-copy{margin:14px 0;line-height:1.65}
  .title-journey .resume-summary{padding:9px 14px;margin-bottom:12px}
- .title-note{margin-top:14px}
+ .title-footer{margin-top:6px}
 }
 @media(max-width:900px){
  .title-screen.title-journey{display:block;padding:clamp(260px,40svh,380px) 24px 36px;min-height:100svh;overflow:clip}
- .title-background{height:min(760px,100%);object-position:74% top}
+ .title-artwork{height:min(760px,100%);--art-position-x:74%;--art-position-y:0%}
  .title-shade{background:linear-gradient(0deg,#0a1627 0%,#0a1627f5 23%,#0a16278c 58%,#0a162700 85%)}
  .title-content{max-width:520px;margin:auto}
  .title-heading .eyebrow{font-size:8px;margin-bottom:16px}
@@ -52,6 +59,6 @@
  .title-journey h2{font-size:14px;letter-spacing:.15em}
  .title-journey .title-copy{font-size:14px;margin:22px 0}
  .title-adventure{width:100%}
- .title-note{margin-top:24px}
+ .title-footer{margin-top:24px}
 }
 @media(prefers-reduced-motion:reduce){.title-journey .title-menu button{transition:none}}

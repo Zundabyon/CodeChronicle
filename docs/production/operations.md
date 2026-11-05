@@ -10,7 +10,7 @@
 | 独立したコードレビュー | [code-review Skill](../../.agents/skills/code-review/SKILL.md)、[reviewer定義](../../.codex/agents/code_reviewer.toml) |
 | 作問担当 | [question_author定義](../../.codex/agents/question_author.toml) |
 | 検証・ビルド | [package.json](../../package.json)、[tests](../../tests)、[画像検査](../../scripts/check-art-assets.mjs) |
-| 公開 | [既存workflow](../../.github/workflows/deploy-pages.yml) |
+| 公開 | [Cloudflare CI/CD](../../.github/workflows/deploy-cloudflare.yml)、[設定・運用](../learning/cloudflare-cicd.md)、[既存Pages workflow](../../.github/workflows/deploy-pages.yml) |
 | Cloudflare移管の学習 | [HTML教科書：静的公開＋Worker API・D1](../learning/cloudflare-deployment-textbook.html)、[静的公開編の原稿](../learning/cloudflare-migration-textbook.md) |
 | 試験用の問題読取API | [Worker](../../worker/index.ts)、[試験用設定](../../wrangler.staging.jsonc)、[実装・検証記録](../learning/cloudflare-api-progress.md) |
 | 登壇用の成果物 | [output](../../output)、[構造図の既存資料](../architecture/codechronicle-architecture.html) |

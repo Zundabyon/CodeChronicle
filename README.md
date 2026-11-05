@@ -102,7 +102,9 @@ npm run test:e2e         # ブラウザでの動作確認（Chrome等が必要�
 
 冒険はブラウザの`localStorage`へ自動保存します。クラウドセーブ・端末同期は未対応です。別のURLや端末へ移るときは、タイトルの「冒険の管理」からJSONを書き出し・取り込みして引き継ぎます。
 
-GitHub Pagesは`main`へのpushで公開する既存の運用を継続。Cloudflareは試験公開済みで、253問をD1から取得するゲーム接続はローカル検証済み・リモート反映前です。問題の制作原稿はGitで管理し、D1を配信先として使います。
+公開先は[Cloudflare版](https://codechronicle-staging.metappi-dev.workers.dev/)。253問をD1から取得します。問題の制作原稿はGitで管理し、D1を配信先として使います。
+
+`main`へのpushで[Cloudflare CI/CD](.github/workflows/deploy-cloudflare.yml)がテスト・型チェック・タイトルのブラウザ検証を実行し、成功後に問題集生成 → D1更新 → サイト公開 → 配信ファイル・問題集の照合まで進みます。PRでは検証のみ。初回はGitHubのActions secretsに`CLOUDFLARE_API_TOKEN`の登録が必要です（[設定手順](docs/learning/cloudflare-cicd.md)）。GitHub Pagesの既存公開も継続しますが、D1を使う公開先はCloudflare版です。
 
 D1版は起動時に必要な問題集をまとめて読み込み、版・問題ID・形式を検証してから冒険を開始します。取得に失敗した場合は、セーブを変更せず再試行できる画面を表示します。
 
