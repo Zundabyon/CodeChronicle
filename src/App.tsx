@@ -3,6 +3,7 @@ import { QuestStudyPanel } from './quests/QuestStudyPanel';
 import type { QuestStudy } from './quests/studyTypes';
 import { memoryBattleQuestion } from './quests/memoryBattleQuestion';
 import './questLearning.css';
+import './chapterStart.css';
 import { LevelUpCue, type LevelUpEvent } from './LevelUpCue';
 import { RecoveryCue, type RecoveryEvent } from './RecoveryCue';
 import { battleTiming, type BattleImpact } from './battleTiming';
@@ -144,6 +145,7 @@ export function App() {
   const [phase,setPhase] = useState<Phase>('title');
   const [lastSavedAt,setLastSavedAt]=useState<number|null>(()=>typeof save.lastSavedAt==='number'&&Number.isFinite(save.lastSavedAt)&&save.lastSavedAt>0&&save.lastSavedAt<=8640000000000000?save.lastSavedAt:null);
   const [introIndex,setIntroIndex] = useState(0);
+  const [startChapter,setStartChapter] = useState<1|2|null>(null);
   const [setup,setSetup] = useState<{name:string;track:Track;difficulty:Difficulty;inertia:boolean}>({name:'',track:'react',difficulty:'beginner',inertia:true});
   const [dialogue,setDialogue] = useState<Dialogue | null>(null);
   const [battle,setBattle] = useState<Battle | null>(null);
@@ -616,16 +618,28 @@ export function App() {
     setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowSettings(false);setLibraryShelf(null);setInventoryOpen(false);setShopType(null);setBattle(null);setPhase('title');
     setToast('読み込みました。「続きから始める」で再開できます。');return null;
   };
-  const startNew = () => { const previous=stateRef.current;
+  const startNew = (chapter:1|2|null=null) => { const previous=stateRef.current;
     if(hasSave){
       const snapshot={...previous,lastSavedAt:Date.now()};
       try {localStorage.setItem(BACKUP_STORAGE,JSON.stringify(snapshot));setBackup(snapshot);}
       catch {setToast('前の冒険を保護できませんでした。新しい冒険はまだ始めていません。');return;}
     }
     setLearningSession({active:false,answers:[]});
-    const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; setSetup({name:hasSave?previous.name:'',track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}); const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(false);setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowGuide(false);setShowSettings(false); setInventoryOpen(false); setDresserOpen(false); setShopType(null); setIntroIndex(0); setPhase('prologue'); beep(600,0.2); };
+    const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; setSetup({name:hasSave?previous.name:'',track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}); const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(false);setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowGuide(false);setShowSettings(false); setInventoryOpen(false); setDresserOpen(false); setShopType(null); setIntroIndex(0); setStartChapter(chapter); setPhase(chapter?'setup':'prologue'); beep(600,0.2); };
   const finishPrologue = () => { setPhase('setup'); beep(620,0.14); };
-  const beginAdventure = () => { const name=setup.name.trim(); if(!name) return; update(s=>({...s,name,track:setup.track,difficulty:setup.difficulty,inertia:setup.inertia,area:'home',pos:maps.home.entry})); setHasSave(true); setPhase('world'); playStory(wakingScene); };
+  const beginAdventure = () => {
+    const name=setup.name.trim(); if(!name) return;
+    // Chapter selection starts a fresh adventure; old quest cursors never carry over.
+    const next:Save={...initialSave(),name,track:setup.track,difficulty:setup.difficulty,inertia:setup.inertia};
+    if(startChapter===2)Object.assign(next,{
+      story:'rescued',completed:true,bossDefeated:true,magicUsed:true,defeated:['boss'],
+      level:3,xp:24,hp:maxHp(3),mp:maxMp(3),gold:250,area:'town',pos:maps.town.entry,
+    });
+    update(()=>next);
+    const positions=spawnEnemies(next.defeated);enemyPositionsRef.current=positions;setEnemyPositions(positions);
+    setHasSave(true); setPhase('world');
+    if(startChapter===2)startQuest('village-ledger');else playStory(wakingScene);
+  };
   const startReview = (q: Question) => { const enemy: Enemy={id:'review',name:'リトライシャドウ',attackName:'記憶のささやき',x:0,y:0,icon:'♧'}; startBattle(enemy,true,q); };
   const related=battle?.answered?relatedBook(battle.question.id):null;
   const schedule=reviewSchedule(save.learningRecords,reviewNow);
@@ -640,10 +654,11 @@ export function App() {
 
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{['world','church','review-room'].includes(phase)&&<button onClick={()=>{stopPath();setMapView('world');}}>地図</button>}{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
-    {phase==='title' && <TitleScreen hasSave={hasSave} onNew={startNew}
+    {phase==='title' && <TitleScreen hasSave={hasSave} onNew={()=>startNew()}
       onResume={()=>{setPhase(hasStartedChapter(save.quests)?'world':save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world');beep(640,0.1);}}
       resume={<ResumeSummary save={save} savedAt={lastSavedAt}/>}
       management={<>
+        <details className="chapter-start"><summary>デバッグ：何章から始める？</summary><p>選んだ章の最初から、新しい冒険を始めます。現在の冒険は「保護した前の冒険」から復元できます。</p><div className="chapter-start-options"><button onClick={()=>startNew(1)}>第一章から始める<small>自宅の朝から</small></button><button onClick={()=>startNew(2)}>第二章から始める<small>第一章クリア済み・LV 3／名簿の異変から</small></button></div></details>
         {backup&&<details className="resume-summary backup-summary"><summary>保護した前の冒険</summary><p>{backup.name}　LV {backup.level} · {areaLabel[backup.area]}</p><p>復元すると、現在の冒険はこのデータに置き換わります。</p><button onClick={restoreBackup}>この冒険を復元する</button></details>}
         <SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/>
       </>}/>}
@@ -664,14 +679,14 @@ export function App() {
     {phase==='setup' && <main className="setup-screen"><div className="setup-panel">
       <span className="eyebrow">THE JOURNEY BEGINS</span>
       <h1>ええと、俺の名前は、、、</h1>
-      <p className="setup-intro">目を覚ましたあなたは、自分の名前と、これから学ぶ道を思い出す。</p>
+      <p className="setup-intro">{startChapter?`デバッグ：第${startChapter===1?'一':'二'}章の最初から開始します。名前と学習設定を選んでください。`:'目を覚ましたあなたは、自分の名前と、これから学ぶ道を思い出す。'}</p>
       <LearningSetupHelp/>
       <form onSubmit={e=>{e.preventDefault();beginAdventure();}}>
         <label className="setup-name" htmlFor="hero-name">主人公の名前<input id="hero-name" autoFocus maxLength={12} required value={setup.name} onChange={e=>setSetup(s=>({...s,name:e.target.value}))} placeholder="名前を入力"/></label>
         <fieldset className="setup-field"><legend>学ぶフロントエンド</legend><div className="setup-choice-row"><button type="button" className={setup.track==='react'?'selected':''} aria-pressed={setup.track==='react'} onClick={()=>setSetup(s=>({...s,track:'react'}))}>React + TypeScript</button><button type="button" className={setup.track==='vue'?'selected':''} aria-pressed={setup.track==='vue'} onClick={()=>setSetup(s=>({...s,track:'vue'}))}>Vue + TypeScript</button></div><p>Laravelはどちらの道でも学びます。</p></fieldset>
         <fieldset className="setup-field"><legend>Laravelと画面のつなぎ方</legend><div className="setup-choice-row"><button type="button" className={setup.inertia?'selected':''} aria-pressed={setup.inertia} onClick={()=>setSetup(s=>({...s,inertia:true}))}>Inertia連携</button><button type="button" className={!setup.inertia?'selected':''} aria-pressed={!setup.inertia} onClick={()=>setSetup(s=>({...s,inertia:false}))}>API連携</button></div><p>選んだ連携方法に応じて問題が変わります。</p></fieldset>
         <fieldset className="setup-field"><legend>難易度</legend><DifficultyPicker value={setup.difficulty} onChange={difficulty=>setSetup(s=>({...s,difficulty}))}/><p className="difficulty-note">難易度で変わるのは出題内容です。通常戦は4択とコード穴埋め（選択・入力）。ボスは全難易度共通の3段階の復旧をCLI入力で攻略します。敵の強さ・HP・報酬は共通です。</p></fieldset>
-        <button className="primary setup-submit" type="submit" disabled={!setup.name.trim()}>この名前で冒険を始める　▶</button>
+        <button className="primary setup-submit" type="submit" disabled={!setup.name.trim()}>{startChapter?`第${startChapter===1?'一':'二'}章を始める　▶`:'この名前で冒険を始める　▶'}</button>
       </form>
     </div></main>}
     {['world','battle','church','review-room'].includes(phase)&&<LearningSession value={learningSession} onChange={setLearningSession}/>}

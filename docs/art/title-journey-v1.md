@@ -22,6 +22,14 @@ PC 1280×800・1366×768・1024×600で、新規・保存あり・バックア�
 
 `tests/e2e/title-screen.test.mjs` で開始ボタンの優先順位・表示範囲、再開、新規開始、管理dialogのEscapeとフォーカス復帰、読み込み前確認と取り消し、バックアップ復元を検証。PC/スマホのスクリーンショットも目視。既存冒険E2E9件、unit74件、画像検査、ビルドも通過。
 
+## ロゴと書体
+
+追加指定により、FF6/SFC風の世界観に合わせてタイトルを太いゴシック体から「しっぽり明朝」800へ変更。英字・副題・説明文は同書体500。画像に文字を生成せず、字間と強弱を実フォントで調整した。
+
+配布元は [Google Fonts公式リポジトリ](https://github.com/google/fonts/tree/main/ofl/shipporimincho)。Google Fonts CSS APIのtext指定で、この固定見出しに必要な文字だけを取得。`public/fonts/shippori-mincho-title-{500,800}.ttf` と `shippori-mincho-OFL.txt` を同梱し、タイトル表示に外部フォント通信を必要としない。見出し文言を変更するときは収録文字も更新する。
+
+リモートmainの章選択機能も保持し、入口を「冒険の管理」内へ集約。新規開始はchapter引数へクリックイベントが渡らないよう明示的に呼び出す。
+
 ## 最終プロンプト
 
 Use case: stylized-concept. Asset type: ONE wide landscape title-screen BACKGROUND IMAGE for CodeChronicle, an original cute finely detailed SFC-era JRPG about restoring knowledge stolen from the world by a demon king, by relearning the magic of code. Input image 1 is a visual reference for the game's warm red-roof timber-and-stone village architecture; image 2 is the identity reference for the tiny dark-haired blue-cloaked adventurer. Create an atmospheric panoramic pixel-art illustration with beautiful adventurous anticipation, gentle mystery and hope. Composition is crucial: the LEFT 42 percent is calm dark indigo twilight sky and distant misty landscape with little high contrast detail, reserved for HTML title/menu overlay; put the narrative landscape and strongest detail on the RIGHT 58 percent. On the right lower foreground, a small blue-cloaked adventurer seen from behind stands at the start of a winding stone path. Midground right: a cozy inhabited town with red tiled timber houses and warm amber windows nestled among deep green trees, a bridge and meandering stream. The path leads uphill to an ancient weathered stone knowledge gate in the upper-right middle distance, covered in faint fading geometric inscriptions with a FEW segments beginning to glow cyan-blue, suggesting knowledge and magic returning. Beyond it, layered distant mountains and a subtle ominous distant silhouette in the haze; inviting rather than horror. Tiny erased inscriptions on nearby broken stone tablets reinforce the lost-knowledge theme. No readable writing or literal programming code. Rich carefully clustered small pixel-art detail, hand-crafted crisp stepped edges, multi-tone stone/wood/fabric shading, late 16-bit JRPG environmental art matching the input house. Beautiful twilight palette: inky navy and teal shadows, muted mauve sky, warm gold town lights and restrained cyan magical accents. Cinematic depth, no photorealism, no 3D, no blur, no giant crude pixels, no flat vector art. WIDE 16:9 or wider landscape composition. Full bleed opaque scene. ONE image only. No title, no logos, no typography, no captions, no UI, no border, no watermark. Do not copy any existing game's characters or landmarks.

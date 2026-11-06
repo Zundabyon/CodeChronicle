@@ -25,6 +25,7 @@ async function seed(page,hasSave=true,hasBackup=false){
     if(hasBackup)localStorage.setItem(backupKey,JSON.stringify({...data,name:'前の旅人',gold:456}));
   },{key,backupKey,hasSave,hasBackup});await page.reload();
   const notice=page.getByRole('button',{name:'確認しました'});if(await notice.count())await notice.click();
+  await page.evaluate(()=>document.fonts.ready);
 }
 test('desktop title keeps the main action above the fold for new, saved and backed-up adventures',{timeout:60000},async t=>{
   const page=await fixture(t);
@@ -33,6 +34,7 @@ test('desktop title keeps the main action above the fold for new, saved and back
     for(const state of ['new','saved','backup']){
       await seed(page,state!=='new',state==='backup');
       await page.locator('.title-background').evaluate(im=>im.decode());
+      assert.ok(await page.evaluate(()=>document.fonts.check('800 24px "Chronicle Mincho"','コードクロニクル')));
       const metrics=await page.evaluate(()=>({height:innerHeight,scroll:document.documentElement.scrollHeight,width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
       assert.ok(metrics.scroll<=metrics.height+2,`${viewport.width} ${state}: ${metrics.scroll}>${metrics.height}`);
       assert.ok(metrics.scrollWidth<=metrics.width);
