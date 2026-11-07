@@ -12,3 +12,5 @@ Use case: stylized-concept. Asset type: one transparent overworld character spri
 Rendering: the generated source is preserved without cropping, resizing or resaving. MysteriousKnight.tsx clips the visible alpha bounds [284,130,705,989] in a nested SVG and fits the sprite into a 36 x 50 area at [14,14] on a logical 64 x 64 canvas. No raster derivative is used.
 The original generated output remains at /Users/ogasawarayuki/.codex/generated_images/01a15305-e9f0-78b1-9c78-6eecfed18e50/exec-79069afa-c2b7-4681-af18-b19ecfa0e142.png.
 Updated 2026-11-03: dialogue uses the dedicated no-horn portrait public/portraits/knight-v2.png. See docs/art/knight-portrait-v2.md for prompt and rendering details. The overworld sprite remains unchanged.
+
+Production guide (2026-11-03): Reusable specifications: docs/production/uses/map-sprites.md and dialogue-portraits.md. Subject identity: docs/production/characters/knight.md. Historical source prompts are preserved.

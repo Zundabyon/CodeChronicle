@@ -5,6 +5,8 @@ description: CodeChronicleの学習問題を作成・追加・改善・レビュ
 
 # CodeChronicleの問題作成
 
+アプリ全体の分類・用途・登録先の入口は [制作案内](../../../docs/production/index.md) の「教材・学習」を参照する。
+
 このSkillを作問ルールの唯一の管理元とする。日本語で、正解の理由まで理解できる問題を作る。
 
 ## 作業の進め方

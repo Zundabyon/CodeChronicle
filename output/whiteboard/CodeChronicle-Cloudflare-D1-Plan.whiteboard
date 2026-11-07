@@ -1,0 +1,1217 @@
+{
+  "format": "review-share/2",
+  "reviewId": "bc9aa489-90e5-4be7-bf82-a142ed301b29",
+  "version": 28,
+  "title": "CodeChronicle｜Cloudflare＋D1移行の設計相談",
+  "snapshot": {
+    "reviewId": "bc9aa489-90e5-4be7-bf82-a142ed301b29",
+    "version": 28,
+    "title": "CodeChronicle｜Cloudflare＋D1移行の設計相談",
+    "document": [
+      {
+        "type": "section",
+        "title": "何を変える？ なぜ変える？",
+        "children": [
+          {
+            "type": "markdown",
+            "markdown": "CodeChronicleの公開先とDBをCloudflareへ移すための設計案です。React＋TypeScriptのゲームを活かし、問題を取得するWorker APIとD1を段階的に追加します。これは実装前の相談ボードで、公開・DB移行・認証はまだ実施していません。",
+            "id": "block-3"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "移行の狙いと境界",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "keep",
+                "label": "React＋TSのゲームを活かす",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-5"
+              },
+              {
+                "type": "flow_node",
+                "key": "api",
+                "label": "追加：TypeScriptのAPI",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-6"
+              },
+              {
+                "type": "flow_node",
+                "key": "db",
+                "label": "追加：Cloudflare D1",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-7"
+              },
+              {
+                "type": "flow_node",
+                "key": "save",
+                "label": "セーブDB・認証は次段階の案",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-8"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "keep",
+                "to": "api",
+                "label": "問題の取得先を変更",
+                "id": "edge-9"
+              },
+              {
+                "type": "flow_edge",
+                "from": "api",
+                "to": "db",
+                "label": "SQLで読み書き",
+                "id": "edge-10"
+              },
+              {
+                "type": "flow_edge",
+                "from": "db",
+                "to": "save",
+                "label": "利用者の識別・競合設計を追加",
+                "id": "edge-11"
+              }
+            ],
+            "id": "diagram-4"
+          }
+        ],
+        "id": "block-2"
+      },
+      {
+        "type": "section",
+        "title": "要件：今回の依頼と、まだ決めていないこと",
+        "children": [
+          {
+            "type": "markdown",
+            "markdown": "- 「DBもCloudflareにしたい」\n- 「構成を変更するので、Whiteboardで先に整理」\n- 「構成について円卓スキルで相談」",
+            "id": "block-13"
+          },
+          {
+            "type": "callout",
+            "title": "未決：どのデータを、いつ移す？",
+            "tone": "info",
+            "children": [
+              {
+                "type": "markdown",
+                "markdown": "問題を先にD1へ移す案を比較します。セーブ・学習履歴・問題編集画面の導入時期は、円卓の結果と利用目的で決めます。",
+                "id": "block-15"
+              }
+            ],
+            "id": "block-14"
+          }
+        ],
+        "id": "block-12"
+      },
+      {
+        "type": "section",
+        "title": "設計：現在 → 移行後の責務",
+        "children": [
+          {
+            "type": "flow_diagram",
+            "title": "現在：配布物＋ブラウザ内保存",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "git",
+                "label": "GitHub：ソースと問題定義",
+                "kind": "process",
+                "attachments": [
+                  {
+                    "label": "現在の問題型・問題集",
+                    "sources": [
+                      "head/src/content.ts#L14-L35"
+                    ]
+                  }
+                ],
+                "id": "node-18"
+              },
+              {
+                "type": "flow_node",
+                "key": "build",
+                "label": "Vite → dist",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-19"
+              },
+              {
+                "type": "flow_node",
+                "key": "pages",
+                "label": "GitHub Pages",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-20"
+              },
+              {
+                "type": "flow_node",
+                "key": "client",
+                "label": "ブラウザ：React／選題／採点",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-21"
+              },
+              {
+                "type": "flow_node",
+                "key": "local",
+                "label": "localStorage：冒険・学習履歴",
+                "kind": "process",
+                "attachments": [
+                  {
+                    "label": "現在のSaveとlocalStorage読込",
+                    "sources": [
+                      "head/src/App.tsx#L56-L80"
+                    ]
+                  }
+                ],
+                "id": "node-22"
+              },
+              {
+                "type": "flow_node",
+                "key": "json",
+                "label": "JSON：セーブ書き出し／読み込み",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-23"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "git",
+                "to": "build",
+                "label": "ビルド",
+                "id": "edge-24"
+              },
+              {
+                "type": "flow_edge",
+                "from": "build",
+                "to": "pages",
+                "label": "公開",
+                "id": "edge-25"
+              },
+              {
+                "type": "flow_edge",
+                "from": "pages",
+                "to": "client",
+                "label": "HTML／JS／画像を配信",
+                "id": "edge-26"
+              },
+              {
+                "type": "flow_edge",
+                "from": "client",
+                "to": "local",
+                "label": "端末内に保存",
+                "id": "edge-27"
+              },
+              {
+                "type": "flow_edge",
+                "from": "client",
+                "to": "json",
+                "label": "手動の引き継ぎ",
+                "id": "edge-28"
+              }
+            ],
+            "pins": {
+              "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+              "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+            },
+            "id": "diagram-17"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "提案：同じURLでゲームと問題APIを提供",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "player",
+                "label": "ブラウザ：既存のReact＋TS",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-30"
+              },
+              {
+                "type": "flow_node",
+                "key": "assets",
+                "label": "Workers Static Assets：dist／画像",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-31"
+              },
+              {
+                "type": "flow_node",
+                "key": "worker",
+                "label": "TypeScript Worker：/api/*",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-32"
+              },
+              {
+                "type": "flow_node",
+                "key": "d1",
+                "label": "D1：公開済み問題と版",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-33"
+              },
+              {
+                "type": "flow_node",
+                "key": "local",
+                "label": "第一段階：localStorageの冒険",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-34"
+              },
+              {
+                "type": "flow_node",
+                "key": "later",
+                "label": "将来：認証＋D1のセーブ",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-35"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "assets",
+                "to": "player",
+                "label": "ゲームを配信",
+                "id": "edge-36"
+              },
+              {
+                "type": "flow_edge",
+                "from": "player",
+                "to": "worker",
+                "label": "問題カタログを要求",
+                "id": "edge-37"
+              },
+              {
+                "type": "flow_edge",
+                "from": "worker",
+                "to": "d1",
+                "label": "binding経由でSQL",
+                "id": "edge-38"
+              },
+              {
+                "type": "flow_edge",
+                "from": "player",
+                "to": "local",
+                "label": "保存・JSON移行を維持",
+                "id": "edge-39"
+              },
+              {
+                "type": "flow_edge",
+                "from": "worker",
+                "to": "later",
+                "label": "別段階：本人確認後に保存",
+                "id": "edge-40"
+              }
+            ],
+            "id": "diagram-29"
+          },
+          {
+            "type": "markdown",
+            "markdown": "APIと静的配信は同一Worker・同一オリジンを第一候補にし、/api/*をAPI処理へ分岐します。D1の管理権限をブラウザへ渡さず、公開取得と管理更新の権限を分けます。HonoなどのAPIフレームワークは任意で、必須にしません。",
+            "id": "block-41"
+          },
+          {
+            "type": "sequence",
+            "title": "提案：冒険開始時に問題セットを読み込む",
+            "actors": {
+              "u": "プレイヤー",
+              "c": "Reactゲーム",
+              "w": "TS Worker API",
+              "d": "D1"
+            },
+            "steps": [
+              {
+                "type": "step",
+                "from": "u",
+                "to": "c",
+                "label": "冒険を開始／再開",
+                "style": "call",
+                "explanation": "提案する動作。既存セーブは変更せず、問題の読込状態を表示する。",
+                "id": "step-43"
+              },
+              {
+                "type": "step",
+                "from": "c",
+                "to": "w",
+                "label": "GET /api/catalog?…",
+                "style": "call",
+                "explanation": "提案API。ID・内容の版・公開状態を持つ問題セットを要求する。",
+                "id": "step-44"
+              },
+              {
+                "type": "step",
+                "from": "w",
+                "to": "d",
+                "label": "公開済みの版を取得",
+                "style": "call",
+                "explanation": "提案。入力を検証し、プレースホルダーを使うSQLで問い合わせる。",
+                "id": "step-45"
+              },
+              {
+                "type": "step",
+                "from": "w",
+                "to": "c",
+                "label": "問題＋catalogVersion",
+                "style": "return",
+                "explanation": "提案。既存のローカル採点を維持する間は正解も配布されるため、正解の秘匿は保証しない。",
+                "id": "step-46"
+              },
+              {
+                "type": "step",
+                "from": "c",
+                "to": "u",
+                "label": "検証できたら冒険へ／失敗なら再試行",
+                "style": "return",
+                "explanation": "提案。戦闘のたびに通信せず、移動・泉・扉の操作中に待ち時間を増やさない。",
+                "id": "step-47"
+              }
+            ],
+            "id": "diagram-42"
+          },
+          {
+            "type": "code",
+            "language": "text",
+            "text": "catalog_releases\n  version PK / status / published_at\n\nquestion_revisions\n  question_id + revision PK\n  payload_json（既存Question型を検証）\n\ncatalog_entries\n  catalog_version + question_id PK\n  question_revision / usage（通常・ボス・封印など）\n\n将来：users / save_slots\n  user_id / slot_id / save_version / revision / payload_json\n  ※セーブDBは認証と競合ルールを決めてから",
+            "caption": "D1のデータ案：確定スキーマではありません",
+            "id": "block-48"
+          },
+          {
+            "type": "markdown",
+            "markdown": "既存の問題IDは引き継ぎ、公開済みの内容は直接上書きせず新版として扱う案です。初期は検証付きJSONを使って形式差を保ち、検索が必要な属性から列へ分けます。旧問題を非公開・改訂したときの復習と、保存中のカタログ版の扱いは実装前に確定します。",
+            "id": "block-49"
+          }
+        ],
+        "id": "block-16"
+      },
+      {
+        "type": "section",
+        "title": "実装計画：触る場所と、触らない場所",
+        "children": [
+          {
+            "type": "code_peek",
+            "source": "head/src/content.ts#L14-L29",
+            "pins": {
+              "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+              "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+            },
+            "caption": "現状：4形式のQuestion型。DB移行でも入力・採点の意味を維持する",
+            "id": "block-51"
+          },
+          {
+            "type": "code",
+            "language": "text",
+            "text": "src/                      既存ゲーム・マップ・UIを維持\n  data/questionRepository.ts  問題の取得口（提案）\nshared/                   API契約・実行時検証（提案）\nworker/                   公開API・管理認可（提案）\n  index.ts                /api/* の振り分け\nmigrations/               D1スキーマの変更履歴（提案）\nscripts/                  問題の検証・投入・照合（提案）\nwrangler.jsonc            静的配信＋Worker＋D1の設定（提案）\n\npublic/                   画像・フォントは当面そのまま\nR2                        大きな音声などが必要になった時に検討",
+            "caption": "追加先の提案。まだ作成・変更していません",
+            "id": "block-52"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "段階案：小さく検証してから次へ",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "a",
+                "label": "1 公開先だけCloudflareへ",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-54"
+              },
+              {
+                "type": "flow_node",
+                "key": "b",
+                "label": "2 テストD1：少量の問題",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-55"
+              },
+              {
+                "type": "flow_node",
+                "key": "c",
+                "label": "3 全問題系統を照合して本番切替",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-56"
+              },
+              {
+                "type": "flow_node",
+                "key": "d",
+                "label": "4 認証＋セーブD1を検討",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-57"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "a",
+                "to": "b",
+                "label": "ゲーム・保存の回帰確認",
+                "id": "edge-58"
+              },
+              {
+                "type": "flow_edge",
+                "from": "b",
+                "to": "c",
+                "label": "件数／ID／採点／障害時の合格",
+                "id": "edge-59"
+              },
+              {
+                "type": "flow_edge",
+                "from": "c",
+                "to": "d",
+                "label": "問題運用が安定してから",
+                "id": "edge-60"
+              }
+            ],
+            "id": "diagram-53"
+          },
+          {
+            "type": "markdown",
+            "markdown": "問題取得口を一つ作り、通常戦・復習・ボス・封印の参照を調査してから切り替えます。通信失敗・空の問題集・旧問題ID・改訂済み問題を試し、セーブのJSON入出力も回帰確認します。正常な版へ戻す際は、コードだけでなく問題カタログの版も合わせます。",
+            "id": "block-61"
+          }
+        ],
+        "id": "block-50"
+      },
+      {
+        "type": "section",
+        "title": "円卓：4役の独立レビューと結論",
+        "children": [
+          {
+            "type": "markdown",
+            "markdown": "設計段階を4つの別エージェントで独立評価しました。肯定・中立・否定の3役はコードを確認し、ユーザー代弁者は提示された構成と利用場面の仮定を評価しています。Cloudflare上の動作・性能・実際の利用者調査は未検証です。",
+            "id": "block-63"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "円卓の一致点：TSを活かし、問題DBから段階移行",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "p",
+                "label": "肯定派：既存のゲームを活かす",
+                "description": "4形式のQuestion契約を維持し、取得口を一つ追加／5分単位に分割できる。",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-65"
+              },
+              {
+                "type": "flow_node",
+                "key": "n",
+                "label": "中立派：問題の範囲と版を明確に",
+                "description": "通常・本・ボス・クエストの範囲を棚卸し／D1直接編集とGit投入の二重運用は避ける。",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-66"
+              },
+              {
+                "type": "flow_node",
+                "key": "m",
+                "label": "否定派：ID検証と未取得で壊れる",
+                "description": "現在の問題IDホワイトリストはDB新規問題を知らない／問題未取得で扉や会話が無反応になる条件がある。",
+                "kind": "process",
+                "attachments": [
+                  {
+                    "label": "現在のID判定",
+                    "sources": [
+                      "head/src/saveValidation.ts#L12-L14",
+                      "head/src/saveValidation.ts#L73-L75",
+                      "head/src/learningRecords.ts#L1-L10"
+                    ]
+                  },
+                  {
+                    "label": "IDが見つからないと処理しない箇所",
+                    "sources": [
+                      "head/src/quests/useQuests.ts#L38-L41"
+                    ]
+                  }
+                ],
+                "id": "node-67"
+              },
+              {
+                "type": "flow_node",
+                "key": "u",
+                "label": "ユーザー代弁者：冒険を止めない",
+                "description": "遊び始めの登録を増やさない／読込失敗でHPや進行を失わせない／作者の更新作業も簡単にする。",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-68"
+              },
+              {
+                "type": "flow_node",
+                "key": "c",
+                "label": "統合案：問題カタログ＋TS API＋D1",
+                "description": "初期は自己学習用・ローカル採点／問題ID維持・公開版固定／認証とセーブ同期は後段の提案。",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-69"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "p",
+                "to": "c",
+                "label": "小さなセットで検証",
+                "id": "edge-70"
+              },
+              {
+                "type": "flow_edge",
+                "from": "n",
+                "to": "c",
+                "label": "正本と更新手順を一本化",
+                "id": "edge-71"
+              },
+              {
+                "type": "flow_edge",
+                "from": "m",
+                "to": "c",
+                "label": "保存の検証順と障害時を設計",
+                "id": "edge-72"
+              },
+              {
+                "type": "flow_edge",
+                "from": "u",
+                "to": "c",
+                "label": "ログイン不要・戦闘中の通信を減らす",
+                "id": "edge-73"
+              }
+            ],
+            "pins": {
+              "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+              "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+            },
+            "id": "diagram-64"
+          },
+          {
+            "type": "markdown",
+            "markdown": "全役が段階移行を支持しましたが、初回の取得範囲と障害時の代替手段は未決です。初期運用はGitの問題原稿をレビュー・検証してD1へ投入し、D1は配信用として使う案を推します。管理画面での直接編集へ変える場合は、正本と版管理の運用を改めて決めます。",
+            "id": "block-74"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "履歴を守る起動順序案：失敗時に保存を上書きしない",
+            "description": "前回正常カタログによる継続は未採用の選択肢。キャッシュ方式を採るなら保存先・サイズ・更新・破損時・版互換のテストが追加で必要。既存のセーブ検証はコード内問題一覧への依存を解消する。",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "start",
+                "label": "開始／続きから",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-76"
+              },
+              {
+                "type": "flow_node",
+                "key": "raw",
+                "label": "旧セーブを元のまま保持",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-77"
+              },
+              {
+                "type": "flow_node",
+                "key": "load",
+                "label": "カタログ＋旧IDの解決情報を取得",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-78"
+              },
+              {
+                "type": "flow_node",
+                "key": "ok",
+                "label": "取得・構造検証に成功？",
+                "kind": "decision",
+                "attachments": [],
+                "id": "node-79"
+              },
+              {
+                "type": "flow_node",
+                "key": "save",
+                "label": "型・カタログ互換を検証",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-80"
+              },
+              {
+                "type": "flow_node",
+                "key": "play",
+                "label": "冒険開始：その版を使う",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-81"
+              },
+              {
+                "type": "flow_node",
+                "key": "retry",
+                "label": "失敗表示：再試行",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-82"
+              },
+              {
+                "type": "flow_node",
+                "key": "cache",
+                "label": "互換な前回正常版がある？",
+                "kind": "decision",
+                "attachments": [],
+                "id": "node-83"
+              },
+              {
+                "type": "flow_node",
+                "key": "wait",
+                "label": "利用不可：元のセーブを残す",
+                "kind": "process",
+                "attachments": [],
+                "id": "node-84"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "start",
+                "to": "raw",
+                "label": "保存を読み取る",
+                "id": "edge-85"
+              },
+              {
+                "type": "flow_edge",
+                "from": "raw",
+                "to": "load",
+                "label": "まだ履歴を削らない",
+                "id": "edge-86"
+              },
+              {
+                "type": "flow_edge",
+                "from": "load",
+                "to": "ok",
+                "label": "問題・進行参照を確認",
+                "id": "edge-87"
+              },
+              {
+                "type": "flow_edge",
+                "from": "ok",
+                "to": "save",
+                "label": "成功",
+                "id": "edge-88"
+              },
+              {
+                "type": "flow_edge",
+                "from": "save",
+                "to": "play",
+                "label": "解決不能IDは保留・互換処理",
+                "id": "edge-89"
+              },
+              {
+                "type": "flow_edge",
+                "from": "ok",
+                "to": "retry",
+                "label": "失敗",
+                "id": "edge-90"
+              },
+              {
+                "type": "flow_edge",
+                "from": "retry",
+                "to": "load",
+                "label": "再試行",
+                "id": "edge-91"
+              },
+              {
+                "type": "flow_edge",
+                "from": "retry",
+                "to": "cache",
+                "label": "代替案：保存済みカタログ",
+                "id": "edge-92"
+              },
+              {
+                "type": "flow_edge",
+                "from": "cache",
+                "to": "save",
+                "label": "版とIDが適合する場合だけ",
+                "id": "edge-93"
+              },
+              {
+                "type": "flow_edge",
+                "from": "cache",
+                "to": "wait",
+                "label": "不適合／なし",
+                "id": "edge-94"
+              }
+            ],
+            "id": "diagram-75"
+          }
+        ],
+        "id": "block-62"
+      },
+      {
+        "type": "section",
+        "title": "優先する3項目と、次の相談",
+        "children": [
+          {
+            "type": "code",
+            "language": "text",
+            "text": "P0 問題と参照元の棚卸し\n   通常／4形式／ボス生成／本／封印／復習を一覧化\n   DBへ移す範囲、コードに残す生成処理、全IDを照合\n\nP0 履歴を守る契約\n   ID維持、公開版、非公開・廃止、旧セーブ検証の順序を決定\n   DBにしかない問題を解いて再読込しても記録が残ること\n\nP1 本番と分けた環境で最小の1往復\n   D1 → TS API → Reactで1セット取得\n   正常・空集合・通信失敗・旧セーブ・扉・復習を確認",
+            "caption": "実装へ進む前の完了条件（優先順）",
+            "id": "block-96"
+          },
+          {
+            "type": "markdown",
+            "markdown": "次の相談は「問題はGit原稿から投入でよいか」「初回は全件かコース単位か」「通信失敗時は再試行だけか前回正常版も使うか」の3点です。推奨の初期案はGit投入・必要な問題一式の先読み・再試行から始め、転送量を測って取得単位を調整する構成です。セーブのオンライン同期は、ログイン方式と所有者・競合・JSON移行をまとめて決める別段階として残します。",
+            "id": "block-97"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "今回の判断範囲",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "decide",
+                "label": "このボード：設計の相談・比較",
+                "attachments": [],
+                "id": "node-99"
+              },
+              {
+                "type": "flow_node",
+                "key": "test",
+                "label": "次：棚卸しと試験環境",
+                "attachments": [],
+                "id": "node-100"
+              },
+              {
+                "type": "flow_node",
+                "key": "prod",
+                "label": "その後：公開・DB切替",
+                "attachments": [],
+                "id": "node-101"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "decide",
+                "to": "test",
+                "label": "方針を固める",
+                "id": "edge-102"
+              },
+              {
+                "type": "flow_edge",
+                "from": "test",
+                "to": "prod",
+                "label": "受け入れ条件を満たす",
+                "id": "edge-103"
+              }
+            ],
+            "id": "diagram-98"
+          },
+          {
+            "type": "markdown",
+            "markdown": "[以前のコード全体図](whiteboard:board/67eb14a4-5c04-4d91-821a-e423fa1d704a)も比較できます。Cloudflare仕様の根拠は[D1の接続手順](https://developers.cloudflare.com/d1/get-started/)と[Workers Binding API](https://developers.cloudflare.com/d1/worker-api/)です。",
+            "id": "block-104"
+          }
+        ],
+        "id": "block-95"
+      },
+      {
+        "type": "section",
+        "title": "追加の円卓：この構成でデプロイしてよい？",
+        "children": [
+          {
+            "type": "markdown",
+            "markdown": "結論：設計の採用と、試験環境への実装に進むことを推奨します。D1込みの本番切替は、実装と受け入れ確認が終わるまで保留です。今回は別の4エージェントで独立評価し、構成案・現行コード・公式資料を確認しましたが、新構成の稼働試験はしていません。",
+            "id": "block-106"
+          },
+          {
+            "type": "flow_diagram",
+            "title": "構成の採用と、本番公開を分けて判定",
+            "direction": "right",
+            "nodes": [
+              {
+                "type": "flow_node",
+                "key": "design",
+                "label": "設計：採用してよい",
+                "attachments": [],
+                "id": "node-108"
+              },
+              {
+                "type": "flow_node",
+                "key": "build",
+                "label": "試験環境：実装へ進む",
+                "attachments": [],
+                "id": "node-109"
+              },
+              {
+                "type": "flow_node",
+                "key": "check",
+                "label": "本番切替：条件の確認待ち",
+                "kind": "decision",
+                "attachments": [],
+                "id": "node-110"
+              },
+              {
+                "type": "flow_node",
+                "key": "release",
+                "label": "合格後に本番公開",
+                "attachments": [],
+                "id": "node-111"
+              }
+            ],
+            "edges": [
+              {
+                "type": "flow_edge",
+                "from": "design",
+                "to": "build",
+                "label": "React＋TS／Worker／D1",
+                "id": "edge-112"
+              },
+              {
+                "type": "flow_edge",
+                "from": "build",
+                "to": "check",
+                "label": "取得・保存・進行・復旧を実演",
+                "id": "edge-113"
+              },
+              {
+                "type": "flow_edge",
+                "from": "check",
+                "to": "release",
+                "label": "合格を確認してから",
+                "id": "edge-114"
+              }
+            ],
+            "id": "diagram-107"
+          },
+          {
+            "type": "markdown",
+            "markdown": "| 役割 | 評価と条件 |\n| --- | --- |\n| 肯定派 | 既存ゲームを活かせる構成に賛成／最小の取得・回答・保存を通す |\n| 中立派 | 技術選択を変える根拠なし／問題参照と保存検証のカタログを統一 |\n| 否定派 | 現時点の本番切替は不可／未知ID・欠損問題・版ずれ・復旧を検証 |\n| ユーザー代弁者 | 試験環境への実装に賛成／続きから遊べることと再試行を優先 |",
+            "id": "block-115"
+          },
+          {
+            "type": "code",
+            "language": "text",
+            "text": "1 接続と公開範囲\n  問題原稿 → 検証・D1投入 → 読取API → 画面で回答まで実演\n  /api/* と静的配信を確認、公開APIから無認証で更新できない\n  本番用・試験用のDBと設定を分ける\n\n2 セーブ・ゲーム進行の互換\n  D1だけにある問題を解き、保存・再読込後も履歴が残る\n  通常／ボス／本／封印／復習の参照欠損・版ずれを試す\n  旧URLのJSON → 新URLで取込 → 続きから再開を実演\n\n3 障害・更新・復旧\n  遅延・失敗・空集合・破損応答で元セーブを上書きしない\n  再試行で復帰し、正常なアプリ＋カタログ版へ戻せる\n  実環境で取得時間・転送量・D1／Worker利用量を確認",
+            "caption": "本番切替前の合格条件：最大3グループ",
+            "id": "block-116"
+          },
+          {
+            "type": "markdown",
+            "markdown": "リポジトリには現時点でWrangler設定・Worker API・D1のSQL移行ファイルがありません。Cloudflareアカウント側のDB存在や接続状態は、この評価では確認していません。初期は自己学習・ローカル採点を前提とし、成績認定やランキングを入れるなら認証・サーバー採点を再設計します。",
+            "id": "block-117"
+          },
+          {
+            "type": "code_peek",
+            "source": "head/src/saveValidation.ts#L73-L75",
+            "pins": {
+              "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+              "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+            },
+            "caption": "本番切替の重要条件：コード内ID一覧に依存する検証を、D1カタログに対応させる",
+            "id": "block-118"
+          },
+          {
+            "type": "markdown",
+            "markdown": "評価の対立は大きくなく、焦点は構成の選び直しより受け入れ条件の実証です。[Workerと静的配信の公式構成](https://developers.cloudflare.com/workers/static-assets/routing/worker-script/)と[D1のローカル開発](https://developers.cloudflare.com/d1/best-practices/local-development/)も参照してください。評価のみを行い、ゲーム本体の変更や公開はしていません。",
+            "id": "block-119"
+          }
+        ],
+        "id": "block-105"
+      }
+    ],
+    "createdAt": "2026-11-03T06:38:14.746Z"
+  },
+  "images": {},
+  "traces": {},
+  "maps": {},
+  "commits": [],
+  "selections": {
+    "[\"src/content.ts\",\"head\",14,\"head\",35,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/content.ts",
+        "side": "base",
+        "fromLine": 14,
+        "toLine": 35,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/content.ts",
+        "side": "head",
+        "fromLine": 14,
+        "toLine": 35,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ],
+    "[\"src/App.tsx\",\"head\",56,\"head\",80,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/App.tsx",
+        "side": "base",
+        "fromLine": 56,
+        "toLine": 80,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/App.tsx",
+        "side": "head",
+        "fromLine": 56,
+        "toLine": 80,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ],
+    "[\"src/content.ts\",\"head\",14,\"head\",29,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/content.ts",
+        "side": "base",
+        "fromLine": 14,
+        "toLine": 29,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/content.ts",
+        "side": "head",
+        "fromLine": 14,
+        "toLine": 29,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ],
+    "[\"src/saveValidation.ts\",\"head\",12,\"head\",14,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/saveValidation.ts",
+        "side": "base",
+        "fromLine": 12,
+        "toLine": 14,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/saveValidation.ts",
+        "side": "head",
+        "fromLine": 12,
+        "toLine": 14,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ],
+    "[\"src/saveValidation.ts\",\"head\",73,\"head\",75,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/saveValidation.ts",
+        "side": "base",
+        "fromLine": 73,
+        "toLine": 75,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/saveValidation.ts",
+        "side": "head",
+        "fromLine": 73,
+        "toLine": 75,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ],
+    "[\"src/learningRecords.ts\",\"head\",1,\"head\",10,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/learningRecords.ts",
+        "side": "base",
+        "fromLine": 1,
+        "toLine": 10,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/learningRecords.ts",
+        "side": "head",
+        "fromLine": 1,
+        "toLine": 10,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ],
+    "[\"src/quests/useQuests.ts\",\"head\",38,\"head\",41,\"2fae9a1a-d70e-4c3f-965f-8de61564cd16::7e908ef815db0d64b90d6b063995c343713c933b\"]": [
+      {
+        "file": "src/quests/useQuests.ts",
+        "side": "base",
+        "fromLine": 38,
+        "toLine": 41,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      },
+      {
+        "file": "src/quests/useQuests.ts",
+        "side": "head",
+        "fromLine": 38,
+        "toLine": 41,
+        "pins": {
+          "repositoryId": "2fae9a1a-d70e-4c3f-965f-8de61564cd16",
+          "head": "7e908ef815db0d64b90d6b063995c343713c933b"
+        }
+      }
+    ]
+  },
+  "sources": [
+    {
+      "kind": "excerpt",
+      "file": "src/content.ts",
+      "commit": "7e908ef815db0d64b90d6b063995c343713c933b",
+      "fromLine": 14,
+      "lines": [
+        "export type Question = {",
+        "  id: string;",
+        "  difficulty: Difficulty;",
+        "  topic: 'frontend' | 'laravel' | 'connection';",
+        "  track?: Track;",
+        "  inertia?: boolean;",
+        "  kind: 'choice' | 'cli' | 'fill-choice' | 'fill-input';",
+        "  filename?: string;",
+        "  prompt: string;",
+        "  code?: string;",
+        "  options?: [string, string, string, string];",
+        "  answer?: number;",
+        "  accepted?: string[];",
+        "  reveal: string;",
+        "  explanation: string;",
+        "};",
+        "",
+        "const choice = (id: string, difficulty: Difficulty, topic: Question['topic'], prompt: string, options: [string,string,string,string], answer: number, explanation: string, extra: Partial<Question> = {}): Question => ({ id, difficulty, topic, kind: 'choice', prompt, options, answer, reveal: options[answer], explanation, ...extra });",
+        "const cli = (id: string, difficulty: Difficulty, topic: Question['topic'], prompt: string, accepted: string[], explanation: string, extra: Partial<Question> = {}): Question => ({ id, difficulty, topic, kind: 'cli', prompt, accepted, reveal: accepted[0], explanation, ...extra });",
+        "",
+        "export const questions: Question[] = [",
+        "  choice('r-b-1','beginner','frontend','Reactで画面の一部分を再利用する単位は？',['コンポーネント','マイグレーション','ルート','ミドルウェア'],0,'ReactのUIはコンポーネントを組み合わせて作ります。',{track:'react'}),"
+      ]
+    },
+    {
+      "kind": "excerpt",
+      "file": "src/App.tsx",
+      "commit": "7e908ef815db0d64b90d6b063995c343713c933b",
+      "fromLine": 56,
+      "lines": [
+        "type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear';",
+        "type Save = { quests:QuestStates; dialogueLog:DialogueLogEntry[]; learningRecords:LearningRecords; version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };",
+        "type Dialogue = { study?:QuestStudy; answered?:boolean; correct?:boolean; question?: Question; speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string;correct?:boolean;onChoose?:()=>void}[]; onEnd?: () => void };",
+        "type Battle = { impact?:BattleImpact; submitted?:string|number; enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number };",
+        "",
+        "const STORAGE = 'code-chronicle-save-v1';",
+        "const BACKUP_STORAGE='code-chronicle-save-backup-v1';",
+        "const maxHp = (level: number) => 20 + (level - 1) * 5;",
+        "const maxMp = (level: number) => 3 + Math.floor((level - 1) / 2);",
+        "const rollDamage = (minimum: number, maximum: number) => minimum + Math.floor(Math.random() * (maximum - minimum + 1));",
+        "const initialSave = (): Save => ({ quests:{}, dialogueLog:[], learningRecords:{}, version:2, story:'breakfast', name: '旅人', track: 'react', difficulty: 'beginner', inertia: true, area: 'home', pos: maps.home.entry, hp: 20, mp: 3, xp: 0, level: 1, gold:100, inventory:{woodSword:1,travelerClothes:1,herb:1}, equipment:{weapon:'woodSword',armor:'travelerClothes'}, dresserOpened:false, openedChests:[], readBooks:[], bookmarks:{}, defeated: [], wrong: [], seen: [], answered: [], bossDefeated: false, magicUsed: false, completed: false, steps: 0, correct: 0, total: 0 });",
+        "const validateIncomingSave=(value:unknown)=>{",
+        "  const result=validateSave(value,initialSave());",
+        "  if(result.save){",
+        "    const restored=restoreMemoryPosition(maps[result.save.area],restoreMapPosition(maps[result.save.area],result.save.pos),result.save.quests);",
+        "    if(!same(result.save.pos,restored))result.notice+=' 現在地を通れる場所に戻しました。';",
+        "    result.save.pos=restored;",
+        "  }",
+        "  return result;",
+        "};",
+        "const loadSave = (storageKey=STORAGE):{save:Save|null;notice:string}=>{",
+        "  try {",
+        "    const raw=localStorage.getItem(storageKey);if(!raw)return {save:null,notice:''};",
+        "    return validateIncomingSave(JSON.parse(raw));",
+        "  }catch{return {save:null,notice:'保存データを読み込めませんでした。元のデータは変更していません。'};}"
+      ]
+    },
+    {
+      "kind": "excerpt",
+      "file": "src/saveValidation.ts",
+      "commit": "7e908ef815db0d64b90d6b063995c343713c933b",
+      "fromLine": 12,
+      "lines": [
+        "const itemIds=new Set(Object.keys(items));",
+        "const questionIds=new Set(questions.map(q=>q.id));",
+        "const knownQuestion=(id:string)=>questionIds.has(id)||/^guardian-repair-[0-2]-(beginner|intermediate|advanced)$/.test(id);"
+      ]
+    },
+    {
+      "kind": "excerpt",
+      "file": "src/saveValidation.ts",
+      "commit": "7e908ef815db0d64b90d6b063995c343713c933b",
+      "fromLine": 73,
+      "lines": [
+        "  for(const key of ['wrong','answered']) {",
+        "    const valid=(save[key] as string[]).filter(knownQuestion);",
+        "    if(valid.length!==(save[key] as string[]).length)fix('問題の記録');save[key]=valid;"
+      ]
+    },
+    {
+      "kind": "excerpt",
+      "file": "src/learningRecords.ts",
+      "commit": "7e908ef815db0d64b90d6b063995c343713c933b",
+      "fromLine": 1,
+      "lines": [
+        "import { questions } from './content';",
+        "export type LearningRecord={normalAttempts:number;normalCorrect:number;reviewAttempts:number;reviewCorrect:number;wrongCount:number;lastAnsweredAt:number;lastCorrect:boolean;firstNormalCorrect?:boolean};",
+        "export type LearningRecords=Record<string,LearningRecord>;",
+        "const ids=new Set(questions.map(q=>q.id));",
+        "const known=(id:string)=>ids.has(id)||/^guardian-repair-[0-2]-(beginner|intermediate|advanced)$/.test(id);",
+        "export function normalizeLearningRecords(value:unknown):LearningRecords {",
+        "  if(!value||typeof value!=='object'||Array.isArray(value))return {};",
+        "  const result:LearningRecords={};",
+        "  for(const [id,raw] of Object.entries(value)) {",
+        "    if(!known(id)||!raw||typeof raw!=='object'||Array.isArray(raw))continue;"
+      ]
+    },
+    {
+      "kind": "excerpt",
+      "file": "src/quests/useQuests.ts",
+      "commit": "7e908ef815db0d64b90d6b063995c343713c933b",
+      "fromLine": 38,
+      "lines": [
+        "      const index=steps.findIndex(step=>step.id===progress?.reviewStep),step=steps[index];",
+        "      if(!step||step.trigger.type!=='question-answered')return;",
+        "      const questionId=step.trigger.questionId,q=questions.find(q=>q.id===questionId);",
+        "      if(!q?.options)return;"
+      ]
+    }
+  ],
+  "repository": {
+    "cloneUrl": "https://github.com/Zundabyon/CodeChronicle.git"
+  }
+}

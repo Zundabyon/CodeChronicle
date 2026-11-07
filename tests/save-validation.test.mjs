@@ -1,5 +1,5 @@
 import {test,after} from 'node:test';import assert from 'node:assert/strict';import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});after(()=>server.close());
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});after(()=>server.close());
 const {validateSave}=await server.ssrLoadModule('/src/saveValidation.ts');
 const defaults={version:1,name:'旅人',level:1,track:'react',difficulty:'beginner',inertia:true,area:'home',pos:{x:5,y:7},hp:20,mp:3,xp:0,gold:100,inventory:{woodSword:1,travelerClothes:1,herb:1},equipment:{weapon:'woodSword',armor:'travelerClothes'},openedChests:[],readBooks:[],bookmarks:{},wrong:[],answered:[],defeated:[],seen:[],correct:0,total:0,steps:0,story:'breakfast',completed:false};
 test('legacy saves migrate with valid possessions and learning progress intact',()=>{

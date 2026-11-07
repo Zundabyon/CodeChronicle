@@ -1,0 +1,4 @@
+interface:
+  display_name: "コードレビュー"
+  short_description: "別エージェントの独立評価と相互検証で、変更の不具合と未解決事項を整理する"
+  default_prompt: "$code-review を使い、現在の差分を別の2レビュワーで独立評価し、互いの指摘を検証して報告してください。"

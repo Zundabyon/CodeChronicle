@@ -1,0 +1,569 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="CodeChronicleのCloudflare移管からWorker API・D1まで学ぶ実習教科書"><title>CodeChronicle｜Cloudflare＋D1 デプロイの教科書</title><style>
+:root{color-scheme:dark;--bg:#0d1423;--panel:#162238;--paper:#fcfaf3;--ink:#23334a;--muted:#9aaac1;--gold:#dfbf78;--line:#34445f;--accent:#8bdbcf}*{box-sizing:border-box}body{margin:0;font:16px/1.85 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:#e6edf7}button,input{font:inherit}button,a,input{touch-action:manipulation}button{cursor:pointer}a{color:#256a8b;text-underline-offset:3px}button:focus-visible,a:focus-visible,input:focus-visible,pre:focus-visible,.tablewrap:focus-visible{outline:3px solid #1caeb3;outline-offset:3px}.skip{position:absolute;top:-70px;left:12px;background:white;padding:8px;z-index:10}.skip:focus{top:8px}.topbar{max-width:1500px;margin:auto;padding:22px 32px 18px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line)}.brand{color:var(--gold);font:700 12px/1.5 ui-monospace,monospace;letter-spacing:.14em}.subtitle{font-size:12px;color:var(--muted)}.tools{margin-left:auto;display:flex;gap:8px}.tools button,.move button,.jump{border:1px solid #64718a;background:#1c2c45;color:#f0e1bb;border-radius:7px;padding:8px 15px;text-decoration:none}.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:295px minmax(0,1fr);gap:28px;padding:26px 32px 55px}aside{align-self:start;position:sticky;top:18px;max-height:88vh;overflow-y:auto;padding-right:10px;scrollbar-width:thin}.search-label{font-size:12px;color:var(--gold)}#search{display:block;width:100%;margin:6px 0 10px;padding:11px;border-radius:7px;border:1px solid var(--line);background:#142036;color:#f8f4e6}.progress-row{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}progress{width:100%;height:5px;accent-color:var(--gold)}.navgroup{font-size:11px;color:var(--gold);letter-spacing:.1em;margin:19px 0 8px}.chapter-link{display:flex;align-items:start;gap:8px;padding:8px 9px;border-left:2px solid transparent;text-decoration:none;color:#c4d0e1;font-size:12px;line-height:1.6;margin:2px 0;border-radius:0 5px 5px 0}.chapter-link:hover{background:#1d304c}.chapter-link.active{border-color:var(--gold);background:#21324e;color:#fff1c7}.tick{color:#a8bdcc}.chapter-link.done .tick{color:#80d9c5}.sidebar-home{display:block;margin-bottom:13px;font-size:13px;color:var(--gold)}main{min-width:0}.home,.lesson{background:var(--paper);color:var(--ink);padding:42px 48px 34px;border-radius:12px;box-shadow:0 12px 40px #0003;border-top:3px solid var(--gold)}.hero{position:relative;overflow:hidden;background:linear-gradient(130deg,#152b47,#252b48 65%,#40354d);color:#f6efd9;padding:34px;border-radius:8px;margin:-10px -15px 28px}.hero h1{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(26px,3vw,42px);line-height:1.5;font-weight:700;letter-spacing:.03em;margin:15px 0}.hero p{font-size:14px;color:#d6e0ee;max-width:570px}.eyebrow{font:11px/1.5 ui-monospace,monospace;color:#806029;letter-spacing:.12em}.hero .eyebrow{color:#e4c47e}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid #9c8c6d;font-size:11px;border-radius:4px;padding:1px 8px;color:#e9d6aa}.lesson h2{font-size:clamp(22px,2.5vw,30px);line-height:1.55;margin:14px 0 26px;font-weight:650}.lesson h3,.home h2{font-size:18px;margin:30px 0 12px;color:#26576e}.lesson p{margin:14px 0}.lesson ul,.lesson ol{padding-left:25px}.lesson li{margin:8px 0}.note{background:#edf4ed;border-left:3px solid #4a8d78;padding:13px 17px;border-radius:0 5px 5px 0}.callout{background:#eef2f6;padding:16px 20px;border-left:3px solid #49778b;border-radius:5px;font-size:14px;margin:18px 0}.codebox{margin:18px 0 25px;background:#15233a;color:#e1eaf4;border-radius:7px;overflow:hidden}.codebar{display:flex;align-items:center;padding:7px 14px;border-bottom:1px solid #33455c;justify-content:space-between;font:11px/1.5 ui-monospace,monospace;letter-spacing:.08em;color:#e0c384;text-transform:uppercase}.copy{color:#d8e4ef;background:#293c55;border:1px solid #607087;border-radius:4px;padding:3px 12px;font-size:11px}pre{margin:0;padding:18px 20px;overflow:auto;font:12.5px/1.85 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:2}pre code{color:inherit;background:none;padding:0;white-space:pre}p code,li code,td code{font-family:ui-monospace,monospace;font-size:.88em;background:#e5eceb;color:#24626a;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}.tablewrap{overflow:auto;margin:20px 0}table{border-collapse:collapse;width:100%;min-width:440px;font-size:13px;line-height:1.8}th{text-align:left;background:#264a66;color:#fff;padding:10px 14px}td{padding:11px 14px;border-bottom:1px solid #d7e0e5;vertical-align:top}tr:nth-child(even){background:#edf1f1}.completion{display:flex;align-items:center;gap:9px;border-top:1px solid #d5dcd9;margin-top:34px;padding-top:22px;font-size:14px;color:#276355}.completion input{accent-color:#397967;width:19px;height:19px}.move{display:flex;justify-content:space-between;gap:12px;margin-top:20px}.move button:disabled{opacity:.3;cursor:default}.move .position{align-self:center;font-size:12px;color:var(--muted)}.route{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.route a{display:block;background:#e9eff0;color:#26485b;padding:16px;border-radius:7px;font-size:13px;text-decoration:none;border:1px solid #d7e1e2}.route strong{display:block;color:#8a6324;font-size:11px;margin-bottom:6px}.arch{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:20px 0}.node{border:1px solid #9eafb7;border-radius:6px;padding:13px 15px;background:#eef2f2;font-size:13px}.arrow{color:#8c713c}.gate{font-size:14px;background:#fcf0d8;border-left:3px solid #b7893b;padding:16px;margin:20px 0}footer{font-size:11px;color:var(--muted);margin-top:20px}.status{font-size:12px;color:#7be2d1;min-height:24px}#mobile-nav{display:none}#empty{font-size:12px;color:var(--muted)}[hidden]{display:none!important}@media(max-width:1000px){.layout{grid-template-columns:240px minmax(0,1fr);gap:18px;padding:20px}.home,.lesson{padding:28px}.topbar{padding:18px 20px}.route{grid-template-columns:1fr}}@media(max-width:760px){.layout{display:block;padding:14px}aside{position:static;max-height:none;overflow:visible;padding:0;margin-bottom:15px}#mobile-nav{display:block;border:1px solid var(--line);border-radius:5px;padding:9px 14px;background:var(--panel);color:var(--gold);width:100%;text-align:left}#nav-wrap{display:none;margin-top:12px;max-height:420px;overflow:auto}aside.open #nav-wrap{display:block}.home,.lesson{padding:23px 19px}.topbar{padding:15px;align-items:start}.brand{font-size:10px}.subtitle{font-size:10px}.tools button{font-size:12px;padding:6px 9px}.hero{padding:23px;margin:0 0 22px}.hero h1{font-size:27px}pre{font-size:11.5px;padding:15px}.move .position{font-size:10px}.move button{font-size:12px;padding:8px}body{font-size:15px}}@media print{*{color:#111!important;box-shadow:none!important}.topbar,aside,.move,.completion,.copy,.status,.route,.home .jump,footer{display:none!important}.layout{display:block;margin:0;padding:0}.home,.lesson,.lesson[hidden]{display:block!important;background:white;border:0;border-radius:0;padding:0;break-before:page}.home{break-before:auto}.hero{background:white!important;border:1px solid #777;margin:0;padding:15px}.hero h1{font-size:25px}body{font-size:10pt;background:white!important}.lesson h2{font-size:19pt}.lesson h3{font-size:13pt;break-after:avoid}pre{white-space:pre-wrap;font-size:8pt;line-height:1.7;overflow-wrap:anywhere}.codebox{border:1px solid #aaa;background:#f6f6f6!important;break-inside:auto}.codebar{background:#eee!important}.tablewrap{overflow:visible}table{min-width:0}tr{break-inside:avoid}.note,.callout{background:#f7f7f7!important}a{text-decoration:none}h2,h3{break-after:avoid}}
+</style><noscript><style>.lesson[hidden]{display:block!important}.lesson{margin-top:24px}.completion,.move,.copy,#search,.progress-row,progress,#mobile-nav{display:none!important}#nav-wrap{display:block!important}aside{position:static;max-height:none}</style></noscript></head><body><a class="skip" href="#main">本文へ移動</a><header class="topbar"><div><div class="brand">CODE CHRONICLE / FIELD GUIDE</div><div class="subtitle">Cloudflare ＋ D1 · デプロイの教科書</div></div><div class="tools"><button id="print">全章を印刷</button></div></header><div class="layout"><aside aria-label="教科書の目次"><button id="mobile-nav" aria-expanded="false" aria-controls="nav-wrap">目次を開く ▾</button><div id="nav-wrap"><a class="sidebar-home" href="#home">◇ 学習ルート・構成図へ</a><label class="search-label" for="search">章の本文を検索</label><input id="search" type="search" placeholder="例：セーブ、migration、版"><div class="progress-row"><span id="done-count">0 / 36 章</span><span id="search-count" aria-live="polite"></span></div><progress id="progress" max="36" value="0" aria-label="読了した章の数"></progress><nav><div class="navgroup">A · 静的公開の基礎</div><a class="chapter-link" href="#a00" data-lesson="a00"><span class="tick" aria-hidden="true">◇</span><span>00 冒険の地図と、この本の使い方</span></a><a class="chapter-link" href="#a01" data-lesson="a01"><span class="tick" aria-hidden="true">◇</span><span>01 現在地：CodeChronicleは何で動いている？</span></a><a class="chapter-link" href="#a02" data-lesson="a02"><span class="tick" aria-hidden="true">◇</span><span>02 行き先：WorkersとPages、どちらにする？</span></a><a class="chapter-link" href="#a03" data-lesson="a03"><span class="tick" aria-hidden="true">◇</span><span>03 セーブの引っ越しが、いちばん大切</span></a><a class="chapter-link" href="#a04" data-lesson="a04"><span class="tick" aria-hidden="true">◇</span><span>04 移管の順序と、変更するファイル</span></a><a class="chapter-link" href="#a05" data-lesson="a05"><span class="tick" aria-hidden="true">◇</span><span>05 ターミナルで、出発準備</span></a><a class="chapter-link" href="#a06" data-lesson="a06"><span class="tick" aria-hidden="true">◇</span><span>06 画像が消える理由：baseを理解する</span></a><a class="chapter-link" href="#a07" data-lesson="a07"><span class="tick" aria-hidden="true">◇</span><span>07 Wranglerと、公開の設計図</span></a><a class="chapter-link" href="#a08" data-lesson="a08"><span class="tick" aria-hidden="true">◇</span><span>08 まだ公開しない：ローカルで確認する</span></a><a class="chapter-link" href="#a09" data-lesson="a09"><span class="tick" aria-hidden="true">◇</span><span>09 はじめての公開：workers.devへ</span></a><a class="chapter-link" href="#a10" data-lesson="a10"><span class="tick" aria-hidden="true">◇</span><span>10 「表示された」から「遊べる」へ</span></a><a class="chapter-link" href="#a11" data-lesson="a11"><span class="tick" aria-hidden="true">◇</span><span>11 冒険の記録を新URLへ持っていく</span></a><a class="chapter-link" href="#a12" data-lesson="a12"><span class="tick" aria-hidden="true">◇</span><span>12 pushしたら公開される仕組みを作る</span></a><a class="chapter-link" href="#a13" data-lesson="a13"><span class="tick" aria-hidden="true">◇</span><span>13 独自ドメインは、別の小さな引っ越し</span></a><a class="chapter-link" href="#a14" data-lesson="a14"><span class="tick" aria-hidden="true">◇</span><span>14 本番切り替え：旧サイトをいつ整理する？</span></a><a class="chapter-link" href="#a15" data-lesson="a15"><span class="tick" aria-hidden="true">◇</span><span>15 失敗したとき、どこまで戻せる？</span></a><a class="chapter-link" href="#a16" data-lesson="a16"><span class="tick" aria-hidden="true">◇</span><span>16 料金・制限と、秘密の置き場所</span></a><a class="chapter-link" href="#a17" data-lesson="a17"><span class="tick" aria-hidden="true">◇</span><span>17 よくあるつまずき帳</span></a><a class="chapter-link" href="#a18" data-lesson="a18"><span class="tick" aria-hidden="true">◇</span><span>18 将来の地図：問題をDBへ移したくなったら</span></a><a class="chapter-link" href="#a19" data-lesson="a19"><span class="tick" aria-hidden="true">◇</span><span>19 確認問題：自分の言葉で説明してみる</span></a><a class="chapter-link" href="#a20" data-lesson="a20"><span class="tick" aria-hidden="true">◇</span><span>20 解答と、移管完了の判定</span></a><a class="chapter-link" href="#a21" data-lesson="a21"><span class="tick" aria-hidden="true">◇</span><span>補講A Pagesを選ぶ場合と、SPAの設定</span></a><a class="chapter-link" href="#a22" data-lesson="a22"><span class="tick" aria-hidden="true">◇</span><span>補講B 一枚で見返す、実習用コマンド帳</span></a><a class="chapter-link" href="#a23" data-lesson="a23"><span class="tick" aria-hidden="true">◇</span><span>参考資料 1 公式ドキュメント</span></a><a class="chapter-link" href="#a24" data-lesson="a24"><span class="tick" aria-hidden="true">◇</span><span>参考資料 2 次に読む資料と、コードの入口</span></a><div class="navgroup">B · Worker API＋D1 実践</div><a class="chapter-link" href="#b00" data-lesson="b00"><span class="tick" aria-hidden="true">◇</span><span>B00 DB込みの構成で、どこまで進める？</span></a><a class="chapter-link" href="#b01" data-lesson="b01"><span class="tick" aria-hidden="true">◇</span><span>B01 道具と、試験用の設定を用意する</span></a><a class="chapter-link" href="#b02" data-lesson="b02"><span class="tick" aria-hidden="true">◇</span><span>B02 D1のテーブルを、変更履歴として作る</span></a><a class="chapter-link" href="#b03" data-lesson="b03"><span class="tick" aria-hidden="true">◇</span><span>B03 テスト問題を1問だけ投入する</span></a><a class="chapter-link" href="#b04" data-lesson="b04"><span class="tick" aria-hidden="true">◇</span><span>B04 問題を返すTypeScript Workerを作る</span></a><a class="chapter-link" href="#b05" data-lesson="b05"><span class="tick" aria-hidden="true">◇</span><span>B05 ローカルでAPIを叩き、Reactの取得口を用意</span></a><a class="chapter-link" href="#b06" data-lesson="b06"><span class="tick" aria-hidden="true">◇</span><span>B06 既存ゲームへ接続する：ここが移行の本体</span></a><a class="chapter-link" href="#b07" data-lesson="b07"><span class="tick" aria-hidden="true">◇</span><span>B07 試験用Cloudflareへ、DBとWorkerを公開</span></a><a class="chapter-link" href="#b08" data-lesson="b08"><span class="tick" aria-hidden="true">◇</span><span>B08 本番用を分け、公開してよいか判定する</span></a><a class="chapter-link" href="#b09" data-lesson="b09"><span class="tick" aria-hidden="true">◇</span><span>B09 自動公開と、問題の更新手順</span></a><a class="chapter-link" href="#b10" data-lesson="b10"><span class="tick" aria-hidden="true">◇</span><span>B10 戻し方と、卒業課題</span></a></nav><p id="empty" hidden>一致する章がありません。</p></div></aside><main id="main"><section class="home" id="home"><div class="hero"><div class="eyebrow">CODE CHRONICLE / DEPLOYMENT FIELD GUIDE</div><h1>Cloudflareへ運ぶ、<br>冒険とデータの教科書。</h1><p>React＋TypeScriptのゲームを活かしながら、公開先の移管からWorker API・D1まで。1回の休憩で、一つずつ進めよう。</p><div class="chips"><span class="chip">HTML単体・オフラインで読める</span><span class="chip">2026.11.03</span><span class="chip">コマンド・確認問題つき</span></div></div><h2>最初に、ルートを選ぼう</h2><div class="route"><a href="#a00"><strong>ROUTE A</strong>仕組みと公開の基本<br>初めてなら、ここから</a><a href="#b00"><strong>ROUTE B</strong>Worker API＋D1<br>構成相談の続きはこちら</a><a href="#b08"><strong>RELEASE GATE</strong>本番公開の判定<br>接続・互換・復旧を確認</a></div><h2>今回の行き先</h2><div class="arch" aria-label="構成図"><span class="node">ブラウザ<br>React＋TS</span><span class="arrow">↔</span><span class="node">Workers<br>静的配信＋TS API</span><span class="arrow">↔</span><span class="node">D1<br>問題とカタログ版</span></div><div class="callout">セーブは第一段階ではブラウザ内に残します。問題のDB化と、認証・セーブ同期は別の段階です。画像とフォントは当面Static Assetsで配信します。</div><div class="gate"><strong>設計はGO。本番切替は、確認してから。</strong><br>この教材は実装手順の見本です。APIの1問実習だけで、既存ゲーム全体の移行が完了したとは扱いません。ゲームとの接続はB06、公開判定はB08へ。</div><h2>使い方</h2><ul><li>目次で章を選ぶ。検索は全章の本文を対象にします。</li><li>コード枠の「コピー」でコマンドや見本を取り出せます。</li><li>読了チェックはこの教材のブラウザ内に保存します。ゲームのセーブには触れません。</li><li>印刷ボタンは全章をまとめて印刷します。ネット接続が必要なのは公式資料のリンクを開くときです。</li></ul><a href="#b00" class="jump">DB込みの構成から読み始める →</a><h2>確認した範囲</h2><p>既存のソース構成、保存・問題参照の仕組み、Cloudflare公式資料を基にしています。実習SQL・APIの主要応答・JSON検証と、PC／スマホの表示・操作をローカルで確認しました。Cloudflareアカウントへの接続、DB作成、実際のデプロイは実施しません。</p><p>基礎編は従来の静的公開ガイドを収録しています。実践編でAPIを追加した後は、静的専用の最小設定ではなく、B01以降の明示的な設定ファイルを使ってください。</p></section><section class="lesson" id="a00" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">00 冒険の地図と、この本の使い方</h2><h3>まず、何ができるようになる？</h3>
+<ul><li>今のゲームが、どこで動き、どこに保存しているかを説明できる。</li><li>Cloudflare向けのファイルを作り、手動で公開できる。</li><li>画像・フォント・ゲーム・セーブを確認し、問題があれば戻せる。</li><li>GitHubへのpushから自動公開する流れを作れる。</li></ul>
+<h3>休憩時間で進める順番</h3>
+<p>01〜04は地図を読む時間。05〜08はローカル実習。09〜11は最初の公開と動作確認。12〜15は更新・URL・切り替え・復旧。16〜20は運用と次の学習です。</p>
+<p>1節につき5分を目安に読み、作業が終わらなければ次の休憩へ。アカウント作成やDNS反映は5分で終わらないこともあります。待ち時間は作業時間と分けて考えます。</p>
+<h3>実習の前提</h3>
+<ul><li>MacのターミナルでCodeChronicleのフォルダを開ける。</li><li>GitHubとCloudflareのアカウントがある。独自ドメインは最初は不要。</li><li>Node.js 22系とnpmを用意する。既存のGitHub ActionsもNode 22を使用中。</li><li>変更中のファイルを把握する。既存の作業を消すコマンドは使わない。</li></ul>
+<p>コード枠のコマンドは1行ずつ実行します。<code>npm</code>は道具・依存関係の管理、<code>npx</code>はプロジェクトの道具を呼び出すための入口です。<code>Ctrl + C</code>はローカルサーバーの停止に使います。</p>
+<p class="note"><strong>今日のセーブポイント</strong>：この本のゴールを一文で言えたら、準備完了。</p><label class="completion"><input type="checkbox" data-complete="a00"> この章を読了にする</label></section><section class="lesson" id="a01" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">01 現在地：CodeChronicleは何で動いている？</h2><h3>ブラウザがゲーム本体を動かしている</h3>
+<p>現在のCodeChronicleはReactとTypeScriptで書かれ、Viteで公開用ファイルへ変換されるアプリです。GitHub Pagesは完成したHTML・CSS・JavaScript・画像を配っています。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-1" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-1">開発する場所                 公開用に変換       配る場所
+src/ + public/  ── Vite ──&gt;  dist/  ──&gt;  GitHub Pages
+                                              ↓
+                                  ブラウザでゲームが動く
+                                              ↓
+                                  そのブラウザにセーブ</code></pre></div>
+<p><code>src/</code>にはゲームの処理や問題の定義、<code>public/</code>には地図・キャラクター・背景・フォントなどがあります。<code>dist/</code>はその材料から作る配布物です。編集するのは材料側。<code>dist/</code>を手で直しても、次のビルドで作り直されます。</p>
+<h3>今は、サーバーのDBに問題や冒険を置いていない</h3>
+<p>問題はソースに定義され、ビルドしたJavaScriptに含まれます。冒険はブラウザのlocalStorageへ保存されます。学習問題にLaravelやPHPのコードが出てきても、公開サーバーでLaravelが動いているわけではありません。</p>
+<p>そのため最初の移管は「完成したゲームを配る場所の変更」で進められます。PHPサーバーやDBを同時に引っ越す作業はありません。</p>
+<p class="note"><strong>手を動かす</strong>：<code>package.json</code>の<code>build</code>、<code>src/</code>、<code>public/</code>を開き、材料と配布物の違いを確認する。</p>
+<p class="note"><strong>小問</strong>：Cloudflareへ<code>src/App.tsx</code>だけを置けば動く？ → 動かない。アプリ全体をビルドしてできる<code>dist/</code>を配る。</p><label class="completion"><input type="checkbox" data-complete="a01"> この章を読了にする</label></section><section class="lesson" id="a02" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">02 行き先：WorkersとPages、どちらにする？</h2><h3>この本はWorkers Static Assetsを使う</h3>
+<p>Cloudflare公式は、新しい静的サイトやSPAの公開先にWorkers Static Assetsを推奨しています。Pagesも引き続き利用できます。この本では、現在のゲームを静的ファイルとして配り、将来APIを足す道筋も作りやすいWorkersを選びます。<a href="#sources" class="source-ref" data-source="1">[S1]</a></p>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">名前</th><th scope="col">今回どう関わる？</th></tr></thead><tbody><tr><td>Workers Static Assets</td><td><code>dist/</code>を配る。今回の本編の行き先</td></tr><tr><td>Workersのサーバー処理</td><td>将来APIを作るときに追加する処理</td></tr><tr><td>Pages</td><td>別の公開サービス。補講Aで設定を比較</td></tr><tr><td>D1</td><td>将来、問題などをSQLで管理する候補</td></tr><tr><td>R2</td><td>将来、大きな画像や音声を置く候補</td></tr></tbody></table></div>
+<p>「Workers」という名前でも、最初からサーバー側のプログラムを書く必要はありません。今回は静的ファイルを指定するだけの構成です。<a href="#sources" class="source-ref" data-source="1">[S1]</a></p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-2" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-2">今回：ブラウザ ──&gt; Workers Static Assets ──&gt; distのゲーム
+
+将来：ブラウザ ──&gt; Worker API ──&gt; D1など</code></pre></div>
+<h3>学びを混ぜすぎない</h3>
+<p>今回はCloudflare Viteプラグインを入れず、既存のViteで<code>dist/</code>を作り、Wranglerで公開します。プラグインを使う別方式の記事には<code>dist/client</code>などが登場しますが、この本の出力先は<code>dist/</code>です。</p>
+<p class="note"><strong>小問</strong>：Workersを選んだら、問題は自動でD1へ入る？ → 入らない。保存先の変更は別の設計・実装が必要。</p><label class="completion"><input type="checkbox" data-complete="a02"> この章を読了にする</label></section><section class="lesson" id="a03" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">03 セーブの引っ越しが、いちばん大切</h2><h3>URLが変わると、冒険が見えなくなることがある</h3>
+<p>localStorageはオリジンごとに分かれます。オリジンは「プロトコル・ホスト名・ポート」の組み合わせです。GitHub PagesとCloudflareはホスト名が変わるため、同じブラウザでも保存場所が別になります。<a href="#sources" class="source-ref" data-source="2">[S2]</a></p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-3" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-3">旧：https://zundabyon.github.io/CodeChronicle/
+新：https://実際に発行された名前.workers.dev/
+
+旧URLのセーブ箱 ≠ 新URLのセーブ箱</code></pre></div>
+<p>URLのパスが変わるだけなら同一オリジンですが、今回の引っ越しはホスト名が変わります。「続きから」が出ないことだけでは、旧セーブが削除されたとは判断できません。</p>
+<h3>既存の書き出し機能を使う</h3>
+<ol><li>旧URLを、いつも遊んでいるブラウザ・プロファイルで開く。</li><li>タイトルの「冒険の管理」から「セーブファイルの書き出し・読み込み」を開く。</li><li>「セーブを書き出す」でJSONを保存する。</li><li>ファイルが空でないことと、保存した場所を確認する。</li><li>名前・レベル・現在地をメモし、ファイルを残しておく。</li></ol>
+<p>自分のセーブは、自分の端末で書き出します。運営者の手元から、全プレイヤーのlocalStorageを一括回収することはできません。</p>
+<p class="note"><strong>重要</strong>：旧URLは、引き継ぎが終わるまで開ける状態で残します。新URLへの自動転送を先に入れると、旧画面から書き出しにくくなります。</p>
+<p class="note"><strong>今日のセーブポイント</strong>：JSONを書き出せた。まだ新URLへ読み込まなくて大丈夫。</p><label class="completion"><input type="checkbox" data-complete="a03"> この章を読了にする</label></section><section class="lesson" id="a04" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">04 移管の順序と、変更するファイル</h2><h3>二段階で進める</h3>
+<p>前半は「試しに新URLで動かす」。後半は「正式なURLを決め、引き継ぎ案内をして切り替える」です。旧サイトを先に停止する必要はありません。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-4" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-4">旧サイトを残す
+  → セーブを書き出す
+  → Cloudflare向けにビルド
+  → ローカル確認 → 新URLで公開・確認
+  → 正式URL決定 → セーブ引き継ぎ
+  → 案内・リンク更新 → 旧公開の運用を整理</code></pre></div>
+<h3>実習で変更するもの</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">ファイル</th><th scope="col">役割</th></tr></thead><tbody><tr><td><code>package.json</code></td><td>Wranglerを開発用の道具として登録</td></tr><tr><td><code>package-lock.json</code></td><td>インストールした道具の詳細を記録</td></tr><tr><td><code>wrangler.jsonc</code></td><td>名前・互換日・公開フォルダを指定</td></tr><tr><td><code>.gitignore</code></td><td>ローカル状態や秘密情報をGitから除外</td></tr><tr><td>GitHub Pagesのworkflow</td><td>切り替え完了後に旧自動公開を整理</td></tr></tbody></table></div>
+<p>この教科書にある設定は実習用の見本です。教科書の作成だけでは、これらの本番設定は書き換えていません。</p>
+<h3>記録しておくもの</h3>
+<p>旧URL、新しいURL、GitのコミットID、公開日時、確認したブラウザ、問題が出たときに戻す版。まずテキストで十分です。復旧で困るのは「どの版が動いていたのか分からない」状態です。</p>
+<p class="note"><strong>小問</strong>：最初にGitHub Pagesを無効化する？ → 旧セーブの取り出しと復旧先を残し、新サイトの確認後に整理する。</p><label class="completion"><input type="checkbox" data-complete="a04"> この章を読了にする</label></section><section class="lesson" id="a05" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">05 ターミナルで、出発準備</h2><h3>いま開いている場所を確認する</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-5" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-5">cd /Users/ogasawarayuki/CodeChronicle
+pwd
+git status --short
+node --version
+npm --version</code></pre></div>
+<p><code>pwd</code>は現在地の確認です。<code>package.json</code>があるフォルダで作業します。<code>git status</code>にファイルが並んでも、すぐ消す必要はありません。別の作業の変更があるなら、今回の変更と区別します。</p>
+<h3>既存の状態でビルドできるか確認する</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-6" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-6">npm ci
+npm run build -- --base=/</code></pre></div>
+<p><code>npm ci</code>はlockファイルに沿って依存関係を入れ直します。<code>node_modules</code>は作り直されるので、開発サーバーを止めて実行します。初回ビルドが失敗したら、Cloudflare設定へ進む前に原因を直します。</p>
+<p><code>npm run build</code>は、このプロジェクトではTypeScriptのチェックとViteのビルドを行います。最後に<code>dist/index.html</code>と<code>dist/assets/</code>ができれば、配布物を作れています。</p>
+<h3>読み取る練習</h3>
+<p><code>error</code>と<code>warning</code>は同じではありません。今回の確認ではビルド成功後にJavaScriptの大きさに関する警告が出ました。これは失敗ではありませんが、今後の読み込み速度の改善対象になります。</p>
+<p class="note"><strong>終わりの確認</strong>：コマンドが終了コード0で終わり、<code>dist/index.html</code>がある。失敗したときは、末尾だけでなく最初に出たエラーを記録する。</p><label class="completion"><input type="checkbox" data-complete="a05"> この章を読了にする</label></section><section class="lesson" id="a06" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">06 画像が消える理由：baseを理解する</h2><h3>GitHub Pagesと、今回のCloudflareは入口が違う</h3>
+<p>現在のGitHub Pagesは<code>/CodeChronicle/</code>という場所の下にあります。既存workflowも<code>--base=/CodeChronicle/</code>でビルドしています。今回のWorkers公開はホスト直下の<code>/</code>を入口にします。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-7" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-7">GitHub Pages用： /CodeChronicle/assets/...
+Cloudflare用：   /assets/...</code></pre></div>
+<p>Viteの<code>base</code>は、公開先に合うようにファイルへの道筋を調整する指定です。HTML・CSS・importされた画像などの参照に反映されます。<a href="#sources" class="source-ref" data-source="3">[S3]</a></p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-8" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-8"># Cloudflare用
+npm run build -- --base=/
+
+# 旧GitHub Pages用の指定
+npm run build -- --base=/CodeChronicle/</code></pre></div>
+<p>両方とも同じ<code>dist/</code>を作り直します。最後にどちらでビルドしたかを忘れないよう、公開の直前には公開先に合うビルドをやり直します。</p>
+<h3>CodeChronicleで確認する場所</h3>
+<p>ゲームの画像参照には<code>import.meta.env.BASE_URL</code>が使われています。タイトルのローカルフォントも確認対象です。新しい画像を足すときも、GitHub PagesのURLを直接埋め込まないようにします。</p>
+<p class="note"><strong>手を動かす</strong>：<code>dist/index.html</code>をエディタで開く。<code>assets/</code>へのパスが<code>/CodeChronicle/</code>のままになっていないか見る。ブラウザではファイルを直接ダブルクリックせず、次節のサーバー経由で確認する。</p>
+<p class="note"><strong>小問</strong>：ドメインが同じならbaseも必ず同じ？ → パス以下に置く構成か、ホスト直下かで変わる。</p><label class="completion"><input type="checkbox" data-complete="a06"> この章を読了にする</label></section><section class="lesson" id="a07" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">07 Wranglerと、公開の設計図</h2><h3>プロジェクトに道具を入れる</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-9" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-9">npm install -D wrangler@4
+npx wrangler --version</code></pre></div>
+<p>この操作で<code>package.json</code>とlockファイルが変わります。グローバルに入れるより、プロジェクトに登録すると他の環境でも同じ道具を使いやすくなります。<a href="#sources" class="source-ref" data-source="4">[S4]</a></p>
+<p>リポジトリ直下に、次の<code>wrangler.jsonc</code>を作ります。<code>name</code>は自分のアカウントで使う名前を選んでください。同名の既存Workerがあれば更新対象になり得るため、新規実習なら既存と重ならない名前にします。</p>
+<div class="codebox"><div class="codebar"><span>jsonc</span><button class="copy" data-copy="code-10" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-10">{
+  &quot;$schema&quot;: &quot;node_modules/wrangler/config-schema.json&quot;,
+  &quot;name&quot;: &quot;codechronicle&quot;,
+  &quot;compatibility_date&quot;: &quot;2026-11-03&quot;,
+  &quot;assets&quot;: {
+    &quot;directory&quot;: &quot;./dist&quot;
+  }
+}</code></pre></div>
+<p><code>compatibility_date</code>はWorkerランタイムの動作基準日です。新規作成時点の日付を指定し、後で更新するときは動作確認します。ファイルの公開日や有効期限ではありません。<a href="#sources" class="source-ref" data-source="1">[S1]</a></p>
+<p><code>assets.directory</code>は配るフォルダ。今回は静的配信のみなので<code>main</code>は不要です。<code>nodejs_compat</code>や空のサーバーファイルも、この最小構成では追加しません。<a href="#sources" class="source-ref" data-source="1">[S1]</a></p>
+<h3>.gitignoreに追記する</h3>
+<div class="codebox"><div class="codebar"><span>gitignore</span><button class="copy" data-copy="code-11" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-11">.wrangler/
+.dev.vars*
+.env*
+!.env.example</code></pre></div>
+<p>秘密の値は<code>.env.example</code>にも書きません。Wranglerのログイン情報やAPIトークンを、ソースやチャットへ貼らないようにします。</p><label class="completion"><input type="checkbox" data-complete="a07"> この章を読了にする</label></section><section class="lesson" id="a08" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">08 まだ公開しない：ローカルで確認する</h2><h3>配布物を作り、Cloudflare向けのサーバーで見る</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-12" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-12">npm run build -- --base=/
+npx wrangler dev</code></pre></div>
+<p>ターミナルに出たローカルURLを開きます。通常は<code>http://localhost:8787</code>ですが、表示されたURLを優先します。終了は<code>Ctrl + C</code>です。外部公開用の<code>--remote</code>は、この実習では使いません。<a href="#sources" class="source-ref" data-source="5">[S5]</a></p>
+<h3>サーバーを使い分ける</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">コマンド</th><th scope="col">何を確かめる？</th></tr></thead><tbody><tr><td><code>npm run dev</code></td><td>開発中のソース。編集をすぐ反映</td></tr><tr><td><code>npm run preview</code></td><td>Viteのビルド結果</td></tr><tr><td><code>npx wrangler dev</code></td><td>Wrangler設定で配るビルド結果</td></tr></tbody></table></div>
+<p>この本の最小設定では、Wrangler起動中に<code>src/</code>を編集してもViteのようにビルドし直されません。変更したらビルドをやり直し、必要ならWranglerを再起動します。</p>
+<h3>ゲームで試す</h3>
+<p>タイトル、はじめから、フィールド移動、会話、戦闘、問題への回答、メニューを確認します。ローカル用のテスト冒険で試せば十分です。音はブラウザの制約があるため、画面を操作してから確認します。</p>
+<h3>公開しない設定確認</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-13" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-13">npx wrangler deploy --dry-run</code></pre></div>
+<p><code>--dry-run</code>は実際のデプロイを行わず準備を確認する指定です。本番のURL・権限・DNSまで動いた証明にはなりません。成功したら、次はアカウントと公開先を確認します。<a href="#sources" class="source-ref" data-source="6">[S6]</a></p><label class="completion"><input type="checkbox" data-complete="a08"> この章を読了にする</label></section><section class="lesson" id="a09" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">09 はじめての公開：workers.devへ</h2><h3>ここから先はインターネット上に公開される</h3>
+<p>まずアカウントを確認します。複数アカウントがある場合は、個人用・組織用を取り違えないようにします。</p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-14" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-14">npx wrangler login
+npx wrangler whoami</code></pre></div>
+<p><code>login</code>ではブラウザでCloudflareにログインし、許可画面を確認します。<code>whoami</code>のアカウント情報を見て、Workerを置く先を決めます。初回はworkers.devのサブドメイン設定を求められることがあります。<a href="#sources" class="source-ref" data-source="4">[S4]</a></p>
+<h3>公開前の3点確認</h3>
+<ul><li>設定の<code>name</code>は意図したもの。同名の既存サービスを更新しない。</li><li>公開するのは<code>dist/</code>。リポジトリ全体や教科書PDFは含めない。</li><li>セーブを書き出し済み。旧サイトはまだ残っている。</li></ul>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-15" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-15">npm run build -- --base=/
+npx wrangler deploy</code></pre></div>
+<p>成功すると公開先URLが表示されます。URLの形を推測せず、実際の出力を記録して開きます。独自ドメインは、この時点では必要ありません。<a href="#sources" class="source-ref" data-source="5">[S5]</a></p>
+<h3>実習記録</h3>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-16" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-16">公開先URL：
+Worker名／アカウント：
+コミットID：
+公開日時：
+確認したこと：
+未確認のこと：</code></pre></div>
+<p class="note"><strong>終わりの確認</strong>：Cloudflareのダッシュボードにも、同じ名前のWorkerとデプロイがある。画面が開いただけで移管完了にはせず、次節へ進む。</p><label class="completion"><input type="checkbox" data-complete="a09"> この章を読了にする</label></section><section class="lesson" id="a10" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">10 「表示された」から「遊べる」へ</h2><h3>公開URLでの確認表</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">場所</th><th scope="col">実際に操作すること</th></tr></thead><tbody><tr><td>タイトル</td><td>背景、文字、フォント、PCでの収まり</td></tr><tr><td>フィールド</td><td>移動、地形、人物、小物、マップ切り替え</td></tr><tr><td>会話</td><td>立ち絵、文章、選択、閉じる操作</td></tr><tr><td>戦闘・学習</td><td>敵、問題、回答、正誤、報酬、復帰</td></tr><tr><td>第二章</td><td>ダンジョン、扉、泉、学習進行の代表経路</td></tr><tr><td>保存</td><td>セーブ後の再読み込みと続きから</td></tr><tr><td>音・操作</td><td>クリック後の音、音量設定、キー操作</td></tr><tr><td>端末</td><td>PCとスマホで読める・押せること</td></tr></tbody></table></div>
+<p>新しいテスト冒険で確認し、本物のセーブを読み込む前に基本動作を確かめます。各項目に「確認済み・未確認・不具合あり」を付け、未確認を成功扱いにしないようにします。</p>
+<h3>開発者ツールを見る</h3>
+<p>NetworkでCSS・JavaScript・画像・フォントの失敗を確認します。Consoleに赤いエラーが出たら、URLとメッセージを記録します。404なら「要求した場所にファイルがない」が最初の仮説です。</p>
+<p class="note"><strong>200でも安心しきらない。</strong> CSSのURLなのに中身がHTMLなら、欲しいファイルを受け取れていません。Statusだけでなく、Responseの中身とContent-Typeも確認します。</p>
+<p class="note"><strong>小問</strong>：タイトルが出れば第二章の画像も確認済み？ → 未確認。場面ごとに読み込む素材や処理が違うため、代表的な経路を実際に通る。</p><label class="completion"><input type="checkbox" data-complete="a10"> この章を読了にする</label></section><section class="lesson" id="a11" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">11 冒険の記録を新URLへ持っていく</h2><h3>正式に使うURLで読み込む</h3>
+<p>後から独自ドメインを付けるなら、正式URLを決めてから本物のセーブを読み込むと移動が一度で済みます。workers.devから独自ドメインへ変える場合も、localStorageの保存場所は変わります。<a href="#sources" class="source-ref" data-source="2">[S2]</a></p>
+<ol><li>旧URLで書き出したJSONを手元に用意する。</li><li>新しい正式URLを、保存したいブラウザで開く。</li><li>「冒険の管理」から、セーブファイルの読み込みを開く。</li><li>「セーブファイルを選ぶ」でJSONを指定する。</li><li>表示された名前・レベルを確認する。</li><li>合っていれば「このセーブを読み込む」。違えば「取り消す」。</li><li>「続きから始める」で、名前・レベル・現在地・進行を確認する。</li><li>ページを再読み込みし、もう一度続きから再開する。</li></ol>
+<h3>現在のアプリの仕組み</h3>
+<p>読み込みはファイルを選んだだけでは確定しません。内容を確認してから置き換えます。現在の冒険がある場合は「保護した前の冒険」に残す仕組みがあります。ただし、別ファイルとしての書き出しも残しておきます。</p>
+<p>ファイル形式の検証やサイズ制限もあります。現状の上限は2MBです。エラーになったらJSONを書き換えて強行せず、旧URLから再度書き出します。直らなければ、エラー内容とファイルの由来を調べます。</p>
+<p class="note"><strong>今日のセーブポイント</strong>：新URLで読み込めた・再開できた・再読み込みしても残った。この3つを確認して初めて、引き継ぎ成功。</p><label class="completion"><input type="checkbox" data-complete="a11"> この章を読了にする</label></section><section class="lesson" id="a12" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">12 pushしたら公開される仕組みを作る</h2><h3>手動公開が成功してから自動化する</h3>
+<p>Workers Buildsは、GitHubの変更を受け取ってビルド・デプロイを行います。WorkerのSettings → BuildからGitリポジトリを接続します。UIの表記が変わったときは、公式のBuild設定を参照します。<a href="#sources" class="source-ref" data-source="7">[S7]</a></p>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">設定項目</th><th scope="col">この本の構成で入れる値</th></tr></thead><tbody><tr><td>Repository</td><td>CodeChronicleの実際のリポジトリ</td></tr><tr><td>Production branch</td><td><code>main</code></td></tr><tr><td>Root directory</td><td>リポジトリ直下</td></tr><tr><td>Build command</td><td><code>npm run build -- --base=/</code></td></tr><tr><td>Deploy command</td><td><code>npx wrangler deploy</code></td></tr><tr><td>配信対象</td><td><code>wrangler.jsonc</code>の<code>./dist</code></td></tr></tbody></table></div>
+<p>WorkersではPagesの「出力ディレクトリ欄」と混同せず、設定ファイルから<code>dist/</code>を指定します。<code>package.json</code>・lock・設定ファイルをGitに含め、ローカルとCloudflareが同じ前提で動くようにします。</p>
+<p>ビルド用の<code>NODE_VERSION</code>を22にして、既存環境と合わせます。実際に採用されたNodeの版はビルドログでも確認します。<a href="#sources" class="source-ref" data-source="8">[S8]</a></p>
+<h3>小さな変更で1往復する</h3>
+<p>軽微な文章変更をpushし、Buildログ → Deploy成功 → 公開URLで反映、まで確認します。これができれば「手動だけ動く」状態から抜けられます。</p>
+<p>プレビューは本番と分けます。現行の公式設定ではPreview commandは<code>npx wrangler preview</code>が既定です。実際の画面・導入したWranglerの対応状況を確認し、プレビューで本番deployを実行しないようにします。<a href="#sources" class="source-ref" data-source="7">[S7]</a></p>
+<p class="note"><strong>小問</strong>：ビルド成功＝公開完了？ → 違う。デプロイの成功と公開URLの反映まで確認する。</p><label class="completion"><input type="checkbox" data-complete="a12"> この章を読了にする</label></section><section class="lesson" id="a13" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">13 独自ドメインは、別の小さな引っ越し</h2><h3>最初はworkers.devで十分</h3>
+<p>独自ドメインは必須ではありません。使うなら、継続して使えるURLを正式な入口として決めます。ドメインの購入先をCloudflareへ移す作業と、公開先をCloudflareへ移す作業は分けて考えられます。</p>
+<p>WorkersのCustom Domainには、有効なCloudflare zoneと、そのドメインの管理権限が必要です。<code>github.io</code>のように自分が管理していないドメインを、そのままCustom Domainへ持っていくことはできません。<a href="#sources" class="source-ref" data-source="9">[S9]</a></p>
+<h3>設定の流れ</h3>
+<ol><li>自分が管理するドメインをCloudflareで有効にする。</li><li>Worker → Settings → Domains &amp; Routesを開く。</li><li>Add → Custom Domainから使うホスト名を登録する。</li><li>発行されるDNS・証明書の状態と、HTTPSで開けることを確認する。</li><li>その正式URLでも、10節の確認表を実施する。</li></ol>
+<p>Cloudflareが必要なDNSレコードと証明書を設定します。同じホスト名に既存CNAMEがある場合は競合するため、既存サービスの用途を調べてから整理します。用途不明のDNSレコードをまとめて削除しないようにします。<a href="#sources" class="source-ref" data-source="9">[S9]</a></p>
+<p>正式なドメインは<code>wrangler.jsonc</code>のトップレベルにも記録し、以後の公開と設定を揃えます。次は追加部分の例です。実際に所有するホスト名へ置き換え、既存の<code>assets</code>などは残し、項目間にカンマを付けます。<a href="#sources" class="source-ref" data-source="9">[S9]</a></p>
+<div class="codebox"><div class="codebar"><span>jsonc</span><button class="copy" data-copy="code-17" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-17">&quot;routes&quot;: [
+  { &quot;pattern&quot;: &quot;game.example.com&quot;, &quot;custom_domain&quot;: true }
+]</code></pre></div>
+<h3>URLとセーブを一緒に考える</h3>
+<p>workers.dev、独自ドメイン、wwwあり・なしは、それぞれ保存先が分かれる場合があります。正式な入口を一つ決めて案内します。移動前のURLで最新セーブを書き出し、正式URLへ読み込み直します。<a href="#sources" class="source-ref" data-source="2">[S2]</a></p>
+<p class="note"><strong>今日のセーブポイント</strong>：正式URLが決まり、HTTPSで開ける。独自ドメインを使わないなら、workers.devを正式URLとしてこの節を完了してよい。</p><label class="completion"><input type="checkbox" data-complete="a13"> この章を読了にする</label></section><section class="lesson" id="a14" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">14 本番切り替え：旧サイトをいつ整理する？</h2><h3>切り替え前に満たす条件</h3>
+<ul><li>正式URLで10節のゲーム確認が終わっている。</li><li>セーブの書き出し・読み込み・再開を試している。</li><li>自動公開を使うなら、pushから反映まで確認済み。</li><li>正常だったコミットとデプロイを記録している。</li><li>旧URLの利用者がセーブを取り出す導線を残している。</li></ul>
+<h3>既存workflowの扱い</h3>
+<p>現在の<code>.github/workflows/deploy-pages.yml</code>は、mainへのpushでGitHub Pagesへ公開します。Cloudflareと同時に動かす期間を設けることはできます。ただし、どちらが正式版かを明記します。</p>
+<p>旧自動公開を止めるなら、切り替え後にこのworkflowのpushトリガーを外し、必要なら手動実行だけ残す変更を検討します。GitHub Pagesサービスを先に停止すると、旧セーブを書き出す画面も開けなくなる点に注意します。</p>
+<h3>利用者への案内に書くこと</h3>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-18" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-18">新しい正式URL：実際のURL
+旧URLでセーブを書き出す → 新URLで読み込む
+旧URLを開ける期間：決めた日付・運用方針
+引き継ぎで困ったとき：連絡先・手順の案内</code></pre></div>
+<p>READMEや紹介記事のリンクも更新します。旧URLをすぐ自動転送する運用は避け、まずセーブ取り出しの案内を読める状態にします。移行期間をいつまで設けるかは、利用状況を見て決めます。</p>
+<p class="note"><strong>小問</strong>：新URLに自分のセーブが移れば全員分完了？ → それぞれの端末にあるため、利用者ごとの引き継ぎが必要。</p><label class="completion"><input type="checkbox" data-complete="a14"> この章を読了にする</label></section><section class="lesson" id="a15" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">15 失敗したとき、どこまで戻せる？</h2><h3>まず症状を分ける</h3>
+<p>画面が真っ白なら配信・JavaScript・パスを調べます。セーブが見えないならURLとブラウザを確認します。全部まとめて「デプロイ失敗」にすると、直す場所を見失います。</p>
+<h3>公開した版を戻す</h3>
+<p>WorkersのDeploymentsで、正常だった版のメニューからRollbackを選べます。Wranglerにもrollbackコマンドがあります。戻した後は、同じ正式URLで代表的な動作をもう一度確認します。<a href="#sources" class="source-ref" data-source="10">[S10]</a></p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-19" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-19"># CLIで操作する場合は、対象・版・オプションを先に確認
+npx wrangler rollback --help</code></pre></div>
+<p>自動公開が有効なら、Git側にも不具合修正または変更の取り消しを反映します。ダッシュボードだけ戻しても、次のpushで再び問題の版が公開されることがあります。</p>
+<h3>戻らないもの</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">対象</th><th scope="col">アプリの版を戻すだけで戻る？</th></tr></thead><tbody><tr><td>配信するゲームの版</td><td>ロールバックの対象</td></tr><tr><td>各ブラウザのlocalStorage</td><td>戻らない</td></tr><tr><td>別ドメインの保存データ</td><td>自動で移らない</td></tr><tr><td>DNSやリンクの案内</td><td>別途確認が必要</td></tr><tr><td>将来のDB内のデータ</td><td>コードとは別の復旧設計が必要</td></tr></tbody></table></div>
+<p>古いゲームが新しいセーブ形式を読めるとは限りません。旧セーブを書き出したファイルと、正常版の記録を残す理由はここにあります。将来のDB変更も、コードのロールバックだけで復旧できると考えないようにします。<a href="#sources" class="source-ref" data-source="10">[S10]</a></p><label class="completion"><input type="checkbox" data-complete="a15"> この章を読了にする</label></section><section class="lesson" id="a16" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">16 料金・制限と、秘密の置き場所</h2><h3>静的配信と、サーバー処理の料金を分ける</h3>
+<p>Workers Static Assetsの静的ファイルへのリクエストは無料で、回数制限なしと案内されています。一方、Workerの処理を実行する場合は別の利用枠・課金条件があります。「Cloudflareなら何を追加しても無料」とは考えません。<a href="#sources" class="source-ref" data-source="11">[S11]</a></p>
+<p>現在の静的アセット上限はFreeで20,000ファイル、Paidで100,000ファイル、1ファイル最大25MiBです。利用前には最新の制限ページを確認します。<a href="#sources" class="source-ref" data-source="12">[S12]</a></p>
+<p>今回ローカルで作ったCodeChronicleの配布物は110ファイル、合計約71.86MiB、最大の1ファイルが約3.09MiBでした。合計サイズと1ファイルの上限は別物です。既存の登壇PDFは配布対象の外に置かれています。</p>
+<h3>秘密はフロントへ渡さない</h3>
+<p>ブラウザへ配るJavaScriptは利用者から見えます。Viteの<code>VITE_</code>変数は、クライアントコードから参照するとビルドへ含まれます。APIトークンやDB管理用の秘密を入れる場所ではありません。<a href="#sources" class="source-ref" data-source="13">[S13]</a></p>
+<p>今の問題の答えも、配布物から調べられます。学習用ゲームとしての利用と、不正防止が必要な試験サービスでは必要な設計が違います。将来スコアを競うなら、サーバーでの検証を別途検討します。</p>
+<p class="note"><strong>運用で見るもの</strong>：公開失敗、ファイルサイズ、読み込み速度、Buildの利用枠、将来追加するAPI・D1・R2の利用量。予算と通知を決めてからサービスを増やします。</p><label class="completion"><input type="checkbox" data-complete="a16"> この章を読了にする</label></section><section class="lesson" id="a17" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">17 よくあるつまずき帳</h2><div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">症状</th><th scope="col">最初に見る場所・次の一手</th></tr></thead><tbody><tr><td>画像・CSSが404</td><td>NetworkのURL。baseとdist内のパスを照合</td></tr><tr><td>CSSが200なのに効かない</td><td>ResponseとContent-Type。HTMLが返っていないか</td></tr><tr><td>真っ白な画面</td><td>Consoleの最初のエラーとJSの読み込み</td></tr><tr><td>distがないと言われる</td><td>リポジトリ直下か、buildを済ませたか</td></tr><tr><td>手元の変更が出ない</td><td>再buildしたか、別URL・別Workerを見ていないか</td></tr><tr><td>Cloudflareだけbuild失敗</td><td>Node版、lock、未pushのファイル、大小文字</td></tr><tr><td>認証・権限エラー</td><td>whoamiのアカウント、対象Worker、接続権限</td></tr><tr><td>セーブが見つからない</td><td>オリジン、ブラウザ、プロファイル、旧URL</td></tr><tr><td>JSONを読み込めない</td><td>元の書き出し元、形式、2MB上限、エラー文</td></tr><tr><td>音だけ鳴らない</td><td>画面を操作したか、音量、ブラウザの音制限</td></tr><tr><td>直したのに古い画面</td><td>公開版・URL・Networkを確認して再読み込み</td></tr></tbody></table></div>
+<h3>切り分けの型</h3>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-20" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-20">どのURLで：
+何を操作すると：
+期待する動作：
+実際の動作：
+Console／Networkの結果：
+最後に正常だった版：</code></pre></div>
+<p>一度に設定をたくさん変えると、何で直ったか分からなくなります。仮説を一つ決めて確かめ、結果を残します。キャッシュ削除やlocalStorage削除は同じ操作ではありません。セーブを消す操作を、表示不良の最初の対処にしないようにします。</p>
+<p class="note"><strong>練習</strong>：新URLで「続きから」がないが、旧URLでは遊べる。最初に再デプロイする？ → まず旧URLから書き出し、新URLへ読み込む。配信と保存を分けて考える。</p><label class="completion"><input type="checkbox" data-complete="a17"> この章を読了にする</label></section><section class="lesson" id="a18" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">18 将来の地図：問題をDBへ移したくなったら</h2><h3>今回の移管で、どこまで学べる？</h3>
+<p>ビルド、静的配信、オリジン、設定ファイル、自動公開、復旧が学べます。ここを先に理解してから、問題のDB化へ進むと変更の影響を追いやすくなります。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-21" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-21">第1段階：ゲームをStatic Assetsで配る ← 今回
+第2段階：読み取り専用のWorker APIを1本作る
+第3段階：D1へ試験用の問題を入れて取得する
+第4段階：問題追加・更新、権限、公開状態を設計する
+第5段階：ユーザー認証とサーバー保存を検討する</code></pre></div>
+<p>D1はSQLで扱うデータベース、R2は画像や音声などのオブジェクト保存先です。D1を作っただけでlocalStorageが移るわけでも、R2を作っただけで既存画像の参照が変わるわけでもありません。<a href="#sources" class="source-ref" data-source="14">[S14]</a><a href="#sources" class="source-ref" data-source="15">[S15]</a></p>
+<h3>問題DBで考えたいこと</h3>
+<p>問題ID、形式、難易度、本文、選択肢、正解、誤答理由、解説、公開状態、版。今の採点と入力形式を崩さず、読み込む場所を変える設計から始めます。ネットワークが遅い・失敗する場合の表示も必要です。</p>
+<h3>セーブDBは、さらに別の課題</h3>
+<p>「誰の冒険か」を判断する認証、他人のデータへのアクセス防止、複数端末の競合、旧セーブの取り込み、バックアップを設計します。ブラウザから直接DB管理権限を持たせず、Worker APIで受け付ける構成を検討します。</p>
+<p class="note"><strong>次の小さな実習案</strong>：本番と分けた環境で、テスト用の問題を1問だけAPIから取得する。ゲーム全体を一度にDBへ移す前に、通信の成功と失敗を両方試す。</p><label class="completion"><input type="checkbox" data-complete="a18"> この章を読了にする</label></section><section class="lesson" id="a19" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">19 確認問題：自分の言葉で説明してみる</h2><h3>初級：仕組みを確認</h3>
+<ol><li>今のゲームの実行場所はどこ？ セーブの保存場所はどこ？</li><li>公開に使うフォルダは<code>src/</code>、<code>public/</code>、<code>dist/</code>のどれ？</li><li><code>npm run build</code>と<code>npx wrangler deploy</code>の役割の違いは？</li><li>新しいドメインでセーブが見えないとき、最初に何を確かめる？</li></ol>
+<h3>中級：コードと設定を判断</h3>
+<ol><li>Cloudflareのホスト直下へ移すのに、baseが<code>/CodeChronicle/</code>のまま。どんな不具合が起き得る？</li><li><code>assets.directory</code>を<code>.</code>にすると、何が困る？</li><li>Wrangler起動中に<code>src/</code>を編集したが変わらない。この本の構成では何をする？</li><li>CSSのHTTPステータスが200。これだけで正常と判断してよい？</li></ol>
+<h3>上級：条件とトレードオフ</h3>
+<ol><li>正式URLを独自ドメインにする予定。先に全員のセーブをworkers.devへ移す案の負担は？</li><li>ダッシュボードで古い版へ戻せた。次のpushに備え、何を確認・変更する？</li><li>問題の答えを利用者から完全に隠したい。静的配信だけで満たせる？</li><li>問題をD1へ移す作業と、公開先移管を同時に行うメリット・デメリットは？</li></ol>
+<p class="note"><strong>卒業課題</strong>：初めて見る人に、「旧URLのセーブを残したまま、新URLを試し、失敗時に戻れる手順」を5行で説明する。コマンドだけでなく、確認するタイミングも書く。</p><label class="completion"><input type="checkbox" data-complete="a19"> この章を読了にする</label></section><section class="lesson" id="a20" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">20 解答と、移管完了の判定</h2><h3>確認問題の解答例</h3>
+<ol><li>実行はブラウザ。セーブはそのオリジンのlocalStorage。</li><li><code>dist/</code>。材料をビルドした配布物。</li><li>buildは配布物の作成。deployはCloudflareへの公開。</li><li>URLのオリジンとブラウザ・プロファイル。旧URLから書き出せるか。</li><li>画像やCSSなどを存在しないサブパスへ要求し、404になる可能性。</li><li>不要な文書・設定・素材まで配信対象になり得る。公開範囲はdistに限定する。</li><li>buildをやり直し、必要ならWranglerを再起動する。</li><li>不十分。Content-Typeと中身がCSSかを確認する。</li><li>独自ドメインへの移動で、もう一度引き継ぎが必要になる。</li><li>Git側へ修正・取り消しを反映し、自動公開で不具合版が戻らないようにする。</li><li>満たせない。配る答えは調べられる。サーバー判定など別の設計が必要。</li><li>一度に完成に近づくが、不具合の原因と復旧範囲が増える。段階を分けると確認しやすい。</li></ol>
+<h3>移管完了チェック</h3>
+<ul><li>正式URLで、タイトルから主要な学習・戦闘・第二章を確認した。</li><li>セーブを新URLで読み込み、再開・再読み込み後の保存を確認した。</li><li>次の更新手順と、正常な版へ戻す手順が分かる。</li><li>旧URLの引き継ぎ案内と、旧自動公開の方針を決めた。</li><li>READMEなどの入口を更新し、料金・利用量の確認先を把握した。</li></ul>
+<h3>教科書作成時に確認した範囲</h3>
+<p>2026年11月3日、ルートbaseでのTypeScript＋Viteビルドに成功。配布物は110ファイル、最大約3.09MiB。Cloudflareへのログイン・dry-run・公開・Git接続・DNS変更は未実施です。上のチェック項目は、実習で確認して埋めてください。</p><label class="completion"><input type="checkbox" data-complete="a20"> この章を読了にする</label></section><section class="lesson" id="a21" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">補講A Pagesを選ぶ場合と、SPAの設定</h2><h3>Pagesで公開する場合の対応表</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">項目</th><th scope="col">Pages Git連携での値</th></tr></thead><tbody><tr><td>取り込むもの</td><td>既存のCodeChronicleリポジトリ</td></tr><tr><td>Production branch</td><td><code>main</code></td></tr><tr><td>Build command</td><td><code>npm run build -- --base=/</code></td></tr><tr><td>Build output directory</td><td><code>dist</code></td></tr><tr><td>公開URL</td><td>実際に発行される<code>pages.dev</code>など</td></tr></tbody></table></div>
+<p>ダッシュボードのWorkers &amp; Pagesから、Pages側のGitリポジトリ取り込みを選びます。既存アプリなので、新しいReactプロジェクトを作り直す必要はありません。PagesとWorkersは設定画面・CLIが異なります。本編の<code>wrangler deploy</code>をPagesの公開コマンドとして混ぜないようにします。<a href="#sources" class="source-ref" data-source="16">[S16]</a></p>
+<h3>SPAのフォールバックは、いつ必要？</h3>
+<p>現在のCodeChronicleはReactの状態で画面を切り替え、<code>/field</code>などのURLルートを使っていません。本編の最小設定は、存在しないパスに404を返す構成です。</p>
+<p>将来、URLルーターを導入し、<code>/field</code>を直接開いてもアプリを起動したい場合は、Workersの<code>assets</code>に次を追加する選択肢があります。<code>directory</code>は残します。<a href="#sources" class="source-ref" data-source="17">[S17]</a></p>
+<div class="codebox"><div class="codebar"><span>jsonc</span><button class="copy" data-copy="code-22" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-22">&quot;assets&quot;: {
+  &quot;directory&quot;: &quot;./dist&quot;,
+  &quot;not_found_handling&quot;: &quot;single-page-application&quot;
+}</code></pre></div>
+<p>存在しない画像やCSSにもHTMLが返ることがあるため、200という数字だけで判断しないこと。APIを追加したら、静的配信とAPIのルーティングを別途設計します。とりあえず<code>run_worker_first</code>を有効にする方法は、処理回数や料金も変わるので採用しません。<a href="#sources" class="source-ref" data-source="11">[S11]</a><a href="#sources" class="source-ref" data-source="17">[S17]</a></p><label class="completion"><input type="checkbox" data-complete="a21"> この章を読了にする</label></section><section class="lesson" id="a22" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">補講B 一枚で見返す、実習用コマンド帳</h2><h3>準備と設定</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-23" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-23"># リポジトリ直下で実行
+npm ci
+npm run build -- --base=/
+npm install -D wrangler@4
+npx wrangler --version</code></pre></div>
+<p>07節の<code>wrangler.jsonc</code>と<code>.gitignore</code>を設定する。設定ファイルはリポジトリ直下、公開対象は<code>dist/</code>。</p>
+<h3>ローカル確認</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-24" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-24">npm run build -- --base=/
+npx wrangler dev
+# ブラウザで確認。終了は Ctrl + C
+npx wrangler deploy --dry-run</code></pre></div>
+<h3>認証と公開</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-25" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-25">npx wrangler login
+npx wrangler whoami
+npm run build -- --base=/
+npx wrangler deploy</code></pre></div>
+<h3>更新のたびに考えること</h3>
+<p>手動なら、変更 → build → ローカル確認 → deploy → 公開URLで確認。Git連携なら、変更 → 確認 → push → Build／Deployログ → 公開URLで確認。</p>
+<p>このページだけで初回公開を済ませず、03節のセーブ保護と09節の公開先確認を先に行います。トラブル時は、17節のつまずき帳へ戻ります。</p><label class="completion"><input type="checkbox" data-complete="a22"> この章を読了にする</label></section><section class="lesson" id="a23" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">参考資料 1 公式ドキュメント</h2><p>確認日：2026年11月3日。サービスの仕様・料金・UIは変わるため、実施時にもリンク先を確認してください。本文の[S番号]に対応しています。</p>
+<ul><li><a href="https://developers.cloudflare.com/workers/best-practices/workers-best-practices/" target="_blank" rel="noopener noreferrer">S1 Workers Best Practices：静的サイトの選び方・互換日 ↗</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank" rel="noopener noreferrer">S2 MDN：localStorageとオリジン ↗</a></li><li><a href="https://vite.dev/guide/build.html#public-base-path" target="_blank" rel="noopener noreferrer">S3 Vite：Public Base Path ↗</a></li><li><a href="https://developers.cloudflare.com/workers/wrangler/commands/" target="_blank" rel="noopener noreferrer">S4 Wrangler：コマンド一覧 ↗</a> / <a href="https://developers.cloudflare.com/workers/wrangler/commands/general/" target="_blank" rel="noopener noreferrer">login・whoami ↗</a></li><li><a href="https://developers.cloudflare.com/workers/static-assets/get-started/" target="_blank" rel="noopener noreferrer">S5 Workers Static Assets：Get Started ↗</a></li><li><a href="https://developers.cloudflare.com/workers/wrangler/commands/workers/" target="_blank" rel="noopener noreferrer">S6 Wrangler：Workersコマンドのdeploy等 ↗</a></li><li><a href="https://developers.cloudflare.com/workers/ci-cd/builds/configuration/" target="_blank" rel="noopener noreferrer">S7 Workers Builds：設定 ↗</a></li><li><a href="https://developers.cloudflare.com/workers/ci-cd/builds/build-image/" target="_blank" rel="noopener noreferrer">S8 Workers Builds：ビルド環境 ↗</a></li><li><a href="https://developers.cloudflare.com/workers/configuration/routing/custom-domains/" target="_blank" rel="noopener noreferrer">S9 Workers：Custom Domains ↗</a></li></ul>
+<p>コマンドのオプションを確認するときは、インストールした版の<code>npx wrangler --help</code>や各サブコマンドの<code>--help</code>も使います。別方式のテンプレートから設定を持ってくる際は、出力フォルダ・Viteプラグインの有無・WorkersかPagesかを照合します。</p><label class="completion"><input type="checkbox" data-complete="a23"> この章を読了にする</label></section><section class="lesson" id="a24" data-group="A" hidden><div class="eyebrow">FOUNDATIONS / A</div><h2 tabindex="-1">参考資料 2 次に読む資料と、コードの入口</h2><ul><li><a href="https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/" target="_blank" rel="noopener noreferrer">S10 Workers：Rollbacks ↗</a></li><li><a href="https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/" target="_blank" rel="noopener noreferrer">S11 Static Assets：料金と制約 ↗</a></li><li><a href="https://developers.cloudflare.com/workers/platform/limits/" target="_blank" rel="noopener noreferrer">S12 Workers：Limits ↗</a></li><li><a href="https://vite.dev/guide/env-and-mode.html" target="_blank" rel="noopener noreferrer">S13 Vite：環境変数 ↗</a></li><li><a href="https://developers.cloudflare.com/d1/" target="_blank" rel="noopener noreferrer">S14 D1：概要 ↗</a></li><li><a href="https://developers.cloudflare.com/r2/" target="_blank" rel="noopener noreferrer">S15 R2：概要 ↗</a></li><li><a href="https://developers.cloudflare.com/pages/framework-guides/deploy-a-react-site/" target="_blank" rel="noopener noreferrer">S16 Pages：Reactの公開 ↗</a></li><li><a href="https://developers.cloudflare.com/workers/static-assets/" target="_blank" rel="noopener noreferrer">S17 Workers Static Assets：配信とルーティング ↗</a></li></ul>
+<h3>この教科書で確認したプロジェクト側の入口</h3>
+<ul><li><code>package.json</code>：開発・ビルド・テストのコマンド。</li><li><code>vite.config.ts</code>：現在のVite設定。</li><li><code>.github/workflows/deploy-pages.yml</code>：旧GitHub Pagesの公開。</li><li><code>src/App.tsx</code>：ゲーム進行と保存・読み込みの接続。</li><li><code>src/SaveTransfer.tsx</code>：JSONの書き出し・確認付き読み込み。</li><li><code>src/saveValidation.ts</code>：読み込みデータの検証。</li><li><code>src/titleScreen.css</code>：タイトルのローカルフォント。</li><li><code>docs/production/index.md</code>：制作ルール・用途・固有設定の案内。</li></ul>
+<p>このHTML版は、静的公開の基礎編にD1実践編を追加した教材です。実習コードと、本番の設定・データは分けて管理します。</p><label class="completion"><input type="checkbox" data-complete="a24"> この章を読了にする</label></section><section class="lesson" id="b00" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B00 DB込みの構成で、どこまで進める？</h2><h3>円卓の結論を、学習ルートにする</h3>
+<p>設計は採用してよい、試験環境への実装へ進んでよい。本番切替は、接続・互換・復旧の確認後に行います。このHTMLは設計相談後の増補版です。基礎編Aは静的公開、実践編BはAPIとD1を追加する別の段階として読んでください。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-26" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-26">ブラウザ：React + TS
+  ├─ ゲーム・画像 → Workers Static Assets
+  ├─ 問題の取得   → TS Worker API → D1
+  └─ 初期のセーブ → localStorage + JSON入出力</code></pre></div>
+<p>今回の構成では、問題を先読みし、戦闘中の選題・採点をブラウザで行います。答えも配布する自己学習用の設計です。成績認定やランキングを追加するときは、認証とサーバー採点を改めて設計します。</p>
+<h3>実習と本番を区別する</h3>
+<ul><li><strong>実習</strong>：テスト問題1問のD1、読取API、ブラウザ側の取得口を作る。</li><li><strong>本番対応</strong>：既存の全問題系統を棚卸しし、保存・復習・扉・ボスの参照をつなぎ直す。</li><li><strong>後段</strong>：認証とセーブのオンライン同期。今回はlocalStorageを維持する。</li></ul>
+<p>APIのサンプルを貼るだけでは、CodeChronicle全体のDB移行は完了しません。B06の接続作業と、B08の公開判定まで進むのがゴールです。</p>
+<p class="note"><strong>確認時点</strong>：この教材には見本の設定・SQL・コードを掲載しています。本番のWrangler設定、Worker、DBをこのHTML作成によって追加・公開したわけではありません。</p><label class="completion"><input type="checkbox" data-complete="b00"> この章を読了にする</label></section><section class="lesson" id="b01" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B01 道具と、試験用の設定を用意する</h2><h3>使う道具</h3>
+<p>基礎編の準備・セーブ書き出しを済ませます。すでに導入済みの道具は再インストール不要です。新しいReactプロジェクトは作り直しません。</p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-27" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-27">npm install -D wrangler@4
+npx wrangler --version
+npx wrangler login
+npx wrangler whoami
+npx wrangler d1 create codechronicle-staging</code></pre></div>
+<p>最後のコマンドは、アカウントに試験用DBを作成します。出力された実際のdatabase_idを記録してください。DBが既存なら、同名だからと作り直さず、対象と用途を確認します。<a href="https://developers.cloudflare.com/d1/get-started/" target="_blank" rel="noopener noreferrer">D1の接続手順 ↗</a></p>
+<h3>リポジトリ直下に wrangler.staging.jsonc を作る</h3>
+<p>以下は基礎編の「静的配信のみ」の設定に、WorkerとD1を加えた構成です。この実践編では毎回<code>--config</code>で使う設定を指定します。</p>
+<div class="codebox"><div class="codebar"><span>jsonc</span><button class="copy" data-copy="code-28" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-28">{
+  &quot;$schema&quot;: &quot;node_modules/wrangler/config-schema.json&quot;,
+  &quot;name&quot;: &quot;codechronicle-staging&quot;,
+  &quot;main&quot;: &quot;worker/index.ts&quot;,
+  &quot;compatibility_date&quot;: &quot;2026-11-03&quot;,
+  &quot;assets&quot;: {
+    &quot;directory&quot;: &quot;./dist&quot;,
+    &quot;binding&quot;: &quot;ASSETS&quot;,
+    &quot;run_worker_first&quot;: [&quot;/api&quot;, &quot;/api/*&quot;]
+  },
+  &quot;d1_databases&quot;: [{
+    &quot;binding&quot;: &quot;DB&quot;,
+    &quot;database_name&quot;: &quot;codechronicle-staging&quot;,
+    &quot;database_id&quot;: &quot;ここを実際の試験用UUIDへ置換&quot;,
+    &quot;migrations_dir&quot;: &quot;migrations&quot;
+  }]
+}</code></pre></div>
+<p><code>main</code>がAPIの入口、<code>DB</code>が接続先の呼び名、<code>ASSETS</code>が静的ファイルの窓口です。<code>/api/*</code>はWorkerへ、それ以外は静的配信を基本にします。現在のゲームにはURLルーターがないため、ここではSPAフォールバックを追加していません。<a href="https://developers.cloudflare.com/workers/static-assets/routing/worker-script/" target="_blank" rel="noopener noreferrer">公式ルーティング ↗</a></p>
+<p class="note"><strong>できたら確認</strong>：設定のWorker名・DB名・UUIDがすべて試験用になっている。互換日は新規作成日の基準で、例を使う場合も確認する。</p><label class="completion"><input type="checkbox" data-complete="b01"> この章を読了にする</label></section><section class="lesson" id="b02" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B02 D1のテーブルを、変更履歴として作る</h2><h3>テーブルは3つから始める案</h3>
+<p>「問題のID」と「内容の版」と「配信するセット」を分けます。既存問題を移すときはIDを振り直しません。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-29" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-29">catalog_releases        配信する問題セットの版
+question_revisions      問題IDごとの内容と版
+catalog_entries         セットに、どの問題の何版を含めるか</code></pre></div>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-30" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-30">npx wrangler d1 migrations create codechronicle-staging init_catalog --config wrangler.staging.jsonc</code></pre></div>
+<p>生成された<code>migrations/0001_init_catalog.sql</code>等に以下を記入します。実際のファイル名を優先してください。適用済みファイルを後から書き換えず、次の変更は新しいmigrationにします。<a href="https://developers.cloudflare.com/d1/reference/migrations/" target="_blank" rel="noopener noreferrer">D1 migrations ↗</a></p>
+<div class="codebox"><div class="codebar"><span>sql</span><button class="copy" data-copy="code-31" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-31">CREATE TABLE catalog_releases (
+  version TEXT PRIMARY KEY,
+  status TEXT NOT NULL CHECK (status IN (&#x27;draft&#x27;, &#x27;published&#x27;)),
+  published_at TEXT
+);
+
+CREATE TABLE question_revisions (
+  question_id TEXT NOT NULL,
+  revision INTEGER NOT NULL CHECK (revision &gt; 0),
+  payload_json TEXT NOT NULL CHECK (json_valid(payload_json)),
+  PRIMARY KEY (question_id, revision)
+);
+
+CREATE TABLE catalog_entries (
+  catalog_version TEXT NOT NULL,
+  question_id TEXT NOT NULL,
+  question_revision INTEGER NOT NULL,
+  PRIMARY KEY (catalog_version, question_id),
+  FOREIGN KEY (catalog_version)
+    REFERENCES catalog_releases(version),
+  FOREIGN KEY (question_id, question_revision)
+    REFERENCES question_revisions(question_id, revision)
+);</code></pre></div>
+<h3>まずローカルのDBへ適用</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-32" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-32">npx wrangler d1 migrations apply codechronicle-staging --local --config wrangler.staging.jsonc</code></pre></div>
+<p><code>--local</code>は手元のDB、<code>--remote</code>はCloudflare上のDBです。どちらを操作しているかを毎回指定します。Cloudflare上にDBを作っても、手元のテーブルが自動でできるわけではありません。<a href="https://developers.cloudflare.com/d1/best-practices/local-development/" target="_blank" rel="noopener noreferrer">ローカル開発 ↗</a></p>
+<p class="note"><strong>小問</strong>：問題の誤字を直すため公開済みrevisionをUPDATEしてよい？ → この運用案では、新revisionと新catalogを作ります。アプリと問題の組み合わせを再現するためです。</p><label class="completion"><input type="checkbox" data-complete="b02"> この章を読了にする</label></section><section class="lesson" id="b03" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B03 テスト問題を1問だけ投入する</h2><h3>seed.lab.sql をリポジトリ直下に作る</h3>
+<p>以下は実習専用の新IDです。既存ゲームの問題を置き換えるデータではありません。本番用の問題原稿はB06で別途移行します。</p>
+<div class="codebox"><div class="codebar"><span>sql</span><button class="copy" data-copy="code-33" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-33">INSERT INTO catalog_releases (version, status)
+VALUES (&#x27;lab-v1&#x27;, &#x27;draft&#x27;);
+
+INSERT INTO question_revisions
+  (question_id, revision, payload_json)
+VALUES (
+  &#x27;cc-lab-1&#x27;, 1,
+  &#x27;{&quot;id&quot;:&quot;cc-lab-1&quot;,&quot;difficulty&quot;:&quot;beginner&quot;,&quot;topic&quot;:&quot;frontend&quot;,&quot;kind&quot;:&quot;choice&quot;,&quot;prompt&quot;:&quot;Reactで画面の一部分を再利用する単位は？&quot;,&quot;options&quot;:[&quot;コンポーネント&quot;,&quot;マイグレーション&quot;,&quot;ルート&quot;,&quot;ミドルウェア&quot;],&quot;answer&quot;:0,&quot;reveal&quot;:&quot;コンポーネント&quot;,&quot;explanation&quot;:&quot;UIはコンポーネントを組み合わせて作ります。&quot;}&#x27;
+);
+
+INSERT INTO catalog_entries
+  (catalog_version, question_id, question_revision)
+VALUES (&#x27;lab-v1&#x27;, &#x27;cc-lab-1&#x27;, 1);
+
+UPDATE catalog_releases
+SET status = &#x27;published&#x27;, published_at = &#x27;2026-11-03T00:00:00Z&#x27;
+WHERE version = &#x27;lab-v1&#x27;;</code></pre></div>
+<p>最初はdraftで作り、問題と参照をそろえて最後に公開状態へ進めます。このSQLは一度だけ適用する実習データです。再実行時のUNIQUEエラーは、すでに登録済みの可能性を確認してください。<code>INSERT OR REPLACE</code>で強引に上書きする方法には変えません。</p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-34" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-34">npx wrangler d1 execute codechronicle-staging --local --file seed.lab.sql --config wrangler.staging.jsonc
+npx wrangler d1 execute codechronicle-staging --local --command &quot;SELECT version, status FROM catalog_releases;&quot; --config wrangler.staging.jsonc</code></pre></div>
+<p class="note"><strong>期待する結果</strong>：<code>lab-v1 / published</code>が1件ある。空なら、別のDBや設定で実行していないかを確認します。</p>
+<h3>本番の投入処理で追加する検証</h3>
+<p>ID重複、4択の選択肢数、正解番号、入力の許容解、問題型、クエストからの参照、問題版の不変性を確認します。投入途中で止まったdraftは公開しません。原稿のハッシュ・件数と投入結果を照合できる更新スクリプトは、本番移行の作業として作ります。</p><label class="completion"><input type="checkbox" data-complete="b03"> この章を読了にする</label></section><section class="lesson" id="b04" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B04 問題を返すTypeScript Workerを作る</h2><h3>worker/index.ts の実習コード</h3>
+<p>このAPIは読取専用です。管理用の追加・編集APIは公開しません。SQLにURLの文字を連結せず、値は<code>bind</code>で渡します。<a href="https://developers.cloudflare.com/d1/worker-api/" target="_blank" rel="noopener noreferrer">D1 Binding API ↗</a></p>
+<div class="codebox"><div class="codebar"><span>ts</span><button class="copy" data-copy="code-35" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-35">export default {
+  async fetch(request: Request, env: Env): Promise&lt;Response&gt; {
+    const url = new URL(request.url);
+    if (url.pathname !== &#x27;/api/catalog&#x27;) {
+      if (url.pathname === &#x27;/api&#x27; || url.pathname.startsWith(&#x27;/api/&#x27;)) {
+        return Response.json({ error: &#x27;not_found&#x27; }, { status: 404 });
+      }
+      return env.ASSETS.fetch(request);
+    }
+    if (request.method !== &#x27;GET&#x27;) {
+      return Response.json({ error: &#x27;method_not_allowed&#x27; }, {
+        status: 405, headers: { Allow: &#x27;GET&#x27; }
+      });
+    }
+
+    const version = url.searchParams.get(&#x27;version&#x27;);
+    if (version !== null &amp;&amp; !/^[A-Za-z0-9._-]{1,64}$/.test(version)) {
+      return Response.json({ error: &#x27;invalid_version&#x27; }, { status: 400 });
+    }
+
+    try {
+      const release = await env.DB.prepare(`
+        SELECT version FROM catalog_releases
+        WHERE status = ? AND (? IS NULL OR version = ?)
+        ORDER BY published_at DESC, version DESC LIMIT 1
+      `).bind(&#x27;published&#x27;, version, version).first&lt;{ version: string }&gt;();
+      if (!release) {
+        return Response.json({ error: &#x27;catalog_not_found&#x27; }, { status: 404 });
+      }
+
+      const rows = await env.DB.prepare(`
+        SELECT q.payload_json
+        FROM catalog_entries e
+        JOIN question_revisions q
+          ON q.question_id = e.question_id
+          AND q.revision = e.question_revision
+        WHERE e.catalog_version = ? ORDER BY e.question_id
+      `).bind(release.version).all&lt;{ payload_json: string }&gt;();
+      if (!rows.results.length) throw new Error(&#x27;empty_catalog&#x27;);
+      const questions = rows.results.map(row =&gt; JSON.parse(row.payload_json));
+      return Response.json({ catalogVersion: release.version, questions }, {
+        headers: { &#x27;Cache-Control&#x27;: &#x27;no-store&#x27; }
+      });
+    } catch {
+      console.error(&#x27;catalog_load_failed&#x27;);
+      return Response.json({ error: &#x27;catalog_unavailable&#x27; }, { status: 503 });
+    }
+  }
+};</code></pre></div>
+<p>初期サンプルはキャッシュしません。後でimmutableな版URLをキャッシュする場合は、更新・旧版保持・無効化のルールを先に決めます。GETで正解も返す設計なので、答えを隠す試験用途にはそのまま使えません。</p>
+<h3>Workerの型チェックも別に用意</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-36" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-36">npx wrangler types --config wrangler.staging.jsonc</code></pre></div>
+<p>生成される<code>worker-configuration.d.ts</code>にEnv・D1・Worker実行環境の型が入ります。<code>tsconfig.worker.json</code>を次のように用意します。</p>
+<div class="codebox"><div class="codebar"><span>json</span><button class="copy" data-copy="code-37" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-37">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;, &quot;module&quot;: &quot;ESNext&quot;,
+    &quot;moduleResolution&quot;: &quot;Bundler&quot;, &quot;lib&quot;: [&quot;ES2022&quot;],
+    &quot;types&quot;: [], &quot;strict&quot;: true, &quot;noEmit&quot;: true,
+    &quot;skipLibCheck&quot;: true
+  },
+  &quot;include&quot;: [&quot;worker/**/*.ts&quot;, &quot;worker-configuration.d.ts&quot;]
+}</code></pre></div>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-38" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-38">npx tsc -p tsconfig.worker.json
+npm run build -- --base=/
+npx wrangler dev --config wrangler.staging.jsonc</code></pre></div>
+<p>既存の<code>npm run build</code>は主に<code>src/</code>を検査します。Workerが別フォルダになったら、Workerの検査も明示的に実行します。</p><label class="completion"><input type="checkbox" data-complete="b04"> この章を読了にする</label></section><section class="lesson" id="b05" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B05 ローカルでAPIを叩き、Reactの取得口を用意</h2><h3>別のターミナルで確認</h3>
+<p>Wranglerが表示した実際のポートを使います。通常の8787なら次のとおりです。</p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-39" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-39">curl -i &#x27;http://localhost:8787/api/catalog?version=lab-v1&#x27;
+curl -i &#x27;http://localhost:8787/api/catalog?version=missing&#x27;
+curl -i -X POST &#x27;http://localhost:8787/api/catalog&#x27;</code></pre></div>
+<p>順に、200＋1問のJSON、404、405が期待値です。CSSやAPIにHTMLが返っていないか、Content-Typeと本文も確認します。</p>
+<h3>shared/catalog.ts：外部データを検証する</h3>
+<p>TypeScriptの型注釈だけでは、ネットワークから来たJSONを検証できません。以下は現在のQuestionの形に合わせた入口です。本番の公開前検証では、クエストの参照や採点の意味も追加で確かめます。</p>
+<div class="codebox"><div class="codebar"><span>ts</span><button class="copy" data-copy="code-40" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-40">import type { Question } from &#x27;../src/content&#x27;;
+export type Catalog = { catalogVersion: string; questions: Question[] };
+const record = (v: unknown): v is Record&lt;string, unknown&gt; =&gt;
+  typeof v === &#x27;object&#x27; &amp;&amp; v !== null &amp;&amp; !Array.isArray(v);
+const strings = (v: unknown): v is string[] =&gt;
+  Array.isArray(v) &amp;&amp; v.every(x =&gt; typeof x === &#x27;string&#x27; &amp;&amp; x.trim() !== &#x27;&#x27;);
+
+function isQuestion(v: unknown): v is Question {
+  if (!record(v)) return false;
+  if (typeof v.id !== &#x27;string&#x27; || !v.id.trim()) return false;
+  if (typeof v.difficulty !== &#x27;string&#x27; || ![&#x27;beginner&#x27;,&#x27;intermediate&#x27;,&#x27;advanced&#x27;].includes(v.difficulty)) return false;
+  if (typeof v.topic !== &#x27;string&#x27; || ![&#x27;frontend&#x27;,&#x27;laravel&#x27;,&#x27;connection&#x27;].includes(v.topic)) return false;
+  if (typeof v.kind !== &#x27;string&#x27; || ![&#x27;choice&#x27;,&#x27;cli&#x27;,&#x27;fill-choice&#x27;,&#x27;fill-input&#x27;].includes(v.kind)) return false;
+  for (const key of [&#x27;prompt&#x27;,&#x27;reveal&#x27;,&#x27;explanation&#x27;]) {
+    if (typeof v[key] !== &#x27;string&#x27; || !v[key].trim()) return false;
+  }
+  if (v.track !== undefined &amp;&amp; v.track !== &#x27;react&#x27; &amp;&amp; v.track !== &#x27;vue&#x27;) return false;
+  if (v.inertia !== undefined &amp;&amp; typeof v.inertia !== &#x27;boolean&#x27;) return false;
+  for (const key of [&#x27;filename&#x27;,&#x27;code&#x27;]) {
+    if (v[key] !== undefined &amp;&amp; typeof v[key] !== &#x27;string&#x27;) return false;
+  }
+  if (v.options !== undefined &amp;&amp; (!strings(v.options) || v.options.length !== 4)) return false;
+  if (v.accepted !== undefined &amp;&amp; !strings(v.accepted)) return false;
+  if (v.answer !== undefined &amp;&amp;
+      (typeof v.answer !== &#x27;number&#x27; || !Number.isInteger(v.answer) || v.answer &lt; 0 || v.answer &gt; 3)) return false;
+  if (v.kind === &#x27;choice&#x27; || v.kind === &#x27;fill-choice&#x27;) {
+    return strings(v.options) &amp;&amp; v.options.length === 4 &amp;&amp; typeof v.answer === &#x27;number&#x27;;
+  }
+  return strings(v.accepted) &amp;&amp; v.accepted.length &gt; 0;
+}
+
+export function parseCatalog(value: unknown): Catalog {
+  if (!record(value) || typeof value.catalogVersion !== &#x27;string&#x27; ||
+      !/^[A-Za-z0-9._-]{1,64}$/.test(value.catalogVersion) ||
+      !Array.isArray(value.questions) || !value.questions.length ||
+      !value.questions.every(isQuestion)) throw new Error(&#x27;invalid_catalog&#x27;);
+  const questions = value.questions;
+  if (new Set(questions.map(q =&gt; q.id)).size !== questions.length) {
+    throw new Error(&#x27;duplicate_question_id&#x27;);
+  }
+  return { catalogVersion: value.catalogVersion, questions };
+}</code></pre></div>
+<h3>src/data/questionRepository.ts：通信する場所を一つに</h3>
+<div class="codebox"><div class="codebar"><span>ts</span><button class="copy" data-copy="code-41" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-41">import { parseCatalog } from &#x27;../../shared/catalog&#x27;;
+
+export async function loadCatalog(version?: string) {
+  const query = version ? &#x27;?version=&#x27; + encodeURIComponent(version) : &#x27;&#x27;;
+  const response = await fetch(&#x27;/api/catalog&#x27; + query, {
+    signal: AbortSignal.timeout(10000)
+  });
+  if (!response.ok) throw new Error(&#x27;catalog_http_&#x27; + response.status);
+  return parseCatalog(await response.json());
+}</code></pre></div>
+<p>Reactへ読み込み中・失敗・再試行の状態を追加し、成功するまで冒険開始を待ちます。この取得口を作っただけでは、既存Appの問題importは置き換わりません。接続箇所は次章で整理します。</p><label class="completion"><input type="checkbox" data-complete="b05"> この章を読了にする</label></section><section class="lesson" id="b06" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B06 既存ゲームへ接続する：ここが移行の本体</h2><h3>APIの成功と、ゲーム移行の完了は別</h3>
+<p>現状のゲームは、起動時からコード内の問題がある前提です。非同期に変えると、保存の検証とゲーム開始の順番も変わります。</p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-42" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-42">元のセーブ文字列を保持
+  → 問題カタログを取得・検証
+  → 問題IDと版の互換を確認
+  → セーブを検証・復元
+  → 冒険開始
+
+失敗：元のセーブを上書きしない → 状況表示 → 再試行</code></pre></div>
+<h3>このリポジトリで実装した接続を試す（2026-11-03）</h3>
+<p>毎回の起動は<code>npm run dev:staging</code>の1コマンドで実行できます。ビルド→ローカルDB準備・問題投入→起動を順に実行し、途中で失敗したら止まります。起動中のWranglerはCtrl+Cで止めてから実行します。以下は内訳を理解するための個別手順です。</p>
+<p>既存253問をGit原稿から書き出し、D1の固定版としてゲーム開始前に取得する実装を追加しました。通常ビルドは従来方式、<code>build:staging</code>がAPI方式です。以下でローカルを試せます。</p>
+<pre tabindex="0"><code>npm run build:staging
+npx wrangler d1 execute codechronicle-staging --local --file seed.game.sql --config wrangler.staging.jsonc
+npx wrangler dev --config wrangler.staging.jsonc</code></pre>
+<p>実習用の1問では起動できません。全ID・形式・分類が対応する問題集を読み込み、失敗時はセーブを触る前に再試行画面を表示します。ボスの動的問題と既存の採点処理は残します。SQLは再投入可能で、既存の公開版を保持します。</p>
+<p>今はID集合をビルドと一致させる設計で、DBだけへの新ID追加・削除・分類変更には対応しません。そのため保存検証のID集合は維持しています。以下の棚卸しは将来の動的な追加も含む設計上の論点です。</p>
+<p>ローカル確認後のリモート投入・再公開は<a href="cloudflare-api-progress.md">実装記録の実行手順</a>を参照してください。B07以降の通常ビルド例をこのAPI方式へ適用するときも、<code>npm run build:staging</code>へ読み替えます。本番環境の作成・移管はまだ行いません。</p>
+<h3>変更する場所の棚卸し</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">現在の場所</th><th scope="col">接続時にすること</th></tr></thead><tbody><tr><td>src/App.tsx</td><td>問題取得状態を導入し、取得済み一覧を選題・復習へ渡す</td></tr><tr><td>src/questionSelection.ts</td><td>4形式の選題・採点の意味を維持する</td></tr><tr><td>src/quests/useQuests.ts</td><td>固定ID参照へ同じカタログを渡す。欠損を黙って無視しない</td></tr><tr><td>src/saveValidation.ts</td><td>静的な既知ID集合への依存を解消し、解決不能IDを安易に削除しない</td></tr><tr><td>src/learningRecords.ts</td><td>新しくDBに入った問題IDも記録・復元できるようにする</td></tr><tr><td>src/bossBattle.ts</td><td>動的生成問題を残すか、テンプレートをDB化するか明示する</td></tr><tr><td>本・第二章・封印・関連リンク</td><td>参照IDと形式が新カタログに存在するか照合する</td></tr></tbody></table></div>
+<p class="note"><strong>実装上の注意</strong>：現在の<code>saveValidation.ts</code>はコード内の問題IDで復習・回答記録を絞ります。<code>learningRecords.ts</code>も同じ種類の依存を持ちます。DBにしかない問題を解いた後、再読み込みしても記録が残るテストを入れます。</p>
+<h3>本番用の問題を作るとき</h3>
+<p>Git原稿を制作上の正本、D1を配信先とする初期運用にします。4形式・正解・誤答理由・解説・既存IDを保ち、通常問題以外の生成処理も含めて移行範囲を記録します。テスト用<code>cc-lab-1</code>だけで、第二章やボスが動くとは判断できません。</p>
+<p>問題カタログが変わっても、冒険中は同じ版を使う方針です。保存データへ版を記録する場合はセーブ形式の移行処理を加えます。旧セーブは版指定を持たないため、既存IDを解決できる互換カタログへつなぎます。</p>
+<p class="note"><strong>ここでの完了条件</strong>：既存の続きから遊び、戦闘・封印・ボス・復習・泉の代表経路を通り、新しい問題の学習履歴も再読込後に残る。</p><label class="completion"><input type="checkbox" data-complete="b06"> この章を読了にする</label></section><section class="lesson" id="b07" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B07 試験用Cloudflareへ、DBとWorkerを公開</h2><h3>ローカルで成功してからリモートへ</h3>
+<p>ここからはCloudflare上の試験用DBを変更し、試験用URLを公開します。試験用と本番用の名前を取り違えないようにします。</p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-43" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-43">npx wrangler whoami
+npx wrangler d1 migrations apply codechronicle-staging --remote --config wrangler.staging.jsonc
+npx wrangler d1 execute codechronicle-staging --remote --file seed.lab.sql --config wrangler.staging.jsonc
+npx tsc -p tsconfig.worker.json
+npm run build -- --base=/
+npx wrangler deploy --dry-run --config wrangler.staging.jsonc
+npx wrangler deploy --config wrangler.staging.jsonc</code></pre></div>
+<p>ローカルのデータは自動でリモートへ転送されません。逆に、ローカル実習のつもりで<code>--remote</code>を付ければ、Cloudflare上を変更します。D1コマンドの対象は毎回確認します。<a href="https://developers.cloudflare.com/d1/wrangler-commands/" target="_blank" rel="noopener noreferrer">Wrangler D1コマンド ↗</a></p>
+<h3>発行されたURLで確認</h3>
+<ul><li><code>/</code>でゲームと画像・フォントが開く。</li><li><code>/api/catalog?version=lab-v1</code>で1問のJSONが返る。</li><li>APIのPOSTは405、未登録版は404、無関係なAPIは404になる。</li><li>統合前ならAPIの実習まで。B06を終えた場合はゲームの代表経路も通す。</li></ul>
+<p>試験用URLも公開されます。機密情報・個人のセーブ・秘密のトークンをテストデータとして投入しません。認証をまだ付けていないので、テストURLを秘密だと考えないようにします。</p>
+<p class="note"><strong>今日のセーブポイント</strong>：試験用URLとデプロイ版、カタログ版、DB名、未確認項目を記録できた。</p><label class="completion"><input type="checkbox" data-complete="b07"> この章を読了にする</label></section><section class="lesson" id="b08" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B08 本番用を分け、公開してよいか判定する</h2><h3>本番用DBと設定を別にする</h3>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-44" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-44">npx wrangler d1 create codechronicle-production</code></pre></div>
+<p><code>wrangler.staging.jsonc</code>を元に<code>wrangler.production.jsonc</code>を作り、Worker名・database_name・database_idをすべて本番用へ変更します。試験用UUIDを残さないようにします。<code>main</code>・<code>assets</code>・migrationの設計は同じに保ちます。</p>
+<p>本番データは、検証したGit原稿から作った投入ファイルを使います。<code>seed.lab.sql</code>を本番ゲームの問題データとして使わないでください。本番用の投入・照合処理がない段階は、公開準備が完了していません。</p>
+<h3>円卓が求めた3つの合格条件</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">条件</th><th scope="col">合格を示す操作</th></tr></thead><tbody><tr><td>接続と公開範囲</td><td>全対象問題を照合し、D1→API→回答まで動く。更新は一般公開しない</td></tr><tr><td>互換性</td><td>旧JSONの移行・新問題の履歴・復習・扉・ボスが版変更後も成立する</td></tr><tr><td>障害と復旧</td><td>遅延・空集合・破損・API失敗で元セーブを守り、再試行と前版へ戻す操作ができる</td></tr></tbody></table></div>
+<p>料金・性能は試験環境の実測で判断します。問題セットの転送量、起動にかかる時間、APIリクエスト、D1の読み取り量を記録します。「静的ファイル無料」をAPI・DBにもそのまま当てはめないようにします。</p>
+<h3>合格後に行う本番コマンド</h3>
+<p>次は実行順の見本です。<code>seed.production.sql</code>は、B06で検証・生成した本物の公開問題データです。この教材にある実習SQLとは別です。</p>
+<div class="codebox"><div class="codebar"><span>bash</span><button class="copy" data-copy="code-45" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-45">npx wrangler d1 migrations apply codechronicle-production --remote --config wrangler.production.jsonc
+npx wrangler d1 execute codechronicle-production --remote --file seed.production.sql --config wrangler.production.jsonc
+npx tsc -p tsconfig.worker.json
+npm run build -- --base=/
+npx wrangler deploy --dry-run --config wrangler.production.jsonc
+npx wrangler deploy --config wrangler.production.jsonc</code></pre></div>
+<p class="note"><strong>公開後</strong>：実際の正式URLで再確認し、旧サイトからのJSON引き継ぎを試します。引き継ぎのため、旧URLをすぐ閉じたり自動転送したりしないようにします。</p><label class="completion"><input type="checkbox" data-complete="b08"> この章を読了にする</label></section><section class="lesson" id="b09" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B09 自動公開と、問題の更新手順</h2><h3>Workers Buildsを使う場合</h3>
+<p>本番WorkerにGitを接続し、Production branchを<code>main</code>、Root directoryをリポジトリ直下にします。基礎編の静的公開設定から、Deploy commandを本番用の設定指定へ変えます。<a href="https://developers.cloudflare.com/workers/ci-cd/builds/configuration/" target="_blank" rel="noopener noreferrer">Workers Builds ↗</a></p>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-46" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-46">Build command:
+  npm run build -- --base=/ &amp;&amp; npx tsc -p tsconfig.worker.json
+
+Deploy command:
+  npx wrangler deploy --config wrangler.production.jsonc
+
+Build variable:
+  NODE_VERSION = 22</code></pre></div>
+<p><code>worker-configuration.d.ts</code>は生成した型としてGitに含める運用なら、ビルド時に再生成しなくても検査できます。DB接続設定を変えたときは型も更新します。設定ファイルにAPIトークンを直書きしません。</p>
+<h3>問題更新の流れ</h3>
+<div class="codebox"><div class="codebar"><span>text</span><button class="copy" data-copy="code-47" aria-label="コードをコピー">コピー</button></div><pre tabindex="0"><code id="code-47">Gitで原稿を変更
+ → 型・正解・参照IDを検証
+ → 新revisionと新catalogをdraftで投入
+ → 件数・整合性を照合
+ → 対応するアプリと組み合わせて試験
+ → 公開版を切り替える</code></pre></div>
+<p>DBのschema変更と問題データの公開は、単なるゲームの再ビルドとは別の操作です。初期はDB変更を無条件に毎回のBuildへ詰め込まず、適用対象と互換性を確認してから行います。</p>
+<p>旧アプリと新カタログ、新アプリと旧カタログの組み合わせも考えます。カタログ取得に対応アプリ版の条件を追加するか、旧版を明示指定して使う方式を決めます。この契約が未実装の間は、アプリと問題を独立に更新できる完成形とは扱いません。</p>
+<p class="note"><strong>確認すること</strong>：mainの更新で試験用DBに接続していない。プレビューは本番へdeployせず、試験用の設定・DBを使っている。</p><label class="completion"><input type="checkbox" data-complete="b09"> この章を読了にする</label></section><section class="lesson" id="b10" data-group="B" hidden><div class="eyebrow">WORKER + DATABASE / B</div><h2 tabindex="-1">B10 戻し方と、卒業課題</h2><h3>戻す対象は3つ</h3>
+<div class="tablewrap" tabindex="0"><table><thead><tr><th scope="col">対象</th><th scope="col">戻す手段</th></tr></thead><tbody><tr><td>ゲーム・Worker</td><td>正常なデプロイ版へ戻す。Git側にも修正を反映</td></tr><tr><td>問題カタログ</td><td>対応する旧版を選べる契約で戻す。公開済み内容を上書きしない</td></tr><tr><td>DBの誤更新</td><td>バックアップ・Time Travel等を使う復旧を別に用意</td></tr></tbody></table></div>
+<p>Workerの版を戻しても、D1の内容やブラウザのセーブは戻りません。D1のTime Travelによる復元はDB全体を上書きする操作なので、練習は試験用DBで行い、実行対象・復旧点・影響範囲を確認します。<a href="https://developers.cloudflare.com/d1/reference/time-travel/" target="_blank" rel="noopener noreferrer">D1 Time Travel ↗</a></p>
+<h3>この実習コードで足りない部分を把握する</h3>
+<ul><li>全問題の抽出・投入・照合スクリプト。</li><li>既存App、保存検証、依頼・本・ボスの接続作業。</li><li>セーブ形式の版移行と、旧問題IDの解決。</li><li>アプリ版と問題カタログ版の互換チェック・選択の仕組み。</li><li>本番相当の障害試験、監視、利用量・費用の記録。</li></ul>
+<p>これらはCodeChronicleの移行実装として行う作業です。本書のサンプルは、D1とWorkerの最初の1往復を学ぶためのものです。</p>
+<h3>卒業課題</h3>
+<ol><li>試験DBから問題を取得し、1問回答できる。</li><li>通信失敗で元のセーブが変更されず、再試行で再開できる。</li><li>DBにだけ存在する問題を解き、再読込しても履歴が残る。</li><li>旧URLのJSONを正式URLへ引き継ぎ、依頼・復習を続けられる。</li><li>問題の更新後でも冒険中の出題・採点は同じ版で、前版への復帰を実演できる。</li></ol>
+<p class="note"><strong>説明できれば合格</strong>：「何を公開し、どこに保存し、失敗したとき何を残して戻すか」を自分の言葉で言う。</p><label class="completion"><input type="checkbox" data-complete="b10"> この章を読了にする</label></section><nav class="move" aria-label="章の移動"><button id="previous" disabled>← 前の章</button><span class="position" id="position">学習ルートを選ぼう</span><button id="next">次の章 →</button></nav><div class="status" id="status" role="status" aria-live="polite"></div><footer>CodeChronicle Learning Book · HTML増補版 2026.11.03 / ゲームの設定・DB・公開先は、この教材を開いても変更されません。</footer></main></div><script>
+(()=>{'use strict';const lessons=[...document.querySelectorAll('.lesson')];const ids=lessons.map(x=>x.id);const links=[...document.querySelectorAll('[data-lesson]')];const home=document.getElementById('home');const key='cc-deployment-book-html-v1';let done=new Set();try{const v=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(v))done=new Set(v.filter(x=>ids.includes(x)));}catch{}const status=document.getElementById('status');
+function progress(){document.getElementById('progress').value=done.size;document.getElementById('done-count').textContent=done.size+' / '+ids.length+' 章';document.querySelectorAll('[data-complete]').forEach(x=>x.checked=done.has(x.dataset.complete));links.forEach(x=>{const yes=done.has(x.dataset.lesson);x.classList.toggle('done',yes);x.querySelector('.tick').textContent=yes?'◆':'◇';});}
+function show(id,focus=false){if(id==='sources')id='a23';if(!ids.includes(id))id='home';lessons.forEach(x=>x.hidden=x.id!==id);home.hidden=id!=='home';links.forEach(x=>{const active=x.dataset.lesson===id;x.classList.toggle('active',active);if(active)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current');});const i=ids.indexOf(id);document.getElementById('previous').disabled=i<=0;document.getElementById('next').disabled=i===ids.length-1;document.getElementById('position').textContent=i<0?'学習ルートを選ぼう':(i+1)+' / '+ids.length;document.getElementById('next').dataset.to=i<0?ids[0]:ids[i+1]||'';document.getElementById('previous').dataset.to=ids[i-1]||'';document.getElementById('mobile-nav').textContent=id==='home'?'目次を開く ▾':'目次 ▾ / '+lessons[i].querySelector('h2').textContent;if(focus){document.querySelector('aside').classList.remove('open');document.getElementById('mobile-nav').setAttribute('aria-expanded','false');document.querySelector('#'+id+' h2, #'+id+' h1')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'auto'});}}
+window.addEventListener('hashchange',()=>show(location.hash.slice(1),true));document.querySelectorAll('.move button').forEach(x=>x.addEventListener('click',()=>{if(x.dataset.to)location.hash=x.dataset.to;}));document.querySelectorAll('[data-complete]').forEach(x=>x.addEventListener('change',()=>{x.checked?done.add(x.dataset.complete):done.delete(x.dataset.complete);try{localStorage.setItem(key,JSON.stringify([...done]));status.textContent='読了を保存しました。';}catch{status.textContent='この環境では読了を保存できません。表示中は保持します。';}progress();}));document.getElementById('print').addEventListener('click',()=>window.print());document.getElementById('mobile-nav').addEventListener('click',e=>{const yes=document.querySelector('aside').classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',String(yes));});
+document.getElementById('search').addEventListener('input',e=>{const q=e.target.value.trim().toLocaleLowerCase();let n=0;links.forEach(x=>{const l=document.getElementById(x.dataset.lesson);const yes=!q||l.textContent.toLocaleLowerCase().includes(q);x.hidden=!yes;if(yes)n++;});document.getElementById('empty').hidden=n!==0;document.getElementById('search-count').textContent=q?n+'章が一致':'';});
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{const t=document.getElementById(b.dataset.copy).textContent;try{await navigator.clipboard.writeText(t);b.textContent='コピー済み';}catch{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.select();let copied=false;try{copied=document.execCommand('copy');}catch{}ta.remove();b.textContent=copied?'コピー済み':'範囲を選択してコピー';if(!copied){const sel=window.getSelection(),range=document.createRange();range.selectNodeContents(document.getElementById(b.dataset.copy));sel.removeAllRanges();sel.addRange(range);}}setTimeout(()=>b.textContent='コピー',2300);}));
+document.querySelectorAll('.source-ref').forEach(x=>x.addEventListener('click',e=>{e.preventDefault();location.hash=Number(x.dataset.source)>=10?'a24':'a23';}));progress();show(location.hash.slice(1));document.documentElement.classList.add('ready');})();
+</script></body></html>

@@ -1,7 +1,7 @@
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'vite';
-const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'});after(()=>server.close());
+const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});after(()=>server.close());
 const {applyQuestEvent,hasStartedChapter}=await server.ssrLoadModule('/src/quests/engine.ts');
 const {restoreQuestStates}=await server.ssrLoadModule('/src/quests/persistence.ts');
 const {questDefinitions}=await server.ssrLoadModule('/src/quests/definitions.ts');
