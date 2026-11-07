@@ -25,7 +25,7 @@ const flat={
   narrative:['story','dialogueLog','DialogueHistoryPanel','DialogueChoices','heroBanter','battleBanter'],
   learning:['questionCatalog','catalogRelease','content','questionSelection','wrongChoiceReasons','bookQuestions','library','LibraryPanel','LibrarySearch','BookPractice','LearningRecordPanel','LearningSession','LearningSetupHelp','QuestionCode','ReviewRoom','learningRecords','reviewSchedule','learningRecords','learningSession','learningSetupHelp','librarySearch','reviewRoom','questLearning'],
   gameplay:['bossBattle','heroTechniques','items','chests','ChestSprite','AdventurePanels','BattleStage','BattleEncounter','battle','chestSprite'],
-  presentation:['QuestionBootstrap','questionBootstrap','TitleScreen','ControlsGuide','keyboardNavigation','keyboardShortcuts','audioPreferences','base','style','titleScreen','chapterStart'],
+  presentation:['titleMotion','QuestionBootstrap','questionBootstrap','TitleScreen','ControlsGuide','keyboardNavigation','keyboardShortcuts','audioPreferences','base','style','titleScreen','chapterStart'],
   persistence:['saveValidation','SaveTransfer','SaveStatus','ResumeSummary','saveTransfer','saveStatus','resumeSummary'],
   operations:['App','main','vite-env.d'],
 };
@@ -33,6 +33,8 @@ function classify(path){
   if(path.startsWith('worker/')||['tsconfig.worker.json','worker-configuration.d.ts'].includes(path))return 'operations';
   if(['seed.lab.sql','seed.game.sql'].includes(path))return 'persistence';
   if(path.startsWith('migrations/'))return 'persistence';
+  if(path.startsWith('src/motion/'))return 'motion';
+  if(path.startsWith('src/dev/'))return 'operations';
   if(path.startsWith('src/world/'))return /memoryEnemy(Art|Identity)\.ts$/.test(path)?'characters':'world';
   if(path.startsWith('src/quests/'))return /\/(chapterTwoLessons|memoryBattleQuestion|QuestStudyPanel|studyTypes)\./.test(path)?'learning':/\/persistence\./.test(path)?'persistence':'narrative';
   if(path.startsWith('src/')){
@@ -46,7 +48,7 @@ function classify(path){
   if(path.startsWith('public/prologue/'))return 'narrative';
   if(/^public\/(title|fonts)\//.test(path))return 'presentation';
   if(path.startsWith('docs/production/characters/'))return 'characters';
-  if(path.startsWith('docs/production/uses/'))return /\/(walking|combat-art)\./.test(path)?'motion':/\/(dialogue-portraits|map-sprites)\./.test(path)?'characters':/\/backgrounds\./.test(path)?'presentation':'world';
+  if(path.startsWith('docs/production/uses/'))return /\/(walking|combat-art|object-motion)\./.test(path)?'motion':/\/(dialogue-portraits|map-sprites)\./.test(path)?'characters':/\/backgrounds\./.test(path)?'presentation':'world';
   if(path.startsWith('docs/production/'))return Object.keys(genres).find(id=>path===`docs/production/${id}.md`)??'operations';
   if(/^docs\/art\/(knight|memory-enemies)/.test(path))return 'characters';
   if(/^docs\/art\/memory-props/.test(path))return 'world';

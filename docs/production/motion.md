@@ -8,6 +8,7 @@
 | 戦闘の待機・攻撃 | [攻撃・戦闘表現](uses/combat-art.md) | [HeroBattleSprite.tsx](../../src/HeroBattleSprite.tsx)、[heroAttackArt.ts](../../src/heroAttackArt.ts)、[heroBattleSprite.css](../../src/heroBattleSprite.css) |
 | 敵の移動・縄張り | 配置・NPC・playerとの衝突、到達性、個体IDを維持 | [enemyMovement.ts](../../src/enemyMovement.ts) |
 | 戦闘のタイミングと被弾 | 表示時間とダメージ/採点を混同しない | [battleTiming.ts](../../src/battleTiming.ts)、[BattleStage.tsx](../../src/BattleStage.tsx)、[EnemyEffectSprite.tsx](../../src/EnemyEffectSprite.tsx) |
+| 小物・背景の発光・揺れ | [オブジェクトの動き](uses/object-motion.md) | [共通部品](../../src/motion/ObjectMotion.tsx)、[確認用画面](../../src/dev/ObjectMotionHarness.tsx) |
 | 回復・成長 | 値の更新と演出の再生を別に扱う | [RecoveryCue.tsx](../../src/RecoveryCue.tsx)、[LevelUpCue.tsx](../../src/LevelUpCue.tsx) |
 
 固有情報は対象ID、動作種別、方向、武器、対応フレームと再生仕様。実測crop・anchorや時間は上記の実装を正本として参照する。全キャラへ同じフレーム数を強制しない。

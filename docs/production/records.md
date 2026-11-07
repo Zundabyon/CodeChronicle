@@ -15,3 +15,5 @@
 | [タイトル背景・文字](../art/title-journey-v1.md) | [背景](uses/backgrounds.md)、[画面・音・操作](presentation.md) | [TitleScreen.tsx](../../src/TitleScreen.tsx)、[titleScreen.css](../../src/titleScreen.css) |
 
 画像以外の現行規約・実装・検証先は[ジャンル別の入口](index.md)から辿る。存在しないBGM制作履歴や未確認の過去プロンプトを、完成済みの記録として追加しない。新しい記録は[履歴ひな形](templates/record.md)を使う。
+
+- 2026-11-05：[タイトルの発光とオブジェクトの動き](../art/title-motion-v1.md) — 既存画像を維持した実装・共通部品・確認環境と測定記録。

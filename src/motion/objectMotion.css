@@ -1,0 +1,8 @@
+.object-motion{display:inline-block;transform-box:fill-box;transform-origin:center;animation-duration:var(--object-motion-duration);animation-delay:var(--object-motion-delay);animation-iteration-count:infinite;animation-timing-function:ease-in-out;animation-name:none}
+.object-motion[data-motion-preset=glow]{opacity:0}
+.object-motion-scene[data-motion-active=true] .object-motion[data-motion-preset=glow]{animation-name:object-motion-glow}
+.object-motion-scene[data-motion-active=true] .object-motion[data-motion-preset=sway]{animation-name:object-motion-sway}
+@keyframes object-motion-glow{0%,100%{opacity:var(--object-motion-opacity-low)}50%{opacity:var(--object-motion-opacity-high)}}
+@keyframes object-motion-sway{0%,100%{transform:rotate(calc(-1 * var(--object-motion-angle)))}50%{transform:rotate(var(--object-motion-angle))}}
+/* CSS safeguard before React mounts or when device preferences change. */
+@media(prefers-reduced-motion:reduce){.object-motion-scene .object-motion{animation-name:none!important}}
