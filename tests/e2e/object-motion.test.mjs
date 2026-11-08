@@ -19,6 +19,27 @@ async function fixture(t,path='/'){
 async function ready(page){await page.locator('.title-background').evaluate(image=>image.decode());await page.locator('.title-artwork [data-motion-active=true]').waitFor();}
 const playback=page=>page.locator('.title-artwork .object-motion-scene').getAttribute('data-motion-active');
 
+test('title lights visibly breathe into the surrounding artwork within a short cycle',{timeout:45000},async t=>{
+  const page=await fixture(t);await ready(page);await page.evaluate(()=>document.fonts.ready);
+  const halo=page.locator('.title-light-gate-inscription .title-light-halo');
+  const bounds=await halo.boundingBox();assert.ok(bounds.width>80&&bounds.height>100,'light must reach beyond the tiny inscription');
+  // Sample an area outside the solid glyph: CSS animation state alone is not proof of visible light.
+  const clip={x:Math.floor(bounds.x+bounds.width*.7),y:Math.floor(bounds.y+bounds.height*.45),width:10,height:10};
+  const pictures=[],opacities=[];
+  for(const phase of [0,.5]){
+    await page.locator('.title-light').evaluateAll((elements,phase)=>elements.forEach(element=>{
+      const animation=element.getAnimations()[0],timing=animation.effect.getTiming();
+      if(Number(timing.duration)>4000)throw new Error('Title light cycle is too slow to notice');
+      animation.pause();animation.effect.updateTiming({delay:0});animation.currentTime=Number(timing.duration)*phase;
+    }),phase);
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    opacities.push(await page.locator('.title-light').evaluateAll(elements=>elements.map(element=>Number(getComputedStyle(element).opacity))));
+    pictures.push(await page.screenshot({clip}));
+  }
+  assert.notDeepEqual(pictures[0],pictures[1],'surrounding artwork must actually change pixels');
+  for(let i=0;i<opacities[0].length;i++)assert.ok(opacities[1][i]-opacities[0][i]>.25,'light needs a noticeable brightness range');
+});
+
 test('artwork coordinates remain attached to the cover image across desktop, mobile and breakpoint changes',{timeout:45000},async t=>{
   const page=await fixture(t);await ready(page);
   for(const viewport of [{width:1920,height:960},{width:1280,height:800},{width:1024,height:600},{width:390,height:844},{width:844,height:390},{width:901,height:800},{width:900,height:800}]){
