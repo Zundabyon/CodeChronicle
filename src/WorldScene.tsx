@@ -139,10 +139,10 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
             const action=eventAt(map,placement,'interact')?.action;
             const door=action?.kind==='memory-door'?action:undefined;
             const doorOpen=door?isMemoryDoorOpen(save.quests,door.npcId):false;
-            const interactive=chest||!!door||action?.kind==='spring';
+            const interactive=chest||!!door||action?.kind==='spring'||action?.kind==='memory-warp'||action?.kind==='lesson';
             const opened=chest&&save.openedChests.includes(chestId(save.area,placement));
             return <WorldChip key={placement.id} definition={propChips[door&&doorOpen?'memoryDoorOpen':placement.chip]} point={placement} text={placement.text} className={door?`memory-door-${doorOpen?'open':'closed'}`:undefined}
-              chestOpen={chest?opened:undefined} label={door?(doorOpen?'開いた記憶の扉を調べる':'閉じた記憶の扉を調べる'):action?.kind==='spring'?`${action.name}で休む`:chest?(opened?'空の宝箱を調べる':'宝箱を開ける'):undefined}
+              chestOpen={chest?opened:undefined} label={door?(doorOpen?'開いた記憶の扉を調べる':'閉じた記憶の扉を調べる'):action?.kind==='spring'?`${action.name}で休む`:action?.kind==='memory-warp'||action?.kind==='lesson'?eventAt(map,placement,'interact')?.label:chest?(opened?'空の宝箱を調べる':'宝箱を開ける'):undefined}
               onClick={interactive?()=>onTile(placement):undefined}/>;
           })}
           {map.characters.map(character=>{

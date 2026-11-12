@@ -1,7 +1,20 @@
 import { questDefinition } from './definitions';
 import type { QuestStates } from './types';
 import { canWalkOnMap, eventAt, type WorldMap } from '../world/maps';
-import type { Point } from '../content';
+import type { Area, Point } from '../content';
+import { memoryDungeons, trialNpcId } from '../world/memoryDungeons';
+
+/** A cleared room's return point leads to the village; the entrance warp (no room)
+ * lands just past the deepest open door. Doors open in order, so the last open one is deepest. */
+export function memoryWarpTarget(quests:QuestStates,key:string,room?:number):{area:Area;position?:Point}|null {
+  const dungeon=memoryDungeons.find(d=>d.key===key);
+  if(!dungeon)return null;
+  if(room!==undefined)return isMemoryDoorOpen(quests,trialNpcId(key,room))?{area:'village'}:null;
+  const deepest=dungeon.doors.filter((_,i)=>isMemoryDoorOpen(quests,trialNpcId(key,i))).length-1;
+  if(deepest<0)return null;
+  const [x,y]=dungeon.doors[deepest];
+  return {area:dungeon.area,position:{x,y:y-1}};
+}
 
 // A seal may contain several lessons. Its door opens only after its LAST lesson.
 // Persisted chapter progress is the authority, including legacy completed saves.

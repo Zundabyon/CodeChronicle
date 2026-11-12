@@ -1,4 +1,6 @@
-import { isMemoryDoorOpen, memoryDoorHint, restoreMemoryPosition } from './quests/memoryGates';
+import { isMemoryDoorOpen, memoryDoorHint, restoreMemoryPosition, memoryWarpTarget } from './quests/memoryGates';
+import { dungeonLessons, isLessonRead, lessonReadId } from './world/dungeonLessons';
+import { LessonList } from './quests/LessonList';
 import { QuestStudyPanel } from './quests/QuestStudyPanel';
 import type { QuestStudy } from './quests/studyTypes';
 import { memoryBattleQuestion } from './quests/memoryBattleQuestion';
@@ -376,6 +378,22 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       setToast('泉で HP と MP が全回復した。');
     });
   },[startDialogue,update]);
+  const useMemoryWarp = useCallback((key:string,room?:number) => {
+    const s=stateRef.current,target=memoryWarpTarget(s.quests,key,room);
+    if(!target){startDialogue('帰還点','✧',[room===undefined?'まだ封印を解いた部屋がない。最初の部屋から進もう。':'この部屋の封印を解くと、ここから石灯の村へ戻れる。']);return;}
+    startDialogue('帰還点','✧',[room===undefined?'到達した一番奥の部屋へ飛ぶ？':'石灯の村へ戻る？ 戻った後は、入口の「奥への帰還点」からここまで戻れる。'],[
+      {label:room===undefined?'奥へ飛ぶ':'村へ戻る',response:'帰還の光に包まれた。',onChoose:()=>transition(s.area,target.area,target.position)},
+      {label:'やめる',response:'今はこのまま進もう。'},
+    ]);
+  },[startDialogue,transition]);
+  // Marked read only when the last page closes; dialogue has no cancel, so closing means finished.
+  const openLesson = useCallback((id:string) => {
+    const lesson=dungeonLessons[id];
+    startDialogue(lesson?.title??'解説','📜',lesson?.lines??['この解説は準備中です。'],undefined,()=>{
+      const readId=lessonReadId(id);
+      update(s=>s.readBooks.includes(readId)?s:{...s,readBooks:[...s.readBooks,readId]});
+    });
+  },[startDialogue,update]);
   const examineMemoryDoor = useCallback((npcId:string) => {
     const s=stateRef.current;
     if(isMemoryDoorOpen(s.quests,npcId)){setToast('学びの扉は開いている。先へ進もう。');return;}
@@ -394,8 +412,12 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if (interaction?.kind==='dresser') { openDresser(); return false; }
     if (interaction?.kind==='chest') { openChest(interaction.id); return false; }
     if(interaction?.kind==='spring'){useSpring(interaction.name);return false;}
+    if(interaction?.kind==='memory-warp'){useMemoryWarp(interaction.dungeon,interaction.room);return false;}
+    if(interaction?.kind==='lesson'){openLesson(interaction.id);return false;}
     const door=eventAt(maps[s.area],target,'enter')?.action;
     if(door?.kind==='memory-door'&&!isMemoryDoorOpen(s.quests,door.npcId)){stopPath();examineMemoryDoor(door.npcId);return false;}
+    // An unread required lesson holds its tile until the explanation is finished.
+    if(door?.kind==='lesson'&&door.required&&!isLessonRead(s.readBooks,door.id)){openLesson(door.id);return false;}
     if (!walkable(s.area,target,s.quests)) { beep(130,0.05); return false; }
     const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target));
     if (npc) { talkToNpc(npc); return false; }
@@ -409,7 +431,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if (action?.kind==='church') { enterChurch(); return false; }
     if (action?.kind==='transition') { transition(s.area,action.to,action.position); return false; }
     return true;
-  },[showSettings,showGuide,showMap,worldMenu,inventoryOpen,dresserOpen,libraryShelf,shopType,openDresser,openChest,openBookshelf,talkToNpc,startBattle,update,beep,enterChurch,transition,useSpring,examineMemoryDoor,stopPath]);
+  },[showSettings,showGuide,showMap,worldMenu,inventoryOpen,dresserOpen,libraryShelf,shopType,openDresser,openChest,openBookshelf,talkToNpc,startBattle,update,beep,enterChurch,transition,useSpring,useMemoryWarp,openLesson,examineMemoryDoor,stopPath]);
   const interact = useCallback(() => {
     stopPath();
     const s=stateRef.current, map=maps[s.area];
@@ -419,12 +441,14 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       const action=target.action;
       if(action.kind==='spring'){useSpring(action.name);return;}
       if(action.kind==='memory-door'){examineMemoryDoor(action.npcId);return;}
+      if(action.kind==='memory-warp'){useMemoryWarp(action.dungeon,action.room);return;}
+      if(action.kind==='lesson'){openLesson(action.id);return;}
       if(action.kind==='bookshelf') {openBookshelf(action.shelf);return;}
       if(action.kind==='dresser') {openDresser();return;}
       if(action.kind==='chest') {openChest(action.id);return;}
     }
     setToast('隣に人や調べられるものがない。近づいてEnterを押そう。');
-  },[stopPath,talkToNpc,openDresser,openChest,openBookshelf,useSpring,examineMemoryDoor]);
+  },[stopPath,talkToNpc,openDresser,openChest,openBookshelf,useSpring,useMemoryWarp,openLesson,examineMemoryDoor]);
   const navigationScope = () => Array.from(document.querySelectorAll('.modal-backdrop')).at(-1)
     ?? document.querySelector('.dialogue-overlay')
     ?? document.querySelector('.world-menu')
@@ -485,7 +509,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       setToast(npc||enemy||interaction?'近づける道が見つからない。':'そこへは行けない。通れる場所を選ぼう。');
       return;
     }
-    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (interaction?.kind==='spring') useSpring(interaction.name); else if (interaction?.kind==='memory-door') examineMemoryDoor(interaction.npcId); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='chest') openChest(interaction.id); else if (interaction?.kind==='bookshelf') openBookshelf(interaction.shelf); } },105);
+    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (interaction?.kind==='spring') useSpring(interaction.name); else if (interaction?.kind==='memory-door') examineMemoryDoor(interaction.npcId); else if (interaction?.kind==='memory-warp') useMemoryWarp(interaction.dungeon,interaction.room); else if (interaction?.kind==='lesson') openLesson(interaction.id); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='chest') openChest(interaction.id); else if (interaction?.kind==='bookshelf') openBookshelf(interaction.shelf); } },105);
   };
   const answer = (value: string | number) => {
     if (!battle || battle.answered) return;
@@ -703,7 +727,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} recovery={recovery?.source==='inventory'?recovery:null} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>{setInventoryOpen(false);setRecovery(null);}}/> }
-    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><QuestJournal save={save} onStart={startQuest} onReview={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');reviewQuest(id);}}/><DialogueHistoryPanel entries={save.dialogueLog}/><LearningRecordPanel questionBank={questionBank} records={save.learningRecords}/><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
+    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><QuestJournal save={save} onStart={startQuest} onReview={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');reviewQuest(id);}}/><LessonList readBooks={save.readBooks} onOpen={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');openLesson(id);}}/><DialogueHistoryPanel entries={save.dialogueLog}/><LearningRecordPanel questionBank={questionBank} records={save.learningRecords}/><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {mapView&&<TravelMap initialTab={mapView} area={save.area} position={save.pos} inChurch={phase==='church'||phase==='review-room'} onClose={()=>setMapView(null)}/>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
     {saveNotice&&<aside className="save-status save-error" role="status"><p>{saveNotice}</p><button onClick={()=>setSaveNotice('')}>確認しました</button></aside>}

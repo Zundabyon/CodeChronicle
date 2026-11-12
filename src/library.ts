@@ -1,4 +1,5 @@
 import type { Area } from './content';
+import { lessonReadIds } from './world/dungeonLessons';
 
 export type LibraryWing = 'frontend' | 'backend';
 export const libraryWingLabel:Record<LibraryWing,string> = {frontend:'西棟・フロントエンド',backend:'東棟・バックエンド'};
@@ -110,7 +111,7 @@ export const libraryShelves:LibraryShelf[] = [
 
 const knownBookIds=new Set(libraryShelves.flatMap(shelf=>shelf.books.map(book=>book.id)));
 export function normalizeReadBooks(value:unknown):string[] {
-  return Array.isArray(value)?[...new Set(value.filter((id):id is string=>typeof id==='string'&&knownBookIds.has(id)))]:[];
+  return Array.isArray(value)?[...new Set(value.filter((id):id is string=>typeof id==='string'&&(knownBookIds.has(id)||lessonReadIds().includes(id))))]:[];
 }
 
 export function normalizeBookmarks(value:unknown):Record<string,string> {

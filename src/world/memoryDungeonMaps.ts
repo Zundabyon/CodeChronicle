@@ -44,6 +44,11 @@ export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEn
     props.push({id:'door-'+i,chip:'memoryDoor',x:doorX,y:doorY,blocksMovement:false});
     props.push({id:'door-label-'+i,chip:'sign',x:doorX,y:doorY-.65,text:'第'+(i+1)+'の封印扉'});
     props.push({id:'room-lamp-'+i,chip:'lantern',x:6,y:doorY+2});
+    // shortcut: return points sit beside each door until Codex's 2-1 layout gives real coordinates.
+    const returnPoint={x:doorX<15?doorX+3:doorX-3,y:doorY+1};
+    props.push({id:'return-point-'+i,chip:'lantern',...returnPoint,blocksMovement:true});
+    props.push({id:'return-label-'+i,chip:'sign',x:returnPoint.x,y:returnPoint.y-.65,text:'帰還点'});
+    events.push({id:'return-point-'+i+'-interact',...returnPoint,trigger:'interact',label:'帰還点から村へ戻る',action:{kind:'memory-warp',dungeon:dungeon.key,room:i}});
     for(const trigger of ['enter','interact'] as const)events.push({
       id:'door-'+i+'-'+trigger,x:doorX,y:doorY,trigger,label:'第'+(i+1)+'の封印扉',action:{kind:'memory-door',npcId:id},
     });
@@ -86,6 +91,9 @@ export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEn
     '五つの封印を越えた旅人よ。「'+dungeon.operation+'」の記憶を確かめよう。',
   ]}});
   props.push({id:'altar-title',chip:'sign',x:15,y:1.5,text:dungeon.key.toUpperCase()+'の記憶の欠片'});
+  props.push({id:'deep-warp',chip:'lantern',x:18,y:59,blocksMovement:true});
+  props.push({id:'deep-warp-label',chip:'sign',x:18,y:58.35,text:'奥への帰還点'});
+  events.push({id:'deep-warp-interact',x:18,y:59,trigger:'interact',label:'到達した一番奥へ飛ぶ',action:{kind:'memory-warp',dungeon:dungeon.key}});
   props.push({id:'entrance-name',chip:'sign',x:15,y:60.6,text:dungeon.name+' / 出口 ▼'});
   const map:WorldMapInput={environment:'dungeon',terrain,entry:{x:15,y:60},props,buildings:[],characters,events:[...events,
     {id:'return-to-field',x:15,y:62,trigger:'enter',label:'風渡りの平原へ',

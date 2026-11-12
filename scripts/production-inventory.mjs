@@ -55,8 +55,8 @@ function classify(path){
   if(path==='docs/art-direction.md'||/^docs\/art\/title/.test(path))return 'presentation';
   if(path==='docs/quests.md')return 'narrative';
   if(/^docs\/(question-authoring|chapter-two-learning)\./.test(path))return 'learning';
-  if(/^(docs|tests|scripts|output|\.agents|\.codex|\.github)\//.test(path))return 'operations';
-  if(['README.md','.gitignore','.gitattributes','package.json','package-lock.json','index.html','tsconfig.json','vite.config.ts','wrangler.staging.jsonc'].includes(path))return 'operations';
+  if(/^(docs|tests|scripts|output|\.agents|\.codex|\.claude|\.github)\//.test(path))return 'operations';
+  if(['README.md','CLAUDE.md','.gitignore','.gitattributes','package.json','package-lock.json','index.html','tsconfig.json','vite.config.ts','wrangler.staging.jsonc'].includes(path))return 'operations';
 }
 const args=process.argv.slice(2);
 if(args.some(arg=>!['--write','--check'].includes(arg))||args.length>1){console.error('Usage: node scripts/production-inventory.mjs [--check|--write]');process.exit(2);}
@@ -68,7 +68,7 @@ const files=paths.map(path=>{
   const genre=classify(path);
   if(!genre){errors.push(`Unclassified file: ${path}`);return null;}
   const saved=old.get(path);
-  return {...saved,path,bytes:statSync(resolve(root,path)).size,suffix:extname(path),group:saved?.group??genres[genre].label,role:saved?.role??`${genres[genre].label}に関する${path.startsWith('docs/')?'制作規約・記録':path.startsWith('public/')?'素材または制作情報':path.startsWith('tests/')?'検証':path.startsWith('.agents/')||path.startsWith('.codex/')?'作業手順・担当設定':'定義・処理・運用ファイル'}。用途と登録先はジャンル案内を参照。`,genre};
+  return {...saved,path,bytes:statSync(resolve(root,path)).size,suffix:extname(path),group:saved?.group??genres[genre].label,role:saved?.role??`${genres[genre].label}に関する${path.startsWith('docs/')?'制作規約・記録':path.startsWith('public/')?'素材または制作情報':path.startsWith('tests/')?'検証':path.startsWith('.agents/')||path.startsWith('.codex/')||path.startsWith('.claude/')?'作業手順・担当設定':'定義・処理・運用ファイル'}。用途と登録先はジャンル案内を参照。`,genre};
 }).filter(Boolean);
 function walk(path){return existsSync(path)?readdirSync(path,{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?walk(resolve(path,entry.name)):[resolve(path,entry.name)]):[];}
 // Verify every local Markdown link in the new guide and project skills.

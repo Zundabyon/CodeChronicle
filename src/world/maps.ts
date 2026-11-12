@@ -18,7 +18,7 @@ export type CharacterPlacement = Placement<CharacterId> & (
   | {role:'npc'; npc:Npc}
   | {role:'enemy'; enemy:Enemy}
 );
-export type MapAction = {kind:'spring';name:string} | {kind:'memory-door';npcId:string} | {kind:'bookshelf';shelf:string} | {kind:'dresser'} | {kind:'chest';id:string} | {kind:'church'} | {kind:'transition';to:Area;position?:Point};
+export type MapAction = {kind:'spring';name:string} | {kind:'memory-door';npcId:string} | {kind:'bookshelf';shelf:string} | {kind:'dresser'} | {kind:'chest';id:string} | {kind:'church'} | {kind:'transition';to:Area;position?:Point} | {kind:'memory-warp';dungeon:'c'|'r'|'u'|'d';room?:number} | {kind:'lesson';id:string;required:boolean};
 export type MapEvent = Point & {id:string; trigger:'enter'|'interact'; label:string; action:MapAction};
 export type WorldMapInput = {
   environment:'outdoor'|'interior'|'dungeon';

@@ -8,7 +8,8 @@ const {worldMaps,canWalkOnMap}=await server.ssrLoadModule('/src/world/maps.ts');
 const {memoryDungeons,trialNpcId,altarNpcId}=await server.ssrLoadModule('/src/world/memoryDungeons.ts');
 const {spawnEnemies,moveEnemies}=await server.ssrLoadModule('/src/enemyMovement.ts');
 const {questDefinition,applyQuestEvent}=await server.ssrLoadModule('/src/quests/engine.ts');
-const {isMemoryDoorOpen,restoreMemoryPosition}=await server.ssrLoadModule('/src/quests/memoryGates.ts');
+const memoryGates=await server.ssrLoadModule('/src/quests/memoryGates.ts');
+const {isMemoryDoorOpen,restoreMemoryPosition}=memoryGates;
 const {startQuestReview,applyQuestReviewAnswer,questReviewSteps}=await server.ssrLoadModule('/src/quests/review.ts');
 const chapter=questDefinition('village-ledger');
 const key=p=>`${p.x},${p.y}`;
@@ -166,5 +167,26 @@ test('enemy territories leave a permanent walkable route to every seal, spring, 
     }
     for(const target of [...map.npcs,...map.events.filter(e=>e.action.kind==='spring')])assert.ok(canInteract(seen,target),`${target.id} must remain accessible without battles`);
     for(const door of map.events.filter(e=>e.action.kind==='memory-door'))assert.ok(seen.has(key(door)),'enemies cannot block sealed doors');
+  }
+});
+
+test('return points open only after their room seal, and the entrance warp lands past the deepest open door',()=>{
+  const {memoryWarpTarget}=memoryGates;
+  for(const dungeon of memoryDungeons){
+    const map=worldMaps[dungeon.area],warps=map.events.filter(e=>e.action.kind==='memory-warp');
+    assert.equal(warps.length,dungeon.doors.length+1);
+    const fresh={[chapter.id]:{step:roomSteps(trialNpcId(dungeon.key,0))[0].id}};
+    assert.equal(memoryWarpTarget(fresh,dungeon.key),null,'no warp before the first seal');
+    for(let room=0;room<dungeon.doors.length;room++){
+      assert.equal(memoryWarpTarget(fresh,dungeon.key,room),null);
+      const after=roomSteps(trialNpcId(dungeon.key,room+1));
+      const quests={[chapter.id]:{step:after.length?after[0].id:'complete'}};
+      assert.deepEqual(memoryWarpTarget(quests,dungeon.key,room),{area:'village'});
+      const deep=memoryWarpTarget(quests,dungeon.key),seen=reachableWithProgress(map,quests);
+      assert.equal(deep.area,dungeon.area);
+      assert.ok(seen.has(key(deep.position)),`deep warp after room ${room} must land on reachable floor`);
+      const returnPoint=warps.find(e=>e.action.room===room);
+      assert.ok(canInteract(seen,returnPoint),`return point ${room} must be usable once its seal opens`);
+    }
   }
 });
