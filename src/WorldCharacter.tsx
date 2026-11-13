@@ -3,7 +3,7 @@ import './characterArt.css';
 
 export type CharacterDirection = 'down'|'left'|'right'|'up';
 
-export type CharacterName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother'|'knight';
+export type CharacterName = 'hero'|'elder'|'scholar'|'child'|'priest'|'wanderer'|'father'|'mother'|'knight'|'fumi'|'graphius'|'ranger-read'|'ranger-create'|'ranger-update'|'ranger-delete';
 
 export function WorldCharacter({name,walking=false,direction,className=''}:{name:CharacterName;walking?:boolean;direction?:CharacterDirection;className?:string}) {
   const classes=`world-character character-art ${walking?'walking':''} ${className}`;

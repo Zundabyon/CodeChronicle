@@ -29,6 +29,8 @@ function matchesTrigger(trigger: QuestTrigger, event: QuestEvent): boolean {
       return event.type === 'book-read' && event.bookId === trigger.bookId;
     case 'chest-examined':
       return event.type === 'chest-examined' && event.chestId === trigger.chestId;
+    case 'battle-won':
+      return event.type === 'battle-won' && event.enemyId === trigger.enemyId;
     case 'question-answered':
       return event.type === 'question-answered'
         && event.questionId === trigger.questionId

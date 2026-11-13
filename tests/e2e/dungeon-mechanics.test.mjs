@@ -19,7 +19,7 @@ async function fixture(t,extra={}){
   page.on('pageerror',error=>errors.push(error.message));t.after(async()=>{if(errors.length){await page.screenshot({path:'/private/tmp/cc-resource-failure-'+t.name.split(' ')[0]+'.png'});console.log('Failed page:',(await page.locator('body').innerText()).slice(-2000));}await page.close();assert.deepEqual(errors,[]);});
   await page.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//,route=>route.abort());
   await page.addInitScript(()=>{Math.random=()=>0;});await page.goto(url);
-  await page.evaluate(({key,extra})=>localStorage.setItem(key,JSON.stringify({name:'実習確認',story:'rescued',completed:true,bossDefeated:true,area:'crudRead',pos:{x:15,y:60},gold:321,quests:{'village-ledger':{step:'read-records'}},...extra})),{key,extra});
+  await page.evaluate(({key,extra})=>localStorage.setItem(key,JSON.stringify({name:'実習確認',story:'rescued',completed:true,bossDefeated:true,area:'crudRead',pos:{x:23,y:110},gold:321,quests:{'village-ledger':{step:'read-records'}},...extra})),{key,extra});
   await page.reload();await resume(page);return page;
 }
 async function saved(page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);}
@@ -57,15 +57,17 @@ test('a room door stays closed through mistakes and partial progress, then opens
 });
 
 test('free springs restore HP and MP repeatedly without advancing quests or spending gold',{timeout:45000},async t=>{
-  const page=await fixture(t,{pos:{x:4,y:34},hp:2,mp:0,quests:{'village-ledger':{step:'read-records'}}});
-  const data=await course(page);await relocate(page,{pos:{x:4,y:34},quests:{'village-ledger':{step:data.allSteps.find(s=>s.npcId==='memory-r-trial-2').id}}});
+  const page=await fixture(t,{pos:{x:2,y:55},hp:2,mp:0,quests:{'village-ledger':{step:'read-records'}}});
+  const data=await course(page);await relocate(page,{pos:{x:2,y:55},quests:{'village-ledger':{step:data.allSteps.find(s=>s.npcId==='memory-r-trial-2').id}}});
   const before=await saved(page);await interact(page);assert.equal((await saved(page)).hp,2);assert.ok((await page.locator('.dialogue-text').innerText()).includes('澄んだ水面'));await advance(page);await page.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).hp>2,key);
   const healed=await saved(page);assert.equal(healed.hp,20+(healed.level-1)*5);assert.equal(healed.mp,3+Math.floor((healed.level-1)/2));assert.equal(healed.gold,before.gold);assert.deepEqual(healed.quests,before.quests);
   await interact(page);await advance(page);const again=await saved(page);assert.equal(again.hp,healed.hp);assert.equal(again.gold,before.gold);assert.deepEqual(again.quests,before.quests);
 });
 
 test('fellow adventurers explain the operation taught in their dungeon',{timeout:45000},async t=>{
-  const page=await fixture(t);const data=await course(page);await relocate(page,{pos:{x:26,y:34},quests:{'village-ledger':{step:data.allSteps.find(s=>s.npcId==='memory-r-trial-2').id}}});await interact(page);
+  const page=await fixture(t);const data=await course(page);await relocate(page,{pos:{x:2,y:54},quests:{'village-ledger':{step:data.allSteps.find(s=>s.npcId==='memory-r-trial-2').id}}});
+  // The adventurer stands east of the v2 spring tile; a lesson tablet is north of it, so face east.
+  await page.locator('.world-viewport').focus();await page.keyboard.press('ArrowRight');await page.locator('.dialogue-box').waitFor();
   let text='';for(let i=0;i<10&&await page.locator('.dialogue-box').count();i++){text+=await page.locator('.dialogue-text').innerText();await page.locator('.dialogue-text > span').click();}
   assert.ok(text.includes('index'));assert.ok(text.includes('show'));assert.ok(text.includes('一覧'));
 });

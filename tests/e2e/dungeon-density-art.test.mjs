@@ -22,7 +22,7 @@ async function fixture(t){
   return page;
 }
 async function relocate(page,extra){
-  await page.evaluate(({key,extra})=>localStorage.setItem(key,JSON.stringify({name:'密度確認',story:'rescued',completed:true,bossDefeated:true,area:'crudRead',pos:{x:15,y:60},gold:321,quests:{'village-ledger':{step:'complete'}},...extra})),{key,extra});
+  await page.evaluate(({key,extra})=>localStorage.setItem(key,JSON.stringify({name:'密度確認',story:'rescued',completed:true,bossDefeated:true,area:'crudRead',pos:{x:23,y:110},gold:321,quests:{'village-ledger':{step:'complete'}},...extra})),{key,extra});
   await page.reload();await resume(page);
 }
 
@@ -72,7 +72,7 @@ test('detailed spring and both door states render from transparent high resoluti
     assert.equal(visual.renderer,'atlas');assert.ok(visual.src.endsWith('.png'));
     assert.ok(visual.frame[2]>=200&&visual.frame[3]>=200,'original art must retain fine source detail');
   }
-  await relocate(page,{pos:{x:4,y:34},quests:{'village-ledger':{step:data.restStep}}});
+  await relocate(page,{pos:{x:2,y:55},quests:{'village-ledger':{step:data.restStep}}});
   const assertArt=async visual=>{
     const loaded=await page.evaluate(async src=>{const image=new Image();image.src='/'+src;await image.decode();return {width:image.naturalWidth,height:image.naturalHeight};},visual.src);
     assert.equal(loaded.width,visual.sourceWidth);assert.equal(loaded.height,visual.sourceHeight);

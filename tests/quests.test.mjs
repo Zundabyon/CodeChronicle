@@ -6,6 +6,8 @@ const {applyQuestEvent,hasStartedChapter}=await server.ssrLoadModule('/src/quest
 const {restoreQuestStates}=await server.ssrLoadModule('/src/quests/persistence.ts');
 const {questDefinitions}=await server.ssrLoadModule('/src/quests/definitions.ts');
 const {questions}=await server.ssrLoadModule('/src/content.ts');
+const {rangerBattles}=await server.ssrLoadModule('/src/quests/rangerBattles.ts');
+const {fumiLine}=await server.ssrLoadModule('/src/quests/definitions.ts');
 const {libraryShelves}=await server.ssrLoadModule('/src/library.ts');
 const {worldMaps}=await server.ssrLoadModule('/src/world/maps.ts');
 const {items}=await server.ssrLoadModule('/src/items.ts');
@@ -22,6 +24,7 @@ test('quest definitions reference real NPCs, books, questions, chests and reward
       if(t.type==='book-read')assert.ok(books.has(t.bookId));
       if(t.type==='question-answered')assert.ok(questions.some(q=>q.id===t.questionId));
       if(t.type==='npc-talked'||t.type==='reported')assert.ok(npcs.has(t.npcId));
+      if(t.type==='battle-won'){const b=rangerBattles[t.enemyId];assert.ok(b);for(const id of b.set)assert.ok(questions.some(q=>q.id===id),id);}
       if(t.type==='chest-examined')assert.ok(Object.values(worldMaps).some(m=>m.events.some(e=>e.action.kind==='chest'&&e.action.id===t.chestId)));
       if(step.requiresReadBook)assert.ok(books.has(step.requiresReadBook));
       if(step.npcId)assert.ok(npcs.has(step.npcId));
@@ -60,25 +63,30 @@ test('legacy progress migrates without replaying rewards, including completed an
   assert.deepEqual(restoreQuestStates({scholarQuestCompleted:true},false,[]),{'library-signboard':{step:'complete'}});
   assert.equal(restoreQuestStates({scholarQuestReady:true},false,[])['library-signboard'].step,'report');
   assert.equal(restoreQuestStates({scholarQuestAccepted:true},false,['laravel-routes-01'])['library-signboard'].step,'practice-route');
-  const old={chapterTwo:'restore',chapterTwoStep:4};assert.equal(restoreQuestStates(old,true,[])['village-ledger'].step,'return-names');assert.deepEqual(restoreQuestStates(old,false,[]),{});
+  const old={chapterTwo:'restore',chapterTwoStep:4};assert.equal(restoreQuestStates(old,true,[])['village-ledger'].step,'return-names');// saveValidation restarts such old chapter-two progressassert.deepEqual(restoreQuestStates(old,false,[]),{});
   const quests=restoreQuestStates({chapterTwo:'complete'},true,[]),save={...fresh(),completed:true,quests};assert.strictEqual(send(save,{type:'npc-talked',npcId:'mountainGuide',questId:'village-ledger'}),save);
   assert.deepEqual(restoreQuestStates({quests:{unknown:{step:'complete'},'village-ledger':{step:'bad'}}},true,[]),{});
   assert.deepEqual(restoreQuestStates({quests:{'library-signboard':{step:'complete'}},scholarQuestAccepted:true},false,[]),{'library-signboard':{step:'complete'}});
 });
 
-test('expanded chapter requires all 51 exercises, all four altars and the board transfer practice',()=>{
+test('chapter two runs its acts R→C→U→D, each followed by a required village battle, then the final battle',()=>{
   const def=questDefinitions.find(q=>q.id==='village-ledger');
   const lessons=def.steps.filter(s=>s.trigger.type==='question-answered');
-  assert.equal(lessons.length,51);
-  assert.deepEqual(lessons.filter(s=>['read-records','update-address','create-family','delete-duplicate'].includes(s.id)).map(s=>s.id),['read-records','update-address','create-family','delete-duplicate']);
-  for(const key of ['r','u','c','d'])assert.equal(lessons.filter(s=>s.npcId?.startsWith('memory-'+key+'-trial-')).length,11);
-  const checkpoint=lessons.filter(s=>s.npcId==='mountainGuide');
-  assert.equal(checkpoint.length,7);
-  assert.deepEqual(new Set(checkpoint.map(s=>s.study.action)),new Set(['index','show','create','store','edit','update','destroy']));
+  assert.equal(lessons.length,43);
+  assert.deepEqual(lessons.filter(s=>['read-records','update-address','create-family','delete-duplicate'].includes(s.id)).map(s=>s.id),['read-records','create-family','update-address','delete-duplicate']);
+  for(const key of ['r','u','c'])assert.equal(lessons.filter(s=>s.npcId?.startsWith('memory-'+key+'-trial-')).length,11);
+  assert.equal(lessons.filter(s=>s.npcId?.startsWith('memory-d-trial-')).length,10);
+  assert.ok(!def.steps.some(s=>s.id==='ledger-delete-transfer'),'authorization transfer left chapter two');
+  assert.ok(questions.some(q=>q.id==='ledger-delete-transfer'),'its question stays in the catalog');
+  assert.ok(!lessons.some(s=>s.npcId==='mountainGuide'),'the board capstone became the final battle');
+  const order=['collect-r','battle-r','collect-c','battle-c','collect-u','battle-u','collect-d','battle-d','battle-graphius','return-names'];
+  assert.deepEqual(def.steps.filter(s=>order.includes(s.id)).map(s=>s.id),order);
+  assert.deepEqual(def.steps.filter(s=>s.trigger.type==='battle-won').map(s=>[s.trigger.enemyId,rangerBattles[s.trigger.enemyId].set.length]),[['ranger-read',5],['ranger-create',5],['ranger-update',5],['ranger-delete',5],['graphius',7]]);
   let save=send({...fresh(),completed:true},{type:'accepted',questId:def.id});
+  assert.equal(fumiLine(save.quests),fumiLine({}));
   save=send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id});
   save=send(save,{type:'chest-examined',chestId:'dungeon:19,5'});
-  const answers=new Set();
+  const answers=new Set(),fumi=new Set([fumiLine(save.quests)]);
   for(const step of def.steps.slice(2,-1)){
     assert.equal(save.quests[def.id].step,step.id);
     if(step.trigger.type==='question-answered'){
@@ -89,6 +97,12 @@ test('expanded chapter requires all 51 exercises, all four altars and the board 
       assert.strictEqual(send(save,{...step.trigger,source:'battle'}),save);
       assert.strictEqual(send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id}),save);
       save=send(save,{...step.trigger});
+    }else if(step.trigger.type==='battle-won'){
+      assert.ok(step.lines.length&&step.after.length);
+      assert.strictEqual(send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id}),save,'talking alone cannot skip a battle');
+      assert.strictEqual(send(save,{type:'battle-won',enemyId:'not-'+step.trigger.enemyId}),save);
+      const result=applyQuestEvent(save,step.trigger);assert.deepEqual(result.scenes,step.after);save=result.save;
+      fumi.add(fumiLine(save.quests));
     }else{
       assert.ok(step.id.startsWith('collect-'));
       assert.strictEqual(send(save,{type:'question-answered',questionId:lessons[0].trigger.questionId,correct:true,source:'quest'}),save);
@@ -98,6 +112,8 @@ test('expanded chapter requires all 51 exercises, all four altars and the board 
     assert.equal(save.gold,100);
   }
   assert.equal(answers.size,4);assert.equal(save.quests[def.id].step,'return-names');
+  assert.equal(fumi.size,6,'Fumi speaks differently in every act');
   save=send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id});
   assert.equal(save.quests[def.id].step,'complete');assert.equal(save.gold,170);
+  assert.ok(!fumi.has(fumiLine(save.quests)));
 });

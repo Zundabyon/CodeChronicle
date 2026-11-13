@@ -1,8 +1,9 @@
 import type { QuestStep } from './types';
 import type { QuestStudy, TableSnapshot } from './studyTypes';
 import { resourceTrials } from '../resourceQuestions';
+import { actBattles } from './chapterScenes';
 
-// Original step IDs remain valid for old saves; each seal has a physical location.
+// Step IDs are kept; saves made before the act order changed restart the chapter (saveValidation).
 const originalLessons: QuestStep[] = [
   {
     "id": "read-records",
@@ -92,99 +93,7 @@ const originalLessons: QuestStep[] = [
       {
         "speaker": "語り手",
         "face": "📜",
-        "text": "「Readの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。出口から平原へ戻り、次の記憶を探そう。"
-      }
-    ]
-  },
-  {
-    "id": "update-address",
-    "title": "第二章：改変の回廊（1/5）",
-    "description": "石鳴り山脈の「改変の回廊」で、第1の封印を解こう（1/5）。",
-    "questionIntro": "Update 1/5：控えが読めた。次は既存の村人の住所を直そう。Update は行を増やさず、対象の値を変更する。 五つの封印を解き、奥の祭壇で欠片を手に入れよう。",
-    "trigger": {
-      "type": "question-answered",
-      "questionId": "basics-crud-u",
-      "correct": true,
-      "source": "quest"
-    },
-    "npcId": "memory-u-trial-0",
-    "reminder": "石鳴り山脈の「改変の回廊」で、第1の封印を解こう（1/5）。 地図から入口への道筋を確認できる。"
-  },
-  {
-    "id": "ledger-update-target",
-    "title": "第二章：改変の回廊（2/5）",
-    "description": "石鳴り山脈の「改変の回廊」で、第2の封印を解こう（2/5）。",
-    "questionIntro": "Update 2/5：取得した既存のモデルは、その行を表す。プロパティを変え、save で保存してみよう。以降、独自のイベント処理などはないものとする。",
-    "trigger": {
-      "type": "question-answered",
-      "questionId": "ledger-update-target",
-      "correct": true,
-      "source": "quest"
-    },
-    "npcId": "memory-u-trial-1",
-    "reminder": "石鳴り山脈の「改変の回廊」で、第2の封印を解こう（2/5）。 地図から入口への道筋を確認できる。"
-  },
-  {
-    "id": "ledger-update-save",
-    "title": "第二章：改変の回廊（3/5）",
-    "description": "石鳴り山脈の「改変の回廊」で、第3の封印を解こう（3/5）。",
-    "questionIntro": "Update 3/5：手元のモデルとDBは同じものではない。変えた値を保存したか確認しよう。",
-    "trigger": {
-      "type": "question-answered",
-      "questionId": "ledger-update-save",
-      "correct": true,
-      "source": "quest"
-    },
-    "npcId": "memory-u-trial-2",
-    "reminder": "石鳴り山脈の「改変の回廊」で、第3の封印を解こう（3/5）。 地図から入口への道筋を確認できる。"
-  },
-  {
-    "id": "ledger-update-scope",
-    "title": "第二章：改変の回廊（4/5）",
-    "description": "石鳴り山脈の「改変の回廊」で、第4の封印を解こう（4/5）。",
-    "questionIntro": "Update 4/5：更新前に対象を絞ろう。query()->update は、条件がなければ全行へ影響する。",
-    "trigger": {
-      "type": "question-answered",
-      "questionId": "ledger-update-scope",
-      "correct": true,
-      "source": "quest"
-    },
-    "npcId": "memory-u-trial-3",
-    "reminder": "石鳴り山脈の「改変の回廊」で、第4の封印を解こう（4/5）。 地図から入口への道筋を確認できる。"
-  },
-  {
-    "id": "ledger-update-count",
-    "title": "第二章：改変の回廊（5/5）",
-    "description": "石鳴り山脈の「改変の回廊」で、第5の封印を解こう（5/5）。",
-    "questionIntro": "Update 5/5：住所を直すのは既存行の変更。行数と、変更後の値を分けて確かめるのじゃ。",
-    "trigger": {
-      "type": "question-answered",
-      "questionId": "ledger-update-count",
-      "correct": true,
-      "source": "quest"
-    },
-    "npcId": "memory-u-trial-4",
-    "reminder": "石鳴り山脈の「改変の回廊」で、第5の封印を解こう（5/5）。 地図から入口への道筋を確認できる。"
-  },
-  {
-    "id": "collect-u",
-    "title": "第二章：Updateの記憶を取り戻す",
-    "description": "改変の回廊の最奥にある記憶の祭壇に触れ、Uの欠片を入手しよう。",
-    "npcId": "memory-u-altar",
-    "trigger": {
-      "type": "npc-talked",
-      "npcId": "memory-u-altar"
-    },
-    "lines": [
-      {
-        "speaker": "Updateの記憶",
-        "face": "📜",
-        "text": "五つの封印がほどけ、Uの記憶の欠片が手のひらに舞い降りた。書き換えの術を学ぶ。対象を絞り、変化を確かめる。"
-      },
-      {
-        "speaker": "語り手",
-        "face": "📜",
-        "text": "「Updateの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。出口から平原へ戻り、次の記憶を探そう。"
+        "text": "「Readの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。石灯の村へ戻り、ノゾミ・ブルーと決着をつけよう。村のオルに話しかければ、戦いが始まる。"
       }
     ]
   },
@@ -192,7 +101,7 @@ const originalLessons: QuestStep[] = [
     "id": "create-family",
     "title": "第二章：創生の工房（1/5）",
     "description": "深緑の森の「創生の工房」で、第1の封印を解こう（1/5）。",
-    "questionIntro": "Create 1/5：住所が直った。次は未登録の家族じゃ。Create は新しい行を追加する。必要な入力も確かめよう。 五つの封印を解き、奥の祭壇で欠片を手に入れよう。",
+    "questionIntro": "Create 1/5：控えが読めた。次は名簿に新しい村人を加えよう。Create は新しい行を追加する。必要な入力も確かめよう。 五つの封印を解き、奥の祭壇で欠片を手に入れよう。",
     "trigger": {
       "type": "question-answered",
       "questionId": "basics-crud-c",
@@ -276,7 +185,99 @@ const originalLessons: QuestStep[] = [
       {
         "speaker": "語り手",
         "face": "📜",
-        "text": "「Createの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。出口から平原へ戻り、次の記憶を探そう。"
+        "text": "「Createの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。石灯の村へ戻り、ツクネ・アンバーと決着をつけよう。村のオルに話しかければ、戦いが始まる。"
+      }
+    ]
+  },
+  {
+    "id": "update-address",
+    "title": "第二章：改変の回廊（1/5）",
+    "description": "石鳴り山脈の「改変の回廊」で、第1の封印を解こう（1/5）。",
+    "questionIntro": "Update 1/5：新しい村人を登録できた。次は既存の村人の住所を直そう。Update は行を増やさず、対象の値を変更する。 五つの封印を解き、奥の祭壇で欠片を手に入れよう。",
+    "trigger": {
+      "type": "question-answered",
+      "questionId": "basics-crud-u",
+      "correct": true,
+      "source": "quest"
+    },
+    "npcId": "memory-u-trial-0",
+    "reminder": "石鳴り山脈の「改変の回廊」で、第1の封印を解こう（1/5）。 地図から入口への道筋を確認できる。"
+  },
+  {
+    "id": "ledger-update-target",
+    "title": "第二章：改変の回廊（2/5）",
+    "description": "石鳴り山脈の「改変の回廊」で、第2の封印を解こう（2/5）。",
+    "questionIntro": "Update 2/5：取得した既存のモデルは、その行を表す。プロパティを変え、save で保存してみよう。以降、独自のイベント処理などはないものとする。",
+    "trigger": {
+      "type": "question-answered",
+      "questionId": "ledger-update-target",
+      "correct": true,
+      "source": "quest"
+    },
+    "npcId": "memory-u-trial-1",
+    "reminder": "石鳴り山脈の「改変の回廊」で、第2の封印を解こう（2/5）。 地図から入口への道筋を確認できる。"
+  },
+  {
+    "id": "ledger-update-save",
+    "title": "第二章：改変の回廊（3/5）",
+    "description": "石鳴り山脈の「改変の回廊」で、第3の封印を解こう（3/5）。",
+    "questionIntro": "Update 3/5：手元のモデルとDBは同じものではない。変えた値を保存したか確認しよう。",
+    "trigger": {
+      "type": "question-answered",
+      "questionId": "ledger-update-save",
+      "correct": true,
+      "source": "quest"
+    },
+    "npcId": "memory-u-trial-2",
+    "reminder": "石鳴り山脈の「改変の回廊」で、第3の封印を解こう（3/5）。 地図から入口への道筋を確認できる。"
+  },
+  {
+    "id": "ledger-update-scope",
+    "title": "第二章：改変の回廊（4/5）",
+    "description": "石鳴り山脈の「改変の回廊」で、第4の封印を解こう（4/5）。",
+    "questionIntro": "Update 4/5：更新前に対象を絞ろう。query()->update は、条件がなければ全行へ影響する。",
+    "trigger": {
+      "type": "question-answered",
+      "questionId": "ledger-update-scope",
+      "correct": true,
+      "source": "quest"
+    },
+    "npcId": "memory-u-trial-3",
+    "reminder": "石鳴り山脈の「改変の回廊」で、第4の封印を解こう（4/5）。 地図から入口への道筋を確認できる。"
+  },
+  {
+    "id": "ledger-update-count",
+    "title": "第二章：改変の回廊（5/5）",
+    "description": "石鳴り山脈の「改変の回廊」で、第5の封印を解こう（5/5）。",
+    "questionIntro": "Update 5/5：住所を直すのは既存行の変更。行数と、変更後の値を分けて確かめるのじゃ。",
+    "trigger": {
+      "type": "question-answered",
+      "questionId": "ledger-update-count",
+      "correct": true,
+      "source": "quest"
+    },
+    "npcId": "memory-u-trial-4",
+    "reminder": "石鳴り山脈の「改変の回廊」で、第5の封印を解こう（5/5）。 地図から入口への道筋を確認できる。"
+  },
+  {
+    "id": "collect-u",
+    "title": "第二章：Updateの記憶を取り戻す",
+    "description": "改変の回廊の最奥にある記憶の祭壇に触れ、Uの欠片を入手しよう。",
+    "npcId": "memory-u-altar",
+    "trigger": {
+      "type": "npc-talked",
+      "npcId": "memory-u-altar"
+    },
+    "lines": [
+      {
+        "speaker": "Updateの記憶",
+        "face": "📜",
+        "text": "五つの封印がほどけ、Uの記憶の欠片が手のひらに舞い降りた。書き換えの術を学ぶ。対象を絞り、変化を確かめる。"
+      },
+      {
+        "speaker": "語り手",
+        "face": "📜",
+        "text": "「Updateの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。石灯の村へ戻り、ヌリエ・ジェイドと決着をつけよう。村のオルに話しかければ、戦いが始まる。"
       }
     ]
   },
@@ -284,7 +285,7 @@ const originalLessons: QuestStep[] = [
     "id": "delete-duplicate",
     "title": "第二章：忘却の墓所（1/5）",
     "description": "陽炎の砂漠の「忘却の墓所」で、第1の封印を解こう（1/5）。",
-    "questionIntro": "Delete 1/5：家族の登録ができた。最後は不要な重複だけを消そう。Delete の前に、対象と影響を確認するのじゃ。 五つの封印を解き、奥の祭壇で欠片を手に入れよう。",
+    "questionIntro": "Delete 1/5：住所が直った。最後は不要な重複だけを消そう。Delete の前に、対象と影響を確認するのじゃ。 五つの封印を解き、奥の祭壇で欠片を手に入れよう。",
     "trigger": {
       "type": "question-answered",
       "questionId": "basics-crud-d",
@@ -368,7 +369,7 @@ const originalLessons: QuestStep[] = [
       {
         "speaker": "語り手",
         "face": "📜",
-        "text": "「Deleteの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。四つの欠片がそろった。石灯の村のオルへ戻り、名簿を復元しよう。"
+        "text": "「Deleteの記憶の欠片」を入手した。取り戻した記憶は「たびのもくてき」に刻まれる。石灯の村へ戻り、ケシ・パープルを止めよう。村のオルに話しかければ、戦いが始まる。"
       }
     ]
   }
@@ -412,47 +413,37 @@ const legacyStudy: Record<string, QuestStudy> = {
 const dungeonNames = { r: '読解の書庫', u: '改変の回廊', c: '創生の工房', d: '忘却の墓所' };
 const checkpointIntro = '新しい依頼じゃ。表とコードを自分で照合し、目的に合う結果を判断しよう。';
 
-// Existing IDs and the four collect steps stay in their original order for saved games.
-// A room may contain several consecutive questions at the same seal NPC.
-export const chapterTwoLessons: QuestStep[] = [
-  ...originalLessons.flatMap(step => {
-    if (step.trigger.type !== 'question-answered') return [step];
-    const match = step.npcId?.match(/^memory-([rucd])-trial-([0-4])$/);
-    if (!match) return [step];
-    const unit = match[1] as keyof typeof dungeonNames;
-    const room = Number(match[2]);
-    const additions = resourceTrials.filter(trial => trial.unit === unit && trial.afterStep === step.id);
-    const total = additions.length + 1;
-    const description = `${dungeonNames[unit]}の第${room + 1}の封印で実習を進めよう。全問正解すると次の扉が開く。`;
-    const base: QuestStep = {
-      ...step,
-      title: `第二章：${dungeonNames[unit]} 第${room + 1}の封印（1/${total}）`,
-      description,
-      study: { ...legacyStudy[step.id], mode: room === 4 ? 'checkpoint' : 'practice' },
-      questionIntro: room === 4 ? checkpointIntro : step.questionIntro,
-      reminder: `${description} 同じ封印で続きから再開できる。地図から道筋を確かめよう。`,
-    };
-    return [base, ...additions.map((trial, index): QuestStep => ({
-      id: trial.question.id,
-      title: `第二章：${dungeonNames[unit]} 第${room + 1}の封印（${index + 2}/${total}）`,
-      description,
-      npcId: step.npcId,
-      questionIntro: room === 4 ? checkpointIntro : trial.intro,
-      reminder: `${description} この封印にはまだ実習が残っている。同じ封印に話しかけよう。`,
-      study: trial.study,
-      trigger: { type: 'question-answered', questionId: trial.question.id, correct: true, source: 'quest' },
-    }))];
-  }),
-  ...resourceTrials.filter(trial => trial.unit === 'checkpoint').map((trial, index): QuestStep => ({
+// Acts run R→C→U→D. Each altar is followed by its ranger battle in the village, and the
+// Delete act by the final battle. ledger-delete-transfer left the chapter (authorization is a
+// later chapter's topic); its question stays in the catalog and its room keeps the other lesson.
+const removedSteps = new Set(['ledger-delete-transfer']);
+export const chapterTwoLessons: QuestStep[] = originalLessons.flatMap(step => {
+  if (step.trigger.type !== 'question-answered') return [step, ...(actBattles[step.id] ?? [])];
+  const match = step.npcId?.match(/^memory-([rucd])-trial-([0-4])$/);
+  if (!match) return [step];
+  const unit = match[1] as keyof typeof dungeonNames;
+  const room = Number(match[2]);
+  const removed = removedSteps.has(step.id);
+  const additions = resourceTrials.filter(trial => trial.unit === unit && trial.afterStep === step.id);
+  const total = additions.length + (removed ? 0 : 1);
+  const description = `${dungeonNames[unit]}の第${room + 1}の封印で実習を進めよう。全問正解すると次の扉が開く。`;
+  const base: QuestStep = {
+    ...step,
+    title: `第二章：${dungeonNames[unit]} 第${room + 1}の封印（1/${total}）`,
+    description,
+    study: { ...legacyStudy[step.id], mode: room === 4 ? 'checkpoint' : 'practice' },
+    questionIntro: room === 4 ? checkpointIntro : step.questionIntro,
+    reminder: `${description} 同じ封印で続きから再開できる。地図から道筋を確かめよう。`,
+  };
+  const offset = removed ? 1 : 2;
+  return [...(removed ? [] : [base]), ...additions.map((trial, index): QuestStep => ({
     id: trial.question.id,
-    title: `第二章：七つの記憶をつなぐ（${index + 1}/7）`,
-    description: '石灯の村のオルと、掲示板を題材に七つの仕事を確かめよう。',
-    npcId: 'mountainGuide',
-    questionIntro: index === 0
-      ? '四つの欠片がそろった。名簿を戻す前に、掲示板で七つの仕事を確かめよう。各依頼は表に示した状態から始まる独立した演習じゃ。通常のRoute::resourceを使う。'
-      : '次の依頼じゃ。表と状況を照合して判断しよう。各依頼は表の状態から始まる。',
-    reminder: '四つの欠片を持って石灯の村の記録係オルに話しかけよう。途中から続けられる。',
+    title: `第二章：${dungeonNames[unit]} 第${room + 1}の封印（${index + offset}/${total}）`,
+    description,
+    npcId: step.npcId,
+    questionIntro: room === 4 ? checkpointIntro : trial.intro,
+    reminder: `${description} この封印にはまだ実習が残っている。同じ封印に話しかけよう。`,
     study: trial.study,
     trigger: { type: 'question-answered', questionId: trial.question.id, correct: true, source: 'quest' },
-  })),
-];
+  }))];
+});

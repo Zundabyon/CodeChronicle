@@ -33,7 +33,8 @@ test('all four separated dungeons have navigable entrances, returns and five rea
     assert.equal(new Set(enemyCharacters.map(c=>c.chip)).size,3);
     for(const c of enemyCharacters)assert.equal(enemyKinds[c.id],c.chip);
     const steps=chapter.steps.filter(step=>map.npcs.some(n=>n.id===step.npcId));
-    assert.equal(steps.filter(s=>s.trigger.type==='question-answered').length,11);
+    // ledger-delete-transfer left the chapter, so the Delete act teaches one lesson fewer.
+    assert.equal(steps.filter(s=>s.trigger.type==='question-answered').length,d.key==='d'?10:11);
     assert.equal(steps.filter(s=>s.id==='collect-'+d.key).length,1);
     assert.ok(!collectedMemories({'village-ledger':{step:'collect-'+d.key}}).includes(d.key));
     const next=chapter.steps[chapter.steps.findIndex(s=>s.id==='collect-'+d.key)+1];
@@ -44,7 +45,9 @@ test('fragment collection survives saved progress and old completed adventures',
   assert.deepEqual(collectedMemories({}),[]);
   assert.deepEqual(collectedMemories({'village-ledger':{step:'find-copy'}}),[]);
   assert.deepEqual(collectedMemories({'village-ledger':{step:'read-records'}}),[]);
-  assert.deepEqual(collectedMemories({'village-ledger':{step:'update-address'}}),['r']);
+  assert.deepEqual(collectedMemories({'village-ledger':{step:'create-family'}}),['r']);
+  assert.deepEqual(collectedMemories({'village-ledger':{step:'update-address'}}),['c','r']);
+  assert.deepEqual(collectedMemories({'village-ledger':{step:'battle-graphius'}}),['c','r','u','d']);
   assert.deepEqual(new Set(collectedMemories({'village-ledger':{step:'return-names'}})),new Set(['c','r','u','d']));
   assert.deepEqual(collectedMemories({'village-ledger':{step:'complete'}}),['c','r','u','d']);
 });

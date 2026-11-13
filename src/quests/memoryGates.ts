@@ -3,17 +3,18 @@ import type { QuestStates } from './types';
 import { canWalkOnMap, eventAt, type WorldMap } from '../world/maps';
 import type { Area, Point } from '../content';
 import { memoryDungeons, trialNpcId } from '../world/memoryDungeons';
+import { memoryDungeonLayouts } from '../world/memoryDungeonLayouts';
 
-/** A cleared room's return point leads to the village; the entrance warp (no room)
- * lands just past the deepest open door. Doors open in order, so the last open one is deepest. */
+/** A cleared room's return point leads to the village. The entrance warp (no room) selects
+ * room min(N+1,5) from the N open doors (doors open in order) and lands at that room's entry,
+ * just before its required lesson, so no lesson along the route can be skipped. */
 export function memoryWarpTarget(quests:QuestStates,key:string,room?:number):{area:Area;position?:Point}|null {
   const dungeon=memoryDungeons.find(d=>d.key===key);
   if(!dungeon)return null;
   if(room!==undefined)return isMemoryDoorOpen(quests,trialNpcId(key,room))?{area:'village'}:null;
-  const deepest=dungeon.doors.filter((_,i)=>isMemoryDoorOpen(quests,trialNpcId(key,i))).length-1;
-  if(deepest<0)return null;
-  const [x,y]=dungeon.doors[deepest];
-  return {area:dungeon.area,position:{x,y:y-1}};
+  const open=dungeon.doors.filter((_,i)=>isMemoryDoorOpen(quests,trialNpcId(key,i))).length;
+  const [x,y]=memoryDungeonLayouts[dungeon.key].roomEntries[Math.min(open,dungeon.doors.length-1)];
+  return {area:dungeon.area,position:{x,y}};
 }
 
 // A seal may contain several lessons. Its door opens only after its LAST lesson.

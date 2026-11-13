@@ -11,7 +11,7 @@ export function inputIsCorrect(q: Question, input: string): boolean {
 }
 export function selectQuestion(questions: Question[], save: Learning, random = Math.random, onlyChoice = false): Question {
   const pool = questions.filter(q => q.difficulty === save.difficulty && (!q.track || q.track === save.track)
-    && (q.inertia === undefined || q.inertia === save.inertia) && q.kind !== 'cli' && (!onlyChoice || q.kind === 'choice'));
+    && (q.inertia === undefined || q.inertia === save.inertia) && q.kind !== 'cli' && !/^(ranger|graphius)-/.test(q.id) && (!onlyChoice || q.kind === 'choice'));
   if (!pool.length) throw new Error('学習設定に対応する問題がありません。');
   const unseen = pool.filter(q => !save.answered.includes(q.id));
   const candidates = unseen.length ? unseen : pool;

@@ -32,6 +32,7 @@ const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
   crab:'splash',wolf:'blade',treant:'drain',moth:'wave',beetle:'shock',scorpion:'blade',
   cactus:'shock',serpent:'curse',golem:'shock',wisp:'lightning',skeleton:'blade',mimic:'drain',
   review:'curse','after-gate':'shock',
+  'ranger-read':'wave','ranger-create':'splash','ranger-update':'curse','ranger-delete':'drain',graphius:'lightning',
 };
 
 const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
@@ -49,7 +50,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const guardBreak=!!enemy.boss&&attack==='hero'&&!!impact?.enemyDamage&&impactReached&&!bossGuardBroken(impact.enemyBefore,bossStage)&&bossGuardBroken(enemyHp,bossStage);
   const defeated=attack==='hero'&&enemyHp<=0&&impactReached;
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : area.startsWith('crud')?'dungeon':'town';
-  const location = area.startsWith('crud') ? areaLabel[area as Area] : terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
+  const location = area.startsWith('crud') || area === 'village' ? areaLabel[area as Area] : terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
   const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'];
   const heroMove = heroTechnique?.motion ?? (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;

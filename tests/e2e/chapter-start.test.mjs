@@ -36,7 +36,9 @@ for(const step of ['return-names','complete'])test(`chapter two restarts from it
   await page.locator('.chapter-start summary').click();
   await page.getByRole('button',{name:/第二章から始める/}).click();
   assert.equal((await readSave(page)).gold,777,'setup must not overwrite the original save');
-  assert.equal((await readSave(page,backupStorage)).quests['village-ledger'].step,step);
+  // An unfinished version-2 chapter two restarts on load (acts were reordered); a finished one is kept.
+  const kept=step==='complete'?step:'visit-village';
+  assert.equal((await readSave(page,backupStorage)).quests['village-ledger'].step,kept);
   await page.getByLabel('主人公の名前').fill('章の検証');
   await page.getByRole('button',{name:'第二章を始める',exact:false}).click();
   await page.locator('.dialogue-box').waitFor();await advance(page);
@@ -64,7 +66,7 @@ for(const step of ['return-names','complete'])test(`chapter two restarts from it
   assert.equal(save.gold,250,'no chapter completion reward is given');
   await page.reload();await page.getByRole('button',{name:/冒険の管理/}).click();await page.locator('.backup-summary summary').click();
   await page.getByRole('button',{name:'この冒険を復元する'}).click();
-  save=await readSave(page);assert.equal(save.gold,777);assert.equal(save.quests['village-ledger'].step,step);
+  save=await readSave(page);assert.equal(save.gold,777);assert.equal(save.quests['village-ledger'].step,kept);
 });
 
 test('chapter one starts at home while normal new games retain the prologue',{timeout:45000},async t=>{

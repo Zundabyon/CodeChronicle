@@ -8,6 +8,7 @@ export type QuestTrigger=
   | {type:'reported';npcId:string}
   | {type:'book-read';bookId:string}
   | {type:'chest-examined';chestId:string}
+  | {type:'battle-won';enemyId:string}
   | {type:'question-answered';questionId:string;correct:boolean;source:AnswerSource};
 export type QuestEvent=
   | {type:'accepted';questId:string}

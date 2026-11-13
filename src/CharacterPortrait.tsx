@@ -8,9 +8,17 @@ const locations: Record<string, [number, number]> = {
   priest: [0, 1], wanderer: [1, 1], father: [2, 1], mother: [3, 1],
 };
 
+// public/portraits/chapter-two-faces-v1.png uses the same 4x2 grid as faces.png.
+const chapterTwoFaces: Record<string, [number, number]> = {
+  graphius: [0, 0], nozomi: [1, 0], tsukune: [2, 0], nurie: [3, 0],
+  keshi: [0, 1], 'keshi-hesitant': [1, 1], fumi: [2, 1], 'fumi-tears': [3, 1],
+};
+
 export function CharacterPortrait({face,standing=false}:{face:string;standing?:boolean}) {
   if(face==='knight')return <MysteriousKnight className="knight-portrait"/>;
   if(face==='corrupted-hanna')return <span className="corrupted-portrait"><CharacterPortrait face="👩"/></span>;
+  const chapterTwo=chapterTwoFaces[face];
+  if(chapterTwo)return <span className="character-portrait" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two-faces-v1.png)`,backgroundPosition:`${chapterTwo[0]*100/3}% ${chapterTwo[1]*100}%`}} role="img" aria-label={`${face}の肖像`}/>;
   const name=faceSprite(face);
   const location=locations[name];
   if (!location) return <span className="narrator-portrait"><PixelSprite name={name}/></span>;

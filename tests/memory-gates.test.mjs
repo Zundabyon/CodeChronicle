@@ -6,6 +6,7 @@ const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false}
 after(()=>server.close());
 const {worldMaps,canWalkOnMap}=await server.ssrLoadModule('/src/world/maps.ts');
 const {memoryDungeons,trialNpcId,altarNpcId}=await server.ssrLoadModule('/src/world/memoryDungeons.ts');
+const {memoryDungeonLayouts}=await server.ssrLoadModule('/src/world/memoryDungeonLayouts.ts');
 const {spawnEnemies,moveEnemies}=await server.ssrLoadModule('/src/enemyMovement.ts');
 const {questDefinition,applyQuestEvent}=await server.ssrLoadModule('/src/quests/engine.ts');
 const memoryGates=await server.ssrLoadModule('/src/quests/memoryGates.ts');
@@ -37,7 +38,7 @@ for(const dungeon of memoryDungeons){
     assert.ok(altar);
     for(let room=0;room<dungeon.trials.length;room++){
       const npcId=trialNpcId(dungeon.key,room),steps=roomSteps(npcId);
-      assert.ok(steps.length>1,`${npcId} must teach more than one question`);
+      assert.ok(steps.length>=1,`${npcId} must teach at least one question`);
       const seal=map.npcs.find(npc=>npc.id===npcId);
       let save=saveAt(steps[0].id);
       for(let question=0;question<steps.length;question++){
@@ -105,7 +106,7 @@ test('review completion never opens doors ahead of the main adventure cursor',()
 test('legacy positions beyond closed doors resume on the accessible side while completed saves retain position',()=>{
   for(const dungeon of memoryDungeons){
     const map=worldMaps[dungeon.area];
-    const altarApproach={x:15,y:5};
+    const [altarX,altarY]=memoryDungeonLayouts[dungeon.key].altar,altarApproach={x:altarX,y:altarY+2};
     assert.ok(canWalkOnMap(map,altarApproach));
     const first=roomSteps(trialNpcId(dungeon.key,0))[0];
     const middle=roomSteps(trialNpcId(dungeon.key,2))[0];
@@ -142,7 +143,8 @@ test('all 48 individuals spawn without collisions, keep their territory and resp
             assert.ok(position,`${enemy.id} must spawn`);
             assert.ok(canWalkOnMap(map,position));
             assert.ok(Math.abs(position.x-enemy.x)+Math.abs(position.y-enemy.y)<=2,`${enemy.id} must stay in its optional alcove`);
-            assert.ok(position.y<29||position.y>37,'the third room must remain free of enemies');
+            const [,top,,bottom]=memoryDungeonLayouts[dungeon.key].roomBounds[2];
+            assert.ok(position.y<top||position.y>bottom,'the third room must remain free of enemies');
             assert.ok(!map.npcs.some(npc=>key(npc)===key(position)),'enemies cannot occupy NPC cells');
             assert.ok(!cells.has(key(position)),'enemies cannot overlap');cells.add(key(position));
           }
@@ -170,13 +172,14 @@ test('enemy territories leave a permanent walkable route to every seal, spring, 
   }
 });
 
-test('return points open only after their room seal, and the entrance warp lands past the deepest open door',()=>{
+test('return points open only after their room seal, and the entrance warp lands at the entry of room min(N+1,5)',()=>{
   const {memoryWarpTarget}=memoryGates;
   for(const dungeon of memoryDungeons){
     const map=worldMaps[dungeon.area],warps=map.events.filter(e=>e.action.kind==='memory-warp');
     assert.equal(warps.length,dungeon.doors.length+1);
     const fresh={[chapter.id]:{step:roomSteps(trialNpcId(dungeon.key,0))[0].id}};
-    assert.equal(memoryWarpTarget(fresh,dungeon.key),null,'no warp before the first seal');
+    const entries=memoryDungeonLayouts[dungeon.key].roomEntries.map(([x,y])=>({x,y}));
+    assert.deepEqual(memoryWarpTarget(fresh,dungeon.key),{area:dungeon.area,position:entries[0]},'no open door lands at the first room entry');
     for(let room=0;room<dungeon.doors.length;room++){
       assert.equal(memoryWarpTarget(fresh,dungeon.key,room),null);
       const after=roomSteps(trialNpcId(dungeon.key,room+1));
@@ -184,6 +187,9 @@ test('return points open only after their room seal, and the entrance warp lands
       assert.deepEqual(memoryWarpTarget(quests,dungeon.key,room),{area:'village'});
       const deep=memoryWarpTarget(quests,dungeon.key),seen=reachableWithProgress(map,quests);
       assert.equal(deep.area,dungeon.area);
+      assert.deepEqual(deep.position,entries[Math.min(room+1,entries.length-1)],'N open doors select room min(N+1,5)');
+      const required=map.events.find(e=>e.action.kind==='lesson'&&e.action.required&&e.y===deep.position.y-1&&e.x===deep.position.x);
+      assert.ok(required,'the landing sits just before that room\'s required lesson');
       assert.ok(seen.has(key(deep.position)),`deep warp after room ${room} must land on reachable floor`);
       const returnPoint=warps.find(e=>e.action.room===room);
       assert.ok(canInteract(seen,returnPoint),`return point ${room} must be usable once its seal opens`);

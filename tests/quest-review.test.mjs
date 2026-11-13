@@ -7,9 +7,9 @@ const {restoreQuestStates}=await server.ssrLoadModule('/src/quests/persistence.t
 const {applyQuestEvent}=await server.ssrLoadModule('/src/quests/engine.ts');
 const {collectedMemories}=await server.ssrLoadModule('/src/quests/MemoryFragments.tsx');
 const base=()=>({quests:{'village-ledger':{step:'complete'}},completed:true,readBooks:[],gold:321,inventory:{ether:1}});
-test('a completed old adventure can review all 51 lessons without rewards or fragment changes',()=>{
+test('a completed old adventure can review all 43 dungeon lessons without rewards or fragment changes',()=>{
  let save=base();const initial=structuredClone(save);save=startQuestReview(save,'village-ledger');
- const steps=questReviewSteps('village-ledger');assert.equal(steps.length,51);
+ const steps=questReviewSteps('village-ledger');assert.equal(steps.length,43);
  for(const step of steps){
    assert.equal(save.quests['village-ledger'].reviewStep,step.id);
    assert.strictEqual(applyQuestReviewAnswer(save,'village-ledger',step.id,step.trigger.questionId,false),save);

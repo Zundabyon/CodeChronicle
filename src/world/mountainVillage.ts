@@ -41,6 +41,7 @@ const npcs:(Npc & {chip:CharacterPlacement['chip']})[]=[
     '名簿に新しい村人を書くのがCreate。名簿を読むのがRead。住所を直すのがUpdate。名簿から取り除くのがDeleteじゃ。',
     '四つまとめてCRUD。難しい術に見えても、毎日の暮らしでやっていることなんじゃよ。'
   ]},
+  {id:'fumi',chip:'fumi',name:'フミ',x:5,y:8,face:'fumi',lines:['わたしはフミ。おじいちゃんは村の記録係なんだ。']},
   {id:'mountainHealer',chip:'priest',name:'灯守 リオ',x:11,y:7,face:'👩🏼',lines:[
     'ようこそ。遺跡へ向かう前に、ここでひと休みしませんか。村の灯りは、旅人のためにともしています。',
     '休憩は無料です。体力と魔力を整えてから、分かれ道のある遺跡へ向かってください。'
@@ -51,7 +52,7 @@ const npcs:(Npc & {chip:CharacterPlacement['chip']})[]=[
     '分からなくなったら、一度村まで戻って休め。あせって奥へ進む必要はない。'
   ]},
   {id:'mountainLearner',chip:'child',name:'見習い ユナ',x:12,y:14,face:'🧒',lines:[
-    'ぼくもMVCを勉強してるよ。Modelは名簿のデータを扱う係、Viewはそれを見せる係。',
+    'わたしもMVCを勉強してるよ。Modelは名簿のデータを扱う係、Viewはそれを見せる係。',
     'Controllerは「名簿を見たい！」というお願いを受けて、必要な係に仕事を頼むんだ。',
     '役割を一つずつ覚えたら、三つの係がどうつながるか考えてみよう！'
   ]},

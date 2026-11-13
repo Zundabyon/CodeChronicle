@@ -1,5 +1,6 @@
 import { memoryEnemyCopies, memoryEnemyInstanceId } from './world/memoryEnemyIdentity';
 import { resourceQuestions } from './resourceQuestions';
+import { rangerBattleQuestions } from './rangerBattleQuestions';
 import { chapterTwoQuestions } from './chapterTwoQuestions';
 import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
@@ -103,6 +104,7 @@ export const questions: Question[] = [
   ...battleQuestionsCore,
   ...battleQuestionsMoreIntermediate,
   ...battleQuestionsMoreBeginner,
+  ...rangerBattleQuestions,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };

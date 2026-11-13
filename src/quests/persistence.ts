@@ -16,7 +16,7 @@ export function restoreQuestStates(value:Record<string,unknown>,firstChapterComp
     }
     return quests;
   }
-  if(value.version===2)return quests;
+  if(value.version===2||value.version===3)return quests;
   // Legacy fields are understood only here, and are never written again.
   if(value.scholarQuestCompleted===true)quests['library-signboard']={step:COMPLETE};
   else if(value.scholarQuestReady===true)quests['library-signboard']={step:'report'};

@@ -1,4 +1,6 @@
 import { restoreQuestStates } from './quests/persistence';
+import { COMPLETE } from './quests/engine';
+import type { QuestStates } from './quests/types';
 import { normalizeDialogueLog } from './dialogueLog';
 import { normalizeLearningRecords } from './learningRecords';
 import { areaLabel, questions, type Area, type Point } from './content';
@@ -15,7 +17,7 @@ const knownQuestion=(id:string)=>questionIds.has(id)||/^guardian-repair-[0-2]-(b
 
 export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|null;notice:string} {
   if(!record(value)||!['area','pos','name'].some(key=>key in value))return {save:null,notice:'保存データの形式を読み取れませんでした。元のデータは変更していません。'};
-  if(value.version!==undefined&&value.version!==1&&value.version!==2)return {save:null,notice:'この保存形式には対応していません。元のデータは変更していません。'};
+  if(value.version!==undefined&&value.version!==1&&value.version!==2&&value.version!==3)return {save:null,notice:'この保存形式には対応していません。元のデータは変更していません。'};
   const save:Record<string,unknown>={...defaults},repairs=new Set<string>();
   const labels:Record<string,string>={gold:'所持金',level:'レベル',hp:'HP',mp:'MP',xp:'経験値',steps:'歩数',correct:'正解数',total:'回答数',wrong:'復習記録',answered:'回答記録',seen:'閲覧記録',defeated:'撃破記録',readBooks:'既読記録',openedChests:'宝箱の記録',name:'名前',story:'物語の進行',track:'学習コース',difficulty:'難易度'};
   const fix=(label:string)=>repairs.add(labels[label]??label);
@@ -42,7 +44,13 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   if(value.learningRecords!==undefined&&JSON.stringify(value.learningRecords)!==JSON.stringify(save.learningRecords))fix('学習記録');
   save.quests=restoreQuestStates(value,save.completed===true,normalizeReadBooks(value.readBooks));
   if(value.quests!==undefined&&JSON.stringify(record(value.quests)?Object.entries(value.quests).sort():value.quests)!==JSON.stringify(Object.entries(save.quests as Record<string,unknown>).sort()))fix('依頼の進行');
-  save.version=2;
+  // Version 3 reordered chapter two into acts (R→C→U→D). Older unfinished chapter-two progress restarts the chapter only.
+  // Real unversioned saves predate the quests field, so an unversioned save with quests is treated as current.
+  const ledger=(save.quests as QuestStates)['village-ledger'];
+  const oldLayout=value.version===1||value.version===2||value.version===undefined&&value.quests===undefined;
+  const chapterReset=oldLayout&&!!ledger&&ledger.step!==COMPLETE;
+  if(chapterReset)(save.quests as QuestStates)['village-ledger']={step:'visit-village'};
+  save.version=3;
   if(!['react','vue'].includes(String(save.track))){save.track='react';fix('学習コース');}
   if(!['beginner','intermediate','advanced'].includes(String(save.difficulty))){save.difficulty='beginner';fix('難易度');}
   save.story=migrateStoryStage(value.story);
@@ -83,6 +91,6 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
     if(typeof value.lastSavedAt==='number'&&Number.isFinite(value.lastSavedAt)&&value.lastSavedAt>0&&value.lastSavedAt<=8640000000000000)save.lastSavedAt=value.lastSavedAt;
     else fix('保存時刻');
   }
-  const notice=[value.version!==2?'旧形式の保存データを移行しました。':'',repairs.size?`不正な項目を補正しました：${[...repairs].join('、')}。`:''].filter(Boolean).join(' ');
+  const notice=[value.version!==2&&value.version!==3?'旧形式の保存データを移行しました。':'',chapterReset?'第二章の構成が変わったため、第二章の進行を最初に戻しました。レベル・持ち物・第一章の記録はそのままです。':'',repairs.size?`不正な項目を補正しました：${[...repairs].join('、')}。`:''].filter(Boolean).join(' ');
   return {save:save as T,notice};
 }

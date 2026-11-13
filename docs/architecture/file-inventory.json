@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-13 / 7f84efb + current working tree",
+  "snapshot": "2026-11-13 / 284eb4b + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,20 +10,20 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 383,
+  "count": 390,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
     "ゲームルール": 1,
     "ゲーム進行": 1,
     "世界の定義": 10,
-    "世界・場所": 19,
+    "世界・場所": 20,
     "人物・生物": 24,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 69,
+    "制作・運用": 73,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -32,10 +32,10 @@
     "戦闘表示": 11,
     "探索画面": 7,
     "教材・共通データ": 4,
-    "教材・学習": 17,
+    "教材・学習": 18,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 5,
+    "物語・進行": 6,
     "状態・保存": 4,
     "画像・素材": 95,
     "画面・表現・操作": 14,
@@ -48,7 +48,7 @@
     "world": {
       "label": "世界・場所",
       "guide": "docs/production/world.md",
-      "count": 87
+      "count": 88
     },
     "characters": {
       "label": "人物・生物",
@@ -63,12 +63,12 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 20
+      "count": 21
     },
     "learning": {
       "label": "教材・学習",
       "guide": "docs/production/learning.md",
-      "count": 41
+      "count": 42
     },
     "gameplay": {
       "label": "ゲームルール",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 99
+      "count": 103
     }
   },
   "files": [
@@ -424,6 +424,30 @@
       "path": "docs/production/chapter-two-art-request.md",
       "bytes": 8723,
       "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-two-dungeons-v2-design.md",
+      "bytes": 37675,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-two-dungeons-v2-layout.json",
+      "bytes": 89139,
+      "suffix": ".json",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-two-dungeons-v2-validate.mjs",
+      "bytes": 18734,
+      "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
       "genre": "operations"
@@ -2033,7 +2057,7 @@
     },
     {
       "path": "seed.game.sql",
-      "bytes": 1070437,
+      "bytes": 1158142,
       "suffix": ".sql",
       "group": "状態・保存",
       "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -2072,7 +2096,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 82160,
+      "bytes": 84187,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -2406,7 +2430,7 @@
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 7508,
+      "bytes": 7648,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -2506,7 +2530,7 @@
     },
     {
       "path": "src/CharacterPortrait.tsx",
-      "bytes": 1269,
+      "bytes": 1872,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
@@ -2612,7 +2636,7 @@
     },
     {
       "path": "src/EnemySprite.tsx",
-      "bytes": 703,
+      "bytes": 935,
       "suffix": ".tsx",
       "group": "人物・生物",
       "role": "人物・生物に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3084,7 +3108,7 @@
     },
     {
       "path": "src/WorldCharacter.tsx",
-      "bytes": 1086,
+      "bytes": 1166,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "主人公・住民・騎士の方向と歩行状態を描画する。",
@@ -3254,7 +3278,7 @@
     },
     {
       "path": "src/battleBanter.ts",
-      "bytes": 9302,
+      "bytes": 11246,
       "suffix": ".ts",
       "group": "戦闘表示",
       "role": "敵種別と戦闘場面に応じて敵・主人公の台詞を組み立てる。",
@@ -3475,7 +3499,7 @@
     },
     {
       "path": "src/content.ts",
-      "bytes": 36100,
+      "bytes": 36193,
       "suffix": ".ts",
       "group": "教材・共通データ",
       "role": "QuestionやAreaなどの共通型、基本問題と問題配列の集約、旧マップ、住民・敵の定義を持つ。教材専用ファイルには分離しきれていない。",
@@ -3850,7 +3874,7 @@
     },
     {
       "path": "src/questionSelection.ts",
-      "bytes": 1825,
+      "bytes": 1862,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "学習設定で候補を絞り、未回答と形式の重みに基づき抽選する。一般の入力判定も担当する。",
@@ -3932,7 +3956,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 2082,
+      "bytes": 14270,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -3949,7 +3973,7 @@
     },
     {
       "path": "src/quests/chapterTwoLessons.ts",
-      "bytes": 26253,
+      "bytes": 25878,
       "suffix": ".ts",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3957,7 +3981,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 4363,
+      "bytes": 4436,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -3980,7 +4004,7 @@
     },
     {
       "path": "src/quests/engine.ts",
-      "bytes": 3955,
+      "bytes": 4057,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "状態とイベントから次の状態・場面を返す純粋な進行処理。完了済みへのイベントで報酬を再付与しない。",
@@ -4023,7 +4047,7 @@
     },
     {
       "path": "src/quests/memoryGates.ts",
-      "bytes": 3464,
+      "bytes": 3647,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4031,7 +4055,7 @@
     },
     {
       "path": "src/quests/persistence.ts",
-      "bytes": 2067,
+      "bytes": 2086,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "クエストIDと段階IDを検証し、旧フラグをversion 2の状態へ移行する。",
@@ -4059,6 +4083,14 @@
       "genre": "persistence"
     },
     {
+      "path": "src/quests/rangerBattles.ts",
+      "bytes": 1994,
+      "suffix": ".ts",
+      "group": "物語・進行",
+      "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
       "path": "src/quests/review.ts",
       "bytes": 1374,
       "suffix": ".ts",
@@ -4076,7 +4108,7 @@
     },
     {
       "path": "src/quests/types.ts",
-      "bytes": 1490,
+      "bytes": 1529,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "クエスト定義・段階・状態・イベントの型を定義する。",
@@ -4105,7 +4137,7 @@
     },
     {
       "path": "src/quests/useQuests.ts",
-      "bytes": 7928,
+      "bytes": 8201,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "Reactの会話・回答・場面再生と、クエストエンジンをつなぐ。",
@@ -4155,6 +4187,14 @@
         }
       ],
       "genre": "narrative"
+    },
+    {
+      "path": "src/rangerBattleQuestions.ts",
+      "bytes": 31691,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "src/recoveryCue.css",
@@ -4228,7 +4268,7 @@
     },
     {
       "path": "src/saveValidation.ts",
-      "bytes": 6918,
+      "bytes": 7794,
       "suffix": ".ts",
       "group": "保存・復元",
       "role": "セーブの型・値・IDを検証し、安全な値への補正と旧データ移行を行う。",
@@ -4404,7 +4444,7 @@
     },
     {
       "path": "src/world/catalog.ts",
-      "bytes": 9585,
+      "bytes": 9942,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
@@ -4485,7 +4525,7 @@
     },
     {
       "path": "src/world/dungeonLessons.ts",
-      "bytes": 622,
+      "bytes": 27164,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4624,8 +4664,16 @@
       "genre": "world"
     },
     {
+      "path": "src/world/memoryDungeonLayouts.ts",
+      "bytes": 36078,
+      "suffix": ".ts",
+      "group": "世界・場所",
+      "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
       "path": "src/world/memoryDungeonMaps.ts",
-      "bytes": 8598,
+      "bytes": 9197,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4633,7 +4681,7 @@
     },
     {
       "path": "src/world/memoryDungeons.ts",
-      "bytes": 5778,
+      "bytes": 2622,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4665,7 +4713,7 @@
     },
     {
       "path": "src/world/mountainVillage.ts",
-      "bytes": 4111,
+      "bytes": 4255,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "石灯の村の地形・住民・建物と、入口・戻り位置を定義する。",
@@ -4754,7 +4802,7 @@
     },
     {
       "path": "src/wrongChoiceReasons.ts",
-      "bytes": 3689,
+      "bytes": 3778,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "一部問題の誤答ごとの補足説明。選択肢の文字列に対応づける。",
@@ -4803,7 +4851,7 @@
     },
     {
       "path": "tests/e2e/adventure.test.mjs",
-      "bytes": 18843,
+      "bytes": 13144,
       "suffix": ".mjs",
       "group": "検証",
       "role": "ブラウザで宝箱、本、通常戦、復習、セーブ・再開、クエストなどを確認する。",
@@ -4819,7 +4867,15 @@
     },
     {
       "path": "tests/e2e/chapter-start.test.mjs",
-      "bytes": 5916,
+      "bytes": 6074,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/chapter-two-acts.test.mjs",
+      "bytes": 5904,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4827,7 +4883,7 @@
     },
     {
       "path": "tests/e2e/dungeon-density-art.test.mjs",
-      "bytes": 6816,
+      "bytes": 6817,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4835,7 +4891,7 @@
     },
     {
       "path": "tests/e2e/dungeon-mechanics.test.mjs",
-      "bytes": 10972,
+      "bytes": 11187,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4891,7 +4947,7 @@
     },
     {
       "path": "tests/memory-dungeons.test.mjs",
-      "bytes": 5194,
+      "bytes": 5495,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4899,7 +4955,7 @@
     },
     {
       "path": "tests/memory-gates.test.mjs",
-      "bytes": 11451,
+      "bytes": 12185,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4907,7 +4963,7 @@
     },
     {
       "path": "tests/quest-review.test.mjs",
-      "bytes": 3022,
+      "bytes": 3030,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4923,7 +4979,7 @@
     },
     {
       "path": "tests/quests.test.mjs",
-      "bytes": 8449,
+      "bytes": 10135,
       "suffix": ".mjs",
       "group": "検証",
       "role": "イベント順序・参照ID・二重報酬防止・旧セーブ移行を検証する。",
@@ -4931,7 +4987,7 @@
     },
     {
       "path": "tests/resource-curriculum.test.mjs",
-      "bytes": 2695,
+      "bytes": 2919,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -4939,7 +4995,7 @@
     },
     {
       "path": "tests/save-validation.test.mjs",
-      "bytes": 3054,
+      "bytes": 4327,
       "suffix": ".mjs",
       "group": "検証",
       "role": "保存データの補正・不正形式拒否・移行を検証する。",

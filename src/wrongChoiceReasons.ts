@@ -5,6 +5,7 @@ import { battleQuestionsCoreReasons } from './battleQuestionsCore';
 import { battleQuestionsMoreBeginnerReasons } from './battleQuestionsMoreBeginner';
 import { battleQuestionsMoreIntermediateReasons } from './battleQuestionsMoreIntermediate';
 import { battleQuestionsMoreAdvancedReasons } from './battleQuestionsMoreAdvanced';
+import { rangerBattleReasons } from './rangerBattleQuestions';
 // Match exact option text, so changing or reordering options cannot attach a different explanation.
 const reasons:Record<string,Record<string,string>>={
   ...battleQuestionsBeginnerBasicsReasons,
@@ -13,6 +14,7 @@ const reasons:Record<string,Record<string,string>>={
   ...battleQuestionsMoreBeginnerReasons,
   ...battleQuestionsMoreIntermediateReasons,
   ...battleQuestionsMoreAdvancedReasons,
+  ...rangerBattleReasons,
 
   'r-b-1':{'マイグレーション':'マイグレーションはデータベースの構造を管理するものです。Reactの画面の部品はコンポーネントです。','ルート':'ルートはURLと処理の行き先を結びつけます。画面を再利用する部品の名前とは役割が違います。','ミドルウェア':'ミドルウェアはリクエストの前後に共通処理を挟む仕組みです。Reactの画面の部品はコンポーネントです。'},
   'r-b-2':{'state':'stateはコンポーネントが保持する状態です。親から子への入力はpropsと呼びます。','route':'routeはURLの行き先を表します。子コンポーネントへの入力はpropsです。','migration':'migrationはデータベースの構造変更を管理します。コンポーネントへ値を渡す仕組みではありません。'},

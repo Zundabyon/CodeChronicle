@@ -1,7 +1,9 @@
 import { PixelSprite, enemySprite } from './PixelSprite';
 import { memoryEnemyVisual } from './world/memoryEnemyArt';
+import { rangerBattles } from './quests/rangerBattles';
 
 export function EnemySprite({enemyId}:{enemyId:string}) {
+  if(rangerBattles[enemyId])return <img className="pixel-sprite" src={`${import.meta.env.BASE_URL}sprites/${enemyId}-right.png`} alt="" aria-hidden="true" draggable={false}/>;
   const visual=memoryEnemyVisual(enemyId);
   if(!visual)return <PixelSprite name={enemySprite(enemyId)}/>;
   const [x,y,width,height]=visual.frame;

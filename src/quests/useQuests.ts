@@ -13,8 +13,9 @@ type Options<T>={
   stateRef:RefObject<T>;update:(fn:(save:T)=>T)=>void;
   startDialogue:(speaker:string,face:string,lines:(string|StoryLine)[],choices?:Choice[],onEnd?:()=>void,question?:Question,study?:QuestStudy)=>void;
   playStory:(lines:StoryLine[])=>void;onChapterStart:()=>void;recordPractice:(question:Question,correct:boolean)=>void;
+  startBattle:(enemyId:string)=>void;
 };
-export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBank=bundledQuestions,stateRef,update,startDialogue,playStory,onChapterStart,recordPractice}:Options<T>){
+export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBank=bundledQuestions,stateRef,update,startDialogue,playStory,onChapterStart,recordPractice,startBattle}:Options<T>){
   const questions=questionBank;
   const sendQuestEvent=useCallback((event:QuestEvent)=>{
     const result=applyQuestEvent(stateRef.current,event);let next=result.save;
@@ -82,6 +83,10 @@ export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBa
         choices.push({label:'あとで続ける',response:def.pauseResponse??'続きは、また話しかけてください。',onChoose:()=>{paused=true;}});
         startDialogue(npc.name,npc.face,[step.questionIntro??step.description,step.title+'：'+q.prompt],choices,()=>{if(!paused)present();},q,step.study);return;
       }
+      if(step.trigger.type==='battle-won'){
+        const enemyId=step.trigger.enemyId;
+        startDialogue(npc.name,npc.face,step.lines??[step.description],undefined,()=>startBattle(enemyId));return;
+      }
       if(step.trigger.type==='npc-talked'){
         startDialogue(npc.name,npc.face,step.lines??[step.description],undefined,()=>sendQuestEvent({type:'npc-talked',npcId:npc.id,questId:def.id}));return;
       }
@@ -89,6 +94,6 @@ export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBa
       startDialogue(npc.name,npc.face,[...npc.lines,step.reminder??step.description],choices);
     }
     present();return true;
-  },[stateRef,startDialogue,startQuest,answerQuestQuestion,sendQuestEvent,questions]);
+  },[stateRef,startDialogue,startQuest,answerQuestQuestion,sendQuestEvent,questions,startBattle]);
   return {sendQuestEvent,startQuest,talkToQuestNpc,answerQuestQuestion,reviewQuest};
 }
