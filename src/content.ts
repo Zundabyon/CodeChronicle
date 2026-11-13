@@ -5,6 +5,7 @@ import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
 import { beginnerQuestions } from './beginnerQuestions';
 import { battleQuestionsBeginnerBasics } from './battleQuestionsBeginnerBasics';
+import { battleQuestionsMoreAdvanced } from './battleQuestionsMoreAdvanced';
 import { battleQuestionsCore } from './battleQuestionsCore';
 import { battleQuestionsMoreIntermediate } from './battleQuestionsMoreIntermediate';
 import { battleQuestionsMoreBeginner } from './battleQuestionsMoreBeginner';
@@ -96,6 +97,7 @@ export const questions: Question[] = [
   ...moreQuestions,
   ...fillQuestions,
   ...battleQuestionsBeginnerBasics,
+  ...battleQuestionsMoreAdvanced,
   ...battleQuestionsCore,
   ...battleQuestionsMoreIntermediate,
   ...battleQuestionsMoreBeginner,
