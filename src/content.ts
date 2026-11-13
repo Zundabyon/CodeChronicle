@@ -5,6 +5,7 @@ import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
 import { beginnerQuestions } from './beginnerQuestions';
 import { battleQuestionsBeginnerBasics } from './battleQuestionsBeginnerBasics';
+import { battleQuestionsMoreIntermediate } from './battleQuestionsMoreIntermediate';
 import { battleQuestionsMoreBeginner } from './battleQuestionsMoreBeginner';
 import { dungeonTiles, dungeonEntry, dungeonEnemies } from './world/caveLayout';
 import { mountainVillageGate, mountainVillageReturn } from './world/mountainVillage';
@@ -94,6 +95,7 @@ export const questions: Question[] = [
   ...moreQuestions,
   ...fillQuestions,
   ...battleQuestionsBeginnerBasics,
+  ...battleQuestionsMoreIntermediate,
   ...battleQuestionsMoreBeginner,
 ];
 
