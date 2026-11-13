@@ -4,6 +4,7 @@ import { chapterTwoQuestions } from './chapterTwoQuestions';
 import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
 import { beginnerQuestions } from './beginnerQuestions';
+import { battleQuestionsBeginnerBasics } from './battleQuestionsBeginnerBasics';
 import { dungeonTiles, dungeonEntry, dungeonEnemies } from './world/caveLayout';
 import { mountainVillageGate, mountainVillageReturn } from './world/mountainVillage';
 
@@ -91,6 +92,7 @@ export const questions: Question[] = [
   ...resourceQuestions,
   ...moreQuestions,
   ...fillQuestions,
+  ...battleQuestionsBeginnerBasics,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
