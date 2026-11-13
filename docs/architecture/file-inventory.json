@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-13 / 3042207 + current working tree",
+  "snapshot": "2026-11-13 / 7f84efb + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -246,7 +246,7 @@
     },
     {
       "path": "README.md",
-      "bytes": 8374,
+      "bytes": 10559,
       "suffix": ".md",
       "group": "説明資料",
       "role": "起動方法、遊び方、素材・マップ・問題の追加方法を説明する。",
