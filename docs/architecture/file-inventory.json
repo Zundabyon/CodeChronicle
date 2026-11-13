@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-13 / 284eb4b + current working tree",
+  "snapshot": "2026-11-13 / 372c601 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 390,
+  "count": 394,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -18,12 +18,12 @@
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 20,
-    "人物・生物": 24,
+    "人物・生物": 25,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 73,
+    "制作・運用": 74,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -35,10 +35,10 @@
     "教材・学習": 18,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 6,
+    "物語・進行": 7,
     "状態・保存": 4,
     "画像・素材": 95,
-    "画面・表現・操作": 14,
+    "画面・表現・操作": 15,
     "表示スタイル": 22,
     "設定": 7,
     "説明資料": 4,
@@ -53,7 +53,7 @@
     "characters": {
       "label": "人物・生物",
       "guide": "docs/production/characters.md",
-      "count": 65
+      "count": 66
     },
     "motion": {
       "label": "動き・演出",
@@ -63,7 +63,7 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 21
+      "count": 22
     },
     "learning": {
       "label": "教材・学習",
@@ -78,7 +78,7 @@
     "presentation": {
       "label": "画面・表現・操作",
       "guide": "docs/production/presentation.md",
-      "count": 21
+      "count": 22
     },
     "persistence": {
       "label": "状態・保存",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 103
+      "count": 104
     }
   },
   "files": [
@@ -280,6 +280,14 @@
       "path": "docs/art/chapter-two-assets-v1.prompts.json",
       "bytes": 34635,
       "suffix": ".json",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/chapter-two-event-art-v1.md",
+      "bytes": 4950,
+      "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
       "genre": "operations"
@@ -1424,6 +1432,14 @@
       "genre": "characters"
     },
     {
+      "path": "public/portraits/chapter-two-standing-v1.png",
+      "bytes": 2602876,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
       "path": "public/portraits/faces.png",
       "bytes": 2677231,
       "suffix": ".png",
@@ -1458,6 +1474,14 @@
       "group": "画像・素材",
       "role": "序章用の場面画像。物語の導入に使う静的素材。",
       "staticReferenceHints": [],
+      "genre": "narrative"
+    },
+    {
+      "path": "public/prologue/chapter-two-attack.png",
+      "bytes": 3877380,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "narrative"
     },
     {
@@ -2049,7 +2073,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 8966,
+      "bytes": 8979,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -2096,7 +2120,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 84187,
+      "bytes": 85536,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -2530,7 +2554,7 @@
     },
     {
       "path": "src/CharacterPortrait.tsx",
-      "bytes": 1872,
+      "bytes": 2587,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
@@ -3131,7 +3155,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 16359,
+      "bytes": 17340,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -3956,7 +3980,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 14270,
+      "bytes": 14753,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -3981,7 +4005,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 4436,
+      "bytes": 4823,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -4327,7 +4351,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 9651,
+      "bytes": 9844,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
@@ -4341,6 +4365,14 @@
         }
       ],
       "genre": "narrative"
+    },
+    {
+      "path": "src/storyStage.css",
+      "bytes": 2718,
+      "suffix": ".css",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
     },
     {
       "path": "src/style.css",
@@ -4875,7 +4907,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 5904,
+      "bytes": 7154,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

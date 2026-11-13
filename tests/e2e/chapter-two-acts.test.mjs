@@ -39,13 +39,20 @@ async function winBattle(page,count){
 }
 
 test('the attack opens act one with the new faces, and the Read battle leads into act two',{timeout:60000},async t=>{
-  const page=await open(t,chapterSave('visit-village'));await talkToOrl(page);
+  const page=await open(t,chapterSave('visit-village'));await page.locator('.dialogue-box').waitFor();
+  assert.ok(await page.locator('.story-stage.is-fire .story-art').count(),'arriving in the village starts the attack in flames over the event art');
+  assert.match(await page.locator('.story-art').getAttribute('style'),/chapter-two-attack\.png/);
+  await page.locator('.dialogue-text > span').click();assert.ok(await page.locator('.story-stage.is-shake').count(),'Graphius appears with a shake');
   await page.locator('.dialogue-text > span').click();
   assert.match(await page.locator('.dialogue-portrait .character-portrait').getAttribute('style'),/chapter-two-faces-v1\.png/,'Graphius uses the chapter two portrait atlas');
+  assert.match(await page.locator('.story-standing').getAttribute('style'),/chapter-two-standing-v1\.png/,'Graphius stands beside the dialogue');
   await advance(page);assert.equal((await saved(page)).quests['village-ledger'].step,'find-copy');
 
   await page.evaluate(key=>{const s=JSON.parse(localStorage.getItem(key));s.quests['village-ledger']={step:'battle-r'};localStorage.setItem(key,JSON.stringify(s));},key);
-  await page.reload();await page.getByRole('button',{name:/続きから/}).click();await talkToOrl(page);await advance(page);
+  await page.reload();await page.getByRole('button',{name:/続きから/}).click();
+  assert.ok(await page.locator('.world-viewport.is-burning').count(),'the village still smoulders until Nozomi is beaten');
+  assert.equal(await page.locator('.village-scars img[src*="paint-splash"]').count(),0,'no paint before the Update act');
+  await talkToOrl(page);await page.locator('.dialogue-text > span').click();assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/nozomi/,'the ranger stands in before the battle');await advance(page);
   const first=await current(page);assert.equal(first.id,'ranger-r-1');
   await page.locator('.options button').nth((first.answer+1)%4).click();
   assert.ok((await saved(page)).hp<30,'a wrong answer costs HP');
@@ -57,6 +64,7 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   await winBattle(page,4);
   await page.locator('.dialogue-box').waitFor();await advance(page);
   const after=await saved(page);assert.equal(after.quests['village-ledger'].step,'create-family');
+  assert.equal(await page.locator('.world-viewport.is-burning').count(),0,'the flames die down after the first act');
 });
 
 test('losing a ranger battle restarts it from the first question without a game over',{timeout:60000},async t=>{
@@ -70,7 +78,8 @@ test('losing a ranger battle restarts it from the first question without a game 
 });
 
 test('the final battle against Graphius precedes restoring the ledger',{timeout:60000},async t=>{
-  const page=await open(t,chapterSave('battle-graphius'));await talkToOrl(page);await advance(page);
+  const page=await open(t,chapterSave('battle-graphius'));await talkToOrl(page);
+  assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/graphius-battle/,'Graphius takes his battle stance');await advance(page);
   assert.equal((await current(page)).id,'graphius-1');
   await winBattle(page,7);await page.locator('.dialogue-box').waitFor();await advance(page);
   assert.equal((await saved(page)).quests['village-ledger'].step,'return-names');

@@ -18,7 +18,7 @@ export const questDefinitions:QuestDefinition[]=[
     id:'village-ledger',category:'chapter',startLabel:'第二章「消えた名簿」を始める',title:'第二章：消えた名簿',description:'記録卿グラフィウスに裂かれた名簿を、四つの幕で取り戻す。読む→作る→直す→消すの順にダンジョンの封印を解き、村を荒らす悪レンジャーとの戦いで学んだ操作を試す。最後はグラフィウスとの決戦。',npcId:'mountainGuide',npcLocation:'石灯の村の記録係オル',requiresFirstChapter:true,startAt:'town',opening:chapterTwoOpening,
     pauseResponse:'ここまでの記憶は残っている。同じ封印に触れれば、続きから挑める。',completionObjective:'村人の暮らしを支える記録を取り戻した。自由に探索を続けよう。',completedText:'名簿は元通りじゃ。名前を呼び合う声が戻った。ありがとう、忘れぬよう書き留めておくよ。',
     steps:[
-      {id:'visit-village',title:'第二章：消えた名簿',description:'石灯の村で、記録係オルを訪ねよう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:chapterTwoAttack},
+      {id:'visit-village',title:'第二章：消えた名簿',description:'平原の北東、石灯の村へ向かおう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:chapterTwoAttack},
       {id:'find-copy',title:'第二章：名簿の控えを探す',description:'忘却の遺跡の東の小部屋で宝箱を調べよう。開けたことがある箱も確かめよう。',reminder:'遺跡の東の小部屋の宝箱じゃ。控えが見つかったら、ここへ戻っておいで。',trigger:{type:'chest-examined',chestId:'dungeon:19,5'},after:chapterTwoFound},
       ...chapterTwoLessons,
       {id:'return-names',title:'第二章：名簿を取り戻した',description:'四つの欠片と控えを持って石灯の村のオルに話しかけ、名簿を復元しよう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:chapterTwoEnding},
@@ -33,4 +33,11 @@ export function fumiLine(quests:QuestStates):string {
   if(step==='complete')return fumiTalk.at(-1)!;
   const index=def.steps.findIndex(s=>s.id===step);
   return fumiTalk[index<0?0:actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length];
+}
+/** Act count passed in the village-ledger chapter, or -1 when it is not running. */
+export function chapterTwoAct(quests:QuestStates):number {
+  const def=questDefinition('village-ledger')!,step=quests[def.id]?.step;
+  if(!step||step==='complete')return -1;
+  const index=def.steps.findIndex(s=>s.id===step);
+  return actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
 }

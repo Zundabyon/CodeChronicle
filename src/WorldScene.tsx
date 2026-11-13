@@ -28,6 +28,12 @@ type WorldSave = {
   track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment; openedChests:string[];
 };
 
+// Act 1: the attack's aftermath, act 2: scattered pages remain, act 3: Nurie's paint. Tiles avoid NPCs and paths' centre.
+const villageScars:Record<number,[string,number,number][]>={
+  1:[['lantern-unlit',5,9],['lantern-unlit',17,9],['lantern-unlit',9,10],['torn-pages',6,12],['torn-pages',15,10],['torn-pages',10,14],['torn-pages',13,16]],
+  2:[['torn-pages',6,12],['torn-pages',13,16]],
+  3:[['paint-splash',9,12],['paint-splash',13,14],['paint-splash',5,8],['paint-splash',16,9]],
+};
 type Props = {
   save: WorldSave;
   recovery?:RecoveryEvent|null;
@@ -35,6 +41,8 @@ type Props = {
   chestReward?:{id:string;message:string}|null;
   enemyPositions: EnemyPositions;
   knightVisible?:boolean;
+  /** Chapter two acts passed while in the village (-1 elsewhere); scars fade act by act. */
+  villageAct?:number;
   menu: 'command'|'status'|'quest'|null;
   onMenu: (menu: 'command'|'status'|'quest'|null) => void;
   onTile: (point: Point) => void;
@@ -77,7 +85,7 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </div>;
 }
 
-export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
@@ -105,7 +113,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
   };
   return <main className="world-stage">
     {outdoor&&<TerrainTextures id={textureId}/>}
-    <div className="world-viewport" style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
+    <div className={`world-viewport${villageAct===1?' is-burning':''}`} style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
       {outdoor&&<div className={`world-ambient world-ambient-${save.area}`} aria-hidden="true"><i/><i/><i/></div>}
       <div key={save.area} className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
         {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((tile,columnIndex)=>{
@@ -124,6 +132,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
         }))}
         <div className="world-placements">
+          {villageAct>=1&&villageAct<=3&&<div className="village-scars" aria-hidden="true">{(villageScars[villageAct]??[]).map(([chip,x,y])=><img key={`${chip}-${x}-${y}`} src={`${import.meta.env.BASE_URL}maps/${chip}-64.png`} alt="" style={{left:`calc(${x} * var(--tile-size))`,top:`calc(${y} * var(--tile-size))`}}/>)}</div>}
           {openedChest&&chestReward&&<div key={chestReward.id} className="chest-reward-cue" aria-hidden="true" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),openedChest.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,openedChest.y+.1)} * var(--tile-size))`}}><i/><i/><i/><i/>{chestReward.message}</div>}
           {levelUp&&<div className="world-level-up" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><LevelUpCue event={levelUp}/></div>}
           {recovery&&<div className="world-recovery" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><RecoveryCue key={recovery.sequence} event={recovery}/></div>}

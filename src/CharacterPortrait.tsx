@@ -30,3 +30,14 @@ export function CharacterPortrait({face,standing=false}:{face:string;standing?:b
   } as CSSProperties;
   return <span className="character-portrait" style={style} role="img" aria-label={`${name}の肖像`}/>;
 }
+
+// public/portraits/chapter-two-standing-v1.png: 4x2 standing atlas. A missing image leaves the frame empty.
+const chapterTwoStanding: Record<string, [number, number]> = {
+  graphius: [0, 0], nozomi: [1, 0], tsukune: [2, 0], nurie: [3, 0],
+  keshi: [0, 1], fumi: [1, 1], 'fumi-tears': [1, 1], 'graphius-battle': [2, 1], 'keshi-hesitant': [3, 1],
+};
+export function StandingArt({name}:{name:string}) {
+  const frame=chapterTwoStanding[name];
+  if(!frame)return null;
+  return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two-standing-v1.png)`,backgroundPosition:`${frame[0]*100/3}% ${frame[1]*100}%`}}/>;
+}

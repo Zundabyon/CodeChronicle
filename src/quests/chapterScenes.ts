@@ -4,29 +4,38 @@ const say=(speaker:string,face:string)=>(text:string):StoryLine=>({speaker,face,
 const narrator=say('語り手','📜'),hero=say('{name}','🗡️'),ol=say('記録係 オル','👴'),fumi=say('フミ','fumi'),fumiTears=say('フミ','fumi-tears');
 const graphius=say('記録卿グラフィウス','graphius'),nozomi=say('ノゾミ・ブルー','nozomi'),tsukune=say('ツクネ・アンバー','tsukune'),nurie=say('ヌリエ・ジェイド','nurie'),keshi=say('ケシ・パープル','keshi'),keshiHesitant=say('ケシ・パープル','keshi-hesitant');
 // Act titles are a narrator line whose speaker is the act number.
+const fx=(extra:Partial<StoryLine>,lines:StoryLine[])=>lines.map(line=>({...line,...extra}));
 const actTitle=(act:string,title:string):StoryLine=>({speaker:`第二章 ${act}`,face:'📜',text:`『${title}』`});
 
 export const chapterTwoOpening:StoryLine[]=[
   narrator('石灯の村の記録係オルから、一通の手紙が届いた。「近ごろ夜になると、記録所の灯りが揺れる。名簿をめくる見知らぬ羽ペンの音を聞いた者もおる。杞憂ならよいが、一度様子を見に来てはくれまいか」'),
   {speaker:'女将ハンナ',face:'👩',text:'今度は、あんたが覚えたことを、誰かの暮らしに返しておいで。帰りを待っているよ。'},
-  narrator('第二章「消えた名簿」。平原の北東、石灯の村の記録係オルを訪ねよう。'),
+  narrator('第二章「消えた名簿」。平原の北東、石灯の村へ向かおう。'),
 ];
 export const chapterTwoAttack:StoryLine[]=[
-  narrator('石灯の村に着いたとき、記録所の灯りはすでに消えかけていた。黒い外套の男が、巨大な帳簿を片手に広場に立っている。'),
+  ...fx({art:0,fire:true},[
+  narrator('石灯の村の門をくぐった瞬間、空が赤く染まった。家々の軒先から炎が上がり、記録所の灯りが次々と消えていく。'),
+  {...narrator('炎の中、黒い外套の男が巨大な帳簿を片手に、広場の上空に浮かんでいる。'),shake:true},
   graphius('我は記録卿グラフィウス。この村の名簿は、今日から我が帳簿の一部だ。'),
   narrator('羽ペンがひと振りされると、名簿が四つに裂けた。村人たちの目から、互いの名前の色がふっと抜け落ちていく。'),
   ol('……はて。わしは、誰の名を書き留めておったのじゃったか。'),
+  ]),
+  ...fx({art:1,fire:true},[
   fumi('おじいちゃん！ わたしだよ、フミだよ！'),
   narrator('逃げ遅れた少女に、羽ペンの影が伸びる。{name}は駆け込み、その前に立ちはだかった。十年前の炎の夜、父がそうしてくれたように。'),
   hero('この子には触れさせない！'),
   graphius('……ほう。記録にない顔だ。我が手を汚すまでもない。こいつらで十分だ。'),
-  narrator('帳簿の頁が四枚、風に舞った。そこから、色違いの四つの影が跳び出す。'),
+  ]),
+  ...fx({art:2,fire:true},[
+  {...narrator('帳簿の頁が四枚、火の粉とともに風に舞った。'),shake:true},
+  narrator('裂けた頁から、色違いの四つの影が跳び出す。'),
   nozomi('読むのはおまかせ！ 見せる記録は、ぜーんぶ別人の！ ノゾミ・ブルー！'),
   tsukune('増やすの大好き！ お友達はいくらでも作れるよ！ ツクネ・アンバー！'),
   nurie('直すのは、わたしの好きな色に！ ぜんぶ塗りかえてあげる！ ヌリエ・ジェイド！'),
   keshi('……消す。静かになるから。ケシ・パープル。'),
-  {speaker:'悪レンジャー',face:'nozomi',text:'四人そろって、CRUD戦隊 悪レンジャー！'},
+  {speaker:'悪レンジャー',face:'nozomi',standing:'',text:'四人そろって、CRUD戦隊 悪レンジャー！',shake:true},
   graphius('裂いた名簿の欠片は、お前たちに預ける。好きに遊べ。……ただし、負けた者に用はない。'),
+  ]),
   narrator('グラフィウスは帳簿を閉じ、闇に溶けた。残された四人は、じゃんけんで順番を決め始めた。'),
   nozomi('いっちばーん！ じゃあノゾミから。村の控え、ぜんぶ見せてあげる。……ちょっとずつ、別の人のをね♪'),
   actTitle('第一幕','読めない控え'),
@@ -100,12 +109,12 @@ export const actBattles:Record<string,QuestStep[]>={
     narrator('羽ペンがひと振りされ、ケシの姿も頁の中へ消えた。'),
     graphius('欠片を集めたところで、名簿は我が帳簿の中だ。'),
     hero('部下に任せて隠れるな。正々堂々、勝負しろ！'),
-    graphius('……よかろう。欠片を取り返させる気は、ないがな。'),
+    {...graphius('……よかろう。欠片を取り返させる気は、ないがな。'),standing:'graphius-battle',shake:true},
     actTitle('終幕','消えた名簿'),
-  ]),battle('battle-graphius','graphius','第二章 終幕：記録卿グラフィウス','石灯の村の記録係オルに話しかけ、記録卿グラフィウスと戦おう。',[
+  ]),battle('battle-graphius','graphius','第二章 終幕：記録卿グラフィウス','石灯の村の記録係オルに話しかけ、記録卿グラフィウスと戦おう。',fx({art:3,standing:'graphius-battle'},[
     graphius('題材は、どの幕にもなかった村の掲示板だ。71番「宿の修理人募集」は投稿者6、86番「焚火の講習」は投稿者9。読む・作る・直す・消す、見分けられるか。'),
-    hero('四つの記憶は、全部ここにある。'),
-  ],[
+    {...hero('四つの記憶は、全部ここにある。'),shake:true},
+  ]),[
     graphius('……記録は所有物だ。だが、今日のところは預けておこう。'),
     narrator('グラフィウスは帳簿を閉じ、闇へ退いた。名簿の欠片が四つ、{name}の手元に戻った。'),
     narrator('欠片と控えを持って、記録係オルに話しかけよう。'),
