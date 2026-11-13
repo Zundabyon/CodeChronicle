@@ -39,7 +39,7 @@ function classify(path){
   if(path.startsWith('src/quests/'))return /\/(chapterTwoLessons|memoryBattleQuestion|QuestStudyPanel|studyTypes)\./.test(path)?'learning':/\/persistence\./.test(path)?'persistence':'narrative';
   if(path.startsWith('src/')){
     const name=path.slice(4).replace(/\.(tsx?|css)$/,'');
-    if(/Questions$/.test(name))return 'learning';
+    if(/Questions$|^battleQuestions/.test(name))return 'learning';
     return Object.entries(flat).find(([,names])=>names.includes(name))?.[0];
   }
   if(path.startsWith('public/maps/'))return 'world';

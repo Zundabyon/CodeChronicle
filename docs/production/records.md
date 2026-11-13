@@ -4,6 +4,7 @@
 
 | 履歴 | 今後使う共通仕様 | 固有設定・実行側の正本 |
 |---|---|---|
+| [第二章の人物・小物v1](../art/chapter-two-assets-v1.md) | [会話画像](uses/dialogue-portraits.md)、[マップ画像](uses/map-sprites.md)、[戦闘画像](uses/combat-art.md)、[状態差分](uses/state-variants.md) | [画像依頼](chapter-two-art-request.md)。生成候補17枚を引き渡し、src登録・実表示確認はClaude担当 |
 | [家具・小物アトラス](../../public/maps/props/props-atlas-v2.prompt.txt) | [環境素材](uses/environment-art.md) | [propArt.ts](../../src/world/propArt.ts) |
 | [主人公歩行](../../public/sprites/hero-walk-art.txt) | [歩行](uses/walking.md) | [主人公](characters/hero.md)、[WorldCharacter.tsx](../../src/WorldCharacter.tsx)、[characterArt.css](../../src/characterArt.css) |
 | [主人公攻撃](../../public/sprites/hero-attack-art.json) | [攻撃・戦闘表現](uses/combat-art.md) | [主人公](characters/hero.md)、[heroAttackArt.ts](../../src/heroAttackArt.ts) |

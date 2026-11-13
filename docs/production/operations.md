@@ -8,11 +8,12 @@
 
 Claudeは画像が必要になったら、用途、共通仕様、対象固有の特徴、参照画像、寸法・透過・構図、保存先と受け入れ条件をまとめ、ChatGPTまたはCodexへ渡せる生成依頼を準備する。画像を受け取った後のコードへの組み込みと実表示の検証は基本的にClaudeが担当する。生成担当は依頼範囲の画像制作と生成記録を返す。
 
-画像生成の担当分けは、別セッションへ自動送信したり、エージェントを自動起動したりする仕組みではない。担当が必要な工程を実施できない場合は、依頼内容と未対応工程を明示する。
+ユーザーの依頼により、担当間の依頼・質問・成果物返却は[agent-coordination Skill](../../.agents/skills/agent-coordination/SKILL.md)に従ってOrcaのorchestrationで行う。Claudeが必要時にCodex担当を起動し、返却後に組み込む。同じ作業範囲の内部連絡をユーザーの手動伝言待ちにしない。生成ツールの有無は担当の環境で確認し、不足時は未対応工程を明示する。常駐監視や既存全チャットへの自動転送は設定していない。
 
 | 作業 | 入口・管理元 |
 |---|---|
 | 全要素の追加・変更先を探す | [project-guide Skill](../../.agents/skills/project-guide/SKILL.md) |
+| ClaudeとCodexの依頼・質問・成果物返却 | [agent-coordination Skill](../../.agents/skills/agent-coordination/SKILL.md) → Orca orchestration |
 | 画像の生成・組み込み・確認 | [game-art Skill](../../.agents/skills/game-art/SKILL.md) → 利用可能なimagegen |
 | 問題の制作・追加・品質確認 | [question-author Skill](../../.agents/skills/question-author/SKILL.md) |
 | 独立したコードレビュー | [code-review Skill](../../.agents/skills/code-review/SKILL.md)、[reviewer定義](../../.codex/agents/code_reviewer.toml) |

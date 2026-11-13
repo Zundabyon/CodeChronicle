@@ -1,0 +1,517 @@
+{
+  "date": "2026-11-13",
+  "tool": "image_gen.imagegen (built-in)",
+  "request": "docs/production/chapter-two-art-request.md",
+  "jobs": [
+    {
+      "name": "chapter-two-faces-v1",
+      "target": "public/portraits/chapter-two-faces-v1.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-31acd7b0-1d4b-4f7d-aad1-d5885c176046.png",
+      "kind": "portrait-atlas",
+      "references": [
+        "public/portraits/faces.png"
+      ],
+      "prompt": "Generate 1536x1024, 4x2 chest-up portrait atlas matching faces.png style/background. Top: Graphius cold smile, Blue mischievous talking, Amber exuberant grin, Jade puffed cheeks. Bottom: Purple sleepy, same Purple hesitant, Fumi anxious brave, same Fumi holding tears. Follow all character traits in chapter-two-art-request.md; no text or gore; upper-left light.",
+      "previousSource": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-0d4b0d4a-b041-47a9-9a81-8efda36c8174.png",
+      "correctionPrompt": "Use case: precise-object-edit. Color-only correction. Edit ONLY the TOP LEFT Graphius portrait; all other seven cells and their navy backgrounds stay pixel-identical, keep 1536x1024 4x2 atlas. His clothing has unwanted PURPLE/VIOLET highlights. Change all purple/mauve cloth to INK BLACK and dark NAVY BLUE, with cool slate blue gray highlights (hue about215 degrees, navy #111d32). Keep gold edging, parchment lining and dark-red accents unchanged. Not purple, not lavender. Hair dark charcoal/slate, face/hair shape/expression same. Do not alter other characters, objects, costume design, proportions, framing, light direction or detailed pixel art. Same dimensions, no text.",
+      "output": {
+        "width": 1536,
+        "height": 1024,
+        "hasAlpha": true,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "transparentPixels": 0,
+        "opaqueBounds": [
+          0,
+          0,
+          1535,
+          1023
+        ],
+        "sha256": "884bc66881bcf8fa6c1780d4c400d38af43f262e468ff31381233f0c30f7c5b5"
+      },
+      "postprocess": "Composite only corrected top-left 384x512 tile over original atlas; preserve other seven tiles."
+    },
+    {
+      "name": "ranger-read",
+      "target": "public/sprites/ranger-read-64.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-9c058293-f59f-4ebe-a655-5850c67d7d20.png",
+      "kind": "map",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/elder-64.png",
+        "public/sprites/child-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production CodeChronicle MAP SPRITE ONLY. Identity reference: image1 portrait atlas; style/scale references image2 elder64 and image3 child64. Top-row second portrait Nozomi Blue. Dark-blue tousled hair, brass lens ornament on one eye, blue short jacket and blue scarf with eye pictogram, large magnifying glass. Mischievous exposed face, child proportions. Single front-facing DOWNWARD-facing static full body from slightly overhead top-down JRPG map camera. Dense cute SFC era pixel-art clusters, upper-left light, dark outline, 4-6 shade steps per material. Design as an exact 64x64 logical pixel sprite, enlarged cleanly with nearest-neighbor to a square output. Entire hair, both feet, tools and accessories within canvas; 4 pixel logical margin. Foot baseline logical y58. Match compact existing sprites, not a portrait or battle stance. Truly transparent alpha background, no scenery, ground, shadow plane, labels, letters, logo, watermark, no violence. Preserve identity, hair, clothes and props from the specified portrait. One character only.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 2847,
+        "opaqueBounds": [
+          17,
+          2,
+          45,
+          60
+        ],
+        "sha256": "e7e0d683b4b39105d6d960b52df17a8eb1370e0f2cf257c660ec93fda39effb8"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "graphius",
+      "target": "public/sprites/graphius-64.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-5924df82-47e0-48ac-993f-502f3ba8fe83.png",
+      "kind": "map",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/elder-64.png",
+        "public/sprites/child-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production CodeChronicle MAP SPRITE ONLY. Identity reference: image1 portrait atlas; style/scale references image2 elder64 and image3 child64. Top-left portrait Graphius. Tall slim adult human aristocrat, pale face, swept-back dark hair, cold expression. Ink-black/navy long high-collar coat, parchment lining, gold trim and tiny red accents. Large ivory feather quill and chained brown ledger. Adult proportions relative to the child rangers, no helmet and no purple cloak. Single front-facing DOWNWARD-facing static full body from slightly overhead top-down JRPG map camera. Dense cute SFC era pixel-art clusters, upper-left light, dark outline, 4-6 shade steps per material. Design as an exact 64x64 logical pixel sprite, enlarged cleanly with nearest-neighbor to a square output. Entire hair, both feet, tools and accessories within canvas; 4 pixel logical margin. Foot baseline logical y58. Match compact existing sprites, not a portrait or battle stance. Truly transparent alpha background, no scenery, ground, shadow plane, labels, letters, logo, watermark, no violence. Preserve identity, hair, clothes and props from the specified portrait. One character only.",
+      "previousSource": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-cc10ee8f-63e9-435a-8994-d2cec77b9a9f.png",
+      "correctionPrompt": "Use case: precise-object-edit. Color-only correction. Edit ONLY Graphius's coat, trousers and gloves, preserve transparent canvas and exact silhouette/pose/face/quill/ledger. His clothing has unwanted PURPLE/VIOLET highlights. Change all purple/mauve cloth to INK BLACK and dark NAVY BLUE, with cool slate blue gray highlights (hue about215 degrees, navy #111d32). Keep gold edging, parchment lining and dark-red accents unchanged. Not purple, not lavender. Hair dark charcoal/slate, face/hair shape/expression same. Do not alter other characters, objects, costume design, proportions, framing, light direction or detailed pixel art. Same dimensions, no text.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          254
+        ],
+        "transparentPixels": 2987,
+        "opaqueBounds": [
+          19,
+          3,
+          44,
+          60
+        ],
+        "sha256": "ad113202419abfbbb96dc32689d3559407cbece2db9f09ab7bfb34fd93a316a4"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "ranger-create",
+      "target": "public/sprites/ranger-create-64.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-28fb89ea-bd40-4b74-86f1-0c1304cdab60.png",
+      "kind": "map",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/elder-64.png",
+        "public/sprites/child-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production CodeChronicle MAP SPRITE ONLY. Identity reference: image1 portrait atlas; style/scale references image2 elder64 and image3 child64. Top-row third portrait Tsukune Amber. Short tousled amber-brown hair, golden hairpins, amber short jacket/scarf with glowing particle pictogram, paper dolls poking from pockets, oversized red stamp and paper stack. Happy exposed child face. Single front-facing DOWNWARD-facing static full body from slightly overhead top-down JRPG map camera. Dense cute SFC era pixel-art clusters, upper-left light, dark outline, 4-6 shade steps per material. Design as an exact 64x64 logical pixel sprite, enlarged cleanly with nearest-neighbor to a square output. Entire hair, both feet, tools and accessories within canvas; 4 pixel logical margin. Foot baseline logical y58. Match compact existing sprites, not a portrait or battle stance. Truly transparent alpha background, no scenery, ground, shadow plane, labels, letters, logo, watermark, no violence. Preserve identity, hair, clothes and props from the specified portrait. One character only.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 2850,
+        "opaqueBounds": [
+          17,
+          2,
+          45,
+          59
+        ],
+        "sha256": "8b6fe1b8fc3eb1f86aea6501213ad32304a8b39d8a2b56fd1ba774b67978bb75"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "ranger-update",
+      "target": "public/sprites/ranger-update-64.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-ab0aec95-1c8d-4631-9a66-9f4795fc4056.png",
+      "kind": "map",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/elder-64.png",
+        "public/sprites/child-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production CodeChronicle MAP SPRITE ONLY. Image1 identity atlas, image2 elder and image3 child are scale/style references. Top-row fourth portrait Nurie Jade: green dark jade ponytail with pale bow, pouty face, jade short jacket and scarf, spiral-arrow pictogram, paint spatters, oversized brush and metal paint bucket. Child proportions. Single front-facing DOWNWARD-facing static full body, slightly overhead JRPG map view. Exact same identity, hair, colors, clothes, held objects as portrait slot. Dense cute SFC RPG pixel clusters, upper-left light, dark crisp outline, stepped shading. Design exact 64x64 logical pixels enlarged with nearest-neighbor to square output. 4 logical pixel margins, feet baseline y58, all hair/feet/tools within canvas. Truly transparent alpha, no background/scenery/ground/shadow plane/text/letters/numbers/watermark. Compact full-body map sprite, not battle portrait. One character only.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          254
+        ],
+        "transparentPixels": 2721,
+        "opaqueBounds": [
+          16,
+          2,
+          48,
+          61
+        ],
+        "sha256": "3abe949b67fe4d21d9f618f0c64dbe985fc86ac7835fe67dc8f16a437f04f29e"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "fumi",
+      "target": "public/sprites/fumi-64.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-62d72300-2d4b-493b-871c-99a251069e7b.png",
+      "kind": "map",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/elder-64.png",
+        "public/sprites/child-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production CodeChronicle MAP SPRITE ONLY. Image1 identity atlas, image2 elder and image3 child are scale/style references. Bottom row third portrait Fumi: village girl age10, brown twin braids with dusty-red ties, warm ochre sleeves and muted brick-red shawl over brown village dress, ink-stained fingertips hugging small brown notebook, anxious brave face. No ranger uniform. Single front-facing DOWNWARD-facing static full body, slightly overhead JRPG map view. Exact same identity, hair, colors, clothes, held objects as portrait slot. Dense cute SFC RPG pixel clusters, upper-left light, dark crisp outline, stepped shading. Design exact 64x64 logical pixels enlarged with nearest-neighbor to square output. 4 logical pixel margins, feet baseline y58, all hair/feet/tools within canvas. Truly transparent alpha, no background/scenery/ground/shadow plane/text/letters/numbers/watermark. Compact full-body map sprite, not battle portrait. One character only.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 3084,
+        "opaqueBounds": [
+          18,
+          6,
+          45,
+          58
+        ],
+        "sha256": "d9431852c1f1bcb867e9787dd0d07a3e2fd694d78d98f464f60346a87798fc47"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "ranger-delete",
+      "target": "public/sprites/ranger-delete-64.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-575c6e8a-0f30-483b-aa0e-d1eb7a28c753.png",
+      "kind": "map",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/elder-64.png",
+        "public/sprites/child-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. Production CodeChronicle MAP SPRITE ONLY. Image1 identity atlas, image2 elder and image3 child are scale/style references. Bottom-left portrait Keshi Purple: youngest smallest child, pale silver hair under purple hood, sleepy expressionless face, purple short coat/scarf, X chest emblem, eraser-ended staff. Smallest team member. Single front-facing DOWNWARD-facing static full body, slightly overhead JRPG map view. Exact same identity, hair, colors, clothes, held objects as portrait slot. Dense cute SFC RPG pixel clusters, upper-left light, dark crisp outline, stepped shading. Design exact 64x64 logical pixels enlarged with nearest-neighbor to square output. 4 logical pixel margins, feet baseline y58, all hair/feet/tools within canvas. Truly transparent alpha, no background/scenery/ground/shadow plane/text/letters/numbers/watermark. Compact full-body map sprite, not battle portrait. One character only.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 3177,
+        "opaqueBounds": [
+          18,
+          7,
+          43,
+          56
+        ],
+        "sha256": "c9b6809e3fa4b0fdd1d6a4f6b2094aed237a99a6f722f46d08a32a9b12562195"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "graphius-right",
+      "target": "public/sprites/graphius-right.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-6e87145b-2789-420f-82d0-dba5e0220637.png",
+      "kind": "battle",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/guardian-right.png"
+      ],
+      "prompt": "Use case: stylized-concept. CodeChronicle enemy battle idle sprite. Image1 is IDENTITY atlas (use named portrait); image2 is STYLE/POSE DIRECTION reference only, do not copy armored monster. Top-left portrait Graphius: tall slim adult aristocratic HUMAN villain, pale cold face, slick swept-back dark hair, narrow eyes and disdainful smile. Ink BLACK/NAVY long high-collar coat with parchment lining and gold trim, small red accents. NO purple dominant palette. Large ivory feather quill aimed right in one hand, huge chained ledger floating beside waist. Clearly adult and taller than child rangers. No armor or helmet. One full-body character in a calm ready-to-battle idle pose, entire body and nose/eyes visibly facing RIGHT in 3/4 side view, gaze to right. Cute finely detailed SFC era JRPG PIXEL ART, dense crisp stepped pixels with controlled dithering and upper-left highlights, dark outlines, richly shaded cloth/materials; match reference guardian's pixel density. Square transparent PNG, target1254x1254, ample transparent margin on all sides and consistent foot baseline near 90% height. All tools/weapons/chains/books/hair fully inside canvas, no clipping. Truly transparent alpha. No ground, scenery, decorative border, text, letters, numbers, logos, watermark, violence or gore. Identity, costume palette, hairstyle, emblem and props must exactly match corresponding atlas character, not a new design. RIGHT-facing idle, not front-facing portrait.",
+      "previousSource": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-44b3733c-4f98-4128-9444-057dc1bd852f.png",
+      "correctionPrompt": "Use case: precise-object-edit. Color-only correction. Edit ONLY Graphius's coat, trousers and gloves, preserve transparent canvas and exact silhouette/pose/face/quill/ledger. His clothing has unwanted PURPLE/VIOLET highlights. Change all purple/mauve cloth to INK BLACK and dark NAVY BLUE, with cool slate blue gray highlights (hue about215 degrees, navy #111d32). Keep gold edging, parchment lining and dark-red accents unchanged. Not purple, not lavender. Hair dark charcoal/slate, face/hair shape/expression same. Do not alter other characters, objects, costume design, proportions, framing, light direction or detailed pixel art. Same dimensions, no text.",
+      "output": {
+        "width": 1254,
+        "height": 1254,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 924707,
+        "opaqueBounds": [
+          69,
+          12,
+          1178,
+          1222
+        ],
+        "sha256": "988d80e462fc196b2b5725db2ea4f5ab6ef901e841e879dee39bb42011e339c3"
+      },
+      "postprocess": "Copy original 1254x1254 PNG (nearest-neighbor resize to same size)."
+    },
+    {
+      "name": "ranger-read-right",
+      "target": "public/sprites/ranger-read-right.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-a8dec81c-edbf-45c8-a6d4-e59a8c3db0a7.png",
+      "kind": "battle",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/guardian-right.png"
+      ],
+      "prompt": "Use case: stylized-concept. CodeChronicle enemy battle idle sprite. Image1 is IDENTITY atlas (use named portrait); image2 is STYLE/POSE DIRECTION reference only, do not copy armored monster. Top row second portrait Nozomi Blue. Youthful child ranger, tousled blue-black hair, brass lens on one eye, blue short jacket/scarf, gold eye chest pictogram, large magnifying glass raised toward RIGHT. Mischievous talking smile, child proportions, face uncovered. One full-body character in a calm ready-to-battle idle pose, entire body and nose/eyes visibly facing RIGHT in 3/4 side view, gaze to right. Cute finely detailed SFC era JRPG PIXEL ART, dense crisp stepped pixels with controlled dithering and upper-left highlights, dark outlines, richly shaded cloth/materials; match reference guardian's pixel density. Square transparent PNG, target1254x1254, ample transparent margin on all sides and consistent foot baseline near 90% height. All tools/weapons/chains/books/hair fully inside canvas, no clipping. Truly transparent alpha. No ground, scenery, decorative border, text, letters, numbers, logos, watermark, violence or gore. Identity, costume palette, hairstyle, emblem and props must exactly match corresponding atlas character, not a new design. RIGHT-facing idle, not front-facing portrait.",
+      "output": {
+        "width": 1254,
+        "height": 1254,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 1084477,
+        "opaqueBounds": [
+          194,
+          66,
+          1059,
+          1170
+        ],
+        "sha256": "ff68d15ed5d13a69fe8d43bd5f587c048991fb666ec3bfe0d3dc626e980514ec"
+      },
+      "postprocess": "Copy original 1254x1254 PNG (nearest-neighbor resize to same size)."
+    },
+    {
+      "name": "ranger-create-right",
+      "target": "public/sprites/ranger-create-right.png",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-cf6bfdf4-df36-45bd-8bd7-c7dad26075ab.png",
+      "kind": "battle",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/guardian-right.png"
+      ],
+      "prompt": "Use case: stylized-concept. CodeChronicle enemy battle idle sprite. Image1 is IDENTITY atlas (use named portrait); image2 is STYLE/POSE DIRECTION reference only, do not copy armored monster. Top row third portrait Tsukune Amber. Child ranger, tousled amber hair with two gold hairpins, amber short jacket/scarf, glowing particle emblem, paper dolls from pockets, large red stamp and stack of blank paper. Cheerfully preparing stamp, facing RIGHT, full exposed face. One full-body character in a calm ready-to-battle idle pose, entire body and nose/eyes visibly facing RIGHT in 3/4 side view, gaze to right. Cute finely detailed SFC era JRPG PIXEL ART, dense crisp stepped pixels with controlled dithering and upper-left highlights, dark outlines, richly shaded cloth/materials; match reference guardian's pixel density. Square transparent PNG, target1254x1254, ample transparent margin on all sides and consistent foot baseline near 90% height. All tools/weapons/chains/books/hair fully inside canvas, no clipping. Truly transparent alpha. No ground, scenery, decorative border, text, letters, numbers, logos, watermark, violence or gore. Identity, costume palette, hairstyle, emblem and props must exactly match corresponding atlas character, not a new design. RIGHT-facing idle, not front-facing portrait.",
+      "output": {
+        "width": 1254,
+        "height": 1254,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 1063225,
+        "opaqueBounds": [
+          303,
+          46,
+          963,
+          1195
+        ],
+        "sha256": "1143d9eaa44270e24b093ff687a01b36253961d622cae0fceb7d1802d1541d78"
+      },
+      "postprocess": "Copy original 1254x1254 PNG (nearest-neighbor resize to same size)."
+    },
+    {
+      "name": "ranger-delete-right",
+      "target": "public/sprites/ranger-delete-right.png",
+      "kind": "battle",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/guardian-right.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one CodeChronicle battle idle sprite of Keshi Purple, exactly bottom-left child in reference1 identity atlas. Reference2 guardian is STYLE and right-facing direction only, no armored monster. Youngest smallest child ranger, silver pale hair, purple hood and scarf and short coat, X chest emblem, sleepy neutral exposed face, staff tipped with large pink eraser block. Full body 3/4 SIDE view clearly facing RIGHT, eyes/nose/feet to right, quiet idle ready pose. Dense finely shaded SFC JRPG pixel art, dark crisp outline, upper-left light, stepped cloth/pixel clusters matching guardian density. Square1254x1254 transparent PNG, full hood/staff/eraser/feet inside generous margins. No scenery/ground/text/logo/watermark/violence/gore. Keep exact atlas identity, not new design.",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-9eab2d58-97ab-447f-aa0d-c3a521768a4f.png",
+      "output": {
+        "width": 1254,
+        "height": 1254,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 1015245,
+        "opaqueBounds": [
+          230,
+          71,
+          935,
+          1213
+        ],
+        "sha256": "1a33d6400344c0b5c0cdf498bfc54935b6acd84d1944eafdbe19e2b7e2ad733f"
+      },
+      "postprocess": "Copy original 1254x1254 PNG (nearest-neighbor resize to same size)."
+    },
+    {
+      "name": "ranger-update-right",
+      "target": "public/sprites/ranger-update-right.png",
+      "kind": "battle",
+      "references": [
+        "public/portraits/chapter-two-faces-v1.png",
+        "public/sprites/guardian-right.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one CodeChronicle battle idle sprite of Nurie Jade, exactly top-right character of reference1 identity atlas. Reference2 guardian is STYLE and right-facing pose direction only, do NOT copy armor. Child ranger with tousled jade green side ponytail and pale bow, pouty exposed face, green short jacket/scarf with gold spiral-arrow pictogram, colorful paint spatters, large paintbrush and bucket. Full body in 3/4 SIDE view clearly facing RIGHT, nose/gaze/toes to right, calm ready stance. Cute dense SFC JRPG pixel art matching finely shaded guardian clusters, upper-left light, crisp dark outline, no smooth painted gradients. Square1254x1254 transparent PNG, entire hair/brush/bucket/feet inside generous margins. No background/ground/text/logo/watermark/gore. Preserve exact identity/clothing/props of portrait. One character.",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-ea49a320-7055-4177-bee1-48f344878c18.png",
+      "output": {
+        "width": 1254,
+        "height": 1254,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 1051984,
+        "opaqueBounds": [
+          240,
+          51,
+          944,
+          1211
+        ],
+        "sha256": "8a8f5b21b992cee2d67e3580f186c82916cb524616096c53e7425b2ddc54e88e"
+      },
+      "postprocess": "Copy original 1254x1254 PNG (nearest-neighbor resize to same size)."
+    },
+    {
+      "name": "return-point",
+      "target": "public/maps/return-point-64.png",
+      "kind": "prop",
+      "references": [
+        "public/maps/lantern-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. One usable magical RETURN POINT prop for CodeChronicle top-down SFC RPG map. Reference lantern is pixel density, upper-left light and map camera STYLE only; new object must NOT be a lantern or fountain. Small low carved gray stone plinth/pedestal with beveled edges and a pale ice-blue glowing abstract teleportation sigil on top, visible top and front. Compact square64x64 logical pixel sprite enlarged nearest-neighbor for output, dense crisp pixel clusters and stepped shading. Truly transparent alpha background. Entire object and small cyan glow inside 6 logical pixel margin, no ground plane, no surrounding scenery, no text/letters/numerals/logos/watermark. One small teleport pedestal centered, no floating giant portal. This ON image will be edited into OFF state with identical geometry.",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-b874087c-9806-4d58-a7f0-116664211cc6.png",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          254
+        ],
+        "transparentPixels": 3585,
+        "opaqueBounds": [
+          21,
+          21,
+          43,
+          44
+        ],
+        "sha256": "80c4ba2885daecf54ec04a4a873b6a7e0238b2ee9d7231d17759a0e49c64d0e9"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "return-point-off",
+      "target": "public/maps/return-point-off-64.png",
+      "kind": "prop-state",
+      "references": [
+        "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-b874087c-9806-4d58-a7f0-116664211cc6.png"
+      ],
+      "prompt": "Use case: precise-object-edit. EDIT THE PROVIDED TELEPORT PEDESTAL IMAGE into the OFF inactive state. Change ONLY the light: extinguish cyan/blue-white light and glow; leave dark recessed engraved sigil visible without emitting any light. Preserve exact original stone outline, corners, pixels, cracks, front carvings, size, position, camera, crop and canvas. No moving/rescaling/redesigning the object. Identical transparent alpha canvas except removing light halo. Top-left neutral ambient material shading remains. Same pixel-art density. No text, no background, no new objects. Output same dimensions as reference.",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-b94aad04-bd0a-494d-aa08-89c507667ef5.png",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          254
+        ],
+        "transparentPixels": 3611,
+        "opaqueBounds": [
+          21,
+          21,
+          43,
+          44
+        ],
+        "sha256": "376187631cd7053e7244e415efc8de8cef4ea446c72fe83aba4095383920b7d9"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    },
+    {
+      "name": "torn-pages",
+      "target": "public/maps/torn-pages-64.png",
+      "kind": "prop",
+      "references": [
+        "public/maps/lantern-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. One CodeChronicle map prop: small cluster of several torn parchment roster pages scattered loosely on the floor, with jagged torn edges, folded paper corners, warm aged cream/parchment material, dark brown ink smudges but NO legible letters/numbers/text. Top-down slight-overhead SFC JRPG pixel art matching reference lantern material density and upper-left lighting, crisp dark edges, stepped highlights/shadows. Exact64x64 logical pixel tile enlarged nearest-neighbor if necessary. Entire cluster inside generous transparent margins. True alpha transparent background, no ground/floor/scene, no book, no text/logo/watermark. Flat paper scraps to overlay on game ground.",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-53b75d17-94dd-44bd-98c1-3704016dd2cf.png",
+      "previousSource": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-478fcaab-73c1-4b42-901e-d259af8de960.png",
+      "correctionPrompt": "Use case: precise-object-edit. Remove ONLY the golden luminous halo around these torn parchment pages. Paper is ordinary non-glowing parchment, not magical. Keep exact paper shapes, edges, folds, ink smudges and positions; all exterior pixels outside the paper silhouettes must be fully transparent alpha, no shadow plane, no ground or glow. Preserve original canvas and pixel-art look. No added letters/text.",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          253
+        ],
+        "transparentPixels": 3557,
+        "opaqueBounds": [
+          16,
+          18,
+          47,
+          43
+        ],
+        "sha256": "54d849c81b5921b81b42485bba88d8aee73e628ed8f0713aeca291ca476188f1"
+      },
+      "postprocess": "Fit original1536x1024 into64x64 with transparent padding and nearest-neighbor; preserve aspect ratio."
+    },
+    {
+      "name": "lantern-unlit",
+      "target": "public/maps/lantern-unlit-64.png",
+      "kind": "prop-state",
+      "references": [
+        "public/maps/lantern-64.png"
+      ],
+      "prompt": "Use case: precise-object-edit. EDIT this exact64x64 pixel-art lantern to its UNLIT state. Change only flame and emitted orange light/glow: remove the fire, show empty dark interior, extinguish light spill. KEEP THE EXACT SAME lantern gold metal housing, handle, outline, pixel placement, scale, feet, camera and 64x64 canvas. Do NOT redraw a different lantern or enlarge/reposition it. Preserve genuinely transparent background. Dense SFC RPG pixel art. No ground, no letters, no text. Return same64x64 logical pixels (if enlarging output, use nearest-neighbor only).",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-a1ce565b-6778-495d-94b3-b96fb6fc11e5.png",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 3460,
+        "opaqueBounds": [
+          22,
+          13,
+          41,
+          50
+        ],
+        "sha256": "59bf5a09e7ea83f840cf37f87eacc4159f947f2dace7f2780fd1886125d0abec"
+      },
+      "postprocess": "Nearest-neighbor resize generated edit to64x64; replace only original lantern chamber rectangle x26,y28,w12,h12; preserve all exterior pixels exactly."
+    },
+    {
+      "name": "paint-splash",
+      "target": "public/maps/paint-splash-64.png",
+      "kind": "prop",
+      "references": [
+        "public/maps/lantern-64.png"
+      ],
+      "prompt": "Use case: stylized-concept. One CodeChronicle environment overlay prop: irregular JADE GREEN paint splatter left on ground by a mischievous painter, one main splash with small separate droplets, wet jade pigment, upper-left tiny highlights, dark green edge, thin flat puddle seen slightly overhead. Finely clustered SFC RPG pixel art matching reference pixel density. Exact64x64 logical pixel tile enlarged nearest-neighbor if necessary. Entire splash centered with transparent margins. Genuinely transparent alpha around paint, absolutely NO ground/floor/tile/scenery, no bucket/brush/person. No text/letters/numbers/logo/watermark. Green only, not blood.",
+      "source": "/Users/ogasawarayuki/.codex/generated_images/01a1b9a8-c7fe-7a40-8a96-5af1fd035eea/exec-20de6e6f-bcc3-4d81-8848-714f7651eeae.png",
+      "output": {
+        "width": 64,
+        "height": 64,
+        "hasAlpha": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "transparentPixels": 3512,
+        "opaqueBounds": [
+          11,
+          17,
+          51,
+          47
+        ],
+        "sha256": "76ee6b58cdb28d4f87bc1e06e5f8b09bb1d707908eb6198361f1a5501eddd910"
+      },
+      "postprocess": "Nearest-neighbor resize original1254x1254 to64x64; preserve full canvas and alpha."
+    }
+  ],
+  "validation": {
+    "dimensionsAndAlpha": "PASS all17",
+    "noCanvasEdgeClipping": "PASS all16 transparent assets",
+    "atlasSevenUnchangedTiles": "PASS pixel exact",
+    "lanternOutsideChamber": "PASS pixel exact",
+    "returnOnOffBounds": "PASS identical [21,21,43,44]",
+    "inGameDisplay": "Not performed; Claude integration stage",
+    "sourceOriginals": "Preserved in original generated_images paths"
+  }
+}
