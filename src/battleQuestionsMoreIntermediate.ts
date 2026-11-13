@@ -32,7 +32,7 @@ export const battleQuestionsMoreIntermediate: Question[] = [
   // Laravel
   choice('bmi2-l-i-1', 'intermediate', 'laravel', '投稿一覧を作成日時の新しい順に全件取得したい。適切な呼び出しは？', ['Post::latest()->get()', 'Post::oldest()->get()', 'Post::latest()->first()', 'Post::get()'], 0, 'latest()は既定でcreated_atの降順に並べ、get()で該当する全件を取得します。oldest()は古い順、first()は最初の1件だけです。並び順を指定しないget()では新しい順が保証されません。'),
   choice('bmi2-l-i-2', 'intermediate', 'laravel', 'Route::resourceで登録済み。投稿を更新したあと、その投稿の詳細ページへ移動させるには？', ["redirect()->route('posts.show', $post)", "redirect()->route('posts.index')", "redirect()->route('posts.edit', $post)", "redirect()->route('posts.update', $post)"], 0, 'resourceルートの詳細表示はposts.showという名前になります。posts.indexは一覧、posts.editは編集フォームです。posts.updateはPUT/PATCHの送信先で、リダイレクト先として開くページではありません。'),
-  choice('bmi2-l-i-3', 'intermediate', 'laravel', '投稿の本文は空でもよいが、入力されたら文字列であってほしい。適切な規則は？', ["'body' => ['nullable', 'string']", "'body' => ['required', 'string']", "'body' => ['string']", "'body' => ['nullable', 'integer']"], 0, 'Laravelは既定で空文字をnullに変換するため、空を許すにはnullableが必要です。stringだけではnullが失敗し、requiredは空を許しません。integerは文字列の本文に合いません。'),
+  choice('bmi2-l-i-3', 'intermediate', 'laravel', 'Laravel既定のミドルウェア構成（空文字をnullに変換するConvertEmptyStringsToNullが有効）。投稿の本文は空で送ってもよいが、入力されたら文字列であってほしい。適切な規則は？', ["'body' => ['nullable', 'string']", "'body' => ['required', 'string']", "'body' => ['string']", "'body' => ['nullable', 'integer']"], 0, 'Laravelは既定で空文字をnullに変換するため、空を許すにはnullableが必要です。stringだけではnullが失敗し、requiredは空を許しません。integerは文字列の本文に合いません。'),
   choice('bmi2-l-i-4', 'intermediate', 'laravel', 'この定義で登録されるルートは？', ['GET /posts と GET /posts/{post} だけ', 'GET /posts だけ', 'indexとshow以外のすべて', 'resourceの全ルート'], 0, 'only()は指定したアクションのルートだけを登録します。indexはGET /posts、showはGET /posts/{post}です。指定したものを除くのはexcept()です。', { code: "Route::resource('posts', PostController::class)->only(['index', 'show']);" }),
   choice('bmi2-l-i-5', 'intermediate', 'laravel', 'GET /posts?page=2 でこのコードを実行した。返る投稿は？', ['11〜20件目', '1〜10件目', '2件目だけ', '全件'], 0, 'paginateはリクエストのpageパラメータを読み、そのページ分だけを取得します。1ページ10件なので2ページ目は11〜20件目です。', { code: 'return Post::orderBy(\'id\')->paginate(10);' }),
   choice('bmi2-l-i-6', 'intermediate', 'laravel', '投稿のcategory_idが、categoriesテーブルに実在するIDか確かめたい。適切な規則は？', ["['required', 'exists:categories,id']", "['required', 'unique:categories,id']", "['required', 'integer']", "['required', 'in:categories']"], 0, 'existsは指定したテーブルの列に値があることを確認します。uniqueは逆に「まだない」ことを求めます。integerは形式だけで実在は確かめず、in:categoriesは文字列"categories"との一致を見る規則です。'),
@@ -51,3 +51,137 @@ export const battleQuestionsMoreIntermediate: Question[] = [
   choice('bmi2-api-i-4', 'intermediate', 'connection', 'このコードでdata.titleがundefinedになった。原因は？', ['response.json()の結果をawaitしていない', 'Content-Typeを指定していない', 'GETで取得している', 'JSON.stringifyを使っていない'], 0, 'response.json()はPromiseを返すので、awaitして中身を受け取ります。Promiseにはtitleがないためundefinedになります。JSON.stringifyは送信時の変換で、受信には使いません。', { inertia: false, code: "const response = await fetch('/api/posts/7');\nconst data = response.json();\nconsole.log(data.title);" }),
   choice('bmi2-api-i-5', 'intermediate', 'connection', 'APIトークンで認証する投稿APIへ送るとき、トークンを入れる一般的なヘッダーは？', ['Authorization: `Bearer ${token}`', 'Accept: token', 'Content-Type: token', 'URLの末尾に#tokenを付ける'], 0, 'トークン認証ではAuthorizationヘッダーにBearerとトークンを入れます。Acceptは受け取る形式、Content-Typeは本文の形式を伝えるヘッダーです。#以降はサーバへ送られません。', { inertia: false }),
 ];
+
+// 誤答の選択肢の文字列と完全一致させる。選択肢を変えたらここも直す。
+export const battleQuestionsMoreIntermediateReasons: Record<string, Record<string, string>> = {
+  'bmi2-r-i-1': {
+    'ボタンのハンドラでevent.preventDefault()を呼ぶ': 'preventDefault()はフォーム送信など既定の動作を止めるだけです。クリックは親へ伝わるので、カードのonClickも動きます。',
+    'ボタンのハンドラでfalseを返す': '昔のHTMLのonclick属性の書き方との混同です。Reactのハンドラでfalseを返しても、伝播も既定動作も止まりません。',
+    'カードのkeyを削除する': 'keyは一覧の項目を見分けるための値で、イベントの伝わり方には関係しません。',
+  },
+  'bmi2-r-i-2': {
+    '[]': '空の依存配列では最初の表示時に1回だけ実行されます。pageが変わっても再取得しません。',
+    '[posts]': 'setPostsで新しい配列が入るたびにpostsが変わるため、取得が繰り返し起きます。再取得のきっかけにしたいのはpageです。',
+    '依存配列を省略する': '省略すると描画のたびに実行されます。取得のたびに再描画が起き、通信が止まらなくなります。',
+  },
+  'bmi2-r-i-3': {
+    'onClick={onDelete(post.id)}': 'これは描画の時点でonDeleteを実行し、その戻り値を渡してしまいます。押したときに呼ぶには関数で包みます。',
+    'onClick="onDelete(post.id)"': 'HTMLの属性の書き方との混同です。Reactでは文字列ではなく、関数を波括弧で渡します。',
+    'onClick={onDelete}(post.id)': 'JSXとして正しい書き方ではありません。引数を付けたいならアロー関数の中で呼びます。',
+  },
+  'bmi2-r-i-4': {
+    '何も表示しない': 'falseやnullなら何も表示されません。しかし&&は左側の0をそのまま返し、Reactは数値の0を描画します。',
+    'PostListが空のまま表示される': '左側の0は偽の値なので、&&の右側にあるPostListは評価されません。',
+    'falseという文字': '&&はfalseに変換せず、左側の値（0）を返します。それにReactはfalseを文字として描画しません。',
+  },
+  'bmi2-r-i-5': {
+    '"新題"': 'setterはすぐにはtitleを書き換えません。新しい値は次の描画で読めます。',
+    'undefined': 'titleは消えておらず、この描画の時点の値である"旧題"のままです。',
+    'エラーになる': 'setterの直後にstateを読んでもエラーにはならず、古い値が読めるだけです。',
+  },
+  'bmi2-v-i-1': {
+    '@keyup.prevent="search"': '.preventは既定動作を止める修飾子で、キーの種類を絞りません。どのキーでもsearchが呼ばれます。',
+    '@enter="search"': 'enterという名前のDOMイベントはありません。Enterキーで絞るには、keyupにキー修飾子.enterを付けます。',
+    '@keyup.stop="search"': '.stopはイベントの伝播を止める修飾子です。押されたキーは区別しません。',
+  },
+  'bmi2-v-i-2': {
+    'v-if': 'v-ifは条件が変わるたびに要素を作り直します。要素を残したまま頻繁に切り替える用途にはv-showが向きます。',
+    'v-for': 'v-forは配列を繰り返し描画するディレクティブです。表示と非表示の切り替えには使いません。',
+    'v-once': 'v-onceは一度だけ描画し、それ以降は更新しません。開閉の切り替えができなくなります。',
+  },
+  'bmi2-v-i-3': {
+    "emit('input', value)": 'Vue 2の慣習との混同です。Vue 3のコンポーネントのv-modelはupdate:modelValueを待っています。',
+    "emit('change', value)": 'changeは既定のv-modelが受け取るイベント名ではないので、親のtitleは更新されません。',
+    'props.modelValue = value': 'propsは読み取り専用の入力で、子が代入しても親の値は変わりません。親へはイベントで伝えます。',
+  },
+  'bmi2-v-i-4': {
+    'v-model.trim': '.trimは前後の空白を除くだけです。値は文字列のままになります。',
+    'v-model.lazy': '.lazyは同期のタイミングをchangeイベントに遅らせる修飾子です。数値には変換しません。',
+    'v-model.int': '.intという修飾子はVueにありません。数値への変換は.numberで行います。',
+  },
+  'bmi2-v-i-5': {
+    'watch(props.postId, load)': 'これはその時点の数値を渡すだけなので、Vueは変化を追えません。propsの一つのプロパティはゲッター関数で監視します。',
+    'computed(() => load(props.postId))': 'computedは値を導くためのものです。通信のような副作用を入れるとタイミングを制御できません。',
+    'onMounted(load)': 'onMountedはマウント時に1回だけ動きます。後でpostIdが変わっても読み込み直しません。',
+  },
+  'bmi2-l-i-1': {
+    'Post::oldest()->get()': 'oldest()はcreated_atの昇順、つまり古い順です。新しい順にはlatest()を使います。',
+    'Post::latest()->first()': 'first()は最新の1件しか返しません。一覧には全件を返すget()を使います。',
+    'Post::get()': 'orderByを付けないと並び順が保証されません。新しい順にするには順序の指定が必要です。',
+  },
+  'bmi2-l-i-2': {
+    "redirect()->route('posts.index')": 'posts.indexは一覧ページです。更新した投稿の詳細へは戻りません。',
+    "redirect()->route('posts.edit', $post)": 'posts.editは編集フォームです。保存後に詳細を見せる行き先ではありません。',
+    "redirect()->route('posts.update', $post)": 'posts.updateはPUT/PATCHで送る保存先です。リダイレクトはGETで開くので、表示するページになりません。',
+  },
+  'bmi2-l-i-3': {
+    "'body' => ['required', 'string']": 'requiredは空の入力を許しません。本文を空のまま送ると検証に失敗します。',
+    "'body' => ['string']": '空文字は既定でnullに変換されます。nullableがないとnullがstringの検証に失敗します。',
+    "'body' => ['nullable', 'integer']": '空は許せますが、integerは整数を求めます。文字列の本文は失敗します。',
+  },
+  'bmi2-l-i-4': {
+    'GET /posts だけ': 'onlyにはshowも入っているので、GET /posts/{post}も登録されます。',
+    'indexとshow以外のすべて': 'それはexcept()の動作です。only()は指定したアクションだけを登録します。',
+    'resourceの全ルート': 'only()を付けると、指定したindexとshow以外は登録されません。',
+  },
+  'bmi2-l-i-5': {
+    '1〜10件目': 'それは1ページ目です。paginateはpage=2を読み取り、2ページ目を返します。',
+    '2件目だけ': 'pageは何件目かではなくページ番号です。1ページ10件なので2ページ目は11〜20件目です。',
+    '全件': 'paginateは1ページ分だけ取得します。全件を返すのはget()などです。',
+  },
+  'bmi2-l-i-6': {
+    "['required', 'unique:categories,id']": 'uniqueは「まだ存在しない」ことを求める規則で、目的と逆です。実在するIDは失敗します。',
+    "['required', 'integer']": 'integerは形式だけを確かめます。categoriesテーブルに存在するかは見ません。',
+    "['required', 'in:categories']": 'inは列挙した文字列との一致を見る規則です。テーブルの中身は調べません。',
+  },
+  'bmi2-i-i-1': {
+    "form.post('/posts')": 'POST /postsは新しい投稿の作成です。投稿7は更新されず、別の投稿が増えます。',
+    "form.get('/posts/7')": 'GETは取得の要求で、保存処理には届きません。',
+    "form.delete('/posts/7')": 'DELETEは投稿7を削除する要求です。titleは更新されません。',
+  },
+  'bmi2-i-i-2': {
+    'form.processing': 'processingは送信中かどうかを表します。入力が変わったかは分かりません。',
+    'form.hasErrors': 'hasErrorsは検証エラーの有無です。未保存の変更があるかとは別の情報です。',
+    'form.wasSuccessful': 'wasSuccessfulは直前の送信が成功したかを表します。入力の変化は追いません。',
+  },
+  'bmi2-i-i-3': {
+    '<Link href="/posts/7">': 'methodを省略するとGETで移動するだけで、削除は要求されません。',
+    '<Link href="/posts/7" method="post">': 'methodがpostなのでPOST要求になります。resourceルートの削除はDELETEで受け付けます。',
+    '<a href="/posts/7" method="delete">': '普通のa要素はmethod属性を解釈しません。ブラウザはGETで移動するだけです。',
+  },
+  'bmi2-i-i-4': {
+    'form.processing': 'processingは送信中かどうかの真偽値です。何パーセント進んだかは分かりません。',
+    'form.recentlySuccessful': 'recentlySuccessfulは送信が成功した直後を示す値です。アップロードの進み具合ではありません。',
+    'form.errors.image': 'errors.imageは画像の検証エラー文です。進捗の情報は入りません。',
+  },
+  'bmi2-i-i-5': {
+    "form.reset('title')": 'reset()は入力値を初期値に戻します。エラーを消すためのものではなく、入力中のtitleまで失われます。',
+    'form.cancel()': 'cancel()は送信中の要求を中止します。表示中のエラーは消えません。',
+    'form.errors = {}': 'errorsを丸ごと置き換えるとtitle以外のエラーも消えます。消し方としてもclearErrorsを使うのが基本です。',
+  },
+  'bmi2-api-i-1': {
+    "Content-Type: 'text/html'": 'Content-Typeは送る本文の形式を伝えるヘッダーです。応答をJSONにしてほしいという指定にはなりません。',
+    "Cache-Control: 'no-cache'": 'キャッシュの扱いを指定するヘッダーです。検証エラーの返し方は変わりません。',
+    "Accept: 'text/html'": 'HTMLを求めると、Laravelは通常の画面向けにリダイレクトで応答します。',
+  },
+  'bmi2-api-i-2': {
+    'body.title': 'エラー文はerrorsの下に項目名ごとに入ります。最上位にtitleはありません。',
+    'body.message.title': 'messageは全体の要約の文字列です。項目ごとのエラーを持つオブジェクトではありません。',
+    'response.errors.title': 'responseはjson()で読む前の応答オブジェクトで、errorsを持ちません。読み取ったbodyを使います。',
+  },
+  'bmi2-api-i-3': {
+    'bodyにJSONで入れる': 'fetchはGETにbodyを付けるとエラーにします。GETの条件はURLのクエリで送ります。',
+    'Content-Typeヘッダーに入れる': 'Content-Typeは本文の形式を表すヘッダーです。検索語を入れる場所ではありません。',
+    "methodを'SEARCH'にする": '一般的なAPIで、検索のためにHTTPメソッドを変えることはありません。取得はGETのまま、条件はクエリで送ります。',
+  },
+  'bmi2-api-i-4': {
+    'Content-Typeを指定していない': 'Content-Typeは本文を送るときのヘッダーです。この取得でundefinedになる原因ではありません。',
+    'GETで取得している': '1件の取得にGETを使うのは正しい方法です。問題はjson()のPromiseをawaitしていないことです。',
+    'JSON.stringifyを使っていない': 'JSON.stringifyは送信時にオブジェクトを文字列へ変換するものです。受信したデータを読むときは使いません。',
+  },
+  'bmi2-api-i-5': {
+    'Accept: token': 'Acceptは受け取りたい応答の形式を伝えるヘッダーです。認証には使われません。',
+    'Content-Type: token': 'Content-Typeは本文の形式を伝えるヘッダーです。トークンを入れてもサーバーは認証に使いません。',
+    'URLの末尾に#tokenを付ける': '#以降のフラグメントはサーバーへ送られません。トークンがサーバーに届きません。',
+  },
+};

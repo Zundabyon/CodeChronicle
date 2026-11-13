@@ -179,7 +179,7 @@ export const battleQuestionsFill: Question[] = [
     "topic": "frontend",
     "kind": "fill-choice",
     "prompt": "コンポーネントが画面から外れたときにresizeの監視を解除し、不要な処理が残らないようにするために、①を埋めてください。",
-    "code": "<script setup lang=\"ts\">\nimport { ref, onMounted, onUnmounted } from 'vue';\nconst width = ref(window.innerWidth);\nfunction update() {\n  width.value = window.innerWidth;\n}\nonMounted(() => window.addEventListener('resize', update));\n【①】(() => window.removeEventListener('resize', update));\n</script>\n\n<template>\n  <p>画面幅：{{ width }}px</p>\n</template>",
+    "code": "<script setup lang=\"ts\">\nimport { ref, onBeforeMount, onMounted, onUpdated, onUnmounted } from 'vue';\nconst width = ref(window.innerWidth);\nfunction update() {\n  width.value = window.innerWidth;\n}\nonMounted(() => window.addEventListener('resize', update));\n【①】(() => window.removeEventListener('resize', update));\n</script>\n\n<template>\n  <p>画面幅：{{ width }}px</p>\n</template>",
     "filename": "WindowWidth.vue",
     "reveal": "onUnmounted",
     "explanation": "windowへの登録はコンポーネントが消えても残るため、onUnmountedで解除します。onMountedで解除すると登録直後に外れてしまい、onUpdatedは再描画のたびに解除するだけで外れたときの後始末になりません。onBeforeMountは表示前に1回呼ばれるもので、解除の時点として不適切です。",
@@ -234,11 +234,10 @@ export const battleQuestionsFill: Question[] = [
     "code": "<?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    public function up(): void\n    {\n        Schema::create('posts', function (Blueprint $table) {\n            $table->id();\n            $table->string('title');\n            // created_atとupdated_atの2列をまとめて追加する\n            $table->【①】();\n        });\n    }\n};",
     "filename": "database/migrations/2024_01_01_000000_create_posts_table.php",
     "reveal": "timestamps",
-    "explanation": "timestamps()はcreated_atとupdated_atをまとめて追加し、Eloquentは保存時にこの2列を自動で記録します。timestampsTz()はタイムゾーン付きで同じ2列を追加し、nullableTimestamps()はtimestamps()の別名なので、どちらも正解として扱います。softDeletes()はdeleted_atを追加するもので別の列です。",
+    "explanation": "timestamps()はcreated_atとupdated_atをまとめて追加し、Eloquentは保存時にこの2列を自動で記録します。timestampsTz()もタイムゾーン付きで同じ2列を追加するので正解として扱います。softDeletes()はdeleted_atを追加するもので別の列です。",
     "accepted": [
       "timestamps",
-      "timestampsTz",
-      "nullableTimestamps"
+      "timestampsTz"
     ]
   },
   {
@@ -511,3 +510,22 @@ export const battleQuestionsFill: Question[] = [
     ]
   }
 ];
+
+// 誤答の選択肢文字列と完全一致させる。選択肢を変えたら理由も更新する。
+export const battleQuestionsFillReasons: Record<string,Record<string,string>> = {
+  'bf2-react-beginner-1':{'||':'||は左が偽のときに右を返します。0件のときは左がtrueなので案内が出ず、1件以上のときに出てしまいます。','??':'??は左がnullかundefinedのときだけ右を使います。左は真偽値なので、案内は一度も表示されません。','===':'===は値の比較で、表示するかどうかの条件にはなりません。左がtrueのときだけ右を返す&&を使います。'},
+  'bf2-react-intermediate-1':{'filter':'filterは要素を残すか捨てるかを決めるだけで、中身を変えません。コールバックが常にオブジェクトを返すため、全件がそのまま残ります。','forEach':'forEachは各要素に処理をするだけでundefinedを返します。setTodosへ新しい配列を渡せません。','find':'findは条件に合う最初の1件だけを返します。配列全体を変換した新しい配列にはなりません。'},
+  'bf2-react-advanced-1':{'setInterval':'setIntervalはタイマーを新しく登録する関数です。後始末で呼ぶとタイマーが止まらず、さらに増えます。','removeEventListener':'removeEventListenerはaddEventListenerで登録したイベントの解除に使います。setIntervalのタイマーは止まりません。','cancelAnimationFrame':'cancelAnimationFrameはrequestAnimationFrameの予約を取り消す関数です。setIntervalのIDを渡しても時計の更新は止まりません。'},
+  'bf2-vue-beginner-1':{'number':'.numberは入力値を数値に変換する修飾子です。前後の空白を取り除くのは.trimです。','lazy':'.lazyは同期のタイミングをinputからchangeへ遅らせる修飾子です。空白は取り除かれません。','prevent':'.preventはイベントの既定動作を止める修飾子で、v-modelには使いません。空白の除去は.trimです。'},
+  'bf2-vue-intermediate-1':{'defineEmits':'defineEmitsは子から親へ送るイベントの宣言です。親から値を受け取るにはdefinePropsを使います。','ref':'refはコンポーネント内の状態を作る関数です。親から渡されたpostを受け取る仕組みではありません。','reactive':'reactiveはオブジェクトの状態をコンポーネント内で作る関数です。親から渡される値はdefinePropsで受け取ります。'},
+  'bf2-vue-advanced-1':{'onMounted':'onMountedは表示直後に呼ばれます。ここで解除すると、登録した直後に監視が外れてしまいます。','onUpdated':'onUpdatedは再描画のたびに呼ばれます。画面から外れたときの後始末にはならず、監視が早く外れます。','onBeforeMount':'onBeforeMountは表示の前に1回だけ呼ばれます。外れるときに監視を解除する時点としては不適切です。'},
+  'bf2-laravel-beginner-1':{'guarded':'$guardedは一括代入を禁止する列の指定です。titleとbodyを書くと、その2列が保存されなくなります。','hidden':'$hiddenはJSONや配列に変換するときに隠す列の指定です。一括代入の許可とは関係ありません。','casts':'$castsは列の値を日付や真偽値などへ変換する指定です。一括代入を許可する列は$fillableに書きます。'},
+  'bf2-laravel-intermediate-1':{'oldest':'oldest()はcreated_atの昇順で並べるため、古い順になります。新しい順はlatest()です。','groupBy':'groupByは同じ値の行をまとめる集約の指定で、並び替えではありません。','orderBy':'orderByは並べる列を引数で必ず指定します。引数なしでは使えず、指定しても既定は昇順です。'},
+  'bf2-laravel-advanced-1':{'allows':'allowsは許可されたかを真偽値で返すだけです。結果をifで使っていないので、許可されなくても更新が実行されます。','denies':'deniesは拒否されたかを真偽値で返すだけです。このコードでは処理が止まらず、403になりません。','check':'checkは真偽値で判定結果を返すだけです。例外を投げて403にするのはauthorizeです。'},
+  'bf2-inertia-beginner-1':{'props':'propsはサーバーから受け取るページの値です。useFormで作った入力値はformが持っています。','router':'routerはページ移動や再読み込みに使う機能です。入力値のtitleは持っていません。','page':'pageという変数はこのコードに定義されていません。入力欄と同期するのはuseFormが返したformです。'},
+  'bf2-inertia-intermediate-1':{'processing':'processingは送信中だけtrueになります。入力が初期値から変わったかどうかは表しません。','hasErrors':'hasErrorsは検証エラーがあるときにtrueになります。未保存の変更の有無とは別です。','wasSuccessful':'wasSuccessfulは直前の送信が成功したときにtrueになります。入力の変更があるかどうかは表しません。'},
+  'bf2-inertia-advanced-1':{'reset':'resetはフォームの値を初期値に戻すメソッドです。送信データを整形する関数は受け取りません。','defaults':'defaultsはフォームの初期値を設定し直すメソッドです。送信直前のデータ変換には使いません。','setError':'setErrorはエラーを手動で設定するメソッドです。送信するデータの整形はtransformで行います。'},
+  'bf2-api-beginner-1':{'return':'returnはこの位置では代入の式になりません。値を使う前に解析の完了を待つにはawaitを使います。','async':'asyncは関数の宣言に付けるもので、式の前には書けません。Promiseの完了を待つのはawaitです。','new':'newはクラスからオブジェクトを作る演算子です。response.json()のPromiseの完了は待てません。'},
+  'bf2-api-intermediate-1':{'Content-Type':'Content-Typeは送る本文の形式を伝えるヘッダーです。本文のないGETでは、受け取りたい形式は伝わりません。','Authorization':'Authorizationは認証情報を送るヘッダーです。応答の形式をJSONにしてほしいという指定にはなりません。','Cache-Control':'Cache-Controlはキャッシュの扱いを指定するヘッダーです。エラー応答の形式は変わりません。'},
+  'bf2-api-advanced-1':{'keepalive':'keepaliveはページを閉じた後も送信を続けるための指定です。要求を中止する合図にはなりません。','cache':'cacheはHTTPキャッシュの使い方の指定です。AbortControllerによる中止とは関係ありません。','mode':'modeはCORSの扱いを決める指定です。中止の合図はsignalで渡します。'},
+};
