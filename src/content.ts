@@ -5,6 +5,7 @@ import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
 import { beginnerQuestions } from './beginnerQuestions';
 import { battleQuestionsBeginnerBasics } from './battleQuestionsBeginnerBasics';
+import { battleQuestionsCore } from './battleQuestionsCore';
 import { battleQuestionsMoreIntermediate } from './battleQuestionsMoreIntermediate';
 import { battleQuestionsMoreBeginner } from './battleQuestionsMoreBeginner';
 import { dungeonTiles, dungeonEntry, dungeonEnemies } from './world/caveLayout';
@@ -95,6 +96,7 @@ export const questions: Question[] = [
   ...moreQuestions,
   ...fillQuestions,
   ...battleQuestionsBeginnerBasics,
+  ...battleQuestionsCore,
   ...battleQuestionsMoreIntermediate,
   ...battleQuestionsMoreBeginner,
 ];
