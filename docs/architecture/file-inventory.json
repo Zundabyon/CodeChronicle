@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / 94af1bf + current working tree",
+  "snapshot": "2026-11-14 / ebb4193 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -1481,7 +1481,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-fumi-tears.png",
-      "bytes": 450513,
+      "bytes": 450440,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1489,7 +1489,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-fumi.png",
-      "bytes": 449279,
+      "bytes": 449206,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1497,7 +1497,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-graphius.png",
-      "bytes": 466175,
+      "bytes": 436040,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1505,7 +1505,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-keshi-hesitant.png",
-      "bytes": 457218,
+      "bytes": 457145,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1521,7 +1521,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-nozomi.png",
-      "bytes": 470520,
+      "bytes": 470447,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1529,7 +1529,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-nurie.png",
-      "bytes": 459230,
+      "bytes": 459157,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1537,7 +1537,7 @@
     },
     {
       "path": "public/portraits/chapter-two/face-tsukune.png",
-      "bytes": 473513,
+      "bytes": 473440,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1561,7 +1561,7 @@
     },
     {
       "path": "public/portraits/chapter-two/standing-graphius.png",
-      "bytes": 341962,
+      "bytes": 337583,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1670,7 +1670,7 @@
     },
     {
       "path": "public/prologue/chapter-two/attack-sky.png",
-      "bytes": 904781,
+      "bytes": 924241,
       "suffix": ".png",
       "group": "物語・進行",
       "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -2336,7 +2336,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 85744,
+      "bytes": 85834,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3371,7 +3371,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 19805,
+      "bytes": 20081,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",

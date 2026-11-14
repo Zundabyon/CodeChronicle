@@ -43,6 +43,9 @@ const villageScars:Record<number,[string,number,number][]>={
 };
 // Flames on the burning roofs (house/rest-house/traveler-house footprints), drawn above the buildings.
 const roofFires:Record<number,[number,number][]>={1:[[3,3],[5,4],[10,3],[12,4],[17,3],[19,4]],2:[[4,3],[11,3]]};
+// Fires, fallen villagers, rubble, carts and lanterns are solid; flat pages and paint can be walked over.
+export const villageScarBlocks=(act:number,p:{x:number;y:number})=>
+  (villageScars[act]??[]).some(([art,x,y])=>x===p.x&&y===p.y&&!/torn-pages|paint-splash/.test(art));
 const hideMissing=(event:{currentTarget:HTMLImageElement})=>{event.currentTarget.style.visibility='hidden';};
 type Props = {
   save: WorldSave;

@@ -41,7 +41,7 @@ import { chapterTwoAttack } from './quests/chapterScenes';
 import { chapterTwoAct } from './quests/definitions';
 import './storyStage.css';
 import { TitleScreen } from './TitleScreen';
-import { WorldScene } from './WorldScene';
+import { WorldScene, villageScarBlocks } from './WorldScene';
 import { canLeaveTown, storyNpcs, wakingScene, breakfastScene, mayorScene, knightScene, rescueScene, type StoryStage, type StoryLine } from './story';
 import { ControlsGuide } from './ControlsGuide';
 import { DialogueChoices } from './DialogueChoices';
@@ -89,7 +89,8 @@ const loadSave = (storageKey=STORAGE):{save:Save|null;notice:string}=>{
 const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point, quests:QuestStates={}) => {
   const action=eventAt(maps[area],p,'enter')?.action;
-  return canWalkOnMap(maps[area],p) && (action?.kind!=='memory-door'||isMemoryDoorOpen(quests,action.npcId));
+  return canWalkOnMap(maps[area],p) && (action?.kind!=='memory-door'||isMemoryDoorOpen(quests,action.npcId))
+    && !(area==='village'&&villageScarBlocks(chapterTwoAct(quests),p));
 };
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
 function pathfind(area: Area, start: Point, goal: Point, defeated: string[], positions: EnemyPositions, story:StoryStage='legacy', quests:QuestStates={}): Point[] {
