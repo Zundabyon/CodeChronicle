@@ -4,7 +4,7 @@ import type { QuestStates } from './quests/types';
 
 export const storyStages=['breakfast','mayor','ruins','knight','knowledge','homecoming','rescued','legacy'] as const;
 export type StoryStage=typeof storyStages[number];
-// art: 0-6 = public/prologue/chapter-two/attack-{sky,fire,rangers,final,villagers,forgotten,aftermath}.png; standing: a key of the chapter two standing atlas (defaults to the face).
+// art: 0-6 = public/prologue/chapter-two/attack-{sky,fire,rangers,final,villagers,forgotten,aftermath}.png; standing: a chapter two standing key or 'bs-<id>-<pose>' for backstage (defaults to the face).
 export type StoryLine={speaker:string;face:string;text:string;action?:'knight-leaves';art?:number;standing?:string;fire?:boolean;shake?:boolean};
 const line=(speaker:string,face:string,text:string):StoryLine=>({speaker,face,text});
 const hero=(text:string)=>line('{name}','🗡️',text);

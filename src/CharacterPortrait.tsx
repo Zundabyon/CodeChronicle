@@ -14,6 +14,7 @@ const chapterTwoFaces=new Set(['graphius','nozomi','tsukune','nurie','keshi','ke
 export function CharacterPortrait({face,standing=false}:{face:string;standing?:boolean}) {
   if(face==='knight')return <MysteriousKnight className="knight-portrait"/>;
   if(face==='corrupted-hanna')return <span className="corrupted-portrait"><CharacterPortrait face="👩"/></span>;
+  if(face.startsWith('bs-'))return <span className="character-portrait single-image" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/backstage/face-${face.slice(3)}.png)`}} role="img" aria-label={`${face}の肖像`}/>;
   if(chapterTwoFaces.has(face))return <span className="character-portrait single-image" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two/face-${face}.png)`}} role="img" aria-label={`${face}の肖像`}/>;
   const name=faceSprite(face);
   const location=locations[name];
@@ -30,6 +31,9 @@ export function CharacterPortrait({face,standing=false}:{face:string;standing?:b
 // One image per pose: public/portraits/chapter-two/standing-<name>.png
 const chapterTwoStanding:Record<string,string>={graphius:'graphius',nozomi:'nozomi',tsukune:'tsukune',nurie:'nurie',keshi:'keshi',fumi:'fumi','fumi-tears':'fumi','graphius-battle':'graphius-battle','keshi-hesitant':'keshi-hesitant'};
 export function StandingArt({name}:{name:string}) {
+  // 裏会議: 'bs-<id>' or 'bs-<id>-<pose>' -> public/portraits/backstage/standing-<id>-<pose>.png
+  const backstage=/^bs-([a-z]+)(?:-(normal|propose|down|surprised))?$/.exec(name);
+  if(backstage)return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/backstage/standing-${backstage[1]}-${backstage[2]??'normal'}.png)`}}/>;
   const file=chapterTwoStanding[name];
   if(!file)return null;
   return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two/standing-${file}.png)`}}/>;

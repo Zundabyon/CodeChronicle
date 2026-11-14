@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / c929102 + current working tree",
+  "snapshot": "2026-11-14 / a623470 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 429,
+  "count": 465,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -18,12 +18,12 @@
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 27,
-    "人物・生物": 42,
+    "人物・生物": 77,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 78,
+    "制作・運用": 79,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -53,7 +53,7 @@
     "characters": {
       "label": "人物・生物",
       "guide": "docs/production/characters.md",
-      "count": 83
+      "count": 118
     },
     "motion": {
       "label": "動き・演出",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 108
+      "count": 109
     }
   },
   "files": [
@@ -259,6 +259,14 @@
       "group": "説明資料",
       "role": "素材4分類、64pxの論理基準、元画像の扱い、機械検査の範囲を記述する。過去監査の件数は現時点の数ではない。",
       "genre": "presentation"
+    },
+    {
+      "path": "docs/art/backstage-cast-v1.md",
+      "bytes": 4949,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "docs/art/chapter-two-assets-v1-preview.png",
@@ -1502,6 +1510,286 @@
         "src/world/catalog.ts"
       ],
       "genre": "world"
+    },
+    {
+      "path": "public/portraits/backstage/face-ai.png",
+      "bytes": 394797,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/face-maou.png",
+      "bytes": 142954,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/face-metappi.png",
+      "bytes": 140984,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/face-negative.png",
+      "bytes": 408787,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/face-neutral.png",
+      "bytes": 397366,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/face-positive.png",
+      "bytes": 396646,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/face-user.png",
+      "bytes": 386820,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-ai-down.png",
+      "bytes": 300932,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-ai-normal.png",
+      "bytes": 321167,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-ai-propose.png",
+      "bytes": 321758,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-ai-surprised.png",
+      "bytes": 314758,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-maou-down.png",
+      "bytes": 172615,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-maou-normal.png",
+      "bytes": 169032,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-maou-propose.png",
+      "bytes": 167819,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-maou-surprised.png",
+      "bytes": 169468,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-metappi-down.png",
+      "bytes": 174827,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-metappi-normal.png",
+      "bytes": 176945,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-metappi-propose.png",
+      "bytes": 178512,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-metappi-surprised.png",
+      "bytes": 180532,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-negative-down.png",
+      "bytes": 290085,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-negative-normal.png",
+      "bytes": 311589,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-negative-propose.png",
+      "bytes": 313265,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-negative-surprised.png",
+      "bytes": 307443,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-neutral-down.png",
+      "bytes": 301302,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-neutral-normal.png",
+      "bytes": 316999,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-neutral-propose.png",
+      "bytes": 323006,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-neutral-surprised.png",
+      "bytes": 326114,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-positive-down.png",
+      "bytes": 269134,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-positive-normal.png",
+      "bytes": 292385,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-positive-propose.png",
+      "bytes": 290566,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-positive-surprised.png",
+      "bytes": 285022,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-user-down.png",
+      "bytes": 279300,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-user-normal.png",
+      "bytes": 291869,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-user-propose.png",
+      "bytes": 292294,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/backstage/standing-user-surprised.png",
+      "bytes": 293282,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
     },
     {
       "path": "public/portraits/chapter-two/face-fumi-tears.png",
@@ -2818,7 +3106,7 @@
     },
     {
       "path": "src/CharacterPortrait.tsx",
-      "bytes": 2323,
+      "bytes": 2983,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
@@ -4244,7 +4532,7 @@
     },
     {
       "path": "src/quests/backstageMeetings.ts",
-      "bytes": 9128,
+      "bytes": 9559,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4623,7 +4911,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 10059,
+      "bytes": 10080,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
@@ -5163,7 +5451,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 4214,
+      "bytes": 4550,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
