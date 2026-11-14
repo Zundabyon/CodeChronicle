@@ -8,17 +8,13 @@ const locations: Record<string, [number, number]> = {
   priest: [0, 1], wanderer: [1, 1], father: [2, 1], mother: [3, 1],
 };
 
-// public/portraits/chapter-two-faces-v1.png uses the same 4x2 grid as faces.png.
-const chapterTwoFaces: Record<string, [number, number]> = {
-  graphius: [0, 0], nozomi: [1, 0], tsukune: [2, 0], nurie: [3, 0],
-  keshi: [0, 1], 'keshi-hesitant': [1, 1], fumi: [2, 1], 'fumi-tears': [3, 1],
-};
+// One image per chapter two character: public/portraits/chapter-two/face-<name>.png
+const chapterTwoFaces=new Set(['graphius','nozomi','tsukune','nurie','keshi','keshi-hesitant','fumi','fumi-tears']);
 
 export function CharacterPortrait({face,standing=false}:{face:string;standing?:boolean}) {
   if(face==='knight')return <MysteriousKnight className="knight-portrait"/>;
   if(face==='corrupted-hanna')return <span className="corrupted-portrait"><CharacterPortrait face="👩"/></span>;
-  const chapterTwo=chapterTwoFaces[face];
-  if(chapterTwo)return <span className="character-portrait" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two-faces-v1.png)`,backgroundPosition:`${chapterTwo[0]*100/3}% ${chapterTwo[1]*100}%`}} role="img" aria-label={`${face}の肖像`}/>;
+  if(chapterTwoFaces.has(face))return <span className="character-portrait single-image" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two/face-${face}.png)`}} role="img" aria-label={`${face}の肖像`}/>;
   const name=faceSprite(face);
   const location=locations[name];
   if (!location) return <span className="narrator-portrait"><PixelSprite name={name}/></span>;
@@ -31,13 +27,10 @@ export function CharacterPortrait({face,standing=false}:{face:string;standing?:b
   return <span className="character-portrait" style={style} role="img" aria-label={`${name}の肖像`}/>;
 }
 
-// public/portraits/chapter-two-standing-v1.png: 4x2 standing atlas. A missing image leaves the frame empty.
-const chapterTwoStanding: Record<string, [number, number]> = {
-  graphius: [0, 0], nozomi: [1, 0], tsukune: [2, 0], nurie: [3, 0],
-  keshi: [0, 1], fumi: [1, 1], 'fumi-tears': [1, 1], 'graphius-battle': [2, 1], 'keshi-hesitant': [3, 1],
-};
+// One image per pose: public/portraits/chapter-two/standing-<name>.png
+const chapterTwoStanding:Record<string,string>={graphius:'graphius',nozomi:'nozomi',tsukune:'tsukune',nurie:'nurie',keshi:'keshi',fumi:'fumi','fumi-tears':'fumi','graphius-battle':'graphius-battle','keshi-hesitant':'keshi-hesitant'};
 export function StandingArt({name}:{name:string}) {
-  const frame=chapterTwoStanding[name];
-  if(!frame)return null;
-  return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two-standing-v1.png)`,backgroundPosition:`${frame[0]*100/3}% ${frame[1]*100}%`}}/>;
+  const file=chapterTwoStanding[name];
+  if(!file)return null;
+  return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two/standing-${file}.png)`}}/>;
 }

@@ -105,3 +105,5 @@
 ## 範囲外
 
 攻撃の連続コマ、歩行の連続コマ、表情差分の追加、背景画像、村や地形タイルの描き直し。必要になったら別の依頼にする。
+
+> 2026-11-14 更新：ユーザー指示により、まとめ画像（`chapter-two-faces-v1.png`・`chapter-two-standing-v1.png`・`chapter-two-attack.png`）は1枚ずつに分割した。現在の素材は `public/portraits/chapter-two/face-*.png`・`standing-*.png` と `public/prologue/chapter-two/attack-{sky,fire,rangers,final}.png`。新しい素材も1キャラ・1ポーズ・1場面ごとに1ファイルで作る。

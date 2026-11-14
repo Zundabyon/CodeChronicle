@@ -2,7 +2,7 @@ import type { Npc } from './content';
 
 export const storyStages=['breakfast','mayor','ruins','knight','knowledge','homecoming','rescued','legacy'] as const;
 export type StoryStage=typeof storyStages[number];
-// art: frame 0-3 of public/prologue/chapter-two-attack.png; standing: a key of the chapter two standing atlas (defaults to the face).
+// art: 0-3 = public/prologue/chapter-two/attack-{sky,fire,rangers,final}.png; standing: a key of the chapter two standing atlas (defaults to the face).
 export type StoryLine={speaker:string;face:string;text:string;action?:'knight-leaves';art?:number;standing?:string;fire?:boolean;shake?:boolean};
 const line=(speaker:string,face:string,text:string):StoryLine=>({speaker,face,text});
 const hero=(text:string)=>line('{name}','🗡️',text);

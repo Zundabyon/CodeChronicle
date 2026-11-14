@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-13 / 372c601 + current working tree",
+  "snapshot": "2026-11-14 / 321486c + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 394,
+  "count": 411,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -18,7 +18,7 @@
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 20,
-    "人物・生物": 25,
+    "人物・生物": 39,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
@@ -35,7 +35,7 @@
     "教材・学習": 18,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 7,
+    "物語・進行": 10,
     "状態・保存": 4,
     "画像・素材": 95,
     "画面・表現・操作": 15,
@@ -53,7 +53,7 @@
     "characters": {
       "label": "人物・生物",
       "guide": "docs/production/characters.md",
-      "count": 66
+      "count": 80
     },
     "motion": {
       "label": "動き・演出",
@@ -63,7 +63,7 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 22
+      "count": 25
     },
     "learning": {
       "label": "教材・学習",
@@ -270,7 +270,7 @@
     },
     {
       "path": "docs/art/chapter-two-assets-v1.md",
-      "bytes": 7300,
+      "bytes": 7728,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -286,7 +286,7 @@
     },
     {
       "path": "docs/art/chapter-two-event-art-v1.md",
-      "bytes": 4950,
+      "bytes": 5378,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -430,7 +430,7 @@
     },
     {
       "path": "docs/production/chapter-two-art-request.md",
-      "bytes": 8723,
+      "bytes": 9151,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -1424,16 +1424,128 @@
       "genre": "world"
     },
     {
-      "path": "public/portraits/chapter-two-faces-v1.png",
-      "bytes": 4130544,
+      "path": "public/portraits/chapter-two/face-fumi-tears.png",
+      "bytes": 450513,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "characters"
     },
     {
-      "path": "public/portraits/chapter-two-standing-v1.png",
-      "bytes": 2602876,
+      "path": "public/portraits/chapter-two/face-fumi.png",
+      "bytes": 449279,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/face-graphius.png",
+      "bytes": 466175,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/face-keshi-hesitant.png",
+      "bytes": 457218,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/face-keshi.png",
+      "bytes": 456301,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/face-nozomi.png",
+      "bytes": 470520,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/face-nurie.png",
+      "bytes": 459230,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/face-tsukune.png",
+      "bytes": 473513,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-fumi.png",
+      "bytes": 318034,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-graphius-battle.png",
+      "bytes": 357623,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-graphius.png",
+      "bytes": 341962,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-keshi-hesitant.png",
+      "bytes": 321689,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-keshi.png",
+      "bytes": 318330,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-nozomi.png",
+      "bytes": 329167,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-nurie.png",
+      "bytes": 332825,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-two/standing-tsukune.png",
+      "bytes": 335091,
       "suffix": ".png",
       "group": "人物・生物",
       "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -1477,8 +1589,32 @@
       "genre": "narrative"
     },
     {
-      "path": "public/prologue/chapter-two-attack.png",
-      "bytes": 3877380,
+      "path": "public/prologue/chapter-two/attack-final.png",
+      "bytes": 917475,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
+      "path": "public/prologue/chapter-two/attack-fire.png",
+      "bytes": 905480,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
+      "path": "public/prologue/chapter-two/attack-rangers.png",
+      "bytes": 933532,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
+      "path": "public/prologue/chapter-two/attack-sky.png",
+      "bytes": 904781,
       "suffix": ".png",
       "group": "物語・進行",
       "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -2120,7 +2256,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 85536,
+      "bytes": 85512,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -2554,7 +2690,7 @@
     },
     {
       "path": "src/CharacterPortrait.tsx",
-      "bytes": 2587,
+      "bytes": 2323,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
@@ -4351,7 +4487,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 9844,
+      "bytes": 9862,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
@@ -4368,7 +4504,7 @@
     },
     {
       "path": "src/storyStage.css",
-      "bytes": 2718,
+      "bytes": 2847,
       "suffix": ".css",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4907,7 +5043,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 7154,
+      "bytes": 7172,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

@@ -41,11 +41,11 @@ async function winBattle(page,count){
 test('the attack opens act one with the new faces, and the Read battle leads into act two',{timeout:60000},async t=>{
   const page=await open(t,chapterSave('visit-village'));await page.locator('.dialogue-box').waitFor();
   assert.ok(await page.locator('.story-stage.is-fire .story-art').count(),'arriving in the village starts the attack in flames over the event art');
-  assert.match(await page.locator('.story-art').getAttribute('style'),/chapter-two-attack\.png/);
+  assert.match(await page.locator('.story-art').getAttribute('style'),/chapter-two\/attack-sky\.png/);
   await page.locator('.dialogue-text > span').click();assert.ok(await page.locator('.story-stage.is-shake').count(),'Graphius appears with a shake');
   await page.locator('.dialogue-text > span').click();
-  assert.match(await page.locator('.dialogue-portrait .character-portrait').getAttribute('style'),/chapter-two-faces-v1\.png/,'Graphius uses the chapter two portrait atlas');
-  assert.match(await page.locator('.story-standing').getAttribute('style'),/chapter-two-standing-v1\.png/,'Graphius stands beside the dialogue');
+  assert.match(await page.locator('.dialogue-portrait .character-portrait').getAttribute('style'),/chapter-two\/face-graphius\.png/,'Graphius uses the chapter two portrait atlas');
+  assert.match(await page.locator('.story-standing').getAttribute('style'),/chapter-two\/standing-graphius\.png/,'Graphius stands beside the dialogue');
   await advance(page);assert.equal((await saved(page)).quests['village-ledger'].step,'find-copy');
 
   await page.evaluate(key=>{const s=JSON.parse(localStorage.getItem(key));s.quests['village-ledger']={step:'battle-r'};localStorage.setItem(key,JSON.stringify(s));},key);

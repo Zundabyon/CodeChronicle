@@ -55,3 +55,5 @@
 依頼の指定パスに17枚が揃っている。既存画像と今回の参照原画は上書きしていない。新しい原画・画像の存在だけで人物の出現や会話・戦闘対応が完成したとは扱わない。
 
 次はClaudeが `src/` の画像参照・会話セル・人物のマップと戦闘画像を登録し、実表示サイズで輪郭・密度・足元・余白・状態切替を確認する。`npm run check:art` と必要なビルド・表示確認を行い、採否をこの記録へ追記する。個別のcrop/anchor等は実行コードへ置く。追加の攻撃・歩行コマ、台本、問題本文は今回制作していない。
+
+> 2026-11-14 更新：ユーザー指示により、まとめ画像（`chapter-two-faces-v1.png`・`chapter-two-standing-v1.png`・`chapter-two-attack.png`）は1枚ずつに分割した。現在の素材は `public/portraits/chapter-two/face-*.png`・`standing-*.png` と `public/prologue/chapter-two/attack-{sky,fire,rangers,final}.png`。新しい素材も1キャラ・1ポーズ・1場面ごとに1ファイルで作る。

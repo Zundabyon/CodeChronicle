@@ -45,3 +45,5 @@
 - `src/` 登録、PC/スマホ実画面、crop、ゲーム内での会話表示、`npm run check:art`、buildはClaude担当のため未実施。
 
 採用理由は、指定寸法・配置・人物同定・場面内容・非暴力条件を満たし、既存の序章イベント絵と立ち絵アトラスに画風と密度が揃っているため。最終採用と表示上の調整は組み込み後に判断する。
+
+> 2026-11-14 更新：ユーザー指示により、まとめ画像（`chapter-two-faces-v1.png`・`chapter-two-standing-v1.png`・`chapter-two-attack.png`）は1枚ずつに分割した。現在の素材は `public/portraits/chapter-two/face-*.png`・`standing-*.png` と `public/prologue/chapter-two/attack-{sky,fire,rangers,final}.png`。新しい素材も1キャラ・1ポーズ・1場面ごとに1ファイルで作る。
