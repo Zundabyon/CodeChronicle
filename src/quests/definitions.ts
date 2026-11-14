@@ -1,5 +1,5 @@
 import { chapterTwoLessons } from './chapterTwoLessons';
-import { chapterTwoOpening, chapterTwoAttack, chapterTwoFound, chapterTwoEnding, fumiTalk } from './chapterScenes';
+import { chapterTwoOpening, chapterTwoAttack, chapterTwoFound, chapterTwoEnding, fumiTalk, villagerTalk } from './chapterScenes';
 import type { QuestDefinition, QuestStates } from './types';
 export const questDefinitions:QuestDefinition[]=[
   {
@@ -27,13 +27,17 @@ export const questDefinitions:QuestDefinition[]=[
 ];
 export const questDefinition=(id:string)=>questDefinitions.find(def=>def.id===id);
 const actMarks=['visit-village','battle-r','battle-c','battle-u','battle-d','battle-graphius'];
-/** Fumi's line follows how many act boundaries the chapter has passed. */
-export function fumiLine(quests:QuestStates):string {
+/** Chapter phase: 0 before the attack, then one per act boundary passed, fumiTalk.length-1 once complete. */
+function chapterTwoPhase(quests:QuestStates):number {
   const def=questDefinition('village-ledger')!,step=quests[def.id]?.step;
-  if(step==='complete')return fumiTalk.at(-1)!;
+  if(step==='complete')return fumiTalk.length-1;
   const index=def.steps.findIndex(s=>s.id===step);
-  return fumiTalk[index<0?0:actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length];
+  return index<0?0:actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
 }
+/** Fumi's line follows how many act boundaries the chapter has passed. */
+export const fumiLine=(quests:QuestStates)=>fumiTalk[chapterTwoPhase(quests)];
+/** Village folk's lines for the current chapter phase, or undefined for their peacetime lines. */
+export const villagerLines=(npcId:string,quests:QuestStates):string[]|undefined=>villagerTalk[npcId]?.[chapterTwoPhase(quests)-1];
 /** Act count passed in the village-ledger chapter, or -1 when it is not running. */
 export function chapterTwoAct(quests:QuestStates):number {
   const def=questDefinition('village-ledger')!,step=quests[def.id]?.step;

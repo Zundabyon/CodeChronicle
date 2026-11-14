@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / ebb4193 + current working tree",
+  "snapshot": "2026-11-14 / 8005bd1 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 421,
+  "count": 425,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 75,
+    "制作・運用": 76,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -35,7 +35,7 @@
     "教材・学習": 18,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 10,
+    "物語・進行": 13,
     "状態・保存": 4,
     "画像・素材": 95,
     "画面・表現・操作": 15,
@@ -63,7 +63,7 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 25
+      "count": 28
     },
     "learning": {
       "label": "教材・学習",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 105
+      "count": 106
     }
   },
   "files": [
@@ -295,6 +295,14 @@
     {
       "path": "docs/art/chapter-two-ruins-v1.md",
       "bytes": 6121,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/chapter-two-villagers-v1.md",
+      "bytes": 3945,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -1645,6 +1653,14 @@
       "genre": "narrative"
     },
     {
+      "path": "public/prologue/chapter-two/attack-aftermath.png",
+      "bytes": 957508,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
       "path": "public/prologue/chapter-two/attack-final.png",
       "bytes": 917475,
       "suffix": ".png",
@@ -1661,6 +1677,14 @@
       "genre": "narrative"
     },
     {
+      "path": "public/prologue/chapter-two/attack-forgotten.png",
+      "bytes": 913216,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
       "path": "public/prologue/chapter-two/attack-rangers.png",
       "bytes": 933532,
       "suffix": ".png",
@@ -1671,6 +1695,14 @@
     {
       "path": "public/prologue/chapter-two/attack-sky.png",
       "bytes": 924241,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
+      "path": "public/prologue/chapter-two/attack-villagers.png",
+      "bytes": 1002211,
       "suffix": ".png",
       "group": "物語・進行",
       "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -2336,7 +2368,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 85834,
+      "bytes": 86093,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4196,7 +4228,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 14753,
+      "bytes": 21090,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -4221,7 +4253,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 5340,
+      "bytes": 5764,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -4567,7 +4599,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 10029,
+      "bytes": 10059,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",

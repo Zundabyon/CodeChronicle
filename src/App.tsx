@@ -5,7 +5,7 @@ import { QuestStudyPanel } from './quests/QuestStudyPanel';
 import type { QuestStudy } from './quests/studyTypes';
 import { memoryBattleQuestion } from './quests/memoryBattleQuestion';
 import { rangerBattles } from './quests/rangerBattles';
-import { fumiLine } from './quests/definitions';
+import { fumiLine, villagerLines } from './quests/definitions';
 import './questLearning.css';
 import './chapterStart.css';
 import { LevelUpCue, type LevelUpEvent } from './LevelUpCue';
@@ -269,6 +269,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     // A village foe in its battle step opens the same pre-battle scene as talking to Ol.
     if(npc.id.startsWith('foe-')){talkToQuestNpc({...npc,id:'mountainGuide'});return;}
     if(talkToQuestNpc(npc,npcChoices[npc.id]))return;
+    const chapterLines=villagerLines(npc.id,stateRef.current.quests)?.map(line=>line.replaceAll('{name}',stateRef.current.name));
+    if(chapterLines)npc={...npc,lines:chapterLines,alternateLines:undefined};
     if(npc.id==='fumi'){startDialogue(npc.name,npc.face,[fumiLine(stateRef.current.quests)]);return;}
     if(npc.id==='mountainHealer') {
       startDialogue(npc.name,npc.face,[...npc.lines,'温かな灯りのそばでひと休みした。HPとMPが全回復した。'],undefined,()=>{
@@ -756,7 +758,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card">{levelUp&&<LevelUpCue event={levelUp}/>}<span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'守護者の目に静かな光が戻った。「私は知識を守る者。魔王の声に、務めさえ忘れていた……」。開いた扉の先から、失われた知識があふれ出す。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'正気に戻った守護者が訓練用の問いを示した。見極めで偽りを見破り、答えよう。この力を、ハンナのもとへ持ち帰るために。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,selectQuestion(questions,stateRef.current,Math.random,true));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><img className="clear-symbol" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>{save.story==='rescued'?'今度は、助けられた。':'最初の扉は、開かれた。'}</h1><p>{save.story==='rescued'?'ハンナの魔物化を止め、あなたのことを思い出してもらえた。世界の知識を救う旅と、騎士の証言を手がかりに両親の行方を確かめる旅が、ここから始まる。':'失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。'}</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><QuestStartButtons save={save} onStart={startQuest}/><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&phase==='world'&&typeof currentLine!=='string'&&(currentLine?.art!==undefined||currentLine?.fire||(currentLine?.standing??currentLine?.face))&&<div key={dialogue.index} className={`story-stage${currentLine.fire?' is-fire':''}${currentLine.shake?' is-shake':''}`} aria-hidden="true">
-      {currentLine.art!==undefined&&<div className="story-art" style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/chapter-two/attack-${['sky','fire','rangers','final'][currentLine.art]}.png)`}}/>}
+      {currentLine.art!==undefined&&<div className="story-art" style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/chapter-two/attack-${['sky','fire','rangers','final','villagers','forgotten','aftermath'][currentLine.art]}.png)`}}/>}
       {currentLine.fire&&<div className="story-fire"><i/><i/><i/><i/><i/><i/></div>}
       <StandingArt name={currentLine.standing??currentLine.face}/>
     </div>}
