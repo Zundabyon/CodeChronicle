@@ -52,6 +52,9 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   await page.reload();await page.getByRole('button',{name:/続きから/}).click();
   assert.ok(await page.locator('.world-viewport.is-burning').count(),'the village still smoulders until Nozomi is beaten');
   assert.equal(await page.locator('.village-scars img[src*="paint-splash"]').count(),0,'no paint before the Update act');
+  assert.ok(await page.locator('.village-ruin').count()>=1,'the village houses are shown as ruins');
+  assert.equal(await page.locator('.village-fire').count(),20,'fires burn around the ruins');
+  assert.equal(await page.locator('.village-scars img[src*="fallen-villager"]').count(),7,'fallen villagers lie in the village');
   await talkToOrl(page);await page.locator('.dialogue-text > span').click();assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/nozomi/,'the ranger stands in before the battle');await advance(page);
   const first=await current(page);assert.equal(first.id,'ranger-r-1');
   await page.locator('.options button').nth((first.answer+1)%4).click();
@@ -65,6 +68,8 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   await page.locator('.dialogue-box').waitFor();await advance(page);
   const after=await saved(page);assert.equal(after.quests['village-ledger'].step,'create-family');
   assert.equal(await page.locator('.world-viewport.is-burning').count(),0,'the flames die down after the first act');
+  assert.equal(await page.locator('.village-fire').count(),4,'only a few fires remain in act two');
+  assert.equal(await page.locator('.village-scars img[src*="fallen-villager"]').count(),2,'half the villagers have recovered');
 });
 
 test('losing a ranger battle restarts it from the first question without a game over',{timeout:60000},async t=>{

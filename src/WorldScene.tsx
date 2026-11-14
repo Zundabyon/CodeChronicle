@@ -28,12 +28,22 @@ type WorldSave = {
   track: Track; difficulty: Difficulty; bossDefeated: boolean; gold:number; equipment:Equipment; openedChests:string[];
 };
 
-// Act 1: the attack's aftermath, act 2: scattered pages remain, act 3: Nurie's paint. Tiles avoid NPCs and paths' centre.
+// Village damage by act: 1 burning ruins, 2 smouldering, 3 ash and Nurie's paint, 4 rebuilt with one rubble pile, 5+ clean.
+// Entries are [art, x, y] in tiles; all sit on grass off roads, doors, NPCs and props. 'fire' alternates fire-a/fire-b.
+const fallen=(c:string,x:number,y:number):[string,number,number]=>[`sprites/fallen-villager-${c}`,x,y];
+const ash:[string,number,number][]=[['maps/rubble',3,9],['maps/rubble',19,10],['maps/rubble',7,13],['maps/rubble',16,16],['maps/burnt-cart',20,12]];
 const villageScars:Record<number,[string,number,number][]>={
-  1:[['lantern-unlit',5,9],['lantern-unlit',17,9],['lantern-unlit',9,10],['torn-pages',6,12],['torn-pages',15,10],['torn-pages',10,14],['torn-pages',13,16]],
-  2:[['torn-pages',6,12],['torn-pages',13,16]],
-  3:[['paint-splash',9,12],['paint-splash',13,14],['paint-splash',5,8],['paint-splash',16,9]],
+  1:[...ash,['maps/rubble',1,13],['maps/rubble',11,11],['maps/rubble',20,16],['maps/burnt-cart',3,16],
+    ['fire',7,6],['fire',15,6],['fire',1,5],['fire',21,5],['fire',6,9],['fire',16,10],['fire',9,16],['fire',14,17],['fire',1,8],['fire',21,9],['fire',4,14],['fire',18,14],['fire',11,12],['fire',20,18],
+    fallen('a',2,11),fallen('b',7,10),fallen('c',17,12),fallen('a',13,18),fallen('b',10,13),fallen('c',4,17),fallen('a',19,15),
+    ['maps/lantern-unlit',5,9],['maps/lantern-unlit',17,9],['maps/lantern-unlit',9,10],['maps/torn-pages',6,12],['maps/torn-pages',15,10],['maps/torn-pages',10,14],['maps/torn-pages',13,16]],
+  2:[...ash,['fire',7,6],['fire',15,6],fallen('b',2,11),fallen('c',17,12),['maps/torn-pages',6,12],['maps/torn-pages',13,16]],
+  3:[...ash,['maps/paint-splash',9,12],['maps/paint-splash',13,14],['maps/paint-splash',5,8],['maps/paint-splash',16,9]],
+  4:[['maps/rubble',19,10]],
 };
+// Flames on the burning roofs (house/rest-house/traveler-house footprints), drawn above the buildings.
+const roofFires:Record<number,[number,number][]>={1:[[3,3],[5,4],[10,3],[12,4],[17,3],[19,4]],2:[[4,3],[11,3]]};
+const hideMissing=(event:{currentTarget:HTMLImageElement})=>{event.currentTarget.style.visibility='hidden';};
 type Props = {
   save: WorldSave;
   recovery?:RecoveryEvent|null;
@@ -113,7 +123,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
   };
   return <main className="world-stage">
     {outdoor&&<TerrainTextures id={textureId}/>}
-    <div className={`world-viewport${villageAct===1?' is-burning':''}`} style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
+    <div className={`world-viewport${villageAct===1?' is-burning':villageAct===2?' is-smouldering':''}`} style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
       {outdoor&&<div className={`world-ambient world-ambient-${save.area}`} aria-hidden="true"><i/><i/><i/></div>}
       <div key={save.area} className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
         {map.terrain.slice(firstY,lastY).flatMap((row,rowIndex)=>row.slice(firstX,lastX).map((tile,columnIndex)=>{
@@ -132,7 +142,11 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
         }))}
         <div className="world-placements">
-          {villageAct>=1&&villageAct<=3&&<div className="village-scars" aria-hidden="true">{(villageScars[villageAct]??[]).map(([chip,x,y])=><img key={`${chip}-${x}-${y}`} src={`${import.meta.env.BASE_URL}maps/${chip}-64.png`} alt="" style={{left:`calc(${x} * var(--tile-size))`,top:`calc(${y} * var(--tile-size))`}}/>)}</div>}
+          {villageAct>=1&&<div className="village-scars" aria-hidden="true">{(villageScars[villageAct]??[]).map(([art,x,y])=>{
+            const style={left:`calc(${x} * var(--tile-size))`,top:`calc(${y} * var(--tile-size))`};
+            return art==='fire'?<span key={`fire-${x}-${y}`} className="village-fire" style={style}>{['a','b'].map(f=><img key={f} src={`${import.meta.env.BASE_URL}maps/fire-${f}-64.png`} alt="" onError={hideMissing}/>)}</span>:
+              <img key={`${art}-${x}-${y}`} src={`${import.meta.env.BASE_URL}${art}-64.png`} alt="" style={style} onError={hideMissing}/>;
+          })}</div>}
           {openedChest&&chestReward&&<div key={chestReward.id} className="chest-reward-cue" aria-hidden="true" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),openedChest.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,openedChest.y+.1)} * var(--tile-size))`}}><i/><i/><i/><i/>{chestReward.message}</div>}
           {levelUp&&<div className="world-level-up" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><LevelUpCue event={levelUp}/></div>}
           {recovery&&<div className="world-recovery" style={{left:`calc(${Math.max(cameraX+Math.min(4,viewColumns/2),Math.min(cameraX+viewColumns-Math.min(4,viewColumns/2),save.pos.x+.5))} * var(--tile-size))`,top:`calc(${Math.max(cameraY+1.4,save.pos.y+.3)} * var(--tile-size))`}}><RecoveryCue key={recovery.sequence} event={recovery}/></div>}
@@ -141,8 +155,13 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
             const chip=terrainChips[id],point={x:firstX+columnIndex,y:firstY+rowIndex};
             return chip.overlay?<WorldChip key={`terrain-${point.x}-${point.y}`} definition={{category:'terrain',label:chip.label,visual:chip.overlay,layer:'depth'}} point={point}/>:null;
           }))}
-          {map.buildings.filter(placement=>visible(placement,buildingChips[placement.chip].visual)).map(placement=>
-            <WorldChip key={placement.id} definition={buildingChips[placement.chip]} point={placement}/>)}
+          {map.buildings.filter(placement=>visible(placement,buildingChips[placement.chip].visual)).map(placement=>{
+            const definition=buildingChips[placement.chip],visual=definition.visual;
+            // Acts 1-3 show the ruined variant on the same canvas; collision stays on the original chip.
+            const ruined=save.area==='village'&&villageAct>=1&&villageAct<=3&&visual.renderer==='image';
+            return <WorldChip key={placement.id} definition={ruined?{...definition,visual:{...visual,src:visual.src.replace('.png','').replace(/-(\d+x\d+)$/,'-ruined-$1')+'.png'}}:definition} point={placement} className={ruined?'village-ruin':undefined}/>;
+          })}
+          {save.area==='village'&&(roofFires[villageAct]??[]).map(([x,y])=><span key={`roof-${x}-${y}`} className="village-fire roof" aria-hidden="true" style={{left:`calc(${x} * var(--tile-size))`,top:`calc(${y} * var(--tile-size))`}}>{['a','b'].map(f=><img key={f} src={`${import.meta.env.BASE_URL}maps/fire-${f}-64.png`} alt="" onError={hideMissing}/>)}</span>)}
           {map.props.filter(placement=>visible(placement,propChips[placement.chip].visual)).map(placement=>{
             const chest=placement.chip==='chest';
             const action=eventAt(map,placement,'interact')?.action;

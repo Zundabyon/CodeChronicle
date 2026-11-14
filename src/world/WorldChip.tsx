@@ -22,7 +22,8 @@ function ChipVisual({visual,walking,direction,text}:{visual:Visual;walking:boole
     </svg>;
   }
   if(visual.renderer==='text') return <span className="world-chip-sign">{text??visual.text}</span>;
-  return <img src={`${import.meta.env.BASE_URL}${visual.src}`} alt="" draggable={false}/>;
+  // Ruined variants may not exist yet; fall back to the intact art.
+  return <img src={`${import.meta.env.BASE_URL}${visual.src}`} alt="" draggable={false} onError={event=>{if(visual.src.includes('-ruined-'))event.currentTarget.src=`${import.meta.env.BASE_URL}${visual.src.replace('-ruined-','-')}`;}}/>;
 }
 
 export function WorldChip({definition,point,walking=false,direction,text,label,onClick,chestOpen,className=''}:Props) {

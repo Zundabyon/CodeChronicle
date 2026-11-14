@@ -14,5 +14,10 @@ body .dialogue-overlay{z-index:14}
 @media(prefers-reduced-motion:reduce){.story-stage.is-shake,.story-stage.is-fire::before{animation:none}.story-fire{display:none}}
 /* Village map scars until the acts restore it. */
 .village-scars{position:absolute;inset:0;pointer-events:none}.village-scars img{position:absolute;width:var(--tile-size);height:var(--tile-size);image-rendering:pixelated}
-.world-viewport.is-burning::after{content:'';position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 40%,#b4280f40),#c4301012}
+.world-viewport.is-burning::after{content:'';position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#3a10088c 20%,#1a0604e6),#5a1a0a66;mix-blend-mode:multiply}
+.world-viewport.is-burning::before{content:'';position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 50% 110%,#ff6a1a55,transparent 60%),#ff5a1a22;mix-blend-mode:screen;animation:story-flicker 1.4s steps(5,end) infinite}
+.world-viewport.is-smouldering::after{content:'';position:absolute;inset:0;z-index:6;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 45%,#5a1a0e60),#80301014}
+.village-fire{position:absolute;width:calc(1.5 * var(--tile-size));height:calc(1.5 * var(--tile-size));translate:-17% -33%;filter:drop-shadow(0 0 10px #ff6a1a)}.village-fire.roof{z-index:4}.village-fire img{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.village-fire img{animation:village-fire .5s steps(1) infinite}.village-fire img+img{animation-delay:-.25s}@keyframes village-fire{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.village-fire img{animation:none}.village-fire img+img{opacity:0}}
 .character-portrait.single-image{background-size:cover;background-position:center}

@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / 321486c + current working tree",
+  "snapshot": "2026-11-14 / 169b2be + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,20 +10,20 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 411,
+  "count": 421,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
     "ゲームルール": 1,
     "ゲーム進行": 1,
     "世界の定義": 10,
-    "世界・場所": 20,
-    "人物・生物": 39,
+    "世界・場所": 26,
+    "人物・生物": 42,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 74,
+    "制作・運用": 75,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -48,12 +48,12 @@
     "world": {
       "label": "世界・場所",
       "guide": "docs/production/world.md",
-      "count": 88
+      "count": 94
     },
     "characters": {
       "label": "人物・生物",
       "guide": "docs/production/characters.md",
-      "count": 80
+      "count": 83
     },
     "motion": {
       "label": "動き・演出",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 104
+      "count": 105
     }
   },
   "files": [
@@ -287,6 +287,14 @@
     {
       "path": "docs/art/chapter-two-event-art-v1.md",
       "bytes": 5378,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/chapter-two-ruins-v1.md",
+      "bytes": 5937,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -832,6 +840,14 @@
       "genre": "world"
     },
     {
+      "path": "public/maps/burnt-cart-64.png",
+      "bytes": 5323,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
       "path": "public/maps/cactus-64.png",
       "bytes": 463552,
       "suffix": ".png",
@@ -873,6 +889,14 @@
         "src/App.tsx",
         "src/world/catalog.ts"
       ],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/church-town-ruined-320x256.png",
+      "bytes": 156218,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "world"
     },
     {
@@ -932,6 +956,22 @@
       "genre": "world"
     },
     {
+      "path": "public/maps/fire-a-64.png",
+      "bytes": 5461,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/fire-b-64.png",
+      "bytes": 6181,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
       "path": "public/maps/grass-64.png",
       "bytes": 9820,
       "suffix": ".png",
@@ -960,6 +1000,14 @@
       "staticReferenceHints": [
         "src/world/catalog.ts"
       ],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/house-town-ruined-320x256.png",
+      "bytes": 158609,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "world"
     },
     {
@@ -1314,6 +1362,14 @@
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/rubble-64.png",
+      "bytes": 3861,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "world"
     },
     {
@@ -1711,6 +1767,30 @@
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
       ],
+      "genre": "characters"
+    },
+    {
+      "path": "public/sprites/fallen-villager-a-64.png",
+      "bytes": 3384,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/sprites/fallen-villager-b-64.png",
+      "bytes": 3770,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/sprites/fallen-villager-c-64.png",
+      "bytes": 3846,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "characters"
     },
     {
@@ -3291,7 +3371,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 17340,
+      "bytes": 19793,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4504,7 +4584,7 @@
     },
     {
       "path": "src/storyStage.css",
-      "bytes": 2847,
+      "bytes": 3853,
       "suffix": ".css",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4565,7 +4645,7 @@
     },
     {
       "path": "src/world/WorldChip.tsx",
-      "bytes": 2725,
+      "bytes": 2940,
       "suffix": ".tsx",
       "group": "世界の定義",
       "role": "カタログと配置を受け取り、画像・アトラス・人物などの表示方式を選ぶ。",
@@ -5043,7 +5123,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 7172,
+      "bytes": 7725,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
