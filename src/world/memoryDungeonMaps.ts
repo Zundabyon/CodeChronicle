@@ -52,10 +52,7 @@ export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEn
   });
   for(const {id,required,position:[x,y]} of layout.explanations){
     const label=required?'解説を読む':'解説の石板を読む';
-    if(!required){
-      props.push({id:'lesson-'+id,chip:dungeon.theme,x,y,blocksMovement:true});
-      props.push({id:'lesson-label-'+id,chip:'sign',x,y:y-.65,text:'石板'});
-    }
+    if(!required)props.push({id:'lesson-'+id,chip:'lessonTablet',x,y,blocksMovement:true});
     events.push({id:'lesson-'+id+'-'+(required?'enter':'interact'),x,y,trigger:required?'enter':'interact',label,action:{kind:'lesson',id,required}});
   }
   const npc=(id:string,chip:'wanderer'|'scholar',name:string,[x,y]:[number,number],lines:string[])=>

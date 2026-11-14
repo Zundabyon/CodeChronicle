@@ -46,6 +46,10 @@ const roofFires:Record<number,[number,number][]>={1:[[3,3],[5,4],[10,3],[12,4],[
 // Fires, fallen villagers, rubble, carts and lanterns are solid; flat pages and paint can be walked over.
 export const villageScarBlocks=(act:number,p:{x:number;y:number})=>
   (villageScars[act]??[]).some(([art,x,y])=>x===p.x&&y===p.y&&!/torn-pages|paint-splash/.test(art));
+// What a fallen villager murmurs when examined, by act (they lie only in acts 1 and 2).
+const fallenWords:Record<number,string>={1:'……名前が、思い出せない……',2:'……誰かに、呼ばれた気がする……'};
+export const fallenVillagerWords=(act:number,p:{x:number;y:number})=>
+  (villageScars[act]??[]).some(([art,x,y])=>x===p.x&&y===p.y&&art.includes('fallen-villager'))?fallenWords[act]:undefined;
 const hideMissing=(event:{currentTarget:HTMLImageElement})=>{event.currentTarget.style.visibility='hidden';};
 type Props = {
   save: WorldSave;

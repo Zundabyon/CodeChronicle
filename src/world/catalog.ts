@@ -83,6 +83,7 @@ export const propChips = {
   potions: prop('薬瓶の棚',propArt('potions',1,1.2)),
   tree: prop('木',image('tree-64.png',1.55,1.55),true,'depth','#2d6a3d'),
   cactus: prop('サボテン',image('cactus-64.png',1.15,1.3),true,'depth','#799054'),
+  lessonTablet: prop('解説の石板',image('lesson-tablet-64.png',.92,.92)),
   chest: prop('宝箱',image('chest-64.png',.92,.92)),
   dresser: prop('タンス',image('dresser-64.png',.92,.92)),
   bed: prop('ベッド',image('bed-64.png',.92,.92)),

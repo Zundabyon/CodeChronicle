@@ -4,7 +4,7 @@ import { LessonList } from './quests/LessonList';
 import { QuestStudyPanel } from './quests/QuestStudyPanel';
 import type { QuestStudy } from './quests/studyTypes';
 import { memoryBattleQuestion } from './quests/memoryBattleQuestion';
-import { rangerBattles } from './quests/rangerBattles';
+import { rangerBattles, shuffledSet } from './quests/rangerBattles';
 import { fumiLine, villagerLines } from './quests/definitions';
 import './questLearning.css';
 import './chapterStart.css';
@@ -41,7 +41,7 @@ import { chapterTwoAttack } from './quests/chapterScenes';
 import { chapterTwoAct } from './quests/definitions';
 import './storyStage.css';
 import { TitleScreen } from './TitleScreen';
-import { WorldScene, villageScarBlocks } from './WorldScene';
+import { WorldScene, villageScarBlocks, fallenVillagerWords } from './WorldScene';
 import { canLeaveTown, storyNpcs, wakingScene, breakfastScene, mayorScene, knightScene, rescueScene, type StoryStage, type StoryLine } from './story';
 import { ControlsGuide } from './ControlsGuide';
 import { DialogueChoices } from './DialogueChoices';
@@ -268,9 +268,10 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     const stage=stateRef.current.story;
     // A village foe in its battle step opens the same pre-battle scene as talking to Ol.
     if(npc.id.startsWith('foe-')){talkToQuestNpc({...npc,id:'mountainGuide'});return;}
-    if(talkToQuestNpc(npc,npcChoices[npc.id]))return;
+    // Chapter lines replace peacetime ones before the quest reads npc.lines (e.g. Ol's completed talk).
     const chapterLines=villagerLines(npc.id,stateRef.current.quests)?.map(line=>line.replaceAll('{name}',stateRef.current.name));
     if(chapterLines)npc={...npc,lines:chapterLines,alternateLines:undefined};
+    if(talkToQuestNpc(npc,npcChoices[npc.id]))return;
     if(npc.id==='fumi'){startDialogue(npc.name,npc.face,[fumiLine(stateRef.current.quests)]);return;}
     if(npc.id==='mountainHealer') {
       startDialogue(npc.name,npc.face,[...npc.lines,'温かな灯りのそばでひと休みした。HPとMPが全回復した。'],undefined,()=>{
@@ -469,8 +470,11 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       if(action.kind==='dresser') {openDresser();return;}
       if(action.kind==='chest') {openChest(action.id);return;}
     }
+    const front={x:s.pos.x+facingRef.current.x,y:s.pos.y+facingRef.current.y};
+    const murmur=s.area==='village'?[front,...neighbors(s.pos)].map(p=>fallenVillagerWords(chapterTwoAct(s.quests),p)).find(Boolean):undefined;
+    if(murmur){startDialogue('倒れた村人','🧑',[murmur]);return;}
     setToast('隣に人や調べられるものがない。近づいてEnterを押そう。');
-  },[stopPath,talkToNpc,openDresser,openChest,openBookshelf,useSpring,useMemoryWarp,openLesson,examineMemoryDoor]);
+  },[stopPath,talkToNpc,openDresser,openChest,openBookshelf,useSpring,useMemoryWarp,openLesson,examineMemoryDoor,startDialogue]);
   const navigationScope = () => Array.from(document.querySelectorAll('.modal-backdrop')).at(-1)
     ?? document.querySelector('.dialogue-overlay')
     ?? document.querySelector('.world-menu')
@@ -523,15 +527,15 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   useEffect(() => () => { stopPath(); if(walkTimer.current) clearTimeout(walkTimer.current); if(attackTimer.current) clearTimeout(attackTimer.current); },[stopPath]);
   const clickTile = (target: Point) => {
     if (phase!=='world' || dialogue || showSettings || showGuide || showMap || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType) return;
-    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story,s.quests).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action;
+    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story,s.quests).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action; const murmur=s.area==='village'?fallenVillagerWords(chapterTwoAct(s.quests),target):undefined;
     let destination=target;
-    if (npc || enemy || interaction) { const options=neighbors(target).filter(p=>walkable(s.area,p,s.quests)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story,s.quests)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
+    if (npc || enemy || interaction || murmur) { const options=neighbors(target).filter(p=>walkable(s.area,p,s.quests)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story,s.quests)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
     const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current,s.story,s.quests);
     if (!route.length && !same(s.pos,destination)) {
-      setToast(npc||enemy||interaction?'近づける道が見つからない。':'そこへは行けない。通れる場所を選ぼう。');
+      setToast(npc||enemy||interaction||murmur?'近づける道が見つからない。':'そこへは行けない。通れる場所を選ぼう。');
       return;
     }
-    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (enemy) startBattle(enemy); else if (interaction?.kind==='spring') useSpring(interaction.name); else if (interaction?.kind==='memory-door') examineMemoryDoor(interaction.npcId); else if (interaction?.kind==='memory-warp') useMemoryWarp(interaction.dungeon,interaction.room); else if (interaction?.kind==='lesson') openLesson(interaction.id); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='chest') openChest(interaction.id); else if (interaction?.kind==='bookshelf') openBookshelf(interaction.shelf); } },105);
+    let i=0; pathTimer.current=setInterval(() => { if (i<route.length) { const p=route[i++], current=stateRef.current.pos; if (!step(p.x-current.x,p.y-current.y)) stopPath(); } else { stopPath(); if (npc) talkToNpc(npc); else if (murmur) startDialogue('倒れた村人','🧑',[murmur]); else if (enemy) startBattle(enemy); else if (interaction?.kind==='spring') useSpring(interaction.name); else if (interaction?.kind==='memory-door') examineMemoryDoor(interaction.npcId); else if (interaction?.kind==='memory-warp') useMemoryWarp(interaction.dungeon,interaction.room); else if (interaction?.kind==='lesson') openLesson(interaction.id); else if (interaction?.kind==='dresser') openDresser(); else if (interaction?.kind==='chest') openChest(interaction.id); else if (interaction?.kind==='bookshelf') openBookshelf(interaction.shelf); } },105);
   };
   const answer = (value: string | number) => {
     if (!battle || battle.answered) return;
@@ -569,11 +573,12 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       return;
     }
     const ranger=rangerBattles[battle.enemy.id];
-    const rangerQuestion=(index:number)=>questions.find(q=>q.id===ranger!.set[index])!;
+    const order=battle.set??ranger?.set??[],rangerQuestion=(index:number,set=order)=>questions.find(q=>q.id===set[index])!;
     // Required story battles have no game over: the battle restarts from its first question.
     if (ranger && stateRef.current.hp<=0) {
       update(s=>({...s,hp:maxHp(s.level)}));
-      setBattle({...battle,hp:battle.maxHp,question:rangerQuestion(0),answered:false,correct:false,eliminated:null,impact:undefined});
+      const set=shuffledSet(ranger.set);
+      setBattle({...battle,set,hp:battle.maxHp,question:rangerQuestion(0,set),answered:false,correct:false,eliminated:null,impact:undefined});
       setBattleInput(''); setBattleNote(`${battle.enemy.name}に押し返された……。息を整え、戦いの最初からもう一度挑もう。`); return;
     }
     if (!battle.fromReview && stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:13,y:16},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setToast('司祭セラに助けられ、教会で目を覚ました。'); return; }

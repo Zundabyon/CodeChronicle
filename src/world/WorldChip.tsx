@@ -23,7 +23,7 @@ function ChipVisual({visual,walking,direction,text}:{visual:Visual;walking:boole
   }
   if(visual.renderer==='text') return <span className="world-chip-sign">{text??visual.text}</span>;
   // Ruined variants may not exist yet; fall back to the intact art.
-  return <img src={`${import.meta.env.BASE_URL}${visual.src}`} alt="" draggable={false} onError={event=>{if(visual.src.includes('-ruined-'))event.currentTarget.src=`${import.meta.env.BASE_URL}${visual.src.replace('-ruined-','-')}`;}}/>;
+  return <img src={`${import.meta.env.BASE_URL}${visual.src}`} alt="" draggable={false} onError={event=>{if(visual.src.includes('-ruined-'))event.currentTarget.src=`${import.meta.env.BASE_URL}${visual.src.replace('-ruined-','-')}`;else event.currentTarget.style.visibility='hidden';}}/>;
 }
 
 export function WorldChip({definition,point,walking=false,direction,text,label,onClick,chestOpen,className=''}:Props) {

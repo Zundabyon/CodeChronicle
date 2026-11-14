@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / 8005bd1 + current working tree",
+  "snapshot": "2026-11-14 / c34862f + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,20 +10,20 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 425,
+  "count": 427,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
     "ゲームルール": 1,
     "ゲーム進行": 1,
     "世界の定義": 10,
-    "世界・場所": 26,
+    "世界・場所": 27,
     "人物・生物": 42,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 76,
+    "制作・運用": 77,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -48,7 +48,7 @@
     "world": {
       "label": "世界・場所",
       "guide": "docs/production/world.md",
-      "count": 94
+      "count": 95
     },
     "characters": {
       "label": "人物・生物",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 106
+      "count": 107
     }
   },
   "files": [
@@ -315,6 +315,14 @@
       "group": "人物・生物",
       "role": "人物・生物に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
       "genre": "characters"
+    },
+    {
+      "path": "docs/art/lesson-tablet-v1.md",
+      "bytes": 4065,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "docs/art/memory-enemies-v1.md",
@@ -1041,6 +1049,14 @@
     {
       "path": "public/maps/lantern-unlit-64.png",
       "bytes": 2378,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/lesson-tablet-64.png",
+      "bytes": 4646,
       "suffix": ".png",
       "group": "世界・場所",
       "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -2329,7 +2345,7 @@
     },
     {
       "path": "seed.game.sql",
-      "bytes": 1158142,
+      "bytes": 1158442,
       "suffix": ".sql",
       "group": "状態・保存",
       "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -2368,7 +2384,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 86093,
+      "bytes": 86807,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3403,7 +3419,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 20081,
+      "bytes": 20506,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4228,7 +4244,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 21090,
+      "bytes": 22321,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -4356,7 +4372,7 @@
     },
     {
       "path": "src/quests/rangerBattles.ts",
-      "bytes": 1994,
+      "bytes": 2327,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4462,7 +4478,7 @@
     },
     {
       "path": "src/rangerBattleQuestions.ts",
-      "bytes": 31691,
+      "bytes": 31809,
       "suffix": ".ts",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4677,7 +4693,7 @@
     },
     {
       "path": "src/world/WorldChip.tsx",
-      "bytes": 2940,
+      "bytes": 2991,
       "suffix": ".tsx",
       "group": "世界の定義",
       "role": "カタログと配置を受け取り、画像・アトラス・人物などの表示方式を選ぶ。",
@@ -4724,7 +4740,7 @@
     },
     {
       "path": "src/world/catalog.ts",
-      "bytes": 9942,
+      "bytes": 10021,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
@@ -4953,7 +4969,7 @@
     },
     {
       "path": "src/world/memoryDungeonMaps.ts",
-      "bytes": 9197,
+      "bytes": 9105,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5155,7 +5171,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 8862,
+      "bytes": 9840,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

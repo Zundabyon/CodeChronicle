@@ -17,3 +17,9 @@ export const rangerBattles: Record<string, RangerBattle> = {
   graphius: { enemy: foe('graphius', '記録卿グラフィウス', '羽ペンの裁定'), set: rangerBattleSets.graphius,
     hint: '四つの記憶を思い出そう：一覧と詳細は読むだけ、フォームを開くだけでも変わらない。保存・更新・削除はどの行に届くかを確かめる。' },
 };
+/** Retry order: a Fisher-Yates shuffle of the set (the first attempt keeps the defined order). */
+export const shuffledSet = (set: string[]) => {
+  const order = [...set];
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  return order;
+};

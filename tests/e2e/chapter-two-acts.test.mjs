@@ -77,7 +77,7 @@ test('losing a ranger battle restarts it from the first question without a game 
   const first=await current(page);await page.locator('.options button').nth((first.answer+1)%4).click();
   assert.equal((await saved(page)).hp,0);
   await page.getByRole('button',{name:/最初から挑み直す/}).click();
-  assert.equal((await current(page)).id,'ranger-c-1');const s=await saved(page);assert.equal(s.hp,30);assert.equal(s.area,'village');
+  assert.equal((await current(page)).id,'ranger-c-2','the retry shuffles the question order');const s=await saved(page);assert.equal(s.hp,30);assert.equal(s.area,'village');
   await winBattle(page,5);await page.locator('.dialogue-box').waitFor();await advance(page);
   assert.equal((await saved(page)).quests['village-ledger'].step,'update-address');
 });
@@ -104,4 +104,15 @@ test('the act foe stands in the village: taunting during its dungeon, battling i
   const after=await open(t,{...chapterSave('create-family'),pos:{x:14,y:13}});
   await after.locator('.world-viewport').focus();await after.keyboard.press('Enter');
   assert.equal(await after.locator('.dialogue-box').count(),0,'beaten Nozomi is gone from the square');
+});
+
+test('fallen villagers murmur when examined, and Ol thanks the hero once the chapter is complete',{timeout:60000},async t=>{
+  const page=await open(t,{...chapterSave('battle-r'),pos:{x:3,y:11}});
+  await page.evaluate(()=>window.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft'})));
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');
+  await page.locator('.dialogue-box').waitFor();assert.match(await page.locator('.dialogue-box').innerText(),/名前が、思い出せない/);
+  await advance(page);
+  await page.evaluate(key=>{const s=JSON.parse(localStorage.getItem(key));s.quests['village-ledger']={step:'complete'};s.pos={x:4,y:8};localStorage.setItem(key,JSON.stringify(s));},key);
+  await page.reload();await page.getByRole('button',{name:/続きから/}).click();
+  await talkToOrl(page);assert.match(await page.locator('.dialogue-box').innerText(),/孫の名をまた呼べる/);
 });
