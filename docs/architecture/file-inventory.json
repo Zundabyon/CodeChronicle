@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / 8ceffcc + current working tree",
+  "snapshot": "2026-11-14 / 8e2b601 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -4676,7 +4676,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 23086,
+      "bytes": 23666,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
