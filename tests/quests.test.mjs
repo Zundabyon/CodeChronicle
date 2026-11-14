@@ -81,7 +81,7 @@ test('chapter two runs its acts R→C→U→D, each followed by a required villa
   assert.ok(!lessons.some(s=>s.npcId==='mountainGuide'),'the board capstone became the final battle');
   const order=['collect-r','battle-r','collect-c','battle-c','collect-u','battle-u','collect-d','battle-d','battle-graphius','return-names'];
   assert.deepEqual(def.steps.filter(s=>order.includes(s.id)).map(s=>s.id),order);
-  assert.deepEqual(def.steps.filter(s=>s.trigger.type==='battle-won').map(s=>[s.trigger.enemyId,rangerBattles[s.trigger.enemyId].set.length]),[['ranger-read',5],['ranger-create',5],['ranger-update',5],['ranger-delete',5],['graphius',7]]);
+  assert.deepEqual(def.steps.filter(s=>s.trigger.type==='battle-won').map(s=>[s.trigger.enemyId,rangerBattles[s.trigger.enemyId].count,rangerBattles[s.trigger.enemyId].set.length]),[['ranger-read',5,10],['ranger-create',5,10],['ranger-update',5,10],['ranger-delete',5,10],['graphius',7,12]]);
   let save=send({...fresh(),completed:true},{type:'accepted',questId:def.id});
   assert.equal(fumiLine(save.quests),fumiLine({}));
   save=send(save,{type:'npc-talked',npcId:def.npcId,questId:def.id});

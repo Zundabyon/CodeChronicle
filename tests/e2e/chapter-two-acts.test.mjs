@@ -56,13 +56,13 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   assert.equal(await page.locator('.village-fire').count(),20,'fires burn around the ruins');
   assert.equal(await page.locator('.village-scars img[src*="fallen-villager"]').count(),7,'fallen villagers lie in the village');
   await talkToOrl(page);await page.locator('.dialogue-text > span').click();assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/nozomi/,'the ranger stands in before the battle');await advance(page);
-  const first=await current(page);assert.equal(first.id,'ranger-r-1');
+  const first=await current(page);assert.equal(first.id,'ranger-r-2','the battle draws its questions at random (Math.random is pinned)');
   await page.locator('.options button').nth((first.answer+1)%4).click();
   assert.ok((await saved(page)).hp<30,'a wrong answer costs HP');
   await page.getByRole('button',{name:/同じ問いに再挑戦/}).click();
-  assert.equal((await current(page)).id,'ranger-r-1','the same question returns after a wrong answer');
+  assert.equal((await current(page)).id,'ranger-r-2','the same question returns after a wrong answer');
   await page.locator('.options button').nth(first.answer).click();
-  assert.deepEqual(Object.values((await saved(page)).learningRecords['ranger-r-1']).slice(0,5),[1,0,0,0,1],'only the first answer is recorded');
+  assert.deepEqual(Object.values((await saved(page)).learningRecords['ranger-r-2']).slice(0,5),[1,0,0,0,1],'only the first answer is recorded');
   await page.getByRole('button',{name:/次の問題へ/}).click();
   await winBattle(page,4);
   await page.locator('.dialogue-box').waitFor();await advance(page);
@@ -77,7 +77,7 @@ test('losing a ranger battle restarts it from the first question without a game 
   const first=await current(page);await page.locator('.options button').nth((first.answer+1)%4).click();
   assert.equal((await saved(page)).hp,0);
   await page.getByRole('button',{name:/最初から挑み直す/}).click();
-  assert.equal((await current(page)).id,'ranger-c-2','the retry shuffles the question order');const s=await saved(page);assert.equal(s.hp,30);assert.equal(s.area,'village');
+  assert.equal((await current(page)).id,'ranger-c-2','the retry draws a new set and restarts from its first question');const s=await saved(page);assert.equal(s.hp,30);assert.equal(s.area,'village');
   await winBattle(page,5);await page.locator('.dialogue-box').waitFor();await advance(page);
   assert.equal((await saved(page)).quests['village-ledger'].step,'update-address');
 });
@@ -85,7 +85,7 @@ test('losing a ranger battle restarts it from the first question without a game 
 test('the final battle against Graphius precedes restoring the ledger',{timeout:60000},async t=>{
   const page=await open(t,chapterSave('battle-graphius'));await talkToOrl(page);
   assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/graphius-battle/,'Graphius takes his battle stance');await advance(page);
-  assert.equal((await current(page)).id,'graphius-1');
+  assert.equal((await current(page)).id,'graphius-2');
   await winBattle(page,7);await page.locator('.dialogue-box').waitFor();await advance(page);
   assert.equal((await saved(page)).quests['village-ledger'].step,'return-names');
   const gold=(await saved(page)).gold;
@@ -100,7 +100,7 @@ test('the act foe stands in the village: taunting during its dungeon, battling i
   assert.equal(await taunt.locator('.question-card').count(),0,'a taunt does not start a battle');
   const page=await open(t,{...chapterSave('battle-r'),pos:{x:14,y:13}});
   await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');await page.locator('.dialogue-box').waitFor();
-  await advance(page);assert.equal((await current(page)).id,'ranger-r-1','talking to Nozomi starts her battle');
+  await advance(page);assert.equal((await current(page)).id,'ranger-r-2','talking to Nozomi starts her battle');
   const after=await open(t,{...chapterSave('create-family'),pos:{x:14,y:13}});
   await after.locator('.world-viewport').focus();await after.keyboard.press('Enter');
   assert.equal(await after.locator('.dialogue-box').count(),0,'beaten Nozomi is gone from the square');

@@ -8,7 +8,7 @@
 
 ## 物語構成の相談を再開する場合
 
-`art-environments` からの[相談の引き継ぎ](docs/production/chapter-two-acts-handoff.md)を最初に読む。第二章をCRUD別の幕に分けるB案とセーブデータ移行不要がユーザーの方針。未決定案・実装済みの事実・今回の依頼範囲を区別し、このmainの作業場所で続きを扱う。
+第二章は実装済み。まず現行の正本である[第二章の教材](docs/chapter-two-learning.md)と[物語・進行](docs/production/narrative.md)を読み、経緯と未決事項は[相談の記録](docs/production/chapter-two-acts-handoff.md)で確かめる。第二章をCRUD別の幕に分けるB案とセーブデータ移行不要がユーザーの方針。未決定案・実装済みの事実・今回の依頼範囲を区別し、このmainの作業場所で続きを扱う。
 
 ## 共通の作業手順
 

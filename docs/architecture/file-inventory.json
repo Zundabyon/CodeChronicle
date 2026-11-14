@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / c34862f + current working tree",
+  "snapshot": "2026-11-14 / c929102 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 427,
+  "count": 429,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 77,
+    "制作・運用": 78,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -35,7 +35,7 @@
     "教材・学習": 18,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 13,
+    "物語・進行": 14,
     "状態・保存": 4,
     "画像・素材": 95,
     "画面・表現・操作": 15,
@@ -63,7 +63,7 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 28
+      "count": 29
     },
     "learning": {
       "label": "教材・学習",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 107
+      "count": 108
     }
   },
   "files": [
@@ -238,7 +238,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "bytes": 3218,
+      "bytes": 3374,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -270,7 +270,7 @@
     },
     {
       "path": "docs/art/chapter-two-assets-v1.md",
-      "bytes": 7728,
+      "bytes": 10246,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -366,7 +366,7 @@
     },
     {
       "path": "docs/chapter-two-learning.md",
-      "bytes": 6892,
+      "bytes": 12143,
       "suffix": ".md",
       "group": "教材・学習",
       "role": "教材・学習に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -446,7 +446,7 @@
     },
     {
       "path": "docs/production/chapter-two-acts-handoff.md",
-      "bytes": 14846,
+      "bytes": 16253,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -550,7 +550,7 @@
     },
     {
       "path": "docs/production/narrative.md",
-      "bytes": 2367,
+      "bytes": 8674,
       "suffix": ".md",
       "group": "物語・進行",
       "role": "物語・進行に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -2345,7 +2345,7 @@
     },
     {
       "path": "seed.game.sql",
-      "bytes": 1158442,
+      "bytes": 1243741,
       "suffix": ".sql",
       "group": "状態・保存",
       "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -2384,7 +2384,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 86807,
+      "bytes": 88193,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3419,7 +3419,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 20506,
+      "bytes": 20625,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4243,6 +4243,14 @@
       "genre": "learning"
     },
     {
+      "path": "src/quests/backstageMeetings.ts",
+      "bytes": 9128,
+      "suffix": ".ts",
+      "group": "物語・進行",
+      "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
       "path": "src/quests/chapterScenes.ts",
       "bytes": 22321,
       "suffix": ".ts",
@@ -4372,7 +4380,7 @@
     },
     {
       "path": "src/quests/rangerBattles.ts",
-      "bytes": 2327,
+      "bytes": 2450,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4478,7 +4486,7 @@
     },
     {
       "path": "src/rangerBattleQuestions.ts",
-      "bytes": 31809,
+      "bytes": 57732,
       "suffix": ".ts",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5154,6 +5162,14 @@
       "genre": "operations"
     },
     {
+      "path": "tests/e2e/backstage-menu.test.mjs",
+      "bytes": 4214,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "tests/e2e/catalog.test.mjs",
       "bytes": 8389,
       "suffix": ".mjs",
@@ -5171,7 +5187,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 9840,
+      "bytes": 9932,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5275,7 +5291,7 @@
     },
     {
       "path": "tests/quests.test.mjs",
-      "bytes": 10135,
+      "bytes": 10189,
       "suffix": ".mjs",
       "group": "検証",
       "role": "イベント順序・参照ID・二重報酬防止・旧セーブ移行を検証する。",

@@ -1,5 +1,28 @@
 # 第二章の人物・小物画像 v1 制作記録
 
+## 現在使用中の第二章画像（入口）
+
+2026-11-14時点でゲームが参照している画像。**まとめ画像（`chapter-two-faces-v1.png`・`chapter-two-standing-v1.png`・`chapter-two-attack.png`）は1枚ずつに分割済みで、廃止した。** 新しい素材も1キャラ・1ポーズ・1場面ごとに1ファイルで作る。下の「成果物」表は v1 制作時の記録で、会話アトラスの行は現在使っていない。
+
+| 用途 | 場所 | 中身 | 参照元 |
+| --- | --- | --- | --- |
+| 会話の顔 | `public/portraits/chapter-two/face-*.png` | fumi・fumi-tears・graphius・keshi・keshi-hesitant・nozomi・nurie・tsukune | `src/CharacterPortrait.tsx` |
+| 立ち絵 | `public/portraits/chapter-two/standing-*.png` | fumi・graphius・graphius-battle・keshi・keshi-hesitant・nozomi・nurie・tsukune | `src/CharacterPortrait.tsx` |
+| イベント絵 | `public/prologue/chapter-two/attack-*.png` | sky・fire・rangers・final・villagers・forgotten・aftermath（台本の `art` 0〜6） | `src/App.tsx`、`src/story.ts` |
+| マップ・戦闘の人物 | `public/sprites/` | `graphius-64`・`graphius-right`、`ranger-{read,create,update,delete}-64`・`-right`、`fumi-64`、`fallen-villager-{a,b,c}-64` | マップ・戦闘 |
+| 村の廃墟 | `public/maps/` | `house-town-ruined-320x256`・`church-town-ruined-320x256` | `src/WorldScene.tsx` |
+| 村の被害 | `public/maps/` | `fire-a-64`・`fire-b-64`（炎）、`rubble-64`（瓦礫）、`burnt-cart-64`（荷車）、`lantern-unlit-64`（灯り）、`torn-pages-64`（紙片）、`paint-splash-64`（絵の具） | `src/WorldScene.tsx` |
+| ダンジョン | `public/maps/` | `lesson-tablet-64`（解説の石板） | `src/world/catalog.ts` |
+| 帰還点（制作済み・未使用） | `public/maps/` | `return-point-64`・`return-point-off-64`。帰還点は現在、ランタンの小物（`lantern-64`）で表示している | なし |
+
+制作記録：
+- 人物・小物 v1：この資料（[生成指示](chapter-two-assets-v1.prompts.json)、[プレビュー](chapter-two-assets-v1-preview.png)）
+- イベント絵・立ち絵：[chapter-two-event-art-v1.md](chapter-two-event-art-v1.md)
+- 村人被害のイベント絵：[chapter-two-villagers-v1.md](chapter-two-villagers-v1.md)
+- 村の廃墟・被害のマップ素材：[chapter-two-ruins-v1.md](chapter-two-ruins-v1.md)
+- 解説の石板：[lesson-tablet-v1.md](lesson-tablet-v1.md)
+- 依頼文：[第二章の画像依頼](../production/chapter-two-art-request.md)
+
 ## 日付・範囲・状態
 
 2026-11-13。[Claudeの画像依頼](../production/chapter-two-art-request.md)に基づき、会話アトラス1枚、マップ人物6枚、戦闘人物5枚、小物5枚の計17枚を生成した。**画像引き渡し用の候補として保存済み。src登録・ゲーム内表示確認・最終採用はClaude担当で未実施。**
@@ -19,7 +42,7 @@
 
 | 用途 | 保存先 | 実寸・背景 |
 | --- | --- | --- |
-| 会話8コマ | [chapter-two-faces-v1.png](../../public/portraits/chapter-two-faces-v1.png) | 1536×1024、4×2、各384×512、紺背景 |
+| 会話8コマ | `chapter-two-faces-v1.png`（分割済み・廃止） | 1536×1024、4×2、各384×512、紺背景 |
 | グラフィウス・マップ | [graphius-64.png](../../public/sprites/graphius-64.png) | 64×64、透過 |
 | ノゾミ・マップ | [ranger-read-64.png](../../public/sprites/ranger-read-64.png) | 64×64、透過 |
 | ツクネ・マップ | [ranger-create-64.png](../../public/sprites/ranger-create-64.png) | 64×64、透過 |

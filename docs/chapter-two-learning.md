@@ -1,55 +1,125 @@
-# 第二章：消えた名簿 — 四つのダンジョンと七つの役割
+# 第二章：消えた名簿 — 四つの幕と七つの役割
 
-第二章の到達目標は「名簿や掲示板への要求から、担当アクションと、画面表示・DB変更の有無を判断できる」。自力で掲示板を実装できることの認定ではない。通常の Laravel Route::resource を基準とし、apiResource が create/edit を登録しない違いは学者の会話で補足する。
+第二章の現行仕様（2026-11-14時点の実装）。物語は[物語・進行](production/narrative.md)、構成を決めた経緯は[幕構成の相談記録](production/chapter-two-acts-handoff.md)。数値は実装から数えたもので、変更時はこの資料も直す。
 
-## 冒険と教材
+到達目標は「名簿や掲示板への要求から、担当アクションと、画面表示・DB変更の有無を判断できる」。自力で掲示板を実装できることの認定ではない。通常の Laravel `Route::resource` を基準とし、`apiResource` が create/edit を登録しない違いは「APIを旅する学者」の会話で補足する。
 
-| 欠片 | ダンジョン | 平原の入口 | 主なアクション |
-| --- | --- | --- | --- |
-| C | 深緑の森・創生の工房 | 32,55 | create / store |
-| R | 鏡の湖・読解の書庫 | 49,20 | index / show |
-| U | 石鳴り山脈・改変の回廊 | 90,30 | edit / update |
-| D | 陽炎の砂漠・忘却の墓所 | 100,66 | destroy |
+## 進行（quest `village-ledger`）
 
-名簿の控えを遺跡で発見 → R → U → C → D → 石灯の村で掲示板の総合実習 → 名簿を復元、の順に進む。既存の順番と進行IDは維持する。
+第一章クリア後、記録係オルから開始。step順は [definitions.ts](../src/quests/definitions.ts) と [chapterTwoLessons.ts](../src/quests/chapterTwoLessons.ts)。
 
-各ダンジョンは31×63セル、5実習部屋・5封印扉・祭壇。第1室3問、残り4室が各2問、計11問。4ダンジョン44問と、章末の掲示板7問で全51問。問題数を均等に増やすためではなく、既存のモデル操作と新しいHTTP・コントローラ・表示の役割を対応させるための追加。
+1. `visit-village`：村でオルに話すと襲撃の場面（`chapterTwoAttack`）。
+2. `find-copy`：忘却の遺跡の宝箱 `dungeon:19,5` で名簿の控えを見つける。
+3. 第一幕 Read：読解の書庫の封印 → `collect-r`（祭壇） → `battle-r`（ノゾミ戦）。
+4. 第二幕 Create：創生の工房 → `collect-c` → `battle-c`（ツクネ戦）。
+5. 第三幕 Update：改変の回廊 → `collect-u` → `battle-u`（ヌリエ戦）。
+6. 第四幕 Delete：忘却の墓所 → `collect-d` → `battle-d`（ケシ戦）。
+7. 終幕：`battle-graphius`（グラフィウス戦） → `return-names`（オルに話して名簿を復元）。報酬70G・エーテル1。
 
-各部屋で「目的と動き → コードの判断 → 操作前後の表を確認」を進め、最後の問題に正解すると北の扉が開く。一部だけの正解では開かない。扉以外の壁は連続しており、隣の部屋や祭壇へ迂回できない。開閉はセーブされた章の進行から決まり、再読込後も維持する。
+幕の順は R→C→U→D（旧構成のR→U→C→Dから変更）。step IDは旧構成から維持し、並びだけを変えた。戦闘stepは祭壇stepの直後に `actBattles`（[chapterScenes.ts](../src/quests/chapterScenes.ts)）から差し込む。戦いは村でオルに話しかけると始まる。
 
-第5室と章末は応用の関門。導入で答えを誘導せず、別のデータ・題材を使う。章末の7依頼はそれぞれ表に示した状態から始まる独立演習で、七役割を掲示板へ対応づける。練習正解や欠片取得だけで学習効果が実証されたとは扱わない。全問選択式で、式全文の厳密一致による別解問題を避ける。
+`ledger-delete-transfer`（認可と対象照合）は第二章の進行から外した。問題自体はカタログに残る。
 
-## 泉・旅人・敵
+## ダンジョン
 
-各ダンジョンの第3室に無料の回復泉を置く。隣で調べ、休息の会話を終えるとHP/MP全快。何度使っても所持金・章進行は変わらない。
+| 幕 | ダンジョン | 地域・平原の入口 | 主なアクション | 盤面（幅×高さ） | 実習問題 |
+| --- | --- | --- | --- | --- | --- |
+| 第一幕 R | 読解の書庫 | 鏡の湖 49,20 | index / show | 47×114 | 11（3+2+2+2+2） |
+| 第二幕 C | 創生の工房 | 深緑の森 32,55 | create / store | 45×114 | 11（3+2+2+2+2） |
+| 第三幕 U | 改変の回廊 | 石鳴り山脈 90,30 | edit / update | 49×114 | 11（3+2+2+2+2） |
+| 第四幕 D | 忘却の墓所 | 陽炎の砂漠 100,66 | destroy | 43×114 | 10（3+2+2+2+1） |
 
-各部屋の扉の脇に帰還点を置き、その部屋の封印を解いた後は石灯の村へ戻れる。入口の「奥への帰還点」からは、開いている一番奥の扉の先へ飛べる。どちらも確認の選択肢を挟み、新しいセーブ項目は持たず扉の開閉状態から行き先を決める。配置は2-1の新しいダンジョン設計が届くまでの仮置き。
+実習問題は4ダンジョン計43問。忘却の墓所の第5室は `ledger-delete-transfer` を外したため1問（`resource-delete-transfer`）。
 
-ダンジョンの解説は、マップイベント `lesson` で置く（本文は `src/world/dungeonLessons.ts`）。必須の解説はenterの床地点で、未読ならその床へ進めず解説が開き、最後の画面を閉じると既読になって通れる。任意の解説はinteractの小物で読む。既読は `readBooks` に `lesson:` 接頭辞で保存し、新しいセーブ項目は持たない。読んだ解説は学習設定の「ダンジョンで読んだ解説」から読み直せる。現時点では解説の本文と配置はまだない。
+- 盤面はCodex設計のv2（[設計](production/chapter-two-dungeons-v2-design.md)、[配置JSON](production/chapter-two-dungeons-v2-layout.json)）を [memoryDungeonLayouts.ts](../src/world/memoryDungeonLayouts.ts) へ写したもの。各ダンジョン5部屋・5封印扉・祭壇。
+- 各部屋の封印（`memory-<key>-trial-<n>`）で、その部屋の問題をすべて正解すると北の扉が開く。一部正解では開かない。開閉はセーブ済みの章の進行から決まる（[memoryGates.ts](../src/quests/memoryGates.ts)）。旧座標が閉じた扉の先にある場合は、到達できる側へ戻す。
+- 第5室は応用の関門（`checkpoint`）。導入で答えを誘導しない。
+- 各部屋で「目的と動き → コードの判断 → 操作前後の表」を示す（`study`、[QuestStudyPanel.tsx](../src/quests/QuestStudyPanel.tsx)）。
 
-入口学者は学習の全体像と進み方、冒険者は操作ごとの取り違え、API学者は通常resourceとの違いを説明する。これらの会話は任意で読み直せる。中断後は同じ封印で目的・対象データ・問題を表示する。
+### 解説
 
-各地に関連名・見た目の異なる敵を3種類、各種4体ずつ計12体配置する。4ダンジョンでは全12種類・48体となる。第1・2・4・5室に3体ずつ置き、第3室は敵のいない泉・冒険者の休憩所とする。既存12体のIDと座標は維持し、追加個体にはcopy接尾辞を付ける。討伐状態は個体別に保存し、同種の画像と攻撃演出を共有する。新規ドット絵は透明な専用アトラス memory-dungeon-enemies-v1.png にまとめ、マップ・遭遇・戦闘の三画面で同じ敵の絵を使う。創生は琥珀、読解は青、改変は翡翠、忘却は紫を基調とする。出現と移動を脇部屋の元座標から距離2以内に制限し、学習の主導線を塞がない。敵の問題もそのダンジョンのCRUD操作から出し、選択難度に該当問題がなければ実際にある難度を使って表示する。戦闘を避けて章を進められ、戦闘の正解だけで封印を飛ばすこともできない。
+本文は [dungeonLessons.ts](../src/world/dungeonLessons.ts)、配置は各レイアウトの `explanations`。各ダンジョン15件、計60件。
 
-## 保存と復習
+- 必須の解説：各部屋1件（各ダンジョン5件、計20件）。部屋の入口の床（enter）にあり、未読ならその床へ進めず解説が開く。最後の画面を閉じると既読になって通れる。
+- 任意の解説：各ダンジョン10件、計40件。脇道の「解説の石板」（interact）。
+- 既読は `readBooks` に `lesson:<id>` で保存。新しいセーブ項目は持たない。学習設定の「ダンジョンで読んだ解説」から読み直せる。
 
-既存の問題・ステップ・NPC・祭壇IDは保持。通過済み単元の欠片と、完了済み章・報酬はそのまま。旧小型マップの座標が新しい閉扉の先にある場合は、現在到達できる側へ復帰させる。
+### 帰還点と泉
 
-学習設定の第二章欄に「7つの役割を復習する」を追加。旧クリア済みプレイヤーも51問にアクセスできる。復習は quests['village-ledger'].reviewStep に独立保存し、main step・扉・欠片・報酬を変更しない。途中中断して再読込しても復習の続きから再開でき、終了後は再度開始できる。
+- 部屋の帰還点：各部屋の扉近く。その部屋の扉が開いていれば村へ戻る。
+- 入口の「奥への帰還点」：開いている扉の数Nから、部屋 min(N+1, 5) の入口（必須の解説の手前）へ飛ぶ。解放済みの部屋を自由に選ぶ移動はない（導線の解説を飛ばさせないため）。
+- 行き先は扉の開閉から決め、セーブ項目を持たない。
+- 第3室の西に無料の回復泉。HP/MP全快、所持金・進行は変わらない。
 
-## ファイルと検証
+### 人物と敵
 
-- src/resourceQuestions.ts：追加31問と実習カード（24実習＋7総合）。
-- src/chapterTwoQuestions.ts：既存16実践問題。基本4問はbeginnerQuestions.ts。
-- src/quests/chapterTwoLessons.ts：51問と祭壇、既存IDとの接続、全問の実習データ。
-- src/quests/studyTypes.ts / QuestStudyPanel.tsx：目的、依頼、操作前後の表と結果。
-- src/world/memoryDungeons.ts / memoryDungeonMaps.ts：地域・入口・部屋・扉・泉・旅人・敵。
-- src/quests/memoryGates.ts：最後の部屋内問題を通過したかの判定、旧座標の復帰。
-- src/quests/review.ts：冒険と独立した復習の保存カーソル。
-- src/quests/useQuests.ts：会話・採点と進行／復習をつなぐ。
-- src/enemyMovement.ts / quests/memoryBattleQuestion.ts：任意敵の行動範囲と関連出題。
+- 道案内の学者（全体像）、名簿を学ぶ冒険者（操作ごとの取り違え）、APIを旅する学者（通常resourceとの違い）。会話は任意。
+- 敵は各ダンジョン3種×4体＝12体、計48体。第3室には置かない。任意の戦闘で、出題はそのダンジョンのCRUD操作から（[memoryBattleQuestion.ts](../src/quests/memoryBattleQuestion.ts)）。戦闘を避けても章は進められ、戦闘の正解で封印は開かない。
 
-npm test、npm run build、tests/e2e のブラウザ操作で検証。閉扉時の到達性・最終正解時の開門・移動と再読込・泉の無料回復・旅人会話・関連戦闘・51問通しと最終報酬・旧完了者の復習を対象にする。PHPやCLI教材を実行する機能、実DB接続、学習者による効果測定は含めない。
+## レンジャー戦・グラフィウス戦
+
+定義は [rangerBattles.ts](../src/quests/rangerBattles.ts)、問題は [rangerBattleQuestions.ts](../src/rangerBattleQuestions.ts)、戦闘処理は [App.tsx](../src/App.tsx)。
+
+| 戦い | 相手 | 題材（名簿以外の村の記録） | 問題の候補 | 1回の出題 |
+| --- | --- | --- | --- | --- |
+| `battle-r` | ノゾミ・ブルー | 灯り当番表 | 10（`ranger-r-1`〜`10`） | 5 |
+| `battle-c` | ツクネ・アンバー | 宿の予約帳 | 10（`ranger-c-1`〜`10`） | 5 |
+| `battle-u` | ヌリエ・ジェイド | 倉庫の在庫表 | 10（`ranger-u-1`〜`10`） | 5 |
+| `battle-d` | ケシ・パープル | 貸し出し記録 | 10（`ranger-d-1`〜`10`） | 5 |
+| `battle-graphius` | 記録卿グラフィウス | 村の掲示板 | 12（`graphius-1`〜`12`） | 7 |
+
+戦闘問題は計52問。
+
+- 挑戦のたびに候補から出題数だけをランダムに選ぶ（Fisher-Yatesで並べ替えて先頭を取る `drawSet`）。
+- 敵のHPは出題数。正解1問で1ダメージ。不正解では主人公がダメージを受け、そのダンジョンの石板の一行ヒントを表示し、同じ問いに再挑戦する。
+- 主人公のHPが0になってもゲームオーバーにしない。HPを全快し、新しく選び直した問題で戦いの最初から挑み直す。退却はできない。
+- 再挑戦の回答は学習記録に残さず、最初の回答だけを残す。
+- 戦いの前に、題材の表を会話で一度見せる。グラフィウス戦は、どの幕でも使っていない掲示板で七役割と「データは変わらない」の判断を混ぜる。
+- 祭壇で得る術（4種）は未実装。
+
+## 村の状態
+
+石灯の村（[mountainVillage.ts](../src/world/mountainVillage.ts)）の見た目と会話は、章の進行が越えた幕の区切り（`visit-village`・`battle-r/c/u/d`・`battle-graphius`）の数で決まる（`chapterTwoAct`／`chapterTwoPhase`、[definitions.ts](../src/quests/definitions.ts)）。見た目は [WorldScene.tsx](../src/WorldScene.tsx) の `villageScars`・`roofFires`。
+
+| 状態 | 進行 | 村の見た目 |
+| --- | --- | --- |
+| 1 | 襲撃後〜第一幕 | 燃える廃墟。家は焼け跡版、屋根に炎6か所、地面の炎14・瓦礫・荷車2・倒れた村人7・消えた灯り3・紙片4 |
+| 2 | 第二幕 | くすぶる廃墟。屋根の炎2、地面の炎2・瓦礫・荷車・倒れた村人2・紙片2 |
+| 3 | 第三幕 | 灰と瓦礫、荷車、翡翠の絵の具4（焼け跡版の家） |
+| 4 | 第四幕 | 家は元に戻り、瓦礫1つだけ |
+| 5以上 | 終幕・完了後 | 元通り |
+
+- 炎・倒れた村人・瓦礫・荷車・灯りは通れない。紙片と絵の具は踏める。倒れた村人を調べると幕1・2で一言話す。
+- レンジャーは戦闘stepの間は広場（13,13）、それより前の同じ幕では村はずれ（20,12）に立つ（`villageFoeVisible`）。グラフィウスは終幕の戦闘stepに広場に立つ。
+- フミ（`fumiTalk`、8段階）とオル・リオ・ダン・ユナ（`villagerTalk`、各7段階）の台詞が幕ごとに変わる。完了後は平時の台詞ではなく完了後の台詞。
+
+## セーブ
+
+- 保存形式は version 3（[saveValidation.ts](../src/saveValidation.ts)）。幕の順を変えたため、version 1・2（またはquestsを持たない無版のセーブ）で第二章が途中なら、第二章だけを `visit-village` に戻す。レベル・所持品・第一章の記録は残す。完了済みの第二章はそのまま。移行対応は作らない。
+- 復元は [persistence.ts](../src/quests/persistence.ts)。存在するstep IDだけを受け入れる。
+- 復習：学習設定の第二章欄「7つの役割を復習する」。ダンジョンの実習43問を `quests['village-ledger'].reviewStep` に独立保存して解き直す（[review.ts](../src/quests/review.ts)）。本編の進行・扉・欠片・報酬は変えない。戦闘問題は含まない。
+
+## ファイル
+
+- [definitions.ts](../src/quests/definitions.ts)：章のstep、幕の判定、村の会話と敵の表示。
+- [chapterScenes.ts](../src/quests/chapterScenes.ts)：台本（冒頭・襲撃・戦闘前後・結末・村の会話）と戦闘step。
+- [chapterTwoLessons.ts](../src/quests/chapterTwoLessons.ts)：ダンジョンの実習step・祭壇・操作前後の表。
+- [resourceQuestions.ts](../src/resourceQuestions.ts)、[chapterTwoQuestions.ts](../src/chapterTwoQuestions.ts)：ダンジョンの問題。基本4問は beginnerQuestions.ts。
+- [rangerBattles.ts](../src/quests/rangerBattles.ts)、[rangerBattleQuestions.ts](../src/rangerBattleQuestions.ts)：レンジャー戦・グラフィウス戦。
+- [memoryDungeons.ts](../src/world/memoryDungeons.ts)、[memoryDungeonLayouts.ts](../src/world/memoryDungeonLayouts.ts)、[memoryDungeonMaps.ts](../src/world/memoryDungeonMaps.ts)：ダンジョンの情報・v2盤面・マップ化。
+- [dungeonLessons.ts](../src/world/dungeonLessons.ts)：解説の本文。
+- [memoryGates.ts](../src/quests/memoryGates.ts)：扉の開閉、帰還点の行き先、旧座標の復帰。
+- [WorldScene.tsx](../src/WorldScene.tsx)、[mountainVillage.ts](../src/world/mountainVillage.ts)：村の状態と配置。
+- [persistence.ts](../src/quests/persistence.ts)、[saveValidation.ts](../src/saveValidation.ts)、[review.ts](../src/quests/review.ts)：保存と復習。
+- 画像は[第二章の画像の入口](art/chapter-two-assets-v1.md)。
+
+## 検証
+
+- `npm test`：特に [quests](../tests/quests.test.mjs)、[memory-gates](../tests/memory-gates.test.mjs)、[memory-dungeons](../tests/memory-dungeons.test.mjs)、[dungeon-lessons](../tests/dungeon-lessons.test.mjs)、[save-validation](../tests/save-validation.test.mjs)、[quest-review](../tests/quest-review.test.mjs)、[resource-curriculum](../tests/resource-curriculum.test.mjs)。
+- `npm run test:e2e`：[chapter-two-acts](../tests/e2e/chapter-two-acts.test.mjs) で幕の通し・戦闘・村の状態を確認。
+- `npm run build`、画像は `npm run check:art`。
+
+PHP実行、実DB接続、学習者による効果測定は含めない。練習正解や欠片取得だけで学習効果が実証されたとは扱わない。
 
 技術確認に使用した公式資料：
 - https://laravel.com/framework/docs/13.x/controllers#actions-handled-by-resource-controllers

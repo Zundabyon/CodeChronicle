@@ -1,2 +1,2 @@
 // Generated with seed.game.sql by npm run catalog:export.
-export const catalogVersion = "game-76f17a878d8663c7cb0732d7";
+export const catalogVersion = "game-7b14db3ac034e5634dfe653f";
