@@ -45,7 +45,7 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   await page.locator('.dialogue-text > span').click();assert.ok(await page.locator('.story-stage.is-shake').count(),'Graphius appears with a shake');
   await page.locator('.dialogue-text > span').click();
   assert.match(await page.locator('.dialogue-portrait .character-portrait').getAttribute('style'),/chapter-two\/face-graphius\.png/,'Graphius uses the chapter two portrait atlas');
-  assert.match(await page.locator('.story-standing').getAttribute('style'),/chapter-two\/standing-graphius\.png/,'Graphius stands beside the dialogue');
+  assert.match(await page.locator('.story-standing.is-active').getAttribute('style'),/chapter-two\/standing-graphius\.png/,'Graphius stands beside the dialogue');
   await advance(page);assert.equal((await saved(page)).quests['village-ledger'].step,'find-copy');
 
   await page.evaluate(key=>{const s=JSON.parse(localStorage.getItem(key));s.quests['village-ledger']={step:'battle-r'};localStorage.setItem(key,JSON.stringify(s));},key);
@@ -55,7 +55,7 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   assert.ok(await page.locator('.village-ruin').count()>=1,'the village houses are shown as ruins');
   assert.equal(await page.locator('.village-fire').count(),20,'fires burn around the ruins');
   assert.equal(await page.locator('.village-scars img[src*="fallen-villager"]').count(),7,'fallen villagers lie in the village');
-  await talkToOrl(page);await page.locator('.dialogue-text > span').click();assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/nozomi/,'the ranger stands in before the battle');await advance(page);
+  await talkToOrl(page);await page.locator('.dialogue-text > span').click();assert.match(await page.locator('.story-standing.is-active').getAttribute('aria-label'),/nozomi/,'the ranger stands in before the battle');await advance(page);
   const first=await current(page);assert.equal(first.id,'ranger-r-2','the battle draws its questions at random (Math.random is pinned)');
   await page.locator('.options button').nth((first.answer+1)%4).click();
   assert.ok((await saved(page)).hp<30,'a wrong answer costs HP');
@@ -84,7 +84,7 @@ test('losing a ranger battle restarts it from the first question without a game 
 
 test('the final battle against Graphius precedes restoring the ledger',{timeout:60000},async t=>{
   const page=await open(t,chapterSave('battle-graphius'));await talkToOrl(page);
-  assert.match(await page.locator('.story-standing').getAttribute('aria-label'),/graphius-battle/,'Graphius takes his battle stance');await advance(page);
+  assert.match(await page.locator('.story-standing.is-active').getAttribute('aria-label'),/graphius-battle/,'Graphius takes his battle stance');await advance(page);
   assert.equal((await current(page)).id,'graphius-2');
   await winBattle(page,7);await page.locator('.dialogue-box').waitFor();await advance(page);
   assert.equal((await saved(page)).quests['village-ledger'].step,'return-names');

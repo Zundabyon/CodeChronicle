@@ -36,7 +36,7 @@ import { claimChest } from './chests';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, houses, questions as bundledQuestions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn, restoreMapPosition } from './world/maps';
-import { CharacterPortrait, StandingArt } from './CharacterPortrait';
+import { CharacterPortrait, StandingArt, standingUrl } from './CharacterPortrait';
 import { chapterTwoAttack } from './quests/chapterScenes';
 import { chapterTwoAct } from './quests/definitions';
 import './storyStage.css';
@@ -121,6 +121,19 @@ const difficultyDetails: Record<Difficulty,{summary:string;examples:string}> = {
   advanced: {summary:'実装や設計の判断をする',examples:'状態の共有、公開するデータ、認証や検証など'},
 };
 const difficulties: Difficulty[] = ['beginner','intermediate','advanced'];
+// Face-to-face staging: the speaker stands forward; the last other speaker stays dimmed on the opposite side. First speaker is on the left.
+type StageSlot={side:'left'|'right';speaker:string;name:string;active:boolean};
+export function standingPair(lines:(StoryLine|string)[],index:number):StageSlot[] {
+  const slots:Partial<Record<'left'|'right',StageSlot>>={};let last:'left'|'right'|undefined;let active:'left'|'right'|undefined;
+  for(const line of lines.slice(0,index+1)){
+    const name=typeof line==='string'?undefined:line.standing??line.face;
+    if(typeof line==='string'||!name||!standingUrl(name)){active=undefined;continue;}
+    const side=slots.left?.speaker===line.speaker?'left':slots.right?.speaker===line.speaker?'right':last==='left'?'right':'left';
+    slots[side]={side,speaker:line.speaker,name,active:false};last=active=side;
+  }
+  return (['left','right'] as const).flatMap(side=>slots[side]?[{...slots[side]!,active:side===active}]:[]);
+}
+
 function DifficultyPicker({value,onChange}:{value:Difficulty;onChange:(difficulty:Difficulty)=>void}) {
   return <div className="difficulty-options" role="group" aria-label="難易度を選択">
     {difficulties.map(d=><button type="button" key={d} className={`difficulty-option ${value===d?'selected':''}`} aria-pressed={value===d} onClick={()=>onChange(d)}>
@@ -718,6 +731,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const dialogueText=typeof currentLine==='string'?currentLine:currentLine?.text;
   const dialogueSpeaker=typeof currentLine==='string'?dialogue?.speaker:currentLine?.speaker;
   const dialogueFace=typeof currentLine==='string'?dialogue?.face:currentLine?.face;
+  const stagePair=dialogue?standingPair(dialogue.lines,dialogue.index):[];
 
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions"><span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>{['world','church','review-room'].includes(phase)&&<button onClick={()=>{stopPath();setMapView('world');}}>地図</button>}{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
@@ -769,7 +783,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     {dialogue&&(phase==='world'||phase==='backstage')&&typeof currentLine!=='string'&&(currentLine?.art!==undefined||currentLine?.fire||(currentLine?.standing??currentLine?.face))&&<div key={dialogue.index} className={`story-stage${currentLine.fire?' is-fire':''}${currentLine.shake?' is-shake':''}`} aria-hidden="true">
       {currentLine.art!==undefined&&<div className="story-art" style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/chapter-two/attack-${['sky','fire','rangers','final','villagers','forgotten','aftermath'][currentLine.art]}.png)`}}/>}
       {currentLine.fire&&<div className="story-fire"><i/><i/><i/><i/><i/><i/></div>}
-      <StandingArt name={currentLine.standing??currentLine.face}/>
+      {stagePair.map(slot=><StandingArt key={slot.side} name={slot.name} side={slot.side} active={slot.active}/>)}
     </div>}
     {dialogue&&(phase==='world'||phase==='backstage')&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogueFace??'📜'}/></div><div className="dialogue-text"><strong>{dialogueSpeaker}</strong><p>{dialogueText}</p>{dialogue.study&&dialogue.index===dialogue.lines.length-1&&<QuestStudyPanel study={dialogue.study} answered={dialogue.answered} correct={dialogue.correct}/>} {dialogue.question?.code&&dialogue.index===dialogue.lines.length-1&&<div className="quest-question-context" onClick={e=>e.stopPropagation()}><small>{dialogue.question.filename}</small><pre className="quest-question-code" tabIndex={0} aria-label="実習のコードとデータ" onKeyDown={e=>e.stopPropagation()}><code>{dialogue.question.code}</code></pre></div>}{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<DialogueChoices choices={dialogue.choices} onChoose={choice=>{choice.onChoose?.();setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined,question:undefined,answered:choice.correct!==undefined,correct:choice.correct});beep(720,0.08);}}/>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}
     {libraryShelf&&<LibraryPanel questionBank={questionBank} key={libraryShelf.id} shelf={libraryShelf} readBooks={save.readBooks} bookmark={save.bookmarks[libraryShelf.id]} onBookmark={bookmarkBook} onPracticeAnswer={(q,correct)=>answerQuestQuestion(q,correct,'book')} onSelectBook={(shelf,bookId)=>{bookmarkBook(shelf.id,bookId);setLibraryShelf(shelf);}} onToggleRead={toggleReadBook} onClose={()=>setLibraryShelf(null)}/> }

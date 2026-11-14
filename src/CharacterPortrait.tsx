@@ -30,11 +30,18 @@ export function CharacterPortrait({face,standing=false}:{face:string;standing?:b
 
 // One image per pose: public/portraits/chapter-two/standing-<name>.png
 const chapterTwoStanding:Record<string,string>={graphius:'graphius',nozomi:'nozomi',tsukune:'tsukune',nurie:'nurie',keshi:'keshi',fumi:'fumi','fumi-tears':'fumi','graphius-battle':'graphius-battle','keshi-hesitant':'keshi-hesitant'};
-export function StandingArt({name}:{name:string}) {
-  // 裏会議: 'bs-<id>' or 'bs-<id>-<pose>' -> public/portraits/backstage/standing-<id>-<pose>.png
-  const backstage=/^bs-([a-z]+)(?:-(normal|propose|down|surprised))?$/.exec(name);
-  if(backstage)return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/backstage/standing-${backstage[1]}-${backstage[2]??'normal'}.png)`}}/>;
+export function standingUrl(name:string):string|undefined {
+  // 裏会議 'bs-<id>[-<pose>]' -> backstage/、本編の面々 'cast-<id>-<pose>' -> cast/standing-<id>-<pose>.png
+  const set=/^(bs|cast)-([a-z]+)(?:-(normal|propose|down|surprised))?$/.exec(name);
+  if(set)return `${import.meta.env.BASE_URL}portraits/${set[1]==='bs'?'backstage':'cast'}/standing-${set[2]}-${set[3]??'normal'}.png`;
   const file=chapterTwoStanding[name];
-  if(!file)return null;
-  return <span className="story-standing" role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two/standing-${file}.png)`}}/>;
+  return file&&`${import.meta.env.BASE_URL}portraits/chapter-two/standing-${file}.png`;
+}
+// Never mirror: some silhouettes carry text.
+export function StandingArt({name,side='right',active=true}:{name:string;side?:'left'|'right';active?:boolean}) {
+  const url=standingUrl(name);
+  if(!url)return null;
+  // Lettered silhouettes (作者・まおう) must never be mirrored.
+  const noFlip=/^bs-(metappi|maou)/.test(name);
+  return <span className={`story-standing is-${side}${active?' is-active':''}${noFlip?' no-flip':''}`} role="img" aria-label={`${name}の立ち絵`} style={{backgroundImage:`url(${url})`}}/>;
 }

@@ -48,9 +48,14 @@ test('裏会議は章クリアで解放され、未解放はロックされる',
   assert.match(await page.locator('.dialogue-text strong').innerText(),/語り手/);
   await page.keyboard.press('Enter');
   assert.match(await page.locator('.dialogue-text strong').innerText(),/めたっぴ/);
-  assert.match(await page.locator('.story-standing').getAttribute('style'),/backstage\/standing-metappi-propose\.png/);
+  assert.match(await page.locator('.story-standing.is-active').getAttribute('style'),/backstage\/standing-metappi-propose\.png/);
   assert.match(await page.locator('.dialogue-box .character-portrait').getAttribute('style'),/backstage\/face-metappi\.png/);
+  assert.match(await page.locator('.story-standing.is-active').getAttribute('class'),/is-left/,'the first speaker stands on the left');
   if(process.env.BACKSTAGE_SHOT)await page.screenshot({path:process.env.BACKSTAGE_SHOT});
+  await page.keyboard.press('Enter');
+  assert.match(await page.locator('.story-standing.is-active.is-right').getAttribute('style'),/standing-ai-normal\.png/,'the reply comes from the right');
+  assert.match(await page.locator('.story-standing.is-left:not(.is-active)').getAttribute('style'),/standing-metappi-propose\.png/,'the previous speaker stays, dimmed, on the left');
+  if(process.env.BACKSTAGE_SHOT2)await page.screenshot({path:process.env.BACKSTAGE_SHOT2});
   for(let i=0;i<60&&await page.locator('.dialogue-box').count();i++)await page.locator('.dialogue-text > span').click();
   await page.getByRole('button',{name:/続きから/}).waitFor();
   assert.equal(JSON.stringify(await saved(page)),before);

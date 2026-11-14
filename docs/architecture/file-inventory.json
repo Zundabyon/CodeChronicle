@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / a623470 + current working tree",
+  "snapshot": "2026-11-14 / e4d8d76 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 465,
+  "count": 482,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -18,12 +18,12 @@
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 27,
-    "人物・生物": 77,
+    "人物・生物": 93,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 79,
+    "制作・運用": 80,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -53,7 +53,7 @@
     "characters": {
       "label": "人物・生物",
       "guide": "docs/production/characters.md",
-      "count": 118
+      "count": 134
     },
     "motion": {
       "label": "動き・演出",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 109
+      "count": 110
     }
   },
   "files": [
@@ -263,6 +263,14 @@
     {
       "path": "docs/art/backstage-cast-v1.md",
       "bytes": 4949,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/cast-standing-v1.md",
+      "bytes": 4644,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -1792,6 +1800,134 @@
       "genre": "characters"
     },
     {
+      "path": "public/portraits/cast/standing-hanna-down.png",
+      "bytes": 279182,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hanna-normal.png",
+      "bytes": 286603,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hanna-propose.png",
+      "bytes": 287020,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hanna-surprised.png",
+      "bytes": 294514,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hero-down.png",
+      "bytes": 279247,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hero-normal.png",
+      "bytes": 287050,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hero-propose.png",
+      "bytes": 293406,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-hero-surprised.png",
+      "bytes": 291300,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-mayor-down.png",
+      "bytes": 281713,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-mayor-normal.png",
+      "bytes": 288791,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-mayor-propose.png",
+      "bytes": 296407,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-mayor-surprised.png",
+      "bytes": 301230,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-ol-down.png",
+      "bytes": 268659,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-ol-normal.png",
+      "bytes": 274821,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-ol-propose.png",
+      "bytes": 274562,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/cast/standing-ol-surprised.png",
+      "bytes": 280698,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
       "path": "public/portraits/chapter-two/face-fumi-tears.png",
       "bytes": 450440,
       "suffix": ".png",
@@ -2672,7 +2808,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 88193,
+      "bytes": 89296,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3106,7 +3242,7 @@
     },
     {
       "path": "src/CharacterPortrait.tsx",
-      "bytes": 2983,
+      "bytes": 3302,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
@@ -4532,7 +4668,7 @@
     },
     {
       "path": "src/quests/backstageMeetings.ts",
-      "bytes": 9559,
+      "bytes": 9884,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4928,7 +5064,7 @@
     },
     {
       "path": "src/storyStage.css",
-      "bytes": 3853,
+      "bytes": 4462,
       "suffix": ".css",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5451,7 +5587,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 4550,
+      "bytes": 5164,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5475,7 +5611,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 9932,
+      "bytes": 9962,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
