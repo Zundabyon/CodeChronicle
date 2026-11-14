@@ -99,7 +99,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
-  const npcs=storyNpcs(map.npcs,save.story);
+  const npcs=storyNpcs(map.npcs,save.story,save.quests);
   const objective=objectiveOverride??storyObjective(save.story,save.bossDefeated);
   const knightPoint=[{x:save.pos.x+2,y:save.pos.y},{x:save.pos.x+1,y:save.pos.y},{x:save.pos.x-1,y:save.pos.y}].find(point=>canWalkOnMap(map,point))??save.pos;
   const {width,height}=map;

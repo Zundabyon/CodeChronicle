@@ -92,3 +92,16 @@ test('the final battle against Graphius precedes restoring the ledger',{timeout:
   await talkToOrl(page);await advance(page);
   const done=await saved(page);assert.equal(done.quests['village-ledger'].step,'complete');assert.equal(done.gold,gold+70);
 });
+
+test('the act foe stands in the village: taunting during its dungeon, battling in its battle step',{timeout:60000},async t=>{
+  const taunt=await open(t,{...chapterSave('collect-r'),pos:{x:19,y:12}});
+  await taunt.locator('.world-viewport').focus();await taunt.keyboard.press('Enter');await taunt.locator('.dialogue-box').waitFor();
+  assert.match(await taunt.locator('.dialogue-box').innerText(),/祭壇の術がないと/);await advance(taunt);
+  assert.equal(await taunt.locator('.question-card').count(),0,'a taunt does not start a battle');
+  const page=await open(t,{...chapterSave('battle-r'),pos:{x:14,y:13}});
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Enter');await page.locator('.dialogue-box').waitFor();
+  await advance(page);assert.equal((await current(page)).id,'ranger-r-1','talking to Nozomi starts her battle');
+  const after=await open(t,{...chapterSave('create-family'),pos:{x:14,y:13}});
+  await after.locator('.world-viewport').focus();await after.keyboard.press('Enter');
+  assert.equal(await after.locator('.dialogue-box').count(),0,'beaten Nozomi is gone from the square');
+});

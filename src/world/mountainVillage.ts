@@ -56,6 +56,15 @@ const npcs:(Npc & {chip:CharacterPlacement['chip']})[]=[
     'Controllerは「名簿を見たい！」というお願いを受けて、必要な係に仕事を頼むんだ。',
     '役割を一つずつ覚えたら、三つの係がどうつながるか考えてみよう！'
   ]},
+  // Chapter two foes; which one stands is decided by villageFoeVisible. Square (13,13) and outskirts (20,12) avoid villageScars.
+  ...([['ranger-read','nozomi','ノゾミ・ブルー','祭壇の術がないと、勝負にならないよ〜。あっちの記録、見に行ってきたら？'],
+    ['ranger-create','tsukune','ツクネ・アンバー','まだ工房に行ってないの？ お友達、もっともっと増やしちゃうよ！'],
+    ['ranger-update','nurie','ヌリエ・ジェイド','回廊の術も持たずに来たの？ 先に村じゅう塗りかえちゃうわよ。'],
+    ['ranger-delete','keshi','ケシ・パープル','……墓所の術がないなら、しずかにしてて。'],
+    ['graphius','graphius','記録卿グラフィウス','']] as const).flatMap(([chip,face,name,taunt])=>[
+    {id:`foe-${chip}`,chip,name,x:13,y:13,face,lines:[`${name}が立ちはだかっている。`]},
+    ...(taunt?[{id:`taunt-${chip}`,chip,name,x:20,y:12,face,lines:[taunt]}]:[]),
+  ]),
 ];
 
 export const mountainVillage:WorldMapInput={

@@ -97,7 +97,7 @@ function pathfind(area: Area, start: Point, goal: Point, defeated: string[], pos
   for(let head=0;head<queue.length;head++) {
     const p = queue[head];
     if (same(p,goal)) { const path: Point[] = []; let key = `${p.x},${p.y}`; while (key !== `${start.x},${start.y}`) { const [x,y] = key.split(',').map(Number); path.unshift({x,y}); key = parents.get(key)!; } return path; }
-    for (const next of neighbors(p)) { const key = `${next.x},${next.y}`; const blocked=storyNpcs(maps[area].npcs,story).some(n=>same(n,next)) || !!enemyAt(area,next,positions,defeated); if (!seen.has(key) && walkable(area,next,quests) && !blocked && (same(next,goal) || eventAt(maps[area],next,'enter')?.action.kind!=='transition')) { seen.add(key); parents.set(key,`${p.x},${p.y}`); queue.push(next); } }
+    for (const next of neighbors(p)) { const key = `${next.x},${next.y}`; const blocked=storyNpcs(maps[area].npcs,story,quests).some(n=>same(n,next)) || !!enemyAt(area,next,positions,defeated); if (!seen.has(key) && walkable(area,next,quests) && !blocked && (same(next,goal) || eventAt(maps[area],next,'enter')?.action.kind!=='transition')) { seen.add(key); parents.set(key,`${p.x},${p.y}`); queue.push(next); } }
   }
   return [];
 }
@@ -265,6 +265,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const {sendQuestEvent,startQuest,talkToQuestNpc,answerQuestQuestion,reviewQuest}=useQuests({questionBank, stateRef,update,startDialogue,playStory,onChapterStart,recordPractice,startBattle:startQuestBattle});
   const talkToNpc = useCallback((npc: Npc) => {
     const stage=stateRef.current.story;
+    // A village foe in its battle step opens the same pre-battle scene as talking to Ol.
+    if(npc.id.startsWith('foe-')){talkToQuestNpc({...npc,id:'mountainGuide'});return;}
     if(talkToQuestNpc(npc,npcChoices[npc.id]))return;
     if(npc.id==='fumi'){startDialogue(npc.name,npc.face,[fumiLine(stateRef.current.quests)]);return;}
     if(npc.id==='mountainHealer') {
@@ -436,7 +438,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     // An unread required lesson holds its tile until the explanation is finished.
     if(door?.kind==='lesson'&&door.required&&!isLessonRead(s.readBooks,door.id)){openLesson(door.id);return false;}
     if (!walkable(s.area,target,s.quests)) { beep(130,0.05); return false; }
-    const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target));
+    const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story,s.quests).find(n=>same(n,target));
     if (npc) { talkToNpc(npc); return false; }
     const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated);
     if (enemy) { startBattle(enemy); return false; }
@@ -452,7 +454,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const interact = useCallback(() => {
     stopPath();
     const s=stateRef.current, map=maps[s.area];
-    const target=nearbyInteraction(map,s.pos,facingRef.current,s.story);
+    const target=nearbyInteraction(map,s.pos,facingRef.current,s.story,s.quests);
     if(target?.kind==='npc') {talkToNpc(target.npc);return;}
     if(target?.kind==='event') {
       const action=target.action;
@@ -518,7 +520,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   useEffect(() => () => { stopPath(); if(walkTimer.current) clearTimeout(walkTimer.current); if(attackTimer.current) clearTimeout(attackTimer.current); },[stopPath]);
   const clickTile = (target: Point) => {
     if (phase!=='world' || dialogue || showSettings || showGuide || showMap || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType) return;
-    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action;
+    stopPath(); const s=stateRef.current; const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story,s.quests).find(n=>same(n,target)); const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated); const interaction=eventAt(map,target,'interact')?.action;
     let destination=target;
     if (npc || enemy || interaction) { const options=neighbors(target).filter(p=>walkable(s.area,p,s.quests)); const paths=options.map(p=>({p,route:pathfind(s.area,s.pos,p,s.defeated,enemyPositionsRef.current,s.story,s.quests)})).filter(v=>v.route.length||same(v.p,s.pos)); paths.sort((a,b)=>a.route.length-b.route.length); destination=paths[0]?.p??target; }
     const route=pathfind(s.area,s.pos,destination,s.defeated,enemyPositionsRef.current,s.story,s.quests);
@@ -618,7 +620,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       const queue=[s.pos],visited=new Set<string>();let safe:Point|undefined;
       for(let i=0;i<queue.length&&!safe;i++)for(const p of neighbors(queue[i])){
         const key=`${p.x},${p.y}`;if(visited.has(key)||!walkable(s.area,p,s.quests)||eventAt(maps[s.area],p,'enter'))continue;visited.add(key);
-        if(!enemyAt(s.area,p,enemyPositionsRef.current,s.defeated)&&!storyNpcs(maps[s.area].npcs,s.story).some(n=>same(n,p))){safe=p;break;}queue.push(p);
+        if(!enemyAt(s.area,p,enemyPositionsRef.current,s.defeated)&&!storyNpcs(maps[s.area].npcs,s.story,s.quests).some(n=>same(n,p))){safe=p;break;}queue.push(p);
       }
       if(!safe){setToast('安全に退ける場所がありません。');return;}update(value=>({...value,pos:safe!}));
     }
@@ -699,7 +701,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const related=battle?.answered?relatedBook(battle.question.id):null;
   const schedule=reviewSchedule(save.learningRecords,reviewNow);
   const wrongQuestions=[...new Set([...save.wrong,...schedule.filter(entry=>entry.due).map(entry=>entry.id)])].map(id=>bossQuestionById(id) ?? questions.find(q=>q.id===id)).filter((q):q is Question=>!!q);
-  const near=phase==='world'&&!dialogue&&!worldMenu&&!showGuide&&!showMap&&!showSettings&&!inventoryOpen&&!dresserOpen&&!libraryShelf&&!shopType?nearbyInteraction(maps[save.area],save.pos,facing,save.story):null;
+  const near=phase==='world'&&!dialogue&&!worldMenu&&!showGuide&&!showMap&&!showSettings&&!inventoryOpen&&!dresserOpen&&!libraryShelf&&!shopType?nearbyInteraction(maps[save.area],save.pos,facing,save.story,save.quests):null;
   const nearbyHint=near?{point:near.point,label:near.kind==='event'&&near.action.kind==='chest'&&save.openedChests.includes(near.action.id)?'空の宝箱を調べる':near.label}:undefined;
   const intro=prologue[introIndex];
   const currentLine=dialogue?.lines[dialogue.index];

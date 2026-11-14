@@ -1,4 +1,6 @@
 import type { Npc } from './content';
+import { villageFoeVisible } from './quests/definitions';
+import type { QuestStates } from './quests/types';
 
 export const storyStages=['breakfast','mayor','ruins','knight','knowledge','homecoming','rescued','legacy'] as const;
 export type StoryStage=typeof storyStages[number];
@@ -14,7 +16,7 @@ export function migrateStoryStage(value:unknown):StoryStage {
   return storyStages.includes(value as StoryStage)?value as StoryStage:'legacy';
 }
 export const canLeaveTown=(stage:StoryStage)=>stage!=='breakfast'&&stage!=='mayor';
-export const storyNpcs=(npcs:Npc[],stage:StoryStage)=>npcs.filter(npc=>npc.id!=='innkeeper'||['breakfast','rescued','legacy'].includes(stage));
+export const storyNpcs=(npcs:Npc[],stage:StoryStage,quests:QuestStates={})=>npcs.filter(npc=>(npc.id!=='innkeeper'||['breakfast','rescued','legacy'].includes(stage))&&villageFoeVisible(npc.id,quests));
 export function storyObjective(stage:StoryStage,bossDefeated=false) {
   switch(stage) {
     case 'breakfast':return {title:'いつもの朝食',text:'街の東にある旅籠へ。育ての親、女将ハンナに会おう。'};

@@ -41,3 +41,10 @@ export function chapterTwoAct(quests:QuestStates):number {
   const index=def.steps.findIndex(s=>s.id===step);
   return actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
 }
+const foeOrder=['ranger-read','ranger-create','ranger-update','ranger-delete','graphius'];
+/** Village foes: `foe-<id>` stands in the square during its battle step, `taunt-<id>` on the outskirts earlier in its act. */
+export function villageFoeVisible(npcId:string,quests:QuestStates):boolean {
+  const match=/^(foe|taunt)-(.+)$/.exec(npcId);if(!match)return true;
+  if(foeOrder[chapterTwoAct(quests)-1]!==match[2])return false;
+  return (match[1]==='foe')===!!quests['village-ledger']?.step.startsWith('battle-');
+}

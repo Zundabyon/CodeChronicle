@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / 858e1bd + current working tree",
+  "snapshot": "2026-11-14 / 94af1bf + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -2336,7 +2336,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 85512,
+      "bytes": 85744,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3371,7 +3371,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 19793,
+      "bytes": 19805,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4221,7 +4221,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 4823,
+      "bytes": 5340,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -4567,7 +4567,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 9862,
+      "bytes": 10029,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
@@ -4790,7 +4790,7 @@
     },
     {
       "path": "src/world/interactions.ts",
-      "bytes": 1032,
+      "bytes": 1113,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "向きや隣接位置、物語のNPC条件を踏まえて調べる対象を選ぶ。",
@@ -4961,7 +4961,7 @@
     },
     {
       "path": "src/world/mountainVillage.ts",
-      "bytes": 4255,
+      "bytes": 5266,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "石灯の村の地形・住民・建物と、入口・戻り位置を定義する。",
@@ -5123,7 +5123,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 7725,
+      "bytes": 8862,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
