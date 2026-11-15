@@ -78,3 +78,17 @@ test('メニューの「デバッグ：ワープ」で任意の場所へ一瞬�
   await page.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).area==='crudRead',key);
   assert.equal((await saved(page)).area,'crudRead');
 });
+
+test('メニューから効果音さくせいを開き、ゲームに反映できる',async t=>{
+  const page=await open(t,base);
+  await page.getByRole('button',{name:/続きから/}).click();
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'▶ デバッグ：効果音さくせい'}).click();
+  await page.getByRole('dialog',{name:'効果音さくせい'}).waitFor();
+  await page.getByRole('combobox').first().selectOption('correct');
+  await page.getByRole('button',{name:'ゲームに反映'}).click();
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('code-chronicle-sfx-overrides')??'{}'));
+  assert.ok(saved.correct,'the tuned correct sound is stored for the game');
+  await page.getByRole('button',{name:'✕ とじる'}).click();
+  assert.equal(await page.getByRole('dialog',{name:'効果音さくせい'}).count(),0);
+});
