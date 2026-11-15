@@ -852,3 +852,4 @@
 .battle-actions .magic-button small { margin-left: 6px; font-size: 10px; color: #b9c4d6; }
 .battle-actions .magic-button .shortcut-key { margin-left: 4px; }
 .battle-actions .flee-button { margin-left: auto; }
+.topbar .battlefield-sign{position:static;max-width:none;font-size:13px}

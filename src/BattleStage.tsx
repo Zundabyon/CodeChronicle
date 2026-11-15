@@ -10,8 +10,6 @@ import { battleBanter, type BattleMoment } from './battleBanter';
 import type { HeroTechnique } from './heroTechniques';
 
 type BattleStageProps = {
-  title?: string;
-  badge?: string;
   area: Area | 'church';
   enemy: Enemy;
   enemyHp: number;
@@ -39,7 +37,9 @@ const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
 
 const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
 
-export function BattleStage({ title, badge, area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0 }: BattleStageProps) {
+export const battleLocation = (area: string) => area.startsWith('crud') || area === 'village' ? areaLabel[area as Area] : area === 'field' ? '風渡りの平原' : area === 'dungeon' ? '忘却の遺跡' : area === 'church' ? '黎明の教会' : '黎明の町';
+
+export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0 }: BattleStageProps) {
   const [impactRound,setImpactRound]=useState<number|null>(null);
   useEffect(()=>{
     if(!attack||!attackAnimating||!impact)return;
@@ -52,7 +52,6 @@ export function BattleStage({ title, badge, area, enemy, enemyHp, enemyMaxHp, he
   const guardBreak=!!enemy.boss&&attack==='hero'&&!!impact?.enemyDamage&&impactReached&&!bossGuardBroken(impact.enemyBefore,bossStage)&&bossGuardBroken(enemyHp,bossStage);
   const defeated=attack==='hero'&&enemyHp<=0&&impactReached;
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : area.startsWith('crud')?'dungeon':'town';
-  const location = area.startsWith('crud') || area === 'village' ? areaLabel[area as Area] : terrain === 'field' ? '風渡りの平原' : terrain === 'dungeon' ? '忘却の遺跡' : terrain === 'church' ? '黎明の教会' : '黎明の町';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
   const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'];
   const heroMove = heroTechnique?.motion ?? (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
@@ -70,7 +69,6 @@ export function BattleStage({ title, badge, area, enemy, enemyHp, enemyMaxHp, he
   return (
     <div className="battle-stage">
     <div className={`battlefield battlefield-${terrain} ${attack ? `battlefield-${attack}-attack` : ''} ${attack === 'hero' ? `battlefield-hero-move-${heroMove}` : ''} ${attack === 'enemy' ? `battlefield-enemy-${enemyAttackStyle}` : ''}`} style={style}>
-      <div className="battlefield-sign"><b>ENCOUNTER</b><span className="battlefield-location">{location}</span>{title && <strong>{title}</strong>}{badge && <em>{badge}</em>}</div>
       <div className="battlefield-backdrop" aria-hidden="true">
         <span className="battlefield-scenery-back" />
         <span className="battlefield-scenery-front" />

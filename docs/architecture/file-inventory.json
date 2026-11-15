@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / 27102cc + current working tree",
+  "snapshot": "2026-11-15 / 6121032 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -2808,7 +2808,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 90863,
+      "bytes": 91090,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3142,7 +3142,7 @@
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 7847,
+      "bytes": 7637,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -3981,7 +3981,7 @@
     },
     {
       "path": "src/battle.css",
-      "bytes": 40975,
+      "bytes": 41048,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "戦闘画面・攻撃演出のCSS。",
