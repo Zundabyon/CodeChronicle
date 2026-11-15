@@ -31,7 +31,6 @@ import { nearbyInteraction } from './world/interactions';
 import { ResumeSummary } from './ResumeSummary';
 import { LearningSetupHelp } from './LearningSetupHelp';
 import './learningSetupHelp.css';
-import { loadAudioPreferences, saveAudioPreferences } from './audioPreferences';
 import { claimChest } from './chests';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { areaLabel, difficultyLabel, houses, questions as bundledQuestions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
@@ -60,10 +59,10 @@ import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
 import { enemyAt, moveEnemies, spawnEnemies, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment, type Inventory, type ItemId, type ShopType } from './items';
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
-import { playSfx } from './sfx';
-import { type SfxName } from './sfxBank';
-import { sfxParams } from './sfxOverrides';
+import { useAudio } from './audio/useAudio';
+import { sceneBgm } from './audio/bgmBank';
 const SfxDesigner = lazy(() => import('./dev/SfxDesigner').then(m => ({ default: m.SfxDesigner })));
+const BgmDesigner = lazy(() => import('./dev/BgmDesigner').then(m => ({ default: m.BgmDesigner })));
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear' | 'backstage';
 type Save = { quests:QuestStates; dialogueLog:DialogueLogEntry[]; learningRecords:LearningRecords; version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; dailyRewardDate:string; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
@@ -193,7 +192,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const [mapView,setMapView]=useState<MapTab|null>(null);
   const showMap=mapView!==null;
   const [showGuide,setShowGuide] = useState(false);
-  const [showSfx,setShowSfx] = useState(false);
+  const [designer,setDesigner] = useState<'sfx'|'bgm'|null>(null);
   const [worldMenu,setWorldMenu] = useState<'command'|'status'|'quest'|'warp'|null>(null);
   const [inventoryOpen,setInventoryOpen] = useState(false);
   useEffect(()=>{if((recovery?.source==='inventory'&&!inventoryOpen)||(recovery?.source==='church'&&phase!=='church'))setRecovery(null);},[inventoryOpen,phase,recovery]);
@@ -214,8 +213,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     setLearningSession(session=>({...session,rewardXp:gained}));setToast(`今日の5問を達成！ 経験値 +${gained}`);
   },[learningSession]);
   const [walking,setWalking] = useState(false);
-  const [audioPreferences,setAudioPreferences] = useState(loadAudioPreferences);
-  const {muted,volume}=audioPreferences;
+  const {muted,volume,setVolume,sfx,playBgm,pauseBgm,jingle,toggleMute:toggleSound}=useAudio();
+  useEffect(()=>pauseBgm(!!designer),[designer,pauseBgm]);
   const [epilogueStep,setEpilogueStep] = useState(0);
   const [toast,setToast] = useState('');
   const [saveFailed,setSaveFailed]=useState(false);
@@ -227,19 +226,6 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const pathTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const walkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const attackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const audioRef = useRef<AudioContext | null>(null);
-  const audioUnlocked=useRef(false);
-  useEffect(()=>saveAudioPreferences(audioPreferences),[audioPreferences]);
-  useEffect(()=>{
-    const unlock=()=>{
-      audioUnlocked.current=true;
-      if(audioRef.current?.state==='suspended')void audioRef.current.resume().catch(()=>{});
-      window.removeEventListener('pointerdown',unlock,true);
-      window.removeEventListener('keydown',unlock,true);
-    };
-    window.addEventListener('pointerdown',unlock,true);window.addEventListener('keydown',unlock,true);
-    return ()=>{window.removeEventListener('pointerdown',unlock,true);window.removeEventListener('keydown',unlock,true);};
-  },[]);
   const persistSave=useCallback((current:Save)=>{
     try {
       const savedAt=Date.now();localStorage.setItem(STORAGE,JSON.stringify({...current,lastSavedAt:savedAt}));
@@ -267,23 +253,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     update(s=>({...s,dialogueLog:appendDialogueLog(s.dialogueLog,speaker,text)}));
   },[dialogue,update]);
   const stopPath = useCallback(() => { if (pathTimer.current) { clearInterval(pathTimer.current); pathTimer.current = null; } },[]);
-  // 場面ループの旋律専用。効果音は sfx(名前) を使う。
-  const beep = useCallback((freq=440,duration=0.1,type: OscillatorType='square') => {
-    if (muted || !audioUnlocked.current) return;
-    try { const ctx = audioRef.current ?? new AudioContext(); audioRef.current = ctx; const osc=ctx.createOscillator(), gain=ctx.createGain(); osc.type=type; osc.frequency.value=freq; gain.gain.setValueAtTime(volume*0.12,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+duration); osc.connect(gain).connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+duration); } catch { /* audio is optional */ }
-  },[muted,volume]);
-  const sfx = useCallback((name: SfxName) => {
-    if (muted || !audioUnlocked.current) return;
-    try { const ctx = audioRef.current ?? new AudioContext(); audioRef.current = ctx; playSfx(ctx,sfxParams(name),volume*0.5); } catch { /* audio is optional */ }
-  },[muted,volume]);
-  const toggleSound = () => { if (muted) { try { const ctx=audioRef.current??new AudioContext(); audioRef.current=ctx; void ctx.resume().catch(()=>{}); } catch { /* audio is optional */ } } setAudioPreferences(value=>({...value,muted:!value.muted})); };
-  useEffect(() => {
-    if (muted || phase === 'title' || phase === 'prologue') return;
-    const melodies: Record<string,number[]> = {town:[392,494,587,494,440,392,330,392],field:[294,392,440,392,330,392,494,440],dungeon:[220,261,220,196,220,294,261,196],battle:[220,330,294,392,220,330,440,392]};
-    const notes=melodies[phase==='battle'?'battle':maps[save.area].environment==='dungeon'?'dungeon':save.area] ?? melodies.town; let n=0;
-    const id=setInterval(() => { beep(notes[n++%notes.length],0.19,'triangle'); },380);
-    return () => clearInterval(id);
-  },[muted,phase,save.area,beep]);
+  const bgmTrack=sceneBgm({phase,area:save.area,environment:maps[save.area].environment,enemyId:battle?.enemy.id,boss:battle?.enemy.boss,ranger:!!(battle&&rangerBattles[battle.enemy.id])});
+  useEffect(()=>playBgm(bgmTrack),[bgmTrack,playBgm]);
   const startDialogue = useCallback((speaker: string,face: string,lines: (string|StoryLine)[],choices?: Dialogue['choices'],onEnd?: () => void,question?: Question,study?:QuestStudy) => { stopPath(); const next={speaker,face,lines,index:0,choices,onEnd,question,study}; dialogueRef.current=next; setDialogue(next); sfx('select'); },[sfx,stopPath]);
   const playStory = useCallback((lines:StoryLine[],onEnd?:()=>void)=>{
     const name=stateRef.current.name;
@@ -529,7 +500,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   },[phase,dialogue?.index,!!dialogue,worldMenu,showGuide,showMap,showSettings,inventoryOpen,dresserOpen,libraryShelf,shopType,battle?.question.id,battle?.answered,attackAnimating]);
   useEffect(() => { const onKey=(e: KeyboardEvent) => {
     if (e.defaultPrevented || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
-    if (showSfx) { if (e.key==='Escape') { e.preventDefault(); setShowSfx(false); } return; }
+    if (designer) { if (e.key==='Escape') { e.preventDefault(); setDesigner(null); } return; }
     const target=e.target instanceof HTMLElement ? e.target : null;
     if (e.key==='Escape') {
       if(showMap){e.preventDefault();setMapView(null);return;}
@@ -560,7 +531,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     }
     const dirs: Record<string,[number,number]>={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};
     if (dirs[e.key.toLowerCase()] ?? dirs[e.key]) { e.preventDefault(); stopPath(); if(target?.closest('button')) document.querySelector<HTMLElement>('.world-viewport')?.focus({preventScroll:true}); step(...(dirs[e.key.toLowerCase()] ?? dirs[e.key])); }
-  }; window.addEventListener('keydown',onKey); return ()=>window.removeEventListener('keydown',onKey); },[step,interact,showSfx,advanceDialogue,showGuide,showMap,showSettings,inventoryOpen,dresserOpen,libraryShelf,shopType,stopPath,worldMenu]);
+  }; window.addEventListener('keydown',onKey); return ()=>window.removeEventListener('keydown',onKey); },[step,interact,designer,advanceDialogue,showGuide,showMap,showSettings,inventoryOpen,dresserOpen,libraryShelf,shopType,stopPath,worldMenu]);
   useEffect(() => () => { stopPath(); if(walkTimer.current) clearTimeout(walkTimer.current); if(attackTimer.current) clearTimeout(attackTimer.current); },[stopPath]);
   const clickTile = (target: Point) => {
     if (phase!=='world' || dialogue || showSettings || showGuide || showMap || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType) return;
@@ -625,7 +596,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
         setBattle(null);
         if(stateRef.current.story==='legacy') {update(s=>({...s,completed:true}));setPhase('clear');}
         else {update(s=>({...s,story:'homecoming',area:'town',pos:{x:13,y:16}}));setPhase('world');setToast('教会へ。見極めでハンナを救おう。');}
-        sfx('victory');return;
+        jingle('victory');return;
       }
       const gained=battle.enemy.boss?12:4, earned=battle.enemy.boss?100:35;
       const current=stateRef.current,nextLevel=1+Math.floor((current.xp+gained)/12);
@@ -634,7 +605,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       setBattle(null);
       if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}を倒した！ 経験値 +${gained}、${earned} G`); }
       if (ranger) sendQuestEvent({type:'battle-won',enemyId:battle.enemy.id});
-      sfx(nextLevel>current.level?'levelUp':'victory');
+      if(nextLevel>current.level)sfx('levelUp');
+      jingle('victory');
       return;
     }
     if (battle.enemy.boss) {
@@ -795,7 +767,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       </form>
     </div></main>}
     {levelUp&&!['world','epilogue'].includes(phase)&&<div className="daily-level-up"><LevelUpCue event={levelUp}/></div>}
-    {phase==='world' && <WorldScene onSfx={()=>setShowSfx(true)} onWarp={area=>transition(stateRef.current.area,area)} save={save} chestReward={chestReward} levelUp={levelUp} recovery={recovery?.source==='world'?recovery:null} objectiveOverride={chapterObjective(save.quests)} villageAct={save.area==='village'?chapterTwoAct(save.quests):-1} nearbyHint={nearbyHint} enemyPositions={enemyPositions} menu={worldMenu} knightVisible={!dialogue?.lines.slice(0,dialogue.index+1).some(line=>typeof line!=='string'&&line.action==='knight-leaves')} onGuide={()=>{stopPath();setShowGuide(true);}} onMap={(tab='world')=>{stopPath();setWorldMenu(null);setMapView(tab);}} onMenu={menu=>{stopPath();setWorldMenu(menu);}} onTile={clickTile} onChurch={enterChurch} onInventory={()=>setInventoryOpen(true)} onSettings={()=>setShowSettings(true)} onQuit={()=>{let quit=false;startDialogue('語り手','📜',['冒険を保存してタイトルへ戻りますか？'],[{label:'はい',response:'冒険を保存しました。タイトルへ戻ります。',onChoose:()=>{quit=true;}},{label:'いいえ',response:'冒険を続けます。'}],()=>{if(!quit)return;persistSave(stateRef.current);setWorldMenu(null);setPhase('title');});}} onSound={toggleSound} muted={muted} walking={walking} facing={facing}/>}
+    {phase==='world' && <WorldScene onSfx={()=>setDesigner('sfx')} onBgm={()=>setDesigner('bgm')} onWarp={area=>transition(stateRef.current.area,area)} save={save} chestReward={chestReward} levelUp={levelUp} recovery={recovery?.source==='world'?recovery:null} objectiveOverride={chapterObjective(save.quests)} villageAct={save.area==='village'?chapterTwoAct(save.quests):-1} nearbyHint={nearbyHint} enemyPositions={enemyPositions} menu={worldMenu} knightVisible={!dialogue?.lines.slice(0,dialogue.index+1).some(line=>typeof line!=='string'&&line.action==='knight-leaves')} onGuide={()=>{stopPath();setShowGuide(true);}} onMap={(tab='world')=>{stopPath();setWorldMenu(null);setMapView(tab);}} onMenu={menu=>{stopPath();setWorldMenu(menu);}} onTile={clickTile} onChurch={enterChurch} onInventory={()=>setInventoryOpen(true)} onSettings={()=>setShowSettings(true)} onQuit={()=>{let quit=false;startDialogue('語り手','📜',['冒険を保存してタイトルへ戻りますか？'],[{label:'はい',response:'冒険を保存しました。タイトルへ戻ります。',onChoose:()=>{quit=true;}},{label:'いいえ',response:'冒険を続けます。'}],()=>{if(!quit)return;persistSave(stateRef.current);setWorldMenu(null);setPhase('title');});}} onSound={toggleSound} muted={muted} walking={walking} facing={facing}/>}
     {phase==='encounter' && battle && <BattleEncounter enemy={battle.enemy} heroName={save.name} banterSeed={battle.banterSeed} onEnter={()=>setPhase('battle')}/>}
     {phase==='battle' && battle && <main className={`battle-layout ${isFillQuestion(battle.question)?'fill-battle':''}`}><section className="combat-panel"><BattleStage area={battle.fromReview ? 'church' : save.area} enemy={battle.enemy} enemyHp={battle.hp} enemyMaxHp={battle.maxHp} hero={save} heroMaxHp={maxHp(save.level)} heroMaxMp={maxMp(save.level)} attack={battle.answered ? battle.correct ? 'hero' : battle.fromReview ? null : 'enemy' : null} attackRound={battle.rounds} answered={battle.answered} attackAnimating={attackAnimating} impact={battle.impact} bossStage={battle.bossStage} banterSeed={battle.banterSeed} heroTechnique={battle.heroTechnique}/><div className="question-card"><div className="question-kicker"><span>{isFillQuestion(battle.question)?isChoiceQuestion(battle.question)?'✦ CODE CHOICE':'✎ CODE INPUT':battle.question.kind==='cli'?'⌘ CLI CHALLENGE':'✦ FOUR CHOICES'}</span><span>{difficultyLabel[battle.question.difficulty]} · {battle.question.topic==='frontend'?save.track==='react'?'React':'Vue':battle.question.topic==='laravel'?'Laravel':save.inertia?'Inertia':'API連携'}</span></div>{battle.enemy.boss&&<div className="boss-progress"><strong>復旧 {battle.bossStage+1} / {bossStages.length} · {bossStages[battle.bossStage].title}</strong><ol>{bossStages.map((stage,i)=><li key={stage.title} aria-current={i===battle.bossStage?'step':undefined} className={i<battle.bossStage?'done':i===battle.bossStage?'current':''}>{i<battle.bossStage?'✓':i+1} {stage.title}</li>)}</ol><p>症状を読んで対処すると防御が崩れます。追撃で突破し、次の復旧へ。時間制限はありません。</p></div>}<h3>{battle.question.prompt}</h3>{isFillQuestion(battle.question)&&<div className="mobile-question-code"><QuestionCode question={battle.question} answered={battle.answered}/></div>}{battle.question.code&&!isFillQuestion(battle.question)&&<pre>{battle.question.code}</pre>}{isChoiceQuestion(battle.question)?<div className={`options ${battle.question.options!.every(o=>o.length<=28)?'compact':''}`}>{battle.question.options!.map((option,i)=><button key={i} data-shortcut={String.fromCharCode(97+i)} aria-keyshortcuts={String.fromCharCode(65+i)} title={`${String.fromCharCode(65+i)}キーで回答`} disabled={battle.answered||battle.eliminated===i} className={`${battle.answered&&i===battle.question.answer?'right':''} ${battle.answered&&i!==battle.question.answer?'faded':''} ${battle.eliminated===i?'eliminated':''}`} onClick={()=>answer(i)}><span>{String.fromCharCode(65+i)}</span>{battle.eliminated===i?'魔法で除外':option}</button>)}</div>:<form className="cli-form" onSubmit={e=>{e.preventDefault();answer(battleInput);}}><label htmlFor="cli-answer">{isFillQuestion(battle.question)?'① に入るコード':'ゲーム内CLI'}</label><div><span>❯</span><input id="cli-answer" autoFocus spellCheck={false} value={battleInput} onChange={e=>setBattleInput(e.target.value)} disabled={battle.answered} autoComplete="off" autoCapitalize="off" placeholder={isFillQuestion(battle.question)?'① に入る単語・式を入力':'コマンドを入力'}/><button disabled={battle.answered||!battleInput.trim()}>{isFillQuestion(battle.question)?'回答 ↵':'実行 ↵'}</button></div></form>}{battleNote&&<div className={`battle-note ${battle.correct?'success':'fail'}`}>{battleNote}</div>}{battle.answered&&<button className="primary next-turn" data-shortcut="n" aria-keyshortcuts="N" disabled={attackAnimating} onClick={battleNext}>{battle.fromReview&&reviewCourse?reviewCourse.index+1<reviewCourse.questions.length?'次の復習へ':'復習結果を見る':battle.hp<=0?'戦闘を終える':save.hp<=0&&battle.set?'最初から挑み直す':save.hp<=0&&!battle.fromReview?'教会へ':battle.set&&!battle.correct?'同じ問いに再挑戦':battle.enemy.boss?battle.correct?bossGuardBroken(battle.hp,battle.bossStage)?'次の復旧へ':'隙を突いて追撃する':'同じ状況に再挑戦':battle.fromReview&&!battle.correct?'もう一度挑戦する':'次の問題へ'}　▶ <kbd className="shortcut-key">N / Enter</kbd></button>}{battle.enemy.boss&&!battle.answered&&<div className="boss-hints"><button className="magic-button" data-shortcut="h f4" aria-keyshortcuts="H F4" disabled={battle.hints>=2} onClick={()=>setBattle({...battle,hints:Math.min(2,battle.hints+1)})}>✦ ヒントを見る（無料） {battle.hints} / 2 <kbd className="shortcut-key">H / F4</kbd></button>{bossStages[battle.bossStage].hints.slice(0,battle.hints).map((hint,i)=><p key={i}>{hint}</p>)}</div>}<div className="battle-actions">{!battle.answered&&save.bossDefeated&&isChoiceQuestion(battle.question)&&<button className="magic-button" data-shortcut="m f3" aria-keyshortcuts="M F3" disabled={save.mp<1||battle.eliminated!==null} title="見極めの魔法：誤った選択肢を一つ消す（MP 1）" onClick={castMagic}>まほう <small>MP1</small> <kbd className="shortcut-key">M</kbd></button>}{!battle.answered&&<button className="magic-button" data-shortcut="i f2" aria-keyshortcuts="I F2" title="どうぐを使う（I / F2）" onClick={()=>setInventoryOpen(true)}>アイテム <kbd className="shortcut-key">I</kbd></button>}{!battle.fromReview&&!battle.enemy.boss&&!battle.set&&battle.enemy.id!=='after-gate'&&<button className="magic-button flee-button" title="戦闘から退く（報酬なし）" disabled={attackAnimating||save.hp<=0} onClick={retreat}>にげる <small>報酬なし</small></button>}{battle.fromReview&&<button className="magic-button flee-button" data-shortcut="r" aria-keyshortcuts="R" disabled={attackAnimating} onClick={()=>{if(reviewCourse)setReviewResult(`復習コースを中断：回答 ${reviewCourse.answered}問 · 正解 ${reviewCourse.correct}問`);setReviewCourse(null);setBattle(null);setBattleInput('');setBattleNote('');setPhase('review-room');}}>← 復習の部屋へ戻る <kbd className="shortcut-key">R</kbd></button>}</div></div></section><aside className="explain-panel">{isFillQuestion(battle.question)&&<div className="desktop-question-code"><QuestionCode question={battle.question} answered={battle.answered}/></div>}<div className="explain-header"><span className="eyebrow">GRIMOIRE</span><h2>知識の書</h2><p>問いを解くたび、失われた言葉が戻ってくる。</p></div>{battle.answered?<div className="explain-content"><span className={battle.correct?'answer-tag good':'answer-tag bad'}>{battle.correct?'正解':'復習ポイント'}</span><h3>答え：{battle.question.reveal}</h3><p>{battle.question.explanation}</p>{wrongChoiceReason(battle.question,battle.submitted)&&<p className="tip-box"><strong>選んだ答えについて</strong><br/>{wrongChoiceReason(battle.question,battle.submitted)}</p>}{related&&<button onClick={()=>{bookmarkBook(related.shelf.id,related.book.id);setLibraryShelf(related.shelf);}}>関連する本「{related.book.title}」を読む</button>}<div className="tip-box">間違えた問題は教会の「復習の部屋」で振り返れます。</div></div>:<div className="explain-placeholder"><div>✧</div><p>回答するとここに解説が表示されます。</p></div>}<div className="battle-stats"><span>正解 {save.correct}</span><span>回答 {save.total}</span><span>復習 {save.wrong.length}</span></div></aside></main>}
     {phase==='church' && <main className="church-screen"><div className="church-visual"><img src={`${import.meta.env.BASE_URL}maps/church-town-320x256.png`} alt="黎明の教会"/><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3>{['mayor','ruins','homecoming'].includes(save.story)&&<button className="primary" onClick={visitHanna}>ハンナを見舞う</button>}<p>「心と体を休めていってください。問いを振り返りたいときは、奥の復習の部屋へどうぞ」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div>{recovery?.source==='church'&&<RecoveryCue key={recovery.sequence} event={recovery}/>}<button className="primary" onClick={()=>{const current=stateRef.current,hp=maxHp(current.level)-current.hp,mp=maxMp(current.level)-current.mp;if(hp||mp)setRecovery(previous=>({sequence:(previous?.sequence??0)+1,hp,mp,source:'church'}));else setRecovery(null);update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');sfx('heal');}}>HP・MPを回復する ✦</button><button className="church-room-door" onClick={()=>{setPhase('review-room');sfx('door');}}><span><strong>📖 復習の部屋へ入る</strong><small>教会の奥の別室 · 復習する問題 {wrongQuestions.length} 問</small></span><span aria-hidden="true">▶</span></button></div><button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));}}>← 町へ戻る</button></div></main>}
@@ -812,8 +784,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
     {inventoryOpen&&<InventoryPanel save={save} recovery={recovery?.source==='inventory'?recovery:null} onUse={useItem} onEquip={equipItem} onReadLetter={()=>{setInventoryOpen(false);setReadingLetter(true);setDresserFound(false);setDresserOpen(true);}} onClose={()=>{setInventoryOpen(false);setRecovery(null);}}/> }
-    {showSfx&&<div className="modal-backdrop sfx-backdrop" role="dialog" aria-label="効果音さくせい"><div className="sfx-modal"><Suspense fallback={<p>読み込み中…</p>}><SfxDesigner onClose={()=>setShowSfx(false)}/></Suspense></div></div>}
-    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>{const volume=Number(e.target.value);setAudioPreferences(value=>({...value,volume}));}}/></label><QuestJournal save={save} onStart={startQuest} onReview={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');reviewQuest(id);}}/><LessonList readBooks={save.readBooks} onOpen={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');openLesson(id);}}/><DialogueHistoryPanel entries={save.dialogueLog}/><LearningRecordPanel questionBank={questionBank} records={save.learningRecords}/><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
+    {designer&&<div className="modal-backdrop sfx-backdrop" role="dialog" aria-label={designer==='sfx'?'効果音さくせい':'BGMさくせい'}><div className="sfx-modal"><Suspense fallback={<p>読み込み中…</p>}>{designer==='sfx'?<SfxDesigner onClose={()=>setDesigner(null)}/>:<BgmDesigner onClose={()=>setDesigner(null)}/>}</Suspense></div></div>}
+    {showSettings&&<div className="modal-backdrop"><div className="settings-modal"><div className="modal-heading"><div><span className="eyebrow">ADVENTURE SETTINGS</span><h2>学習設定</h2></div><button onClick={()=>setShowSettings(false)} aria-label="閉じる">×</button></div><LearningSetupHelp/><label>主人公の名前<input maxLength={12} value={save.name} onChange={e=>update(s=>({...s,name:e.target.value||'旅人'}))}/></label><div className="setting-group"><span>学ぶフロントエンド</span><div className="segmented"><button className={save.track==='react'?'selected':''} onClick={()=>update(s=>({...s,track:'react'}))}>React + TS</button><button className={save.track==='vue'?'selected':''} onClick={()=>update(s=>({...s,track:'vue'}))}>Vue + TS</button></div></div><div className="setting-group"><span>難易度</span><DifficultyPicker value={save.difficulty} onChange={difficulty=>update(s=>({...s,difficulty}))}/><small>出題内容が切り替わります。敵の強さ・HP・報酬は共通です。</small></div><label className="toggle-row"><span><strong>Inertia環境</strong><small>オン：Inertia連携 / オフ：Laravel API連携</small></span><input type="checkbox" checked={save.inertia} onChange={e=>update(s=>({...s,inertia:e.target.checked}))}/></label><label className="volume-row">音量 <input type="range" min="0" max="1" step="0.05" value={volume} onChange={e=>setVolume(Number(e.target.value))}/></label><QuestJournal save={save} onStart={startQuest} onReview={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');reviewQuest(id);}}/><LessonList readBooks={save.readBooks} onOpen={id=>{setShowSettings(false);setWorldMenu(null);setPhase('world');openLesson(id);}}/><DialogueHistoryPanel entries={save.dialogueLog}/><LearningRecordPanel questionBank={questionBank} records={save.learningRecords}/><SaveTransfer current={hasSave?save:null} validate={validateIncomingSave} onImport={importSave}/><button className="primary close-settings" onClick={()=>setShowSettings(false)}>冒険へ戻る</button></div></div>}
     {mapView&&<TravelMap initialTab={mapView} area={save.area} position={save.pos} inChurch={phase==='church'||phase==='review-room'} onClose={()=>setMapView(null)}/>}
     {showGuide&&<ControlsGuide onClose={()=>setShowGuide(false)}/>}
     {saveNotice&&<aside className="save-status save-error" role="status"><p>{saveNotice}</p><button onClick={()=>setSaveNotice('')}>確認しました</button></aside>}

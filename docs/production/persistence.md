@@ -9,7 +9,7 @@
 | 保存・保護・復元・更新の利用経路 | [App.tsx](../../src/App.tsx) |
 | セーブファイルの入出力と確認 | [SaveTransfer.tsx](../../src/SaveTransfer.tsx) |
 | 保存表示・再開案内 | [SaveStatus.tsx](../../src/SaveStatus.tsx)、[ResumeSummary.tsx](../../src/ResumeSummary.tsx) |
-| 音の個人設定 | [audioPreferences.ts](../../src/audioPreferences.ts) |
+| 音の個人設定 | [audioPreferences.ts](../../src/audio/audioPreferences.ts) |
 
 制作契約：確認前の読み込みプレビューで現在の冒険を上書きしない。検証失敗・取消・容量不足では既存データを保つ。新規開始やインポート前の保護処理、復元後の再開を維持する。読み込みや移行だけでクエスト報酬・宝箱報酬を再付与しない。
 

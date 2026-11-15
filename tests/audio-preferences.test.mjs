@@ -4,7 +4,7 @@ import {createServer} from 'vite';
 const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 const originalStorage=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
 after(()=>{if(originalStorage===undefined)delete globalThis.localStorage;else Object.defineProperty(globalThis,'localStorage',originalStorage);return server.close();});
-const {loadAudioPreferences,saveAudioPreferences,AUDIO_PREFERENCES_KEY}=await server.ssrLoadModule('/src/audioPreferences.ts');
+const {loadAudioPreferences,saveAudioPreferences,AUDIO_PREFERENCES_KEY}=await server.ssrLoadModule('/src/audio/audioPreferences.ts');
 test('audio preferences survive storage without touching the adventure save',()=>{
  const stored=new Map([['code-chronicle-save-v1','adventure']]);
  globalThis.localStorage={getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)};

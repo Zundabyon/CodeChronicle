@@ -92,3 +92,22 @@ test('メニューから効果音さくせいを開き、ゲームに反映で�
   await page.getByRole('button',{name:'✕ とじる'}).click();
   assert.equal(await page.getByRole('dialog',{name:'効果音さくせい'}).count(),0);
 });
+
+test('メニューからBGMさくせいを開き、音符を置いてゲームに反映できる',async t=>{
+  const page=await open(t,base);
+  await page.getByRole('button',{name:/続きから/}).click();
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'▶ デバッグ：BGMさくせい'}).click();
+  const dialog=page.getByRole('dialog',{name:'BGMさくせい'});await dialog.waitFor();
+  await dialog.getByRole('combobox').first().selectOption('battle');
+  const before=await dialog.getByLabel('bgmBank.ts に貼るコード').inputValue();
+  await dialog.locator('[data-pitch="62"]').click({position:{x:3,y:5}});
+  assert.notEqual(await dialog.getByLabel('bgmBank.ts に貼るコード').inputValue(),before,'clicking the roll edits the song');
+  const pos=(await saved(page)).pos;await page.locator('body').press('ArrowUp');
+  assert.deepEqual((await saved(page)).pos,pos,'game keys stay stopped while the designer is open');
+  await dialog.getByRole('button',{name:'ゲームに反映'}).click();
+  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('code-chronicle-bgm-overrides')??'{}'));
+  assert.equal(stored.battle?.bpm,152,'the edited battle song is stored for the game');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByRole('dialog',{name:'BGMさくせい'}).count(),0);
+});

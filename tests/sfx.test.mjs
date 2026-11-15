@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {createServer} from 'vite';
 const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 after(()=>server.close());
-const {normalizeSfx,renderSfx,encodeWav}=await server.ssrLoadModule('/src/sfx.ts');
-const {sfxBank}=await server.ssrLoadModule('/src/sfxBank.ts');
+const {normalizeSfx,renderSfx,encodeWav}=await server.ssrLoadModule('/src/audio/sfx.ts');
+const {sfxBank}=await server.ssrLoadModule('/src/audio/sfxBank.ts');
 test('normalizeSfx fills defaults, clamps ranges and rejects bad waves',()=>{
  const p=normalizeSfx({wave:'kazoo',freq:99999,duty:-1,volume:'x'});
  assert.equal(p.wave,'square');assert.equal(p.freq,4000);assert.equal(p.duty,.05);assert.equal(p.volume,.5);

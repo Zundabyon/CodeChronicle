@@ -61,7 +61,7 @@ export function renderSfx(input: Partial<SfxParams>, rate = SAMPLE_RATE): Float3
 
 const cache = new WeakMap<object, AudioBuffer>();
 /** 同時再生可。paramsオブジェクトごとにバッファを使い回す。 */
-export function playSfx(ctx: BaseAudioContext, params: Partial<SfxParams>, volume = 1): AudioBufferSourceNode {
+export function playSfx(ctx: BaseAudioContext, params: Partial<SfxParams>, volume = 1, destination: AudioNode = ctx.destination): AudioBufferSourceNode {
   let buffer = cache.get(params);
   if (!buffer || buffer.sampleRate !== ctx.sampleRate) {
     const data = renderSfx(params, ctx.sampleRate);
@@ -70,7 +70,7 @@ export function playSfx(ctx: BaseAudioContext, params: Partial<SfxParams>, volum
   }
   const src = ctx.createBufferSource(), gain = ctx.createGain();
   src.buffer = buffer; gain.gain.value = volume;
-  src.connect(gain).connect(ctx.destination); src.start();
+  src.connect(gain).connect(destination); src.start();
   return src;
 }
 

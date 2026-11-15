@@ -1,9 +1,8 @@
 import {useEffect,useRef,useState} from 'react';
-import {encodeWav,normalizeSfx,playSfx,renderSfx,SFX_RANGES,SFX_WAVES,type SfxParams} from '../sfx';
-import {sfxBank,type SfxName} from '../sfxBank';
-import {saveSfxOverride,clearSfxOverrides} from '../sfxOverrides';
-import '../base.css';
-import '../style.css';
+import {encodeWav,normalizeSfx,playSfx,renderSfx,SFX_RANGES,SFX_WAVES,type SfxParams} from '../audio/sfx';
+import {sfxBank,type SfxName} from '../audio/sfxBank';
+import {saveSfxOverride,clearSfxOverrides} from '../audio/sfxOverrides';
+import {DesignerShell,designerBox as box,codeBox,download} from './DesignerShell';
 
 type Key=keyof typeof SFX_RANGES;
 const labels:Record<Key,string>={freq:'開始周波数 Hz',slide:'スライド oct/s',deltaSlide:'スライド加速 oct/s²',vibDepth:'ビブラート深さ',vibSpeed:'ビブラート速さ Hz',arpMul:'アルペジオ倍率',arpTime:'アルペジオ時刻 s',duty:'デューティ比',attack:'アタック s',sustain:'サステイン s',punch:'パンチ',decay:'ディケイ s',volume:'音量',lowpass:'ローパス Hz (0=なし)',highpass:'ハイパス Hz (0=なし)'};
@@ -28,11 +27,8 @@ export function SfxDesigner({onClose}:{onClose?:()=>void}){
   const copy=()=>{const text=code(name||'custom',p);void navigator.clipboard?.writeText(text).then(()=>setMsg('コピーしました。sfxBank.ts の bank に貼ってください。'),()=>setMsg('コピーできませんでした。下の欄から選択してください。'));};
   const apply=()=>{if(!(name in sfxBank)){setMsg('対応表の名前を選んでから反映してください。');return;}saveSfxOverride(name as SfxName,p);setMsg(`ゲームの「${name}」をこの音に変えました（このブラウザに保存）。`);};
   const reset=()=>{clearSfxOverrides();setMsg('ゲームの効果音を初期の音に戻しました。');};
-  const wav=()=>{const url=URL.createObjectURL(new Blob([encodeWav(renderSfx(p))],{type:'audio/wav'}));const a=document.createElement('a');a.href=url;a.download=`${name||'sfx'}.wav`;a.click();URL.revokeObjectURL(url);};
-  const box={background:'#211e2c',border:'2px solid #c3a06d',boxShadow:'0 0 0 4px #171421',padding:16,marginBottom:16} as const;
-  return <div className="app-shell" style={{padding:20}}>
-    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><h1 style={{color:'#f4e4bd',margin:'0 0 4px'}}>効果音さくせい / SFX designer</h1>{onClose&&<button className="secondary" onClick={onClose}>✕ とじる</button>}</div>
-    <p style={{color:'#bfa779',margin:'0 0 16px',fontSize:12}}>Space=試聴 R=ランダム M=揺らぎ。Tabで移動し、矢印キーでスライダーを調整。</p>
+  const wav=()=>download(encodeWav(renderSfx(p)),`${name||'sfx'}.wav`);
+  return <DesignerShell title="効果音さくせい / SFX designer" help="Space=試聴 R=ランダム M=揺らぎ。Tabで移動し、矢印キーでスライダーを調整。" onClose={onClose}>
     <section style={box} aria-label="読み込み">
       <label>対応表 <select value={name in sfxBank?name:''} onChange={e=>{const n=e.target.value as SfxName;setName(n);set(sfxBank[n]);}}><option value="">（新規）</option>{Object.keys(sfxBank).map(n=><option key={n}>{n}</option>)}</select></label>{' '}
       <label>名前 <input value={name} onChange={e=>setName(e.target.value)} size={12}/></label>
@@ -48,7 +44,7 @@ export function SfxDesigner({onClose}:{onClose?:()=>void}){
       <div style={{display:'flex',flexWrap:'wrap',gap:8,alignItems:'center'}}><button className="primary" onClick={()=>play()}>▶ 試聴</button>
         <label><input type="checkbox" checked={auto} onChange={e=>setAuto(e.target.checked)}/> 変更時に鳴らす</label>
         <button className="primary" onClick={apply}>ゲームに反映</button><button className="secondary" onClick={reset}>反映を全部もとに戻す</button><button className="secondary" onClick={copy}>TSコードをコピー</button><button className="secondary" onClick={wav}>WAV書き出し</button><span role="status">{msg}</span></div>
-      <textarea readOnly value={code(name||'custom',p)} style={{width:'100%',marginTop:10,background:'#0d1320',color:'#b6d4c6',font:'12px monospace',border:'1px solid #548475'}} rows={3} aria-label="sfxBank.ts に貼るコード"/>
+      <textarea readOnly value={code(name||'custom',p)} style={codeBox} rows={3} aria-label="sfxBank.ts に貼るコード"/>
     </section>
-  </div>;
+  </DesignerShell>;
 }

@@ -25,7 +25,7 @@ const flat={
   narrative:['story','dialogueLog','DialogueHistoryPanel','DialogueChoices','heroBanter','battleBanter'],
   learning:['questionCatalog','catalogRelease','content','questionSelection','wrongChoiceReasons','bookQuestions','library','LibraryPanel','LibrarySearch','BookPractice','LearningRecordPanel','LearningSession','LearningSetupHelp','QuestionCode','ReviewRoom','learningRecords','reviewSchedule','learningRecords','learningSession','learningSetupHelp','librarySearch','reviewRoom','questLearning'],
   gameplay:['bossBattle','heroTechniques','items','chests','ChestSprite','AdventurePanels','BattleStage','BattleEncounter','battle','chestSprite'],
-  presentation:['titleMotion','QuestionBootstrap','questionBootstrap','TitleScreen','ControlsGuide','keyboardNavigation','keyboardShortcuts','audioPreferences','base','style','titleScreen','chapterStart','storyStage','sfx','sfxBank','sfxOverrides'],
+  presentation:['titleMotion','QuestionBootstrap','questionBootstrap','TitleScreen','ControlsGuide','keyboardNavigation','keyboardShortcuts','base','style','titleScreen','chapterStart','storyStage'],
   persistence:['saveValidation','SaveTransfer','SaveStatus','ResumeSummary','saveTransfer','saveStatus','resumeSummary'],
   operations:['App','main','vite-env.d'],
 };
@@ -33,6 +33,7 @@ function classify(path){
   if(path.startsWith('worker/')||['tsconfig.worker.json','worker-configuration.d.ts'].includes(path))return 'operations';
   if(['seed.lab.sql','seed.game.sql'].includes(path))return 'persistence';
   if(path.startsWith('migrations/'))return 'persistence';
+  if(path.startsWith('src/audio/'))return 'presentation';
   if(path.startsWith('src/motion/'))return 'motion';
   if(path.startsWith('src/dev/'))return 'operations';
   if(path.startsWith('src/world/'))return /memoryEnemy(Art|Identity)\.ts$/.test(path)?'characters':'world';

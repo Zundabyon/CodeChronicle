@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / 7baf237 + current working tree",
+  "snapshot": "2026-11-15 / f17f040 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 491,
+  "count": 501,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -21,9 +21,9 @@
     "人物・生物": 93,
     "会話・操作": 6,
     "作問の仕組み": 5,
-    "保存・復元": 5,
+    "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 86,
+    "制作・運用": 91,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -38,7 +38,7 @@
     "物語・進行": 14,
     "状態・保存": 4,
     "画像・素材": 95,
-    "画面・表現・操作": 18,
+    "画面・表現・操作": 24,
     "表示スタイル": 22,
     "設定": 7,
     "説明資料": 4,
@@ -78,7 +78,7 @@
     "presentation": {
       "label": "画面・表現・操作",
       "guide": "docs/production/presentation.md",
-      "count": 25
+      "count": 30
     },
     "persistence": {
       "label": "状態・保存",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 116
+      "count": 121
     }
   },
   "files": [
@@ -582,7 +582,7 @@
     },
     {
       "path": "docs/production/persistence.md",
-      "bytes": 2057,
+      "bytes": 2063,
       "suffix": ".md",
       "group": "状態・保存",
       "role": "状態・保存に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -590,7 +590,7 @@
     },
     {
       "path": "docs/production/presentation.md",
-      "bytes": 3567,
+      "bytes": 7842,
       "suffix": ".md",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -830,7 +830,7 @@
     },
     {
       "path": "package.json",
-      "bytes": 1693,
+      "bytes": 1767,
       "suffix": ".json",
       "group": "設定",
       "role": "依存パッケージと開発・テスト・ビルドのコマンドを定義する。",
@@ -2720,6 +2720,14 @@
       "genre": "presentation"
     },
     {
+      "path": "scripts/bgm-designer.html",
+      "bytes": 286,
+      "suffix": ".html",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "scripts/check-art-assets.mjs",
       "bytes": 8418,
       "suffix": ".mjs",
@@ -2761,7 +2769,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9010,
+      "bytes": 9018,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -2816,7 +2824,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 92049,
+      "bytes": 89945,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3851,7 +3859,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 21268,
+      "bytes": 21393,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -3969,13 +3977,75 @@
       "genre": "world"
     },
     {
-      "path": "src/audioPreferences.ts",
+      "path": "src/audio/audioEngine.ts",
+      "bytes": 2882,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/audioPreferences.ts",
       "bytes": 909,
       "suffix": ".ts",
-      "group": "保存・復元",
-      "role": "音量・ミュートを冒険のセーブと別キーで保存する。保存不能でもゲームを止めない。",
-      "lines": 16,
-      "imports": [],
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/bgmBank.ts",
+      "bytes": 8230,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/bgmOverrides.ts",
+      "bytes": 772,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/music.ts",
+      "bytes": 12242,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/sfx.ts",
+      "bytes": 4975,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/sfxBank.ts",
+      "bytes": 2612,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/sfxOverrides.ts",
+      "bytes": 795,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/audio/useAudio.ts",
+      "bytes": 1209,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
       "genre": "presentation"
     },
     {
@@ -4259,6 +4329,22 @@
       "genre": "learning"
     },
     {
+      "path": "src/dev/BgmDesigner.tsx",
+      "bytes": 9868,
+      "suffix": ".tsx",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "src/dev/DesignerShell.tsx",
+      "bytes": 1183,
+      "suffix": ".tsx",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "src/dev/ObjectMotionHarness.tsx",
       "bytes": 3852,
       "suffix": ".tsx",
@@ -4268,7 +4354,15 @@
     },
     {
       "path": "src/dev/SfxDesigner.tsx",
-      "bytes": 7166,
+      "bytes": 6558,
+      "suffix": ".tsx",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "src/dev/bgmDesignerEntry.tsx",
+      "bytes": 157,
       "suffix": ".tsx",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5070,30 +5164,6 @@
       "genre": "persistence"
     },
     {
-      "path": "src/sfx.ts",
-      "bytes": 4937,
-      "suffix": ".ts",
-      "group": "画面・表現・操作",
-      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
-      "genre": "presentation"
-    },
-    {
-      "path": "src/sfxBank.ts",
-      "bytes": 2612,
-      "suffix": ".ts",
-      "group": "画面・表現・操作",
-      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
-      "genre": "presentation"
-    },
-    {
-      "path": "src/sfxOverrides.ts",
-      "bytes": 795,
-      "suffix": ".ts",
-      "group": "画面・表現・操作",
-      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
-      "genre": "presentation"
-    },
-    {
       "path": "src/story.ts",
       "bytes": 10080,
       "suffix": ".ts",
@@ -5595,7 +5665,7 @@
     },
     {
       "path": "tests/audio-preferences.test.mjs",
-      "bytes": 1842,
+      "bytes": 1848,
       "suffix": ".mjs",
       "group": "検証",
       "role": "音設定の保存・不正値・保存不能時の継続を検証する。",
@@ -5635,7 +5705,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 6691,
+      "bytes": 8098,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5762,6 +5832,14 @@
       "genre": "operations"
     },
     {
+      "path": "tests/music.test.mjs",
+      "bytes": 3747,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "tests/quest-review.test.mjs",
       "bytes": 3030,
       "suffix": ".mjs",
@@ -5803,7 +5881,7 @@
     },
     {
       "path": "tests/sfx.test.mjs",
-      "bytes": 1615,
+      "bytes": 1627,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
