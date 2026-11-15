@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / 7b1f687 + current working tree",
+  "snapshot": "2026-11-15 / d986a87 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 482,
+  "count": 483,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 80,
+    "制作・運用": 81,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 110
+      "count": 111
     }
   },
   "files": [
@@ -2808,7 +2808,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 89357,
+      "bytes": 89473,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3142,7 +3142,7 @@
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 7648,
+      "bytes": 7847,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -3981,7 +3981,7 @@
     },
     {
       "path": "src/battle.css",
-      "bytes": 36021,
+      "bytes": 38973,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "戦闘画面・攻撃演出のCSS。",
@@ -5072,7 +5072,7 @@
     },
     {
       "path": "src/style.css",
-      "bytes": 28306,
+      "bytes": 28436,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
@@ -5588,6 +5588,14 @@
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
       "bytes": 5760,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/battle-layout.test.mjs",
+      "bytes": 5381,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

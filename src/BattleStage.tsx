@@ -10,6 +10,8 @@ import { battleBanter, type BattleMoment } from './battleBanter';
 import type { HeroTechnique } from './heroTechniques';
 
 type BattleStageProps = {
+  title?: string;
+  badge?: string;
   area: Area | 'church';
   enemy: Enemy;
   enemyHp: number;
@@ -37,7 +39,7 @@ const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
 
 const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
 
-export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0 }: BattleStageProps) {
+export function BattleStage({ title, badge, area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0 }: BattleStageProps) {
   const [impactRound,setImpactRound]=useState<number|null>(null);
   useEffect(()=>{
     if(!attack||!attackAnimating||!impact)return;
@@ -66,9 +68,9 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const style = { '--battle-ground': `url("${import.meta.env.BASE_URL}maps/${ground}")`, '--battle-hero-duration': `${battleTiming.hero.duration}ms`, '--battle-hero-impact': `${battleTiming.hero.impact}ms` } as CSSProperties;
 
   return (
-    <>
+    <div className="battle-stage">
     <div className={`battlefield battlefield-${terrain} ${attack ? `battlefield-${attack}-attack` : ''} ${attack === 'hero' ? `battlefield-hero-move-${heroMove}` : ''} ${attack === 'enemy' ? `battlefield-enemy-${enemyAttackStyle}` : ''}`} style={style}>
-      <span className="battlefield-location">{location}</span>
+      <div className="battlefield-sign"><b>ENCOUNTER</b><span className="battlefield-location">{location}</span>{title && <strong>{title}</strong>}{badge && <em>{badge}</em>}</div>
       <div className="battlefield-backdrop" aria-hidden="true">
         <span className="battlefield-scenery-back" />
         <span className="battlefield-scenery-front" />
@@ -109,6 +111,6 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
       <div key={`enemy-${moment}-${attackRound}`} className="battle-voice battle-voice-enemy"><strong>{enemy.name}</strong><p>「{voices.enemy}」</p></div>
       <div key={`hero-${moment}-${attackRound}`} className="battle-voice battle-voice-hero"><strong>{hero.name}</strong><p>「{voices.hero}」</p></div>
     </div>
-    </>
+    </div>
   );
 }
