@@ -1,1 +1,8 @@
-.learning-session{position:fixed;z-index:110;left:16px;top:86px;max-width:280px;max-height:55vh;overflow:auto;padding:8px 12px;border:1px solid #7d897b;background:#10202af5;color:#e5e9dc;font-size:12px;line-height:1.6}.learning-session summary{cursor:pointer;color:#ffe5ab}.learning-session button{font-size:12px}.learning-session ul{padding-left:18px}.learning-session li{margin-bottom:8px}@media(max-width:650px){.learning-session{top:70px;left:8px;max-width:210px;max-height:40vh}}
+.learning-session{position:relative;color:#e5e9dc;font-size:12px;line-height:1.6}
+.learning-session summary{list-style:none;cursor:pointer;border:1px solid #c9ac76;background:#252438;color:#ffe5ab;padding:9px 14px;border-radius:4px;white-space:nowrap}
+.learning-session summary::-webkit-details-marker{display:none}
+.learning-session-panel{position:absolute;z-index:110;right:0;top:calc(100% + 6px);width:280px;max-height:55vh;overflow:auto;padding:8px 12px;border:1px solid #7d897b;background:#10202af5;text-align:left}
+.learning-session button{font-size:12px}.learning-session ul{padding-left:18px}.learning-session li{margin-bottom:8px}
+.learning-session-claimed{color:#a7d9bb}
+.daily-level-up{position:fixed;z-index:120;top:90px;left:50%;translate:-50% 0;pointer-events:none}
+@media(max-width:700px){.learning-session summary{padding:8px;font-size:10px}.learning-session-panel{width:210px;max-height:40vh}}

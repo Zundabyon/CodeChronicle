@@ -25,7 +25,10 @@ async function open(t,viewport,save){
   await page.getByRole('button',{name:/続きから/}).click();return page;
 }
 // Bottom of the answer controls (options, or the input row) relative to the viewport height.
-const bottom=page=>page.evaluate(()=>{const el=document.querySelector('.question-card .options')??document.querySelector('.cli-form>div');return {bottom:Math.round(el.getBoundingClientRect().bottom),h:innerHeight};});
+// The command row (まほう / アイテム / にげる or the review exit) sits below the answers and must also be on screen.
+const bottom=page=>page.evaluate(()=>{const els=[document.querySelector('.question-card .options')??document.querySelector('.cli-form>div'),...document.querySelectorAll('.battle-actions')];
+  return {bottom:Math.round(Math.max(...els.map(el=>el.getBoundingClientRect().bottom))),h:innerHeight,page:document.scrollingElement.scrollHeight};});
+const fits=(m,label)=>{assert.ok(m.bottom<=m.h,`${label} ends at ${m.bottom} of ${m.h}`);if(m.h>=720)assert.ok(m.page<=m.h,`${label} page scrolls to ${m.page} of ${m.h}`);};
 async function reviewBattle(t,viewport,id){
   const page=await open(t,viewport,{area:'town',pos:{x:13,y:16},story:'legacy',name:'確認',wrong:[id]});
   await page.getByRole('button',{name:/コマンド/}).click();await page.getByRole('button',{name:/きょうかい/}).click();await page.getByRole('button',{name:/復習の部屋へ入る/}).click();
@@ -37,16 +40,19 @@ async function rangerBattle(t,viewport){
   for(let i=0;i<80&&await page.locator('.dialogue-box').count();i++)await page.locator('.dialogue-text > span').click();
   await page.locator('.question-card h3').waitFor();return page;
 }
-for(const [width,height] of [[1366,768],[1280,720],[1440,900]]){
+for(const [width,height] of [[1366,768],[1280,720],[1440,900],[1470,800]]){
   const viewport={width,height};
   for(const kind of ['choice','code','fill','cli'])test(`${kind} answers fit the first screen at ${width}x${height}`,{timeout:45000},async t=>{
     const page=await reviewBattle(t,viewport,ids?.[kind]??'r-b-1');
     if(!ids){await page.close();return;}
-    const m=await bottom(page);console.log(`${width}x${height} ${kind} ${ids[kind]}`,m);assert.ok(m.bottom<=m.h,`${kind} answers end at ${m.bottom} of ${m.h}`);
+    const m=await bottom(page);console.log(`${width}x${height} ${kind} ${ids[kind]}`,m);fits(m,kind);
     if(shots&&width===1366&&kind==='code')await page.screenshot({path:`${shots}/battle-after-1366.png`});
+    if(shots&&width===1470&&kind==='fill')await page.screenshot({path:`${shots}/battle-fill-1470.png`});
+    if(kind==='fill'){await page.locator('.options button').first().click();await page.locator('.explain-content').waitFor();
+      const a=await page.evaluate(()=>({top:document.querySelector('.explain-content').scrollTop,page:document.scrollingElement.scrollHeight,h:innerHeight}));assert.equal(a.top,0);assert.ok(a.page<=a.h,`answered page scrolls to ${a.page}`);}
   });
   test(`ranger battle fits and its next button shows at ${width}x${height}`,{timeout:60000},async t=>{
-    const page=await rangerBattle(t,viewport);const m=await bottom(page);console.log(`${width}x${height} ranger`,m);assert.ok(m.bottom<=m.h,`ranger options end at ${m.bottom} of ${m.h}`);
+    const page=await rangerBattle(t,viewport);const m=await bottom(page);console.log(`${width}x${height} ranger`,m);fits(m,'ranger');
     const prompt=await page.locator('.question-card h3').innerText();
     const q=await page.evaluate(async prompt=>{const {rangerBattleQuestions}=await import('/src/rangerBattleQuestions.ts');return rangerBattleQuestions.find(q=>q.prompt===prompt);},prompt);
     await page.locator('.options button').nth(q.answer).click();const next=page.getByRole('button',{name:/次の問題へ/});await next.waitFor();

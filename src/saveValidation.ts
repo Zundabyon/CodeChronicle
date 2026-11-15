@@ -87,6 +87,7 @@ export function validateSave<T extends Shape>(value:unknown,defaults:T):{save:T|
   for(const [key,label] of [['openedChests','宝箱の記録'],['readBooks','既読記録'],['bookmarks','しおり']] as const) {
     if(value[key]!==undefined&&JSON.stringify(value[key])!==JSON.stringify(save[key]))fix(label);
   }
+  if(typeof save.dailyRewardDate==='string'&&!/^(\d{4}-\d{2}-\d{2})?$/.test(save.dailyRewardDate)){save.dailyRewardDate='';fix('デイリー報酬');}
   if(value.lastSavedAt!==undefined) {
     if(typeof value.lastSavedAt==='number'&&Number.isFinite(value.lastSavedAt)&&value.lastSavedAt>0&&value.lastSavedAt<=8640000000000000)save.lastSavedAt=value.lastSavedAt;
     else fix('保存時刻');

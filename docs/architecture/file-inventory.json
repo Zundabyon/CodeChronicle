@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / d986a87 + current working tree",
+  "snapshot": "2026-11-15 / 27102cc + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 483,
+  "count": 484,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 81,
+    "制作・運用": 82,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 111
+      "count": 112
     }
   },
   "files": [
@@ -2808,7 +2808,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 89473,
+      "bytes": 90863,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3414,7 +3414,7 @@
     },
     {
       "path": "src/LearningSession.tsx",
-      "bytes": 1258,
+      "bytes": 1970,
       "suffix": ".tsx",
       "group": "学習・記録",
       "role": "その回の学習時間と回答一覧を表示する。",
@@ -3981,7 +3981,7 @@
     },
     {
       "path": "src/battle.css",
-      "bytes": 38973,
+      "bytes": 40975,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "戦闘画面・攻撃演出のCSS。",
@@ -4413,7 +4413,7 @@
     },
     {
       "path": "src/learningSession.css",
-      "bytes": 485,
+      "bytes": 911,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "学習セッション表示のCSS。",
@@ -4988,7 +4988,7 @@
     },
     {
       "path": "src/saveValidation.ts",
-      "bytes": 7794,
+      "bytes": 7945,
       "suffix": ".ts",
       "group": "保存・復元",
       "role": "セーブの型・値・IDを検証し、安全な値への補正と旧データ移行を行う。",
@@ -5072,7 +5072,7 @@
     },
     {
       "path": "src/style.css",
-      "bytes": 28436,
+      "bytes": 28692,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
@@ -5595,7 +5595,7 @@
     },
     {
       "path": "tests/e2e/battle-layout.test.mjs",
-      "bytes": 5381,
+      "bytes": 6178,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5620,6 +5620,14 @@
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
       "bytes": 10077,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/daily-reward.test.mjs",
+      "bytes": 3949,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5739,7 +5747,7 @@
     },
     {
       "path": "tests/save-validation.test.mjs",
-      "bytes": 4327,
+      "bytes": 4808,
       "suffix": ".mjs",
       "group": "検証",
       "role": "保存データの補正・不正形式拒否・移行を検証する。",

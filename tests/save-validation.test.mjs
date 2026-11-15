@@ -33,3 +33,9 @@ test('unfinished chapter two from version 2 restarts while level, items, chapter
  const current=validateSave({...old,version:3},latestDefaults);
  assert.equal(current.save.quests['village-ledger'].step,'ledger-update-scope');assert.equal(current.notice,'');
 });
+test('the daily reward date survives, old saves default to unclaimed, and junk is cleared',()=>{
+ const d={...defaults,version:3,quests:{},dailyRewardDate:''};
+ assert.equal(validateSave({...defaults},d).save.dailyRewardDate,'');
+ assert.equal(validateSave({...d,dailyRewardDate:'2026-11-15'},d).save.dailyRewardDate,'2026-11-15');
+ const bad=validateSave({...d,dailyRewardDate:'<x>'},d);assert.equal(bad.save.dailyRewardDate,'');assert.match(bad.notice,/デイリー報酬/);
+});
