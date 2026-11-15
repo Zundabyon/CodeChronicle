@@ -68,3 +68,13 @@ test('第二章クリアで第二回も読める',async t=>{
   await page.getByRole('button',{name:/冒険の管理/}).click();await page.getByText('おまけ：裏会議').click();
   await page.getByRole('button',{name:/第二回「/}).click();await page.locator('.dialogue-box').waitFor();
 });
+
+test('メニューの「デバッグ：ワープ」で任意の場所へ一瞬で移動できる',async t=>{
+  const page=await open(t,base);
+  await page.getByRole('button',{name:/続きから/}).click();
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'▶ デバッグ：ワープ'}).click();
+  await page.getByRole('button',{name:'▶ 読解の書庫'}).click();
+  await page.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).area==='crudRead',key);
+  assert.equal((await saved(page)).area,'crudRead');
+});

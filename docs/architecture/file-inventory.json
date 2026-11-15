@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-14 / 8e2b601 + current working tree",
+  "snapshot": "2026-11-15 / 7b1f687 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -2808,7 +2808,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 89296,
+      "bytes": 89357,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3843,7 +3843,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 20625,
+      "bytes": 21137,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -5064,7 +5064,7 @@
     },
     {
       "path": "src/storyStage.css",
-      "bytes": 4462,
+      "bytes": 4523,
       "suffix": ".css",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5587,7 +5587,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 5164,
+      "bytes": 5760,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

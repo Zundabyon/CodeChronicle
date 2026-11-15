@@ -60,8 +60,9 @@ type Props = {
   knightVisible?:boolean;
   /** Chapter two acts passed while in the village (-1 elsewhere); scars fade act by act. */
   villageAct?:number;
-  menu: 'command'|'status'|'quest'|null;
-  onMenu: (menu: 'command'|'status'|'quest'|null) => void;
+  menu: 'command'|'status'|'quest'|'warp'|null;
+  onMenu: (menu: 'command'|'status'|'quest'|'warp'|null) => void;
+  onWarp: (area: Area) => void;
   onTile: (point: Point) => void;
   onGuide: () => void;
   onMap:(tab?:MapTab)=>void;
@@ -103,7 +104,7 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </div>;
 }
 
-export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
@@ -206,7 +207,7 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
     <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
     <div className="world-hint">矢印 / WASD：移動　•　Enter：話す・調べる　•　クリック：目的地へ</div>
     {menu&&<div className="world-menu retro-window" role="region" aria-label="コマンドメニュー">
-      <div className="world-menu-title">{menu==='command'?'コマンド':menu==='status'?'つよさ': 'たびのもくてき'}</div>
+      <div className="world-menu-title">{menu==='command'?'コマンド':menu==='status'?'つよさ':menu==='warp'?'デバッグ：ワープ': 'たびのもくてき'}</div>
       {menu==='command'&&<div className="world-menu-items">
         <button onClick={()=>onMenu('status')}>▶ つよさ</button>
         <button data-shortcut="i f2" aria-keyshortcuts="I F2" onClick={()=>{onMenu(null);onInventory();}}>▶ もちもの <kbd className="shortcut-key">I / F2</kbd></button>
@@ -216,8 +217,13 @@ export function WorldScene({save,recovery,levelUp,chestReward,enemyPositions,kni
         <button onClick={()=>{onMenu(null);onSettings();}}>▶ 学習設定</button>
         <button onClick={onGuide}>▶ 操作方法</button>
         <button onClick={onSound}>▶ おと　{muted?'オフ':'オン'}</button>
+        <button onClick={()=>onMenu('warp')}>▶ デバッグ：ワープ</button>
         <button onClick={()=>{onMenu(null);onQuit();}}>▶ ゲームを終わる</button>
         <button onClick={()=>onMenu(null)}>▶ とじる</button>
+      </div>}
+      {menu==='warp'&&<div className="world-menu-items world-warp-list">
+        {(Object.keys(areaLabel) as Area[]).map(area=><button key={area} disabled={area===save.area} onClick={()=>{onMenu(null);onWarp(area);}}>▶ {areaLabel[area]}</button>)}
+        <button onClick={()=>onMenu('command')}>▶ もどる</button>
       </div>}
       {menu==='status'&&<div className="world-menu-detail">
         <strong>{save.name}　LV {save.level}</strong>

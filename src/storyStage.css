@@ -26,3 +26,4 @@ body .dialogue-overlay{z-index:14}
 .village-fire img{animation:village-fire .5s steps(1) infinite}.village-fire img+img{animation-delay:-.25s}@keyframes village-fire{50%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.village-fire img{animation:none}.village-fire img+img{opacity:0}}
 .character-portrait.single-image{background-size:cover;background-position:center}
+.world-warp-list{max-height:min(60vh,520px);overflow-y:auto}
