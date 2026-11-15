@@ -19,4 +19,6 @@
 
 対応状況：現在の音はAppの発振による効果音・場面別の短い旋律ループと音量設定が実装済み。音声ファイルを使う汎用BGMトラック登録・場面ごとのトラック切替・音素材の自動読込は未実装。音楽を生成したこととゲームで再生できることは別。画像・書体の正本は[美術基準](../art-direction.md)と各素材の登録先、フォントのライセンスは実ファイルとともに保持。
 
+効果音：`src/sfx.ts`（sfxr風の合成。`SfxParams`・`playSfx`・WAV書き出し）で合成し、名前と音色の対応は `src/sfxBank.ts`、App は `sfx('correct')` のように名前で鳴らす。新しい音・調整は `npm run dev:sfx` の作成ツールで作る→「TSコードをコピー」→`sfxBank.ts` の `bank` に貼る（同名は置き換え、新しい名前はAppの呼び出しも追加）。WAVが要る場合はツールから書き出す。不正解の音は責めない柔らかさにする。場面ループの旋律はApp内の発振のまま。
+
 検証は実画面のPC/スマホ、キーボード、音のオンオフ、モーション軽減、[audio-preferences](../../tests/audio-preferences.test.mjs)、[title-screen E2E](../../tests/e2e/title-screen.test.mjs)。確認済みと未確認の環境を履歴に分ける。

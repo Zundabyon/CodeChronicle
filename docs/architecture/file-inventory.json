@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / 6121032 + current working tree",
+  "snapshot": "2026-11-15 / a22348a + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 484,
+  "count": 489,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 5,
     "公開": 1,
-    "制作・運用": 82,
+    "制作・運用": 85,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -38,7 +38,7 @@
     "物語・進行": 14,
     "状態・保存": 4,
     "画像・素材": 95,
-    "画面・表現・操作": 15,
+    "画面・表現・操作": 17,
     "表示スタイル": 22,
     "設定": 7,
     "説明資料": 4,
@@ -78,7 +78,7 @@
     "presentation": {
       "label": "画面・表現・操作",
       "guide": "docs/production/presentation.md",
-      "count": 22
+      "count": 24
     },
     "persistence": {
       "label": "状態・保存",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 112
+      "count": 115
     }
   },
   "files": [
@@ -590,7 +590,7 @@
     },
     {
       "path": "docs/production/presentation.md",
-      "bytes": 2980,
+      "bytes": 3567,
       "suffix": ".md",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -830,7 +830,7 @@
     },
     {
       "path": "package.json",
-      "bytes": 1619,
+      "bytes": 1693,
       "suffix": ".json",
       "group": "設定",
       "role": "依存パッケージと開発・テスト・ビルドのコマンドを定義する。",
@@ -2761,8 +2761,16 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 8979,
+      "bytes": 8995,
       "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "scripts/sfx-designer.html",
+      "bytes": 281,
+      "suffix": ".html",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
       "genre": "operations"
@@ -2808,7 +2816,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 91090,
+      "bytes": 91463,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4259,6 +4267,14 @@
       "genre": "operations"
     },
     {
+      "path": "src/dev/SfxDesigner.tsx",
+      "bytes": 6485,
+      "suffix": ".tsx",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "src/dev/objectMotionHarness.css",
       "bytes": 1226,
       "suffix": ".css",
@@ -5046,6 +5062,22 @@
       "genre": "persistence"
     },
     {
+      "path": "src/sfx.ts",
+      "bytes": 4937,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
+      "path": "src/sfxBank.ts",
+      "bytes": 2612,
+      "suffix": ".ts",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
       "path": "src/story.ts",
       "bytes": 10080,
       "suffix": ".ts",
@@ -5751,6 +5783,14 @@
       "suffix": ".mjs",
       "group": "検証",
       "role": "保存データの補正・不正形式拒否・移行を検証する。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/sfx.test.mjs",
+      "bytes": 1615,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
       "genre": "operations"
     },
     {

@@ -60,6 +60,8 @@ import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
 import { enemyAt, moveEnemies, spawnEnemies, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment, type Inventory, type ItemId, type ShopType } from './items';
 import { DresserPanel, InventoryPanel, ShopPanel } from './AdventurePanels';
+import { playSfx } from './sfx';
+import { sfxBank, type SfxName } from './sfxBank';
 
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear' | 'backstage';
 type Save = { quests:QuestStates; dialogueLog:DialogueLogEntry[]; learningRecords:LearningRecords; version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; dailyRewardDate:string; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
@@ -262,9 +264,14 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     update(s=>({...s,dialogueLog:appendDialogueLog(s.dialogueLog,speaker,text)}));
   },[dialogue,update]);
   const stopPath = useCallback(() => { if (pathTimer.current) { clearInterval(pathTimer.current); pathTimer.current = null; } },[]);
+  // 場面ループの旋律専用。効果音は sfx(名前) を使う。
   const beep = useCallback((freq=440,duration=0.1,type: OscillatorType='square') => {
     if (muted || !audioUnlocked.current) return;
     try { const ctx = audioRef.current ?? new AudioContext(); audioRef.current = ctx; const osc=ctx.createOscillator(), gain=ctx.createGain(); osc.type=type; osc.frequency.value=freq; gain.gain.setValueAtTime(volume*0.12,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+duration); osc.connect(gain).connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+duration); } catch { /* audio is optional */ }
+  },[muted,volume]);
+  const sfx = useCallback((name: SfxName) => {
+    if (muted || !audioUnlocked.current) return;
+    try { const ctx = audioRef.current ?? new AudioContext(); audioRef.current = ctx; playSfx(ctx,sfxBank[name],volume*0.5); } catch { /* audio is optional */ }
   },[muted,volume]);
   const toggleSound = () => { if (muted) { try { const ctx=audioRef.current??new AudioContext(); audioRef.current=ctx; void ctx.resume().catch(()=>{}); } catch { /* audio is optional */ } } setAudioPreferences(value=>({...value,muted:!value.muted})); };
   useEffect(() => {
@@ -274,7 +281,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     const id=setInterval(() => { beep(notes[n++%notes.length],0.19,'triangle'); },380);
     return () => clearInterval(id);
   },[muted,phase,save.area,beep]);
-  const startDialogue = useCallback((speaker: string,face: string,lines: (string|StoryLine)[],choices?: Dialogue['choices'],onEnd?: () => void,question?: Question,study?:QuestStudy) => { stopPath(); const next={speaker,face,lines,index:0,choices,onEnd,question,study}; dialogueRef.current=next; setDialogue(next); beep(600,0.06); },[beep,stopPath]);
+  const startDialogue = useCallback((speaker: string,face: string,lines: (string|StoryLine)[],choices?: Dialogue['choices'],onEnd?: () => void,question?: Question,study?:QuestStudy) => { stopPath(); const next={speaker,face,lines,index:0,choices,onEnd,question,study}; dialogueRef.current=next; setDialogue(next); sfx('select'); },[sfx,stopPath]);
   const playStory = useCallback((lines:StoryLine[],onEnd?:()=>void)=>{
     const name=stateRef.current.name;
     startDialogue('','',lines.map(line=>({...line,speaker:line.speaker.replaceAll('{name}',name),text:line.text.replaceAll('{name}',name)})),undefined,onEnd);
@@ -324,25 +331,25 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       startDialogue(npc.name,npc.face,['おかえり。今日のスープは、あんたに教わった味だよ。','忘れたって、また覚えられるんだね。……どんなに遠くへ行っても、ここに帰っておいで。']); return;
     }
     const merchant:Record<string,ShopType>={weaponMerchant:'weapon',armorMerchant:'armor',itemMerchant:'item'};
-    if (merchant[npc.id]) { stopPath(); setShopMode('buy'); setShopType(merchant[npc.id]); beep(720,0.08); return; }
+    if (merchant[npc.id]) { stopPath(); setShopMode('buy'); setShopType(merchant[npc.id]); sfx('select'); return; }
     const count=npcTalkCounts.current[npc.id] ?? 0;
     npcTalkCounts.current[npc.id]=count+1;
     const conversations=[npc.lines,...(npc.alternateLines ?? [])];
     startDialogue(npc.name,npc.face,conversations[count%conversations.length].map(line=>line.replaceAll('{name}',stateRef.current.name)),npcChoices[npc.id]);
-  },[startDialogue,playStory,update,stopPath,beep,talkToQuestNpc]);
+  },[startDialogue,playStory,update,stopPath,sfx,talkToQuestNpc]);
   const openDresser = useCallback(() => {
     stopPath(); const first=!stateRef.current.dresserOpened;
     if(first) { update(s=>({...s,dresserOpened:true,inventory:{...s.inventory,familyLetter:1,herb:(s.inventory.herb??0)+1}})); setToast('家族の手紙とやくそうを手に入れた！'); }
-    setDresserFound(first); setReadingLetter(false); setDresserOpen(true); beep(640,0.12);
-  },[stopPath,update,beep]);
+    setDresserFound(first); setReadingLetter(false); setDresserOpen(true); sfx('door');
+  },[stopPath,update,sfx]);
   const openChest = useCallback((id:string) => {
     stopPath();
     const result=claimChest(stateRef.current,id);
     if(result.opened) {update(()=>({...result.save,dialogueLog:appendDialogueLog(result.save.dialogueLog,'宝箱',result.message)}));setChestReward({id,message:result.message});}
     else setChestReward(null);
-    setToast(result.message); beep(result.opened?880:320,0.15);
+    setToast(result.message); sfx(result.opened?'chest':'blocked');
     sendQuestEvent({type:'chest-examined',chestId:id});
-  },[stopPath,update,beep,sendQuestEvent]);
+  },[stopPath,update,sfx,sendQuestEvent]);
   const toggleReadBook=useCallback((id:string)=>{
     const read=!stateRef.current.readBooks.includes(id);
     update(s=>({...s,readBooks:read?[...s.readBooks,id]:s.readBooks.filter(value=>value!==id)}));
@@ -351,17 +358,17 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const bookmarkBook=useCallback((shelfId:string,bookId:string)=>update(s=>s.bookmarks[shelfId]===bookId?s:{...s,bookmarks:{...s.bookmarks,[shelfId]:bookId}}),[update]);
   const openBookshelf = useCallback((id:string) => {
     const shelf=libraryShelves.find(item=>item.id===id);
-    if(shelf) { stopPath(); setLibraryShelf(shelf); beep(640,0.08); }
-  },[stopPath,beep]);
+    if(shelf) { stopPath(); setLibraryShelf(shelf); sfx('select'); }
+  },[stopPath,sfx]);
   const advanceDialogue = useCallback(() => {
     const prev=dialogueRef.current;
     if(!prev)return;
     if(prev.index<prev.lines.length-1) {
-      beep(640,0.04);const next={...prev,index:prev.index+1};dialogueRef.current=next;setDialogue(next);return;
+      sfx('cursor');const next={...prev,index:prev.index+1};dialogueRef.current=next;setDialogue(next);return;
     }
     if(prev.choices?.length)return;
     dialogueRef.current=null;setDialogue(null);prev.onEnd?.();
-  },[beep]);
+  },[sfx]);
   useEffect(()=>{
     if(phase==='world'&&save.story==='knight'&&!dialogueRef.current) {
       playStory(knightScene,()=>{update(s=>({...s,story:'knowledge'}));setEpilogueStep(0);setPhase('epilogue');});
@@ -380,8 +387,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if (enemy.boss && s.level<2) { startDialogue('知識の扉','📜',['石の扉に文字が浮かぶ。「知識の断片を集め、第二の階へ至った者のみ、この門を試せる」','平原や遺跡の敵と戦い、経験を積んでから戻ろう。']); return; }
     const hp=set?set.length:enemy.boss?bossStages.length*bossGuardHp:enemy.id==='after-gate'||fromReview?1:3;
     setBattle({enemy,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null,bossStage:0,hints:0,set});
-    setBattleInput(''); setBattleNote(''); phaseRef.current='encounter'; setPhase('encounter'); beep(180,0.3);
-  },[stopPath,beep,startDialogue]);
+    setBattleInput(''); setBattleNote(''); phaseRef.current='encounter'; setPhase('encounter'); sfx('encounter');
+  },[stopPath,sfx,startDialogue]);
   useEffect(()=>{startBattleRef.current=startBattle;},[startBattle]);
   useEffect(() => {
     if (phase !== 'world' || dialogue || showSettings || showGuide || showMap || worldMenu || inventoryOpen || dresserOpen || libraryShelf || shopType || !maps[save.area].enemies.length) return;
@@ -396,15 +403,15 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const visitHanna = useCallback(()=>{
     stopPath();setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));
     if(stateRef.current.story==='homecoming') {
-      playStory(rescueScene,()=>{update(s=>({...s,story:'rescued',completed:true}));setPhase('clear');beep(1080,0.5,'sine');});
+      playStory(rescueScene,()=>{update(s=>({...s,story:'rescued',completed:true}));setPhase('clear');sfx('victory');});
     } else {
       startDialogue('司祭セラ','👩🏼',['ハンナさんはここで休んでいます。変化は抑えていますが、まだ目を覚ましていません。','あなたの声に、少しだけ手が動きました。どうか、あの方を救う知識を持ち帰ってください。']);
     }
-  },[stopPath,update,playStory,startDialogue,beep]);
+  },[stopPath,update,playStory,startDialogue,sfx]);
   const enterChurch = useCallback(() => {
     stopPath();if(stateRef.current.story==='homecoming'){visitHanna();return;}
-    setPhase('church');beep(660,0.16,'sine');
-  },[stopPath,visitHanna,beep]);
+    setPhase('church');sfx('door');
+  },[stopPath,visitHanna,sfx]);
   const transition = useCallback((from: Area,to: Area,position?:Point) => {
     stopPath();
     if(from==='town'&&to==='field'&&!canLeaveTown(stateRef.current.story)) {
@@ -415,8 +422,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if (from==='dungeon' && to==='field') pos=dungeonFieldReturn;
     if (to==='town' && from in houses) pos=houses[from as HouseArea].outside;
     if (position) pos=position;
-    update(s => ({...s,area:to,pos})); beep(520,0.16);
-  },[update,stopPath,startDialogue,beep]);
+    update(s => ({...s,area:to,pos})); sfx('warp');
+  },[update,stopPath,startDialogue,sfx]);
   const useSpring = useCallback((name:string) => {
     startDialogue(name,'💧',['澄んだ水面に、ここまで学んだ記憶が映る。焦らず、休んでから続きを試そう。','泉の水で HP と MP を全回復する。利用は無料で、何度でも休める。'],undefined,()=>{
       const current=stateRef.current,hp=maxHp(current.level)-current.hp,mp=maxMp(current.level)-current.mp;
@@ -465,12 +472,12 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if(door?.kind==='memory-door'&&!isMemoryDoorOpen(s.quests,door.npcId)){stopPath();examineMemoryDoor(door.npcId);return false;}
     // An unread required lesson holds its tile until the explanation is finished.
     if(door?.kind==='lesson'&&door.required&&!isLessonRead(s.readBooks,door.id)){openLesson(door.id);return false;}
-    if (!walkable(s.area,target,s.quests)) { beep(130,0.05); return false; }
+    if (!walkable(s.area,target,s.quests)) { sfx('bump'); return false; }
     const map=maps[s.area]; const npc=storyNpcs(map.npcs,s.story,s.quests).find(n=>same(n,target));
     if (npc) { talkToNpc(npc); return false; }
     const enemy=enemyAt(s.area,target,enemyPositionsRef.current,s.defeated);
     if (enemy) { startBattle(enemy); return false; }
-    update(prev=>({...prev,pos:target,steps:prev.steps+1})); beep(220,0.025,'triangle');
+    update(prev=>({...prev,pos:target,steps:prev.steps+1})); sfx('step');
     setWalking(true);
     if (walkTimer.current) clearTimeout(walkTimer.current);
     walkTimer.current=setTimeout(()=>setWalking(false),190);
@@ -478,7 +485,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if (action?.kind==='church') { enterChurch(); return false; }
     if (action?.kind==='transition') { transition(s.area,action.to,action.position); return false; }
     return true;
-  },[showSettings,showGuide,showMap,worldMenu,inventoryOpen,dresserOpen,libraryShelf,shopType,openDresser,openChest,openBookshelf,talkToNpc,startBattle,update,beep,enterChurch,transition,useSpring,useMemoryWarp,openLesson,examineMemoryDoor,stopPath]);
+  },[showSettings,showGuide,showMap,worldMenu,inventoryOpen,dresserOpen,libraryShelf,shopType,openDresser,openChest,openBookshelf,talkToNpc,startBattle,update,sfx,enterChurch,transition,useSpring,useMemoryWarp,openLesson,examineMemoryDoor,stopPath]);
   const interact = useCallback(() => {
     stopPath();
     const s=stateRef.current, map=maps[s.area];
@@ -588,7 +595,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     const enemyHp=battle.enemy.boss && correct ? bossStrike(battle.hp,battle.bossStage,dealt) : Math.max(0,battle.hp-dealt);
     setBattle({...battle,submitted:value,answered:true,correct,hp:enemyHp,rounds:battle.rounds+1,heroTechnique,impact:{enemyBefore:battle.hp,heroBefore,enemyDamage:battle.hp-enemyHp,heroDamage:heroBefore-newHp}});
     setBattleNote(correct?`${heroTechnique!.name}！ ${battle.enemy.name}に${battle.hp-enemyHp}ダメージ！${bossResult ? ` ${bossResult.reason}` : ''}`:battle.fromReview?'惜しい！ 解説を読んで、もう一度挑戦しよう。':`${battle.enemy.name}の「${battle.enemy.attackName}」！ HPが${damage}減った。${bossResult ? ` ${bossResult.reason}` : ''}${ranger ? ` ${ranger.hint}` : ''}`);
-    beep(correct?800:150,correct?0.18:0.28);
+    sfx(correct?'correct':'wrong');
   };
   const battleNext = () => {
     if (!battle || !battle.answered || attackAnimating) return;
@@ -607,14 +614,14 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       setBattle({...battle,set,hp:battle.maxHp,question:rangerQuestion(0,set),answered:false,correct:false,eliminated:null,impact:undefined});
       setBattleInput(''); setBattleNote(`${battle.enemy.name}に押し返された……。息を整え、戦いの最初からもう一度挑もう。`); return;
     }
-    if (!battle.fromReview && stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:13,y:16},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setToast('司祭セラに助けられ、教会で目を覚ました。'); return; }
+    if (!battle.fromReview && stateRef.current.hp<=0) { update(s=>({...s,area:'town',pos:{x:13,y:16},hp:maxHp(s.level),mp:maxMp(s.level)})); setBattle(null); setPhase('church'); setToast('司祭セラに助けられ、教会で目を覚ました。'); sfx('defeat'); return; }
     if (battle.hp<=0) {
       if (battle.fromReview) { setBattle(null); setPhase('review-room'); setToast('復習完了！'); return; }
       if (battle.enemy.id==='after-gate') {
         setBattle(null);
         if(stateRef.current.story==='legacy') {update(s=>({...s,completed:true}));setPhase('clear');}
         else {update(s=>({...s,story:'homecoming',area:'town',pos:{x:13,y:16}}));setPhase('world');setToast('教会へ。見極めでハンナを救おう。');}
-        beep(1080,0.5,'sine');return;
+        sfx('victory');return;
       }
       const gained=battle.enemy.boss?12:4, earned=battle.enemy.boss?100:35;
       const current=stateRef.current,nextLevel=1+Math.floor((current.xp+gained)/12);
@@ -623,7 +630,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       setBattle(null);
       if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}を倒した！ 経験値 +${gained}、${earned} G`); }
       if (ranger) sendQuestEvent({type:'battle-won',enemyId:battle.enemy.id});
-      beep(950,0.26);
+      sfx(nextLevel>current.level?'levelUp':'victory');
       return;
     }
     if (battle.enemy.boss) {
@@ -635,7 +642,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
         if (animate) attackTimer.current=setTimeout(()=>{setAttackAnimating(false);attackTimer.current=null;},battleTiming.turn);
         setBattle({...battle,hp,rounds:battle.rounds+1,heroTechnique,impact:{enemyBefore:battle.hp,heroBefore:stateRef.current.hp,enemyDamage:battle.hp-hp,heroDamage:0}});
         setBattleNote(`${heroTechnique.name}！ 防御を崩した隙に追撃、${battle.hp-hp}ダメージ！`);
-        beep(800,0.18);
+        sfx('attack');
         return;
       }
       const bossStage=battle.correct ? battle.bossStage+1 : battle.bossStage;
@@ -663,17 +670,17 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const castMagic = () => {
     if (!battle || battle.answered || !isChoiceQuestion(battle.question) || battle.eliminated!==null || !save.bossDefeated || save.mp<1) return;
     const index=battle.question.options!.findIndex((_,i)=>i!==battle.question.answer);
-    update(s=>({...s,mp:s.mp-1,magicUsed:true})); setBattle({...battle,eliminated:index}); setBattleNote('魔法「見極め」！ 誤った選択肢が一つ消えた。'); beep(1040,0.4,'sine');
+    update(s=>({...s,mp:s.mp-1,magicUsed:true})); setBattle({...battle,eliminated:index}); setBattleNote('魔法「見極め」！ 誤った選択肢が一つ消えた。'); sfx('magic');
   };
   const buyItem = (id:ItemId) => {
     const item=items[id]; if(!shopType || item.kind!==shopType || stateRef.current.gold<item.price) return;
     update(s=>({...s,gold:s.gold-item.price,inventory:{...s.inventory,[id]:(s.inventory[id]??0)+1}}));
-    setToast(`${item.name}を買った！`); beep(840,0.1);
+    setToast(`${item.name}を買った！`); sfx('coin');
   };
   const sellItem = (id:ItemId) => {
     const s=stateRef.current,item=items[id]; if((s.inventory[id]??0)<1 || item.price<1 || s.equipment.weapon===id || s.equipment.armor===id) return;
     update(prev=>({...prev,gold:prev.gold+Math.floor(item.price/2),inventory:{...prev.inventory,[id]:(prev.inventory[id]??0)-1}}));
-    setToast(`${item.name}を売った！`); beep(690,0.1);
+    setToast(`${item.name}を売った！`); sfx('coin');
   };
   const useItem = (id:ItemId) => {
     const item=items[id],s=stateRef.current; if(item.kind!=='item'||(s.inventory[id]??0)<1) return;
@@ -682,11 +689,11 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if(hp===s.hp&&mp===s.mp) return;
     update(prev=>({...prev,hp,mp,inventory:{...prev.inventory,[id]:(prev.inventory[id]??0)-1}}));
     setRecovery(previous=>({sequence:(previous?.sequence??0)+1,hp:hp-s.hp,mp:mp-s.mp,source:'inventory'}));
-    setToast(`${item.name}を使った！ ${item.healHp?`HP +${hp-s.hp}`:`MP +${mp-s.mp}`}`); beep(930,0.15,'sine');
+    setToast(`${item.name}を使った！ ${item.healHp?`HP +${hp-s.hp}`:`MP +${mp-s.mp}`}`); sfx('heal');
   };
   const equipItem = (id:ItemId) => {
     const item=items[id]; if((stateRef.current.inventory[id]??0)<1 || (item.kind!=='weapon'&&item.kind!=='armor')) return;
-    update(s=>({...s,equipment:{...s.equipment,[item.kind]:id}})); setToast(`${item.name}を装備した！`); beep(760,0.12);
+    update(s=>({...s,equipment:{...s.equipment,[item.kind]:id}})); setToast(`${item.name}を装備した！`); sfx('select');
   };
   const restoreBackup=()=>{
     if(!backup)return;
@@ -716,8 +723,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       catch {setToast('前の冒険を保護できませんでした。新しい冒険はまだ始めていません。');return;}
     }
     setLearningSession({active:false,answers:[]});
-    const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; setSetup({name:hasSave?previous.name:'',track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}); const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(false);setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowGuide(false);setShowSettings(false); setInventoryOpen(false); setDresserOpen(false); setShopType(null); setIntroIndex(0); setStartChapter(chapter); setPhase(chapter?'setup':'prologue'); beep(600,0.2); };
-  const finishPrologue = () => { setPhase('setup'); beep(620,0.14); };
+    const s={...initialSave(),name:previous.name,track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}; setSetup({name:hasSave?previous.name:'',track:previous.track,difficulty:previous.difficulty,inertia:previous.inertia}); const positions=spawnEnemies(); enemyPositionsRef.current=positions; setEnemyPositions(positions); npcTalkCounts.current={}; stateRef.current=s; setSave(s); setHasSave(false);setDialogue(null);dialogueRef.current=null;setWorldMenu(null);setShowGuide(false);setShowSettings(false); setInventoryOpen(false); setDresserOpen(false); setShopType(null); setIntroIndex(0); setStartChapter(chapter); setPhase(chapter?'setup':'prologue'); sfx('select'); };
+  const finishPrologue = () => { setPhase('setup'); sfx('select'); };
   const beginAdventure = () => {
     const name=setup.name.trim(); if(!name) return;
     // Chapter selection starts a fresh adventure; old quest cursors never carry over.
@@ -747,7 +754,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   return <div className="app-shell">
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions">{['world','battle','church','review-room'].includes(phase)&&<LearningSession value={learningSession} onChange={setLearningSession} claimed={save.dailyRewardDate===localDay()}/>}{phase==='battle'&&battle?<span className="top-location battlefield-sign"><b>ENCOUNTER</b><span className="battlefield-location">{battleLocation(battle.fromReview?'church':save.area)}</span><strong>{battle.fromReview?'復習の戦い':battle.enemy.boss?'知識の扉を守る者':'敵が現れた！'}</strong><em>{battle.enemy.boss?'BOSS BATTLE':'BATTLE'}</em></span>:<span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>}{['world','church','review-room'].includes(phase)&&<button onClick={()=>{stopPath();setMapView('world');}}>地図</button>}{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
     {phase==='title' && <TitleScreen hasSave={hasSave} onNew={()=>startNew()}
-      onResume={()=>{setPhase(hasStartedChapter(save.quests)?'world':save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world');beep(640,0.1);}}
+      onResume={()=>{setPhase(hasStartedChapter(save.quests)?'world':save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world');sfx('select');}}
       resume={<ResumeSummary save={save} savedAt={lastSavedAt}/>}
       management={<>
         <details className="chapter-start"><summary>デバッグ：何章から始める？</summary><p>選んだ章の最初から、新しい冒険を始めます。現在の冒険は「保護した前の冒険」から復元できます。</p><div className="chapter-start-options"><button onClick={()=>startNew(1)}>第一章から始める<small>自宅の朝から</small></button><button onClick={()=>startNew(2)}>第二章から始める<small>第一章クリア済み・LV 3／名簿の異変から</small></button></div></details>
@@ -787,8 +794,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     {phase==='world' && <WorldScene onWarp={area=>transition(stateRef.current.area,area)} save={save} chestReward={chestReward} levelUp={levelUp} recovery={recovery?.source==='world'?recovery:null} objectiveOverride={chapterObjective(save.quests)} villageAct={save.area==='village'?chapterTwoAct(save.quests):-1} nearbyHint={nearbyHint} enemyPositions={enemyPositions} menu={worldMenu} knightVisible={!dialogue?.lines.slice(0,dialogue.index+1).some(line=>typeof line!=='string'&&line.action==='knight-leaves')} onGuide={()=>{stopPath();setShowGuide(true);}} onMap={(tab='world')=>{stopPath();setWorldMenu(null);setMapView(tab);}} onMenu={menu=>{stopPath();setWorldMenu(menu);}} onTile={clickTile} onChurch={enterChurch} onInventory={()=>setInventoryOpen(true)} onSettings={()=>setShowSettings(true)} onQuit={()=>{let quit=false;startDialogue('語り手','📜',['冒険を保存してタイトルへ戻りますか？'],[{label:'はい',response:'冒険を保存しました。タイトルへ戻ります。',onChoose:()=>{quit=true;}},{label:'いいえ',response:'冒険を続けます。'}],()=>{if(!quit)return;persistSave(stateRef.current);setWorldMenu(null);setPhase('title');});}} onSound={toggleSound} muted={muted} walking={walking} facing={facing}/>}
     {phase==='encounter' && battle && <BattleEncounter enemy={battle.enemy} heroName={save.name} banterSeed={battle.banterSeed} onEnter={()=>setPhase('battle')}/>}
     {phase==='battle' && battle && <main className={`battle-layout ${isFillQuestion(battle.question)?'fill-battle':''}`}><section className="combat-panel"><BattleStage area={battle.fromReview ? 'church' : save.area} enemy={battle.enemy} enemyHp={battle.hp} enemyMaxHp={battle.maxHp} hero={save} heroMaxHp={maxHp(save.level)} heroMaxMp={maxMp(save.level)} attack={battle.answered ? battle.correct ? 'hero' : battle.fromReview ? null : 'enemy' : null} attackRound={battle.rounds} answered={battle.answered} attackAnimating={attackAnimating} impact={battle.impact} bossStage={battle.bossStage} banterSeed={battle.banterSeed} heroTechnique={battle.heroTechnique}/><div className="question-card"><div className="question-kicker"><span>{isFillQuestion(battle.question)?isChoiceQuestion(battle.question)?'✦ CODE CHOICE':'✎ CODE INPUT':battle.question.kind==='cli'?'⌘ CLI CHALLENGE':'✦ FOUR CHOICES'}</span><span>{difficultyLabel[battle.question.difficulty]} · {battle.question.topic==='frontend'?save.track==='react'?'React':'Vue':battle.question.topic==='laravel'?'Laravel':save.inertia?'Inertia':'API連携'}</span></div>{battle.enemy.boss&&<div className="boss-progress"><strong>復旧 {battle.bossStage+1} / {bossStages.length} · {bossStages[battle.bossStage].title}</strong><ol>{bossStages.map((stage,i)=><li key={stage.title} aria-current={i===battle.bossStage?'step':undefined} className={i<battle.bossStage?'done':i===battle.bossStage?'current':''}>{i<battle.bossStage?'✓':i+1} {stage.title}</li>)}</ol><p>症状を読んで対処すると防御が崩れます。追撃で突破し、次の復旧へ。時間制限はありません。</p></div>}<h3>{battle.question.prompt}</h3>{isFillQuestion(battle.question)&&<div className="mobile-question-code"><QuestionCode question={battle.question} answered={battle.answered}/></div>}{battle.question.code&&!isFillQuestion(battle.question)&&<pre>{battle.question.code}</pre>}{isChoiceQuestion(battle.question)?<div className={`options ${battle.question.options!.every(o=>o.length<=28)?'compact':''}`}>{battle.question.options!.map((option,i)=><button key={i} data-shortcut={String.fromCharCode(97+i)} aria-keyshortcuts={String.fromCharCode(65+i)} title={`${String.fromCharCode(65+i)}キーで回答`} disabled={battle.answered||battle.eliminated===i} className={`${battle.answered&&i===battle.question.answer?'right':''} ${battle.answered&&i!==battle.question.answer?'faded':''} ${battle.eliminated===i?'eliminated':''}`} onClick={()=>answer(i)}><span>{String.fromCharCode(65+i)}</span>{battle.eliminated===i?'魔法で除外':option}</button>)}</div>:<form className="cli-form" onSubmit={e=>{e.preventDefault();answer(battleInput);}}><label htmlFor="cli-answer">{isFillQuestion(battle.question)?'① に入るコード':'ゲーム内CLI'}</label><div><span>❯</span><input id="cli-answer" autoFocus spellCheck={false} value={battleInput} onChange={e=>setBattleInput(e.target.value)} disabled={battle.answered} autoComplete="off" autoCapitalize="off" placeholder={isFillQuestion(battle.question)?'① に入る単語・式を入力':'コマンドを入力'}/><button disabled={battle.answered||!battleInput.trim()}>{isFillQuestion(battle.question)?'回答 ↵':'実行 ↵'}</button></div></form>}{battleNote&&<div className={`battle-note ${battle.correct?'success':'fail'}`}>{battleNote}</div>}{battle.answered&&<button className="primary next-turn" data-shortcut="n" aria-keyshortcuts="N" disabled={attackAnimating} onClick={battleNext}>{battle.fromReview&&reviewCourse?reviewCourse.index+1<reviewCourse.questions.length?'次の復習へ':'復習結果を見る':battle.hp<=0?'戦闘を終える':save.hp<=0&&battle.set?'最初から挑み直す':save.hp<=0&&!battle.fromReview?'教会へ':battle.set&&!battle.correct?'同じ問いに再挑戦':battle.enemy.boss?battle.correct?bossGuardBroken(battle.hp,battle.bossStage)?'次の復旧へ':'隙を突いて追撃する':'同じ状況に再挑戦':battle.fromReview&&!battle.correct?'もう一度挑戦する':'次の問題へ'}　▶ <kbd className="shortcut-key">N / Enter</kbd></button>}{battle.enemy.boss&&!battle.answered&&<div className="boss-hints"><button className="magic-button" data-shortcut="h f4" aria-keyshortcuts="H F4" disabled={battle.hints>=2} onClick={()=>setBattle({...battle,hints:Math.min(2,battle.hints+1)})}>✦ ヒントを見る（無料） {battle.hints} / 2 <kbd className="shortcut-key">H / F4</kbd></button>{bossStages[battle.bossStage].hints.slice(0,battle.hints).map((hint,i)=><p key={i}>{hint}</p>)}</div>}<div className="battle-actions">{!battle.answered&&save.bossDefeated&&isChoiceQuestion(battle.question)&&<button className="magic-button" data-shortcut="m f3" aria-keyshortcuts="M F3" disabled={save.mp<1||battle.eliminated!==null} title="見極めの魔法：誤った選択肢を一つ消す（MP 1）" onClick={castMagic}>まほう <small>MP1</small> <kbd className="shortcut-key">M</kbd></button>}{!battle.answered&&<button className="magic-button" data-shortcut="i f2" aria-keyshortcuts="I F2" title="どうぐを使う（I / F2）" onClick={()=>setInventoryOpen(true)}>アイテム <kbd className="shortcut-key">I</kbd></button>}{!battle.fromReview&&!battle.enemy.boss&&!battle.set&&battle.enemy.id!=='after-gate'&&<button className="magic-button flee-button" title="戦闘から退く（報酬なし）" disabled={attackAnimating||save.hp<=0} onClick={retreat}>にげる <small>報酬なし</small></button>}{battle.fromReview&&<button className="magic-button flee-button" data-shortcut="r" aria-keyshortcuts="R" disabled={attackAnimating} onClick={()=>{if(reviewCourse)setReviewResult(`復習コースを中断：回答 ${reviewCourse.answered}問 · 正解 ${reviewCourse.correct}問`);setReviewCourse(null);setBattle(null);setBattleInput('');setBattleNote('');setPhase('review-room');}}>← 復習の部屋へ戻る <kbd className="shortcut-key">R</kbd></button>}</div></div></section><aside className="explain-panel">{isFillQuestion(battle.question)&&<div className="desktop-question-code"><QuestionCode question={battle.question} answered={battle.answered}/></div>}<div className="explain-header"><span className="eyebrow">GRIMOIRE</span><h2>知識の書</h2><p>問いを解くたび、失われた言葉が戻ってくる。</p></div>{battle.answered?<div className="explain-content"><span className={battle.correct?'answer-tag good':'answer-tag bad'}>{battle.correct?'正解':'復習ポイント'}</span><h3>答え：{battle.question.reveal}</h3><p>{battle.question.explanation}</p>{wrongChoiceReason(battle.question,battle.submitted)&&<p className="tip-box"><strong>選んだ答えについて</strong><br/>{wrongChoiceReason(battle.question,battle.submitted)}</p>}{related&&<button onClick={()=>{bookmarkBook(related.shelf.id,related.book.id);setLibraryShelf(related.shelf);}}>関連する本「{related.book.title}」を読む</button>}<div className="tip-box">間違えた問題は教会の「復習の部屋」で振り返れます。</div></div>:<div className="explain-placeholder"><div>✧</div><p>回答するとここに解説が表示されます。</p></div>}<div className="battle-stats"><span>正解 {save.correct}</span><span>回答 {save.total}</span><span>復習 {save.wrong.length}</span></div></aside></main>}
-    {phase==='church' && <main className="church-screen"><div className="church-visual"><img src={`${import.meta.env.BASE_URL}maps/church-town-320x256.png`} alt="黎明の教会"/><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3>{['mayor','ruins','homecoming'].includes(save.story)&&<button className="primary" onClick={visitHanna}>ハンナを見舞う</button>}<p>「心と体を休めていってください。問いを振り返りたいときは、奥の復習の部屋へどうぞ」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div>{recovery?.source==='church'&&<RecoveryCue key={recovery.sequence} event={recovery}/>}<button className="primary" onClick={()=>{const current=stateRef.current,hp=maxHp(current.level)-current.hp,mp=maxMp(current.level)-current.mp;if(hp||mp)setRecovery(previous=>({sequence:(previous?.sequence??0)+1,hp,mp,source:'church'}));else setRecovery(null);update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');beep(900,0.4,'sine');}}>HP・MPを回復する ✦</button><button className="church-room-door" onClick={()=>{setPhase('review-room');beep(660,0.12,'sine');}}><span><strong>📖 復習の部屋へ入る</strong><small>教会の奥の別室 · 復習する問題 {wrongQuestions.length} 問</small></span><span aria-hidden="true">▶</span></button></div><button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));}}>← 町へ戻る</button></div></main>}
-    {phase==='review-room' && <ReviewRoom questionBank={questionBank} questions={wrongQuestions} schedule={schedule} courseResult={reviewResult} onStartCourse={qs=>{if(!qs.length)return;setReviewResult('');setReviewCourse({questions:qs,index:0,answered:0,correct:0});startReview(qs[0]);}} onStart={q=>{setReviewCourse(null);startReview(q);}} onLeave={()=>{setPhase('church');beep(520,0.12);}}/>}
+    {phase==='church' && <main className="church-screen"><div className="church-visual"><img src={`${import.meta.env.BASE_URL}maps/church-town-320x256.png`} alt="黎明の教会"/><h2>黎明の教会</h2><p>「間違いは、道を照らす灯火です」</p></div><div className="church-card"><div className="church-content"><div className="priest-portrait"><CharacterPortrait face="👩🏼" standing/></div><h3>司祭セラ</h3>{['mayor','ruins','homecoming'].includes(save.story)&&<button className="primary" onClick={visitHanna}>ハンナを見舞う</button>}<p>「心と体を休めていってください。問いを振り返りたいときは、奥の復習の部屋へどうぞ」</p><div className="heal-stats"><span>HP {save.hp} / {maxHp(save.level)}</span><span>MP {save.mp} / {maxMp(save.level)}</span></div>{recovery?.source==='church'&&<RecoveryCue key={recovery.sequence} event={recovery}/>}<button className="primary" onClick={()=>{const current=stateRef.current,hp=maxHp(current.level)-current.hp,mp=maxMp(current.level)-current.mp;if(hp||mp)setRecovery(previous=>({sequence:(previous?.sequence??0)+1,hp,mp,source:'church'}));else setRecovery(null);update(s=>({...s,hp:maxHp(s.level),mp:maxMp(s.level)}));setToast('HPとMPが全回復した。');sfx('heal');}}>HP・MPを回復する ✦</button><button className="church-room-door" onClick={()=>{setPhase('review-room');sfx('door');}}><span><strong>📖 復習の部屋へ入る</strong><small>教会の奥の別室 · 復習する問題 {wrongQuestions.length} 問</small></span><span aria-hidden="true">▶</span></button></div><button className="back-link" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:{x:13,y:16}}));}}>← 町へ戻る</button></div></main>}
+    {phase==='review-room' && <ReviewRoom questionBank={questionBank} questions={wrongQuestions} schedule={schedule} courseResult={reviewResult} onStartCourse={qs=>{if(!qs.length)return;setReviewResult('');setReviewCourse({questions:qs,index:0,answered:0,correct:0});startReview(qs[0]);}} onStart={q=>{setReviewCourse(null);startReview(q);}} onLeave={()=>{setPhase('church');sfx('door');}}/>}
     {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card">{levelUp&&<LevelUpCue event={levelUp}/>}<span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'守護者の目に静かな光が戻った。「私は知識を守る者。魔王の声に、務めさえ忘れていた……」。開いた扉の先から、失われた知識があふれ出す。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'正気に戻った守護者が訓練用の問いを示した。見極めで偽りを見破り、答えよう。この力を、ハンナのもとへ持ち帰るために。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,selectQuestion(questions,stateRef.current,Math.random,true));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><img className="clear-symbol" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>{save.story==='rescued'?'今度は、助けられた。':'最初の扉は、開かれた。'}</h1><p>{save.story==='rescued'?'ハンナの魔物化を止め、あなたのことを思い出してもらえた。世界の知識を救う旅と、騎士の証言を手がかりに両親の行方を確かめる旅が、ここから始まる。':'失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。'}</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><QuestStartButtons save={save} onStart={startQuest}/><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&(phase==='world'||phase==='backstage')&&typeof currentLine!=='string'&&(currentLine?.art!==undefined||currentLine?.fire||(currentLine?.standing??currentLine?.face))&&<div key={dialogue.index} className={`story-stage${currentLine.fire?' is-fire':''}${currentLine.shake?' is-shake':''}`} aria-hidden="true">
@@ -796,7 +803,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       {currentLine.fire&&<div className="story-fire"><i/><i/><i/><i/><i/><i/></div>}
       {stagePair.map(slot=><StandingArt key={slot.side} name={slot.name} side={slot.side} active={slot.active}/>)}
     </div>}
-    {dialogue&&(phase==='world'||phase==='backstage')&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogueFace??'📜'}/></div><div className="dialogue-text"><strong>{dialogueSpeaker}</strong><p>{dialogueText}</p>{dialogue.study&&dialogue.index===dialogue.lines.length-1&&<QuestStudyPanel study={dialogue.study} answered={dialogue.answered} correct={dialogue.correct}/>} {dialogue.question?.code&&dialogue.index===dialogue.lines.length-1&&<div className="quest-question-context" onClick={e=>e.stopPropagation()}><small>{dialogue.question.filename}</small><pre className="quest-question-code" tabIndex={0} aria-label="実習のコードとデータ" onKeyDown={e=>e.stopPropagation()}><code>{dialogue.question.code}</code></pre></div>}{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<DialogueChoices choices={dialogue.choices} onChoose={choice=>{choice.onChoose?.();setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined,question:undefined,answered:choice.correct!==undefined,correct:choice.correct});beep(720,0.08);}}/>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}
+    {dialogue&&(phase==='world'||phase==='backstage')&&<div className="dialogue-overlay"><div className="dialogue-box" onClick={advanceDialogue}><div className="dialogue-portrait"><CharacterPortrait face={dialogueFace??'📜'}/></div><div className="dialogue-text"><strong>{dialogueSpeaker}</strong><p>{dialogueText}</p>{dialogue.study&&dialogue.index===dialogue.lines.length-1&&<QuestStudyPanel study={dialogue.study} answered={dialogue.answered} correct={dialogue.correct}/>} {dialogue.question?.code&&dialogue.index===dialogue.lines.length-1&&<div className="quest-question-context" onClick={e=>e.stopPropagation()}><small>{dialogue.question.filename}</small><pre className="quest-question-code" tabIndex={0} aria-label="実習のコードとデータ" onKeyDown={e=>e.stopPropagation()}><code>{dialogue.question.code}</code></pre></div>}{dialogue.index===dialogue.lines.length-1&&dialogue.choices?.length?<DialogueChoices choices={dialogue.choices} onChoose={choice=>{choice.onChoose?.();setDialogue({...dialogue,lines:[choice.response],index:0,choices:undefined,question:undefined,answered:choice.correct!==undefined,correct:choice.correct});sfx('select');}}/>:<span>クリック / Enter で次へ　▼</span>}</div></div></div>}
     {libraryShelf&&<LibraryPanel questionBank={questionBank} key={libraryShelf.id} shelf={libraryShelf} readBooks={save.readBooks} bookmark={save.bookmarks[libraryShelf.id]} onBookmark={bookmarkBook} onPracticeAnswer={(q,correct)=>answerQuestQuestion(q,correct,'book')} onSelectBook={(shelf,bookId)=>{bookmarkBook(shelf.id,bookId);setLibraryShelf(shelf);}} onToggleRead={toggleReadBook} onClose={()=>setLibraryShelf(null)}/> }
     {dresserOpen&&<DresserPanel opened={dresserFound} reading={readingLetter} onRead={()=>setReadingLetter(value=>!value)} onClose={()=>setDresserOpen(false)}/> }
     {shopType&&<ShopPanel type={shopType} mode={shopMode} save={save} onMode={setShopMode} onBuy={buyItem} onSell={sellItem} onClose={()=>setShopType(null)}/> }
