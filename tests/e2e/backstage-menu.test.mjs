@@ -69,6 +69,19 @@ test('第二章クリアで第二回も読める',async t=>{
   await page.getByRole('button',{name:/第二回「/}).click();await page.locator('.dialogue-box').waitFor();
 });
 
+test('第二章クリアで第三回が解放され、最後まで読める',async t=>{
+  const locked=await open(t,{...base,completed:true});
+  await locked.getByRole('button',{name:/冒険の管理/}).click();await locked.getByText('おまけ：裏会議').click();
+  assert.equal(await locked.getByRole('button',{name:/第三回（未解放）/}).isDisabled(),true);
+  const page=await open(t,{...base,completed:true,quests:{'village-ledger':{step:'complete'}}});
+  await page.getByRole('button',{name:/冒険の管理/}).click();await page.getByText('おまけ：裏会議').click();
+  await page.getByRole('button',{name:/第三回「第二章、作ってみたら事件だらけ」/}).click();await page.locator('.dialogue-box').waitFor();
+  let last='';
+  for(let i=0;i<80&&await page.locator('.dialogue-box').count();i++){last=await page.locator('.dialogue-text').innerText().catch(()=>last);await page.locator('.dialogue-text > span').click();}
+  assert.match(last,/魔王の曲は、まだ無い/);
+  await page.getByRole('button',{name:/続きから/}).waitFor();
+});
+
 test('メニューの「デバッグ：ワープ」で任意の場所へ一瞬で移動できる',async t=>{
   const page=await open(t,base);
   await page.getByRole('button',{name:/続きから/}).click();

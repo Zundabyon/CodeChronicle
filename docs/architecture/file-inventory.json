@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / f17f040 + current working tree",
+  "snapshot": "2026-11-15 / 440a6c5 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -4786,7 +4786,7 @@
     },
     {
       "path": "src/quests/backstageMeetings.ts",
-      "bytes": 9884,
+      "bytes": 15329,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5705,7 +5705,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 8098,
+      "bytes": 9178,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
