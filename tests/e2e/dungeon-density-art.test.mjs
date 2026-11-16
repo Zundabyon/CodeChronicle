@@ -64,15 +64,17 @@ test('detailed spring and both door states render from transparent high resoluti
     const {propChips}=await import('/src/world/catalog.ts');
     const {questDefinitions}=await import('/src/quests/definitions.ts');
     const {memoryDungeons}=await import('/src/world/memoryDungeons.ts');
+    const {memoryDungeonLayouts}=await import('/src/world/memoryDungeonLayouts.ts');
+    const springAt=memoryDungeonLayouts.r.spring;
     const door=memoryDungeons.find(d=>d.key==='r').doors[0];
     const steps=questDefinitions.find(d=>d.id==='village-ledger').steps;
-    return {door,spring:propChips.memorySpring.visual,closed:propChips.memoryDoor.visual,open:propChips.memoryDoorOpen.visual,restStep:steps.find(s=>s.npcId==='memory-r-trial-2').id};
+    return {door,springAt,spring:propChips.memorySpring.visual,closed:propChips.memoryDoor.visual,open:propChips.memoryDoorOpen.visual,restStep:steps.find(s=>s.npcId==='memory-r-trial-2').id};
   });
   for(const visual of [data.spring,data.closed,data.open]){
     assert.equal(visual.renderer,'atlas');assert.ok(visual.src.endsWith('.png'));
     assert.ok(visual.frame[2]>=200&&visual.frame[3]>=200,'original art must retain fine source detail');
   }
-  await relocate(page,{pos:{x:2,y:55},quests:{'village-ledger':{step:data.restStep}}});
+  await relocate(page,{pos:{x:data.springAt[0],y:data.springAt[1]+1},quests:{'village-ledger':{step:data.restStep}}});
   const assertArt=async visual=>{
     const loaded=await page.evaluate(async src=>{const image=new Image();image.src='/'+src;await image.decode();return {width:image.naturalWidth,height:image.naturalHeight};},visual.src);
     assert.equal(loaded.width,visual.sourceWidth);assert.equal(loaded.height,visual.sourceHeight);

@@ -23,7 +23,7 @@ export type Visual = {
 );
 export type TerrainDefinition = {
   category: 'terrain'; label: string; set: TerrainSet;
-  color: string; image?: string; minimap: string;
+  color: string; image?: string; fallbackImage?: string; minimap: string;
   walkable: boolean; enemyAllowed: boolean;
   connection?: 'road' | 'sand' | 'water'; overlay?: Visual; transparentOnBackdrop?:boolean;
 };
@@ -53,10 +53,15 @@ export const terrainChips = {
   sea: terrain('海の水面', 'sea', '#1262b4', '#347cb5', {image:'maps/water-64.png',connection:'water',walkable:false,enemyAllowed:false}),
   mountain: terrain('山地', 'mountain', '#606968', '#777985', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
   fieldBoundary: terrain('世界の外縁', 'mountain', '#365453', '#223849', {walkable:false,enemyAllowed:false,overlay:image('mountain-64.png',1.1,1.1)}),
-  creationFloor: terrain('創生の床','ruins','#725237','#a98250',{enemyAllowed:true}),
-  readingFloor: terrain('読解の床','ruins','#344f72','#6388bc',{enemyAllowed:true}),
-  updatingFloor: terrain('改変の床','ruins','#345d55','#5f9c8b',{enemyAllowed:true}),
-  deletionFloor: terrain('忘却の床','ruins','#503e63','#9276ac',{enemyAllowed:true}),
+  // Theme tiles may not exist yet; the colour (floors) or stone wall (walls) shows until they load.
+  forestFloor: terrain('森の床','ruins','#725237','#a98250',{image:'maps/dungeon-forest-floor-64.png'}),
+  lakeFloor: terrain('湖の床','ruins','#344f72','#6388bc',{image:'maps/dungeon-lake-floor-64.png'}),
+  mountainFloor: terrain('山の床','ruins','#345d55','#5f9c8b',{image:'maps/dungeon-mountain-floor-64.png'}),
+  desertFloor: terrain('砂漠の床','ruins','#503e63','#9276ac',{image:'maps/dungeon-desert-floor-64.png'}),
+  forestWall: terrain('森の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-forest-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
+  lakeWall: terrain('湖の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-lake-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
+  mountainWall: terrain('山の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-mountain-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
+  desertWall: terrain('砂漠の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-desert-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {image:'maps/props/stone-floor.svg'}),
   stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {image:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   woodFloor: terrain('板張りの床', 'interior', '#805a3a', '#805a3a', {image:'maps/wood-floor-64.png'}),
@@ -92,6 +97,14 @@ export const propChips = {
   wallSword: prop('飾り剣',image('wall-sword-64.png',.78,.78),false,'overhead'),
   lantern: prop('灯り',image('lantern-64.png'),false),
   wallLantern: prop('壁掛けの灯り',image('lantern-64.png',.55,.55),false,'overhead'),
+  forestDecoA: prop('forestの小物A',image('dungeon-forest-deco-a-64.png',.9,.9),false),
+  forestDecoB: prop('forestの小物B',image('dungeon-forest-deco-b-64.png',.9,.9),false),
+  lakeDecoA: prop('lakeの小物A',image('dungeon-lake-deco-a-64.png',.9,.9),false),
+  lakeDecoB: prop('lakeの小物B',image('dungeon-lake-deco-b-64.png',.9,.9),false),
+  mountainDecoA: prop('mountainの小物A',image('dungeon-mountain-deco-a-64.png',.9,.9),false),
+  mountainDecoB: prop('mountainの小物B',image('dungeon-mountain-deco-b-64.png',.9,.9),false),
+  desertDecoA: prop('desertの小物A',image('dungeon-desert-deco-a-64.png',.9,.9),false),
+  desertDecoB: prop('desertの小物B',image('dungeon-desert-deco-b-64.png',.9,.9),false),
   sign: prop('看板',{renderer:'text',text:'',width:1,height:.4,anchor:{x:.5,y:1}},false,'overhead'),
 } satisfies Record<string,ObjectDefinition>;
 export type PropId = keyof typeof propChips;

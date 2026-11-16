@@ -10,7 +10,7 @@
 .memory-fragments>span{display:grid;gap:2px;min-width:45px;padding:5px 7px;border:1px solid #5e6174;background:#151d2a;color:#aeb4c5;border-radius:4px}
 .memory-fragments>span[data-collected=true]{border-color:#ead39a;color:#ffe7a1;background:#363020}
 .memory-fragments b{font-size:14px}.memory-fragments small{font-size:9px}
-.terrain-creationFloor,.terrain-readingFloor,.terrain-updatingFloor,.terrain-deletionFloor{box-shadow:inset 0 1px #ffffff12,inset 1px 0 #0003}
+.terrain-forestFloor,.terrain-lakeFloor,.terrain-mountainFloor,.terrain-desertFloor{box-shadow:inset 0 1px #ffffff12,inset 1px 0 #0003}
 
 /* World controls must not cover the study choices, especially on small screens. */
 .app-shell:has(.dialogue-overlay) :is(.world-map-button,.world-guide,.world-command,.world-hint,.learning-session){visibility:hidden}

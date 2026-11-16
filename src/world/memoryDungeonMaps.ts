@@ -18,16 +18,13 @@ const enemies = {
   d: [['全件削除の骸骨','条件なき消去','skeleton'],['取り違えの幽霊','別人の記憶','ghost'],['削除忘れのゴーレム','見せかけの消去','golem']],
 } as const;
 
-// Board, seals, lessons, returns, spring, foes and travelers follow the v2 layout
-// (docs/production/chapter-two-dungeons-v2-design.md). Interact events stop movement into
-// their tile, so objects the route must pass (returns, spring, entrance warp) sit in the
-// wall beside the v2 coordinate, which stays a walkable standing and landing tile.
+// Board, seals, lessons, returns, spring, foes and travelers follow the v3 layout
+// (docs/production/chapter-two-dungeons-v3-design.md). Interact events stop movement into
+// their tile, so objects the route must pass (returns, entrance warp) sit in the wall east of
+// the v3 coordinate, which stays a walkable standing and landing tile.
 export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEntries(memoryDungeons.map(dungeon=>{
   const layout=memoryDungeonLayouts[dungeon.key];
-  const terrain:TerrainId[][]=layout.terrain.map(row=>[...row].map(cell=>cell==='.'?dungeon.floor:'stoneWall'));
-  const [guideX,guideY]=layout.npcs.guide;
-  // The v2 guide stands in a sealed pocket; open the cell toward the entrance corridor so it can be addressed.
-  terrain[guideY][guideX+1]=dungeon.floor;
+  const terrain:TerrainId[][]=layout.terrain.map(row=>[...row].map(cell=>cell==='.'?dungeon.floor:dungeon.wall));
   const props:PropPlacement[]=[];
   const characters:CharacterPlacement[]=[];
   const events:MapEvent[]=[];
@@ -71,8 +68,8 @@ export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEn
     'API用のapiResourceでは、フォーム画面を表示するcreateとeditを除いた五つになる。保存用のstoreとupdateは残る。',
     '七つの名前を暗記するだけでなく、画面を開く操作とデータを書き換える操作を区別しよう。',
   ]);
-  // West wall one row south of the v2 spring tile, so the tablet north and the adventurer east of it stay reachable.
-  const spring={x:layout.spring[0]-1,y:layout.spring[1]+1};
+  // v3 gives the spring a 5x5 clearing, so it stands on its own tile without closing a route.
+  const spring={x:layout.spring[0],y:layout.spring[1]};
   props.push({id:'rest-spring',chip:'memorySpring',...spring});
   props.push({id:'rest-label',chip:'sign',x:spring.x,y:spring.y-1.4,text:'回復泉 HP・MP / 無料'});
   events.push({id:'rest-spring-interact',...spring,trigger:'interact',label:'記憶の回復泉で休む',action:{kind:'spring',name:'記憶の回復泉'}});
@@ -93,6 +90,13 @@ export const memoryDungeonMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEn
   events.push({id:'deep-warp-interact',...deepWarp,trigger:'interact',label:'到達した一番奥の部屋へ飛ぶ',action:{kind:'memory-warp',dungeon:dungeon.key}});
   const [exitX,exitY]=layout.exit;
   props.push({id:'entrance-name',chip:'sign',x:exitX,y:exitY-.4,text:dungeon.name+' / 出口 ▼'});
+  // Theme ornaments sit on wall faces (wall with floor to the south), never on floor, and keep clear of other objects.
+  const used=[...props,...events,...characters];
+  let wallFaces=0;
+  layout.terrain.forEach((row,y)=>[...row].forEach((cell,x)=>{
+    if(cell!=='#'||layout.terrain[y+1]?.[x]!=='.'||used.some(o=>Math.abs(o.x-x)<2&&Math.abs(o.y-y)<2))return;
+    if(wallFaces++%7===0)props.push({id:'deco-'+x+'-'+y,chip:dungeon.deco[wallFaces%2],x,y,blocksMovement:false});
+  }));
   const map:WorldMapInput={environment:'dungeon',terrain,entry:{x:entryX,y:entryY},props,buildings:[],characters,events:[...events,
     {id:'return-to-field',x:exitX,y:exitY,trigger:'enter',label:'風渡りの平原へ',
       action:{kind:'transition',to:'field',position:{x:dungeon.gate.x,y:dungeon.gate.y+1}}},

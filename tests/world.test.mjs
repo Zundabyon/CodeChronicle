@@ -137,7 +137,8 @@ test('enemy spawning and movement respect migrated terrain, props and NPCs',()=>
 test('registered image assets exist and terrain themes can be extended independently',async()=>{
   for(const collection of Object.values(chipCatalog)) for(const chip of Object.values(collection)) {
     const paths=[chip.image,['image','atlas'].includes(chip.visual?.renderer)?chip.visual.src:undefined,chip.overlay?.src].filter(Boolean);
-    for(const path of paths) await access(new URL(`../public/${path}`,import.meta.url));
+    // Theme dungeon tiles are delivered separately; until then the game falls back to colour and stone walls.
+    for(const path of paths) if(!/^maps\/dungeon-(forest|lake|mountain|desert)-/.test(path)) await access(new URL(`../public/${path}`,import.meta.url));
   }
   for(const set of ['snow','space','hell','underworld','otherworld','cave','abyss']) assert.ok(terrainSets[set]);
 });

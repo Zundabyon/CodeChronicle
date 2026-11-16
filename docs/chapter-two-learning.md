@@ -24,14 +24,16 @@
 
 | 幕 | ダンジョン | 地域・平原の入口 | 主なアクション | 盤面（幅×高さ） | 実習問題 |
 | --- | --- | --- | --- | --- | --- |
-| 第一幕 R | 読解の書庫 | 鏡の湖 49,20 | index / show | 47×114 | 11（3+2+2+2+2） |
-| 第二幕 C | 創生の工房 | 深緑の森 32,55 | create / store | 45×114 | 11（3+2+2+2+2） |
-| 第三幕 U | 改変の回廊 | 石鳴り山脈 90,30 | edit / update | 49×114 | 11（3+2+2+2+2） |
-| 第四幕 D | 忘却の墓所 | 陽炎の砂漠 100,66 | destroy | 43×114 | 10（3+2+2+2+1） |
+| 第一幕 R | 読解の書庫 | 鏡の湖 47,17 | index / show | 61×121 | 11（3+2+2+2+2） |
+| 第二幕 C | 創生の工房 | 深緑の森 27,60 | create / store | 61×121 | 11（3+2+2+2+2） |
+| 第三幕 U | 改変の回廊 | 石鳴り山脈 86,41 | edit / update | 61×121 | 11（3+2+2+2+2） |
+| 第四幕 D | 忘却の墓所 | 陽炎の砂漠 109,62 | destroy | 61×121 | 10（3+2+2+2+1） |
 
 実習問題は4ダンジョン計43問。忘却の墓所の第5室は `ledger-delete-transfer` を外したため1問（`resource-delete-transfer`）。
 
-- 盤面はCodex設計のv2（[設計](production/chapter-two-dungeons-v2-design.md)、[配置JSON](production/chapter-two-dungeons-v2-layout.json)）を [memoryDungeonLayouts.ts](../src/world/memoryDungeonLayouts.ts) へ写したもの。各ダンジョン5部屋・5封印扉・祭壇。
+- 盤面はCodex設計のv3（[設計](production/chapter-two-dungeons-v3-design.md)、[配置JSON](production/chapter-two-dungeons-v3-layout.json)、検証 `node docs/production/chapter-two-dungeons-v3-validate.mjs`）を [memoryDungeonLayouts.ts](../src/world/memoryDungeonLayouts.ts) へ写したもの。各ダンジョン5部屋・5封印扉・祭壇。形はCreate＝樹状分岐、Read＝島と橋、Update＝九十九折、Delete＝欠損同心環。
+- 床・壁・小物は地域テーマのタイル（`dungeon-<forest|lake|mountain|desert>-{floor,wall,deco-a,deco-b}-64.png`）。画像が無い間は床は単色、壁は遺跡の石壁、小物は非表示。小物は床に面した壁の上に置き、通行に影響しない。
+- 平原の入口はv3案から、Updateを山地の中で到達できない86,38から山裾の86,41へ、Deleteをサボテンと重なる110,62から109,62へずらした。
 - 各部屋の封印（`memory-<key>-trial-<n>`）で、その部屋の問題をすべて正解すると北の扉が開く。一部正解では開かない。開閉はセーブ済みの章の進行から決まる（[memoryGates.ts](../src/quests/memoryGates.ts)）。旧座標が閉じた扉の先にある場合は、到達できる側へ戻す。
 - 第5室は応用の関門（`checkpoint`）。導入で答えを誘導しない。
 - 各部屋で「目的と動き → コードの判断 → 操作前後の表」を示す（`study`、[QuestStudyPanel.tsx](../src/quests/QuestStudyPanel.tsx)）。
@@ -106,7 +108,7 @@
 - [chapterTwoLessons.ts](../src/quests/chapterTwoLessons.ts)：ダンジョンの実習step・祭壇・操作前後の表。
 - [resourceQuestions.ts](../src/resourceQuestions.ts)、[chapterTwoQuestions.ts](../src/chapterTwoQuestions.ts)：ダンジョンの問題。基本4問は beginnerQuestions.ts。
 - [rangerBattles.ts](../src/quests/rangerBattles.ts)、[rangerBattleQuestions.ts](../src/rangerBattleQuestions.ts)：レンジャー戦・グラフィウス戦。
-- [memoryDungeons.ts](../src/world/memoryDungeons.ts)、[memoryDungeonLayouts.ts](../src/world/memoryDungeonLayouts.ts)、[memoryDungeonMaps.ts](../src/world/memoryDungeonMaps.ts)：ダンジョンの情報・v2盤面・マップ化。
+- [memoryDungeons.ts](../src/world/memoryDungeons.ts)、[memoryDungeonLayouts.ts](../src/world/memoryDungeonLayouts.ts)、[memoryDungeonMaps.ts](../src/world/memoryDungeonMaps.ts)：ダンジョンの情報・v3盤面・マップ化。
 - [dungeonLessons.ts](../src/world/dungeonLessons.ts)：解説の本文。
 - [memoryGates.ts](../src/quests/memoryGates.ts)：扉の開閉、帰還点の行き先、旧座標の復帰。
 - [WorldScene.tsx](../src/WorldScene.tsx)、[mountainVillage.ts](../src/world/mountainVillage.ts)：村の状態と配置。

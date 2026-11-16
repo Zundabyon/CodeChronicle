@@ -149,7 +149,7 @@ export function WorldScene({onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward
           const doorLabel=door?(isMemoryDoorOpen(save.quests,door.npcId)?'開いた記憶の扉を通る':'閉じた記憶の扉を調べる'):undefined;
           const destination=doorLabel??(event?.action.kind==='chest'&&save.openedChests.includes(event.action.id)?'空の宝箱を調べる':event?.label??'移動');
           const background=outdoor&&chip.connection?'none':map.backdrop&&chip.transparentOnBackdrop?'transparent':
-            `${chip.color}${chip.image?` url('${import.meta.env.BASE_URL}${chip.image}') center / 100% 100%`:''}`;
+            [chip.image,'fallbackImage' in chip?chip.fallbackImage:undefined].filter(Boolean).map(src=>`url('${import.meta.env.BASE_URL}${src}') center / 100% 100%`).join(', ')+' '+chip.color;
           return <button key={`${x}-${y}`} role="gridcell" style={{gridColumn:x+1,gridRow:y+1,pointerEvents:inViewport?'auto':'none',background}} tabIndex={inViewport?0:-1} aria-hidden={!inViewport} className={`world-tile terrain-${tile} ${player?'player':''} ${npc?'npc':''} ${event?.action.kind==='transition'&&interior?'map-exit':''}`} onClick={()=>onTile(point)} title={player?save.name:npc?.name??(destination==='移動'?undefined:destination)} aria-label={player?'現在地':npc?.name??`${destination} ${x}, ${y}`}>{outdoor&&<TerrainTile tiles={map.terrain} x={x} y={y} textureId={textureId}/>}</button>;
         }))}
         <div className="world-placements">

@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-15 / 440a6c5 + current working tree",
+  "snapshot": "2026-11-16 / f6a7457 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,20 +10,20 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 501,
+  "count": 521,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
     "ゲームルール": 1,
     "ゲーム進行": 1,
     "世界の定義": 10,
-    "世界・場所": 27,
+    "世界・場所": 43,
     "人物・生物": 93,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 91,
+    "制作・運用": 95,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -48,7 +48,7 @@
     "world": {
       "label": "世界・場所",
       "guide": "docs/production/world.md",
-      "count": 95
+      "count": 111
     },
     "characters": {
       "label": "人物・生物",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 121
+      "count": 125
     }
   },
   "files": [
@@ -325,6 +325,14 @@
       "genre": "operations"
     },
     {
+      "path": "docs/art/dungeon-theme-tiles-v1.md",
+      "bytes": 4570,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/art/knight-portrait-v2.md",
       "bytes": 3422,
       "suffix": ".md",
@@ -382,7 +390,7 @@
     },
     {
       "path": "docs/chapter-two-learning.md",
-      "bytes": 12143,
+      "bytes": 12775,
       "suffix": ".md",
       "group": "教材・学習",
       "role": "教材・学習に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -495,6 +503,30 @@
     {
       "path": "docs/production/chapter-two-dungeons-v2-validate.mjs",
       "bytes": 18734,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-two-dungeons-v3-design.md",
+      "bytes": 40657,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-two-dungeons-v3-layout.json",
+      "bytes": 90468,
+      "suffix": ".json",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-two-dungeons-v3-validate.mjs",
+      "bytes": 18026,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -964,6 +996,70 @@
       "genre": "world"
     },
     {
+      "path": "public/maps/dungeon-desert-deco-a-64.png",
+      "bytes": 5185,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-desert-deco-b-64.png",
+      "bytes": 5183,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-desert-floor-64.png",
+      "bytes": 9147,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-desert-wall-64.png",
+      "bytes": 9750,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-forest-deco-a-64.png",
+      "bytes": 4582,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-forest-deco-b-64.png",
+      "bytes": 4859,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-forest-floor-64.png",
+      "bytes": 9769,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-forest-wall-64.png",
+      "bytes": 10219,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
       "path": "public/maps/dungeon-ground.png",
       "bytes": 2715114,
       "suffix": ".png",
@@ -973,6 +1069,70 @@
         "src/BattleStage.tsx",
         "src/style.css"
       ],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-lake-deco-a-64.png",
+      "bytes": 3112,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-lake-deco-b-64.png",
+      "bytes": 5081,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-lake-floor-64.png",
+      "bytes": 9416,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-lake-wall-64.png",
+      "bytes": 10044,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-mountain-deco-a-64.png",
+      "bytes": 5930,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-mountain-deco-b-64.png",
+      "bytes": 5186,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-mountain-floor-64.png",
+      "bytes": 9594,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/dungeon-mountain-wall-64.png",
+      "bytes": 9778,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "world"
     },
     {
@@ -3859,7 +4019,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 21393,
+      "bytes": 21471,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4680,7 +4840,7 @@
     },
     {
       "path": "src/questLearning.css",
-      "bytes": 3262,
+      "bytes": 3255,
       "suffix": ".css",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5290,7 +5450,7 @@
     },
     {
       "path": "src/world/catalog.ts",
-      "bytes": 10021,
+      "bytes": 11689,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
@@ -5511,7 +5671,7 @@
     },
     {
       "path": "src/world/memoryDungeonLayouts.ts",
-      "bytes": 36078,
+      "bytes": 43803,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5519,7 +5679,7 @@
     },
     {
       "path": "src/world/memoryDungeonMaps.ts",
-      "bytes": 9105,
+      "bytes": 9357,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5527,7 +5687,7 @@
     },
     {
       "path": "src/world/memoryDungeons.ts",
-      "bytes": 2622,
+      "bytes": 2865,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5753,7 +5913,7 @@
     },
     {
       "path": "tests/e2e/dungeon-density-art.test.mjs",
-      "bytes": 6817,
+      "bytes": 6992,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5761,7 +5921,7 @@
     },
     {
       "path": "tests/e2e/dungeon-mechanics.test.mjs",
-      "bytes": 11187,
+      "bytes": 11180,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -5913,7 +6073,7 @@
     },
     {
       "path": "tests/world.test.mjs",
-      "bytes": 12116,
+      "bytes": 12291,
       "suffix": ".mjs",
       "group": "検証",
       "role": "ボス採点・旧世界との互換・素材分類・穴埋め形式・出題の抽選を検証する。",
