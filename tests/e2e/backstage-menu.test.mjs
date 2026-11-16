@@ -124,3 +124,27 @@ test('メニューからBGMさくせいを開き、音符を置いてゲーム�
   await page.keyboard.press('Escape');
   assert.equal(await page.getByRole('dialog',{name:'BGMさくせい'}).count(),0);
 });
+
+test('メニューの進行スイッチで第二章を「グラフィウス戦の前」にすると村の広場にグラフィウスが立つ',async t=>{
+  const page=await open(t,{...base,story:'rescued',completed:true,bossDefeated:true,area:'village',pos:{x:11,y:17},quests:{'village-ledger':{step:'battle-c'}},openedChests:['dungeon:19,5'],defeated:['boss','slime-1']});
+  await page.getByRole('button',{name:/続きから/}).click();
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'▶ デバッグ：進行スイッチ'}).click();
+  const dialog=page.getByRole('dialog',{name:'進行スイッチ'});await dialog.getByText('セーブデータが書き換わります').waitFor();
+  assert.equal(await dialog.getByRole('radio',{name:/第二幕 ツクネ戦の前/}).getAttribute('aria-checked'),'true','the current step is marked');
+  await dialog.getByRole('radio',{name:/グラフィウス戦の前/}).click();
+  assert.equal((await saved(page)).quests['village-ledger'].step,'battle-graphius');
+  await page.getByText('第二章を『グラフィウス戦の前』にしました').waitFor();
+  await dialog.getByRole('button',{name:/倒した敵をすべて復活/}).click();
+  assert.deepEqual((await saved(page)).defeated,['boss']);
+  await dialog.getByLabel('レベル').selectOption('10');
+  const s=await saved(page);assert.equal(s.level,10);assert.equal(s.hp,65);
+  if(process.env.FLAG_SHOT)await page.screenshot({path:process.env.FLAG_SHOT});
+  let asked=0;page.once('dialog',d=>{asked++;d.accept();});
+  await dialog.getByRole('radio',{name:/第一幕 ダンジョン中/}).click();
+  assert.equal(asked,1,'going back asks once');assert.equal((await saved(page)).quests['village-ledger'].step,'read-records');
+  await dialog.getByRole('radio',{name:/グラフィウス戦の前/}).click();
+  await page.keyboard.press('Escape');assert.equal(await page.getByRole('dialog',{name:'進行スイッチ'}).count(),0);
+  assert.equal(await page.locator('.world-viewport img[src*="sprites/graphius-64.png"]').count(),1,'Graphius stands in the village square');
+  assert.equal(await page.locator('.world-viewport img[src*="sprites/ranger-create-64.png"]').count(),0,'the act-two ranger is gone');
+});

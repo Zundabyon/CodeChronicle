@@ -63,6 +63,7 @@ type Props = {
   menu: 'command'|'status'|'quest'|'warp'|null;
   onMenu: (menu: 'command'|'status'|'quest'|'warp'|null) => void;
   onWarp: (area: Area) => void;
+  onFlags: () => void;
   onSfx: () => void;
   onBgm: () => void;
   onTile: (point: Point) => void;
@@ -106,7 +107,7 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </div>;
 }
 
-export function WorldScene({onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({onFlags,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
@@ -220,6 +221,7 @@ export function WorldScene({onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward
         <button onClick={onGuide}>▶ 操作方法</button>
         <button onClick={onSound}>▶ おと　{muted?'オフ':'オン'}</button>
         <button onClick={()=>onMenu('warp')}>▶ デバッグ：ワープ</button>
+        <button onClick={()=>{onMenu(null);onFlags();}}>▶ デバッグ：進行スイッチ</button>
         <button onClick={()=>{onMenu(null);onSfx();}}>▶ デバッグ：効果音さくせい</button>
         <button onClick={()=>{onMenu(null);onBgm();}}>▶ デバッグ：BGMさくせい</button>
         <button onClick={()=>{onMenu(null);onQuit();}}>▶ ゲームを終わる</button>

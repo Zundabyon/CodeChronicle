@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-16 / f6a7457 + current working tree",
+  "snapshot": "2026-11-16 / 574e375 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 521,
+  "count": 522,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 95,
+    "制作・運用": 96,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 125
+      "count": 126
     }
   },
   "files": [
@@ -2984,7 +2984,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 89945,
+      "bytes": 90582,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4019,7 +4019,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 21471,
+      "bytes": 21605,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4499,6 +4499,14 @@
     {
       "path": "src/dev/DesignerShell.tsx",
       "bytes": 1183,
+      "suffix": ".tsx",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "src/dev/FlagSwitches.tsx",
+      "bytes": 7633,
       "suffix": ".tsx",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5865,7 +5873,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 9178,
+      "bytes": 11462,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
