@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-16 / 574e375 + current working tree",
+  "snapshot": "2026-11-18 / 1c68635 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 522,
+  "count": 524,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 96,
+    "制作・運用": 98,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 126
+      "count": 128
     }
   },
   "files": [
@@ -173,6 +173,14 @@
       "genre": "operations"
     },
     {
+      "path": ".agents/skills/roundtable/SKILL.md",
+      "bytes": 5082,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": ".claude/agents/code_reviewer.md",
       "bytes": 648,
       "suffix": ".md",
@@ -238,7 +246,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "bytes": 3374,
+      "bytes": 3469,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -437,6 +445,14 @@
       "genre": "operations"
     },
     {
+      "path": "docs/production/chapter-three-plan.md",
+      "bytes": 6518,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/production/chapter-two-act1-dungeon-design.md",
       "bytes": 27975,
       "suffix": ".md",
@@ -470,7 +486,7 @@
     },
     {
       "path": "docs/production/chapter-two-acts-handoff.md",
-      "bytes": 16253,
+      "bytes": 16556,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -2945,7 +2961,7 @@
     },
     {
       "path": "seed.game.sql",
-      "bytes": 1243741,
+      "bytes": 1243312,
       "suffix": ".sql",
       "group": "状態・保存",
       "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5213,7 +5229,7 @@
     },
     {
       "path": "src/resourceQuestions.ts",
-      "bytes": 34558,
+      "bytes": 34410,
       "suffix": ".ts",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5539,7 +5555,7 @@
     },
     {
       "path": "src/world/dungeonLessons.ts",
-      "bytes": 27164,
+      "bytes": 27149,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",

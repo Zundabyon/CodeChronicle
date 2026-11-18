@@ -135,5 +135,5 @@
 - **術4種**：効果（上の表）と、祭壇での取得の仕組みが未実装。祭壇は現在、欠片を渡すだけ。
 - **終焉の抹消の妨害**：敵がかける妨害の仕組みが未設計。重すぎる場合は「受けたダメージを消す（回復）」に代える案のまま。
 - **第三章・残る四天王**：残る3人と第三章の内容は未設計（「後回しにした点」を参照）。
-- **Delete部屋に残る認可前提**：`ledger-delete-transfer` は進行から外したが、忘却の墓所に認可を前提とする内容が残る（第2室の `resource-delete-authorization` は削除権限の確認を問い、第5室の `resource-delete-transfer` は「認可済み」を前提に置く。`ledger-delete-transfer` の問題もカタログに残る）。第三章へ回すか、第二章の範囲に書き直すかを整理する。
+- **Delete部屋に残る認可前提**（解決済み）：認証・認可は第四章・第五章で扱う方針とし、第2室の `resource-delete-authorization` を「同名の行から主キーで1件だけ削除する」問題に書き直し、第5室の `resource-delete-transfer` から「認可済み」の前提を外した（IDは維持）。解説 `d-required-2`・`d-detail-2-b`・`d-required-4` も照合の話に寄せた。進行外の `ledger-delete-transfer` の問題はカタログに残る。第4室の `resource-delete-confirmation`（正解・解説）と第3室の `resource-delete-redirect`（前置き・コードのコメント）からも認可の記述を外した。`ledger-delete-transfer` は第五章の候補として残す。
 - **部屋テーマ名と問題のずれ（8室）**：`memoryDungeons.ts` の `roomNames`（部屋名・扉の看板）と、その部屋の実習問題の内容が合っていない部屋が8室ある。部屋名を問題に合わせるか、問題の配置を直すかを決める。
