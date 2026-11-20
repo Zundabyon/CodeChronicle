@@ -78,7 +78,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
       {attack === 'hero' && <div key={`slash-${attackRound}`} className="battle-slash-effect" aria-hidden="true"><i /><i /><i /><b /><em className="battle-sword-trail" /></div>}
       {attack === 'enemy' && <div className={`battle-enemy-effect battle-enemy-effect-${enemyAttackStyle}`} aria-hidden="true"><span className="battle-enemy-projectile"><EnemyEffectSprite style={enemyAttackStyle}/></span><span className="battle-enemy-impact" /><i /><i /><i /></div>}
 
-      <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''} ${enemy.id.startsWith('undersea-') ? 'battle-foe-undersea' : ''} ${enemy.id === 'mimic-book' ? 'battle-foe-cursed' : ''} ${defeated ? 'is-defeated' : ''}`}>
+      <div className={`battle-combatant battle-foe ${enemy.boss ? 'battle-foe-boss' : ''} ${enemy.id.startsWith('undersea-') ? 'battle-foe-undersea' : ''} ${enemy.id === 'mimic-book' ? 'battle-foe-cursed' : ''} ${enemy.name.startsWith('黄金の') ? 'battle-foe-elite' : ''} ${defeated ? 'is-defeated' : ''}`}>
         <div key={`foe-${attackRound}`} className="battle-combatant-sprite battle-foe-sprite">
           <EnemySprite enemyId={enemy.id}/>
           {attack==='hero'&&impactReached&&!!impact?.enemyDamage&&<span key={`impact-${attackRound}`} className="battle-impact-indicator" aria-hidden="true"><i/><b>−{impact.enemyDamage}</b></span>}

@@ -71,7 +71,7 @@ const FlagSwitches = lazy(() => import('./dev/FlagSwitches').then(m => ({ defaul
 type Phase = 'title' | 'prologue' | 'setup' | 'world' | 'encounter' | 'battle' | 'church' | 'review-room' | 'epilogue' | 'clear' | 'backstage';
 type Save = { quests:QuestStates; dialogueLog:DialogueLogEntry[]; learningRecords:LearningRecords; version:number; story:StoryStage; name: string; track: Track; difficulty: Difficulty; inertia: boolean; area: Area; pos: Point; hp: number; mp: number; xp: number; level: number; gold:number; inventory:Inventory; equipment:Equipment; dresserOpened:boolean; openedChests:string[]; readBooks:string[]; bookmarks:Record<string,string>; lastSavedAt?:number; dailyRewardDate:string; defeated: string[]; wrong: string[]; seen: string[]; answered: string[]; bossDefeated: boolean; magicUsed: boolean; completed: boolean; steps: number; correct: number; total: number };
 type Dialogue = { study?:QuestStudy; answered?:boolean; correct?:boolean; question?: Question; speaker: string; face: string; lines: (string|StoryLine)[]; index: number; choices?: {label:string; response:string;correct?:boolean;onChoose?:()=>void}[]; onEnd?: () => void };
-type Battle = { impact?:BattleImpact; submitted?:string|number; enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number; set?: string[]; stats: EnemyStats; scrambled?: boolean };
+type Battle = { impact?:BattleImpact; submitted?:string|number; enemy: Enemy; hp: number; maxHp: number; question: Question; answered: boolean; correct: boolean; eliminated: number | null; rounds: number; fromReview?: boolean; banterSeed: number; heroTechnique: HeroTechnique | null; bossStage: number; hints: number; set?: string[]; stats: EnemyStats; scrambled?: boolean; elite?: boolean };
 
 const STORAGE = 'code-chronicle-save-v1';
 const BACKUP_STORAGE='code-chronicle-save-backup-v1';
@@ -377,9 +377,12 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     stopPath(); const s=stateRef.current; const ranger=rangerBattles[enemy.id],set=ranger&&drawSet(ranger);
     const q=shuffleChoices(reviewQuestion ?? (set ? questions.find(q=>q.id===set[0])! : enemy.boss ? bossQuestion(0,s.difficulty) : memoryBattleQuestion(questions,s,enemy.id)));
     if (enemy.boss && s.level<2) { startDialogue('知識の扉','📜',['石の扉に文字が浮かぶ。「知識の断片を集め、第二の階へ至った者のみ、この門を試せる」','平原や遺跡の敵と戦い、経験を積んでから戻ろう。']); return; }
-    const stats=enemyStats(enemy,s.area);
+    // Rare golden foes (1%): double attack, double experience.
+    const elite=!set&&!enemy.boss&&!fromReview&&enemy.id!=='after-gate'&&Math.random()<.01,base=enemyStats(enemy,s.area);
+    const stats=elite?{...base,attack:base.attack*2,xp:base.xp*2}:base;
+    if(elite)enemy={...enemy,name:`黄金の${enemy.name}`};
     const hp=set?set.length:enemy.boss?bossStages.length*bossGuardHp:enemy.id==='after-gate'||fromReview?1:stats.hp;
-    setBattle({enemy,stats,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null,bossStage:0,hints:0,set});
+    setBattle({enemy,stats,elite,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null,bossStage:0,hints:0,set});
     setBattleInput(''); setBattleNote(''); phaseRef.current='encounter'; setPhase('encounter'); sfx('encounter');
   },[stopPath,sfx,startDialogue]);
   useEffect(()=>{startBattleRef.current=startBattle;},[startBattle]);
@@ -638,7 +641,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       if(nextLevel>current.level)setLevelUp({level:nextLevel,hpGain:maxHp(nextLevel)-maxHp(current.level),mpGain:maxMp(nextLevel)-maxMp(current.level)});
       update(s=>{ const xp=s.xp+gained, level=1+Math.floor(xp/12), leveled=level>s.level; return {...s,xp,level,gold:s.gold+earned,hp:leveled?maxHp(level):s.hp,mp:leveled?maxMp(level):s.mp,defeated:[...s.defeated,battle.enemy.id],bossDefeated:s.bossDefeated||!!battle.enemy.boss}; });
       setBattle(null);
-      if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}を倒した！ 経験値 +${gained}、${earned} G`); }
+      if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}を倒した！ 経験値 +${gained}${battle.elite?'（黄金の敵：2倍！）':''}、${earned} G`); }
       if (ranger) sendQuestEvent({type:'battle-won',enemyId:battle.enemy.id});
       if(nextLevel>current.level)sfx('levelUp');
       jingle('victory');
@@ -763,7 +766,8 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const stagePair=dialogue?standingPair(dialogue.lines,dialogue.index):[];
 
   const cursed=dialogue?.speaker==='？？？の本'||(['battle','encounter'].includes(phase)&&battle?.enemy.id==='mimic-book');
-  return <div className={`app-shell ${cursed?'cursed-presence':''}`}>
+  const golden=['battle','encounter'].includes(phase)&&!!battle?.elite;
+  return <div className={`app-shell ${cursed?'cursed-presence':''} ${golden?'golden-presence':''}`}>
     <header className="topbar"><div className="brand"><span className="brand-mark">✧</span><div><strong>コードクロニクル</strong><small>コードの扉を開く者達</small></div></div><div className="top-actions">{['battle','church','review-room'].includes(phase)&&learningPanel}{phase==='battle'&&battle?<span className="top-location battlefield-sign"><b>ENCOUNTER</b><span className="battlefield-location">{battleLocation(battle.fromReview?'church':save.area)}</span><strong>{battle.fromReview?'復習の戦い':battle.enemy.boss?'知識の扉を守る者':'敵が現れた！'}</strong><em>{battle.enemy.boss?'BOSS BATTLE':'BATTLE'}</em></span>:<span className="top-location">{phase==='world'?areaLabel[save.area]:phase==='battle'?'戦闘中':phase==='church'?'教会':phase==='review-room'?'復習の部屋':phase==='title'?'冒険の始まり':'物語'}</span>}{['world','church','review-room'].includes(phase)&&<button onClick={()=>{stopPath();setMapView('world');}}>地図</button>}{phase!=='title'&&phase!=='prologue'&&phase!=='setup'&&<button onClick={()=>setShowSettings(true)}>⚙ 学習設定</button>}<button onClick={()=>{stopPath();setShowGuide(true);}} aria-keyshortcuts="F1">操作方法 <kbd className="shortcut-key">F1</kbd></button><button aria-label={muted?'音をオンにする':'音をオフにする'} onClick={toggleSound}>{muted?'♪ 音オフ':'♫ 音オン'}</button></div></header>
     {phase==='title' && <TitleScreen hasSave={hasSave} onNew={()=>startNew()}
       onResume={()=>{setPhase(hasStartedChapter(save.quests)?'world':save.completed?'clear':save.bossDefeated&&['knowledge','legacy','ruins'].includes(save.story)?'epilogue':'world');sfx('select');}}
