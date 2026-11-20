@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / c76bb5c + current working tree",
+  "snapshot": "2026-11-20 / deba31c + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 545,
+  "count": 547,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 104,
+    "制作・運用": 105,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -38,7 +38,7 @@
     "物語・進行": 16,
     "状態・保存": 4,
     "画像・素材": 95,
-    "画面・表現・操作": 24,
+    "画面・表現・操作": 25,
     "表示スタイル": 22,
     "設定": 7,
     "説明資料": 4,
@@ -78,7 +78,7 @@
     "presentation": {
       "label": "画面・表現・操作",
       "guide": "docs/production/presentation.md",
-      "count": 30
+      "count": 31
     },
     "persistence": {
       "label": "状態・保存",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 134
+      "count": 135
     }
   },
   "files": [
@@ -3081,7 +3081,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9018,
+      "bytes": 9029,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3136,7 +3136,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 93128,
+      "bytes": 93181,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3712,6 +3712,14 @@
       "genre": "motion"
     },
     {
+      "path": "src/HudPanel.tsx",
+      "bytes": 1139,
+      "suffix": ".tsx",
+      "group": "画面・表現・操作",
+      "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "presentation"
+    },
+    {
       "path": "src/LearningRecordPanel.tsx",
       "bytes": 2073,
       "suffix": ".tsx",
@@ -4072,7 +4080,7 @@
     },
     {
       "path": "src/TownMap.tsx",
-      "bytes": 1565,
+      "bytes": 1596,
       "suffix": ".tsx",
       "group": "地図・移動",
       "role": "町の施設と現在地を小地図に表示する。",
@@ -4171,7 +4179,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 21605,
+      "bytes": 22095,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -5008,7 +5016,7 @@
     },
     {
       "path": "src/questLearning.css",
-      "bytes": 3255,
+      "bytes": 3106,
       "suffix": ".css",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5518,7 +5526,7 @@
     },
     {
       "path": "src/style.css",
-      "bytes": 28991,
+      "bytes": 29091,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
@@ -5543,7 +5551,7 @@
     },
     {
       "path": "src/townMap.css",
-      "bytes": 482,
+      "bytes": 244,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "町の小地図のCSS。",
@@ -5552,7 +5560,7 @@
     },
     {
       "path": "src/travelMap.css",
-      "bytes": 5244,
+      "bytes": 5141,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "拡大地図のCSS。",
@@ -6065,7 +6073,7 @@
     },
     {
       "path": "tests/e2e/chapter-start.test.mjs",
-      "bytes": 6074,
+      "bytes": 6116,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6122,6 +6130,14 @@
     {
       "path": "tests/e2e/undersea-prologue.test.mjs",
       "bytes": 6875,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/e2e/world-hud.test.mjs",
+      "bytes": 3244,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

@@ -10,8 +10,9 @@ import { RecoveryCue, type RecoveryEvent } from './RecoveryCue';
 import './world/interactionHint.css';
 import type { MapTab } from './TravelMap';
 import { TownMap } from './TownMap';
+import { HudPanel } from './HudPanel';
 import { chestId } from './chests';
-import { useEffect, useId, useRef, type CSSProperties } from 'react';
+import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
 import { areaLabel, difficultyLabel, fieldRegion, fieldRuinsGate, fieldTownGate, type Area, type Point, type Track, type Difficulty } from './content';
 import { positionOf, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment } from './items';
@@ -52,6 +53,7 @@ export const fallenVillagerWords=(act:number,p:{x:number;y:number})=>
   (villageScars[act]??[]).some(([art,x,y])=>x===p.x&&y===p.y&&art.includes('fallen-villager'))?fallenWords[act]:undefined;
 const hideMissing=(event:{currentTarget:HTMLImageElement})=>{event.currentTarget.style.visibility='hidden';};
 type Props = {
+  notices?: ReactNode;
   save: WorldSave;
   recovery?:RecoveryEvent|null;
   levelUp?:LevelUpEvent|null;
@@ -99,15 +101,14 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
     ctx.fillStyle='#151721';ctx.fillRect(position.x-2,position.y-2,5,5);
     ctx.fillStyle='#ffe18d';ctx.fillRect(position.x-1,position.y-1,3,3);
   },[position.x,position.y,map]);
-  return <div className="field-minimap retro-window">
-    <div className="field-minimap-title">世界地図 <small>{position.x}, {position.y}</small></div>
+  return <HudPanel id="minimap" title="世界地図" extra={<small className="field-minimap-coords">{position.x}, {position.y}</small>} className="field-minimap">
     <canvas ref={ref} width={120} height={80} role="img" aria-label={`現在地 ${fieldRegion(position)}。町は南、遺跡と石灯の村は北東。色付きの印は四つの記憶のダンジョン。下のボタンで世界地図を拡大`} onClick={onOpen}/>
     <button className="field-minimap-expand" onClick={onOpen}>世界地図を大きく開く</button>
     <div className="field-minimap-key"><span>● 現在地</span><span>▣ 町</span><span>✦ 遺跡</span><span>▣ 村</span><span>◆ 記憶</span></div>
-  </div>;
+  </HudPanel>;
 }
 
-export function WorldScene({onFlags,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint}:Props) {
+export function WorldScene({onFlags,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
@@ -135,6 +136,17 @@ export function WorldScene({onFlags,onSfx,onBgm,onWarp,save,recovery,levelUp,che
   };
   return <main className="world-stage">
     {outdoor&&<TerrainTextures id={textureId}/>}
+    <aside className="world-side world-side-left" aria-label="冒険の情報">
+      <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
+      {(save.story!=='legacy'||objectiveOverride)&&<HudPanel id="objective" title="たびのもくてき" className="world-objective" label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p><MemoryFragments quests={save.quests}/></HudPanel>}
+      {notices&&<HudPanel id="notices" title="お知らせ" className="world-notices">{notices}</HudPanel>}
+      <div className="world-buttons">
+        <button className="world-map-button retro-window" onClick={()=>onMap()} aria-keyshortcuts="M">地図 <kbd className="shortcut-key">M</kbd></button>
+        <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
+        <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
+      </div>
+      <div className="world-hint">矢印 / WASD：移動　•　Enter：話す・調べる　•　クリック：目的地へ</div>
+    </aside>
     <div className={`world-viewport${villageAct===1?' is-burning':villageAct===2?' is-smouldering':''}`} style={{width:`calc(${viewColumns} * var(--tile-size))`,height:`calc(${viewRows} * var(--tile-size))`}} tabIndex={-1} aria-label={areaLabel[save.area]}>
       {outdoor&&<div className={`world-ambient world-ambient-${save.area}`} aria-hidden="true"><i/><i/><i/></div>}
       <div key={save.area} className={`world-map map-${save.area} ${interior?'map-interior':''}`} style={mapStyle} role="grid" aria-label={`${areaLabel[save.area]}のマップ`} onMouseDown={event=>{if(event.button===0)event.preventDefault();}} onDragStart={event=>event.preventDefault()}>
@@ -201,14 +213,10 @@ export function WorldScene({onFlags,onSfx,onBgm,onWarp,save,recovery,levelUp,che
         </div>
       </div>
     </div>
-    <div className="world-place retro-window"><span>{save.area==='field'?fieldRegion(save.pos):areaLabel[save.area]}</span></div>
-    {save.area==='town'&&<TownMap position={save.pos} onExpand={()=>onMap('town')}/>}
-    {save.area==='field'&&<FieldMiniMap position={save.pos} onOpen={()=>onMap()}/>}
-    {(save.story!=='legacy'||objectiveOverride)&&<aside className="world-objective retro-window" aria-label="現在の目的"><strong>{objective.title}</strong><p>{objective.text}</p><MemoryFragments quests={save.quests}/></aside>}
-    <button className="world-command retro-window" onClick={()=>onMenu(menu?null:'command')} aria-expanded={!!menu}>▶ コマンド <small>Esc</small></button>
-    <button className="world-map-button retro-window" onClick={()=>onMap()} aria-keyshortcuts="M">地図 <kbd className="shortcut-key">M</kbd></button>
-    <button className="world-guide retro-window" onClick={onGuide} aria-keyshortcuts="F1">? 操作方法 <kbd className="shortcut-key">F1</kbd></button>
-    <div className="world-hint">矢印 / WASD：移動　•　Enter：話す・調べる　•　クリック：目的地へ</div>
+    <aside className="world-side world-side-right" aria-label="地図">
+      {save.area==='town'&&<TownMap position={save.pos} onExpand={()=>onMap('town')}/>}
+      {save.area==='field'&&<FieldMiniMap position={save.pos} onOpen={()=>onMap()}/>}
+    </aside>
     {menu&&<div className="world-menu retro-window" role="region" aria-label="コマンドメニュー">
       <div className="world-menu-title">{menu==='command'?'コマンド':menu==='status'?'つよさ':menu==='warp'?'デバッグ：ワープ': 'たびのもくてき'}</div>
       {menu==='command'&&<div className="world-menu-items">
