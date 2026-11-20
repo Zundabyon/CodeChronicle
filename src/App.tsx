@@ -254,7 +254,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     update(s=>({...s,dialogueLog:appendDialogueLog(s.dialogueLog,speaker,text)}));
   },[dialogue,update]);
   const stopPath = useCallback(() => { if (pathTimer.current) { clearInterval(pathTimer.current); pathTimer.current = null; } },[]);
-  const bgmTrack=sceneBgm({phase,area:save.area,environment:maps[save.area].environment,enemyId:battle?.enemy.id,boss:battle?.enemy.boss,ranger:!!(battle&&rangerBattles[battle.enemy.id])});
+  const bgmTrack=sceneBgm({phase,area:save.area,environment:maps[save.area].environment,enemyId:battle?.enemy.id,boss:battle?.enemy.boss});
   useEffect(()=>playBgm(bgmTrack),[bgmTrack,playBgm]);
   const startDialogue = useCallback((speaker: string,face: string,lines: (string|StoryLine)[],choices?: Dialogue['choices'],onEnd?: () => void,question?: Question,study?:QuestStudy) => { stopPath(); const next={speaker,face,lines,index:0,choices,onEnd,question,study}; dialogueRef.current=next; setDialogue(next); sfx('select'); },[sfx,stopPath]);
   const playStory = useCallback((lines:StoryLine[],onEnd?:()=>void)=>{

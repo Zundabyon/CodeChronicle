@@ -46,7 +46,8 @@ test('scenes pick their music',()=>{
  assert.equal(sceneBgm({phase:'world',area:'dungeon',environment:'dungeon'}),'dungeon');
  assert.equal(sceneBgm({phase:'world',area:'home',environment:'interior'}),'town');
  assert.equal(sceneBgm({phase:'battle',area:'field',enemyId:'graphius',ranger:true}),'graphius');
- assert.equal(sceneBgm({phase:'encounter',area:'field',enemyId:'ranger-read',ranger:true}),'ranger');
- assert.equal(sceneBgm({phase:'battle',area:'dungeon',boss:true}),'boss');
+ assert.equal(sceneBgm({phase:'encounter',area:'field',enemyId:'ranger-read'}),'rangerNozomi');
+ assert.equal(sceneBgm({phase:'battle',area:'field',enemyId:'ranger-delete'}),'rangerKeshi');
+ assert.equal(sceneBgm({phase:'battle',area:'dungeon',boss:true}),'bossGuardian');
  assert.equal(sceneBgm({phase:'battle',area:'field'}),'battle');
 });

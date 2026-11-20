@@ -37,9 +37,14 @@ BGM：`music.ts` が曲データ（BPM・1小節の拍・小節数・ループ�
 | 遺跡などのダンジョン | dungeon |
 | CRUDの記憶ダンジョン（crudCreate/Read/Update/Delete） | memoryDungeon |
 | 通常戦闘・遭遇 | battle |
-| ボス（enemy.boss） | boss |
-| 悪レンジャー戦（rangerBattles の ranger-*） | ranger |
+| ボス（enemy.boss。第一章 遺跡の守護者など） | bossGuardian |
+| 悪レンジャー戦 ノゾミ（ranger-read） | rangerNozomi |
+| 悪レンジャー戦 ツクネ（ranger-create） | rangerTsukune |
+| 悪レンジャー戦 ヌリエ（ranger-update） | rangerNurie |
+| 悪レンジャー戦 ケシ（ranger-delete） | rangerKeshi |
 | 記録卿グラフィウス戦 | graphius |
+| 第三章 序幕ボス ヘドロの主・スパゲッティ | bossHedoro（曲のみ。敵ID決定後に sceneBgm へ追加） |
+| 第三章 序幕 海底の古道（地下道） | undersea（曲のみ。マップ追加後に sceneBgm へ追加） |
 | 戦闘勝利 | victory を1回鳴らし、終わったら場面の曲へ戻る |
 
 選び方は `bgmBank.ts` の `sceneBgm()`（phase・area・環境・敵）で、[music.test](../../tests/music.test.mjs)が確認する。

@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-19 / 3f4a650 + current working tree",
+  "snapshot": "2026-11-20 / 41e2fe6 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 524,
+  "count": 528,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 98,
+    "制作・運用": 101,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -32,7 +32,7 @@
     "戦闘表示": 11,
     "探索画面": 7,
     "教材・共通データ": 4,
-    "教材・学習": 18,
+    "教材・学習": 19,
     "検証": 14,
     "物語": 1,
     "物語・進行": 14,
@@ -68,7 +68,7 @@
     "learning": {
       "label": "教材・学習",
       "guide": "docs/production/learning.md",
-      "count": 42
+      "count": 43
     },
     "gameplay": {
       "label": "ゲームルール",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 128
+      "count": 131
     }
   },
   "files": [
@@ -453,6 +453,30 @@
       "genre": "operations"
     },
     {
+      "path": "docs/production/chapter-three-undersea-design.md",
+      "bytes": 21248,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-three-undersea-layout.json",
+      "bytes": 35126,
+      "suffix": ".json",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-three-undersea-validate.mjs",
+      "bytes": 21239,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/production/chapter-two-act1-dungeon-design.md",
       "bytes": 27975,
       "suffix": ".md",
@@ -638,7 +662,7 @@
     },
     {
       "path": "docs/production/presentation.md",
-      "bytes": 7842,
+      "bytes": 8346,
       "suffix": ".md",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -3000,7 +3024,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 90582,
+      "bytes": 90532,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4170,7 +4194,7 @@
     },
     {
       "path": "src/audio/bgmBank.ts",
-      "bytes": 8230,
+      "bytes": 12349,
       "suffix": ".ts",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4616,6 +4640,14 @@
           "target": "src/content.ts"
         }
       ],
+      "genre": "learning"
+    },
+    {
+      "path": "src/hedoroBattleQuestions.ts",
+      "bytes": 13650,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
       "genre": "learning"
     },
     {
@@ -6017,7 +6049,7 @@
     },
     {
       "path": "tests/music.test.mjs",
-      "bytes": 3747,
+      "bytes": 3843,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

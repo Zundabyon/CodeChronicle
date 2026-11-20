@@ -69,23 +69,61 @@ const bank = {
     {notes: accompany(['Em','C','D','B','Em','C','Am','B'], 2, 'eighth')},
     {notes: rep(DRIVE, 16)},
   ]},
-  boss: {bpm: 138, bars: 8, volume: 0.55, channels: [
+  // 第一章 遺跡の守護者：重厚・神秘的。
+  bossGuardian: {bpm: 138, bars: 8, volume: 0.55, channels: [
     {duty: 0.5, notes: 'C5/2 r/2 C5/2 Eb5/2 G5/4 F5/4 Eb5/4 C5/4 Ab5/8 Bb5/2 r/2 Bb5/2 Ab5/2 G5/4 F5/4 D5/8 G5/8 C6/4 Bb5/4 G5/4 Eb5/4 Ab5/4 C6/4 Eb6/8 F5/4 Ab5/4 C6/4 Ab5/4 B5/8 G5/4 r/4'},
     {duty: 0.25, volume: 0.22, notes: accompany(['Cm','Ab','Bb','G','Cm','Ab','Fm','G'], 4, 'pad')},
     {notes: accompany(['Cm','Ab','Bb','G','Cm','Ab','Fm','G'], 2, 'eighth')},
     {notes: rep(DRIVE, 16)},
   ]},
-  ranger: {bpm: 126, bars: 8, volume: 0.55, channels: [
-    {duty: 0.125, notes: 'G4/1 r/1 Bb4/1 r/1 D5/2 r/2 C#5/1 r/1 D5/1 r/1 G5/4 F#5/2 r/2 A5/2 r/2 D5/8 G4/1 r/1 Bb4/1 r/1 D5/2 r/2 C#5/1 r/1 D5/1 r/1 G5/4 A5/2 F#5/2 D5/2 C5/2 A4/8 Eb5/1 r/1 G5/1 r/1 Bb5/4 A5/2 G5/2 F#5/4 D5/4 r/4 D6/4 r/4 C5/1 r/1 Eb5/1 r/1 G5/2 F#5/2 G5/2 A5/2 Bb5/4 A5/2 r/2 D5/2 r/2 F#4/4 r/4'},
-    {duty: 0.25, volume: 0.18, notes: accompany(['Gm','D','Gm','D','Eb','D','Cm','D'], 4, 'arp')},
-    {notes: accompany(['Gm','D','Gm','D','Eb','D','Cm','D'], 2, 'bounce')},
-    {notes: rep('40/2 r/2 88/1@.4 r/1 60/2@.6 r/2 40/2 88/1@.4 r/1 60/2@.6', 8)},
+  // 悪レンジャー4人：各曲の奇数小節に共通の戦隊モチーフ（ド・ミb・ソ・ファ#・ソ・ド型）を調を変えて入れる。
+  // ノゾミ：おしゃべりで軽快（16分の早口）。
+  rangerNozomi: {bpm: 144, bars: 8, volume: 0.55, channels: [
+    {duty: 0.125, notes: 'G4/1 r/1 Bb4/1 r/1 D5/2 r/2 C#5/1 r/1 D5/1 r/1 G5/4 A5/1 G5/1 F#5/1 G5/1 A5/1 Bb5/1 A5/1 G5/1 F#5/2 D5/2 r/4 G4/1 r/1 Bb4/1 r/1 D5/2 r/2 C#5/1 r/1 D5/1 r/1 G5/4 Bb5/1 A5/1 G5/1 A5/1 Bb5/1 C6/1 D6/2 C6/1 Bb5/1 A5/2 G5/4 Eb5/1 F5/1 G5/1 Eb5/1 G5/1 Bb5/1 G5/1 Eb5/1 D5/1 Eb5/1 F5/1 D5/1 F5/1 A5/1 F5/1 D5/1 C5/1 D5/1 Eb5/1 C5/1 Eb5/1 G5/1 Eb5/1 C5/1 D5/1 F#5/1 A5/1 F#5/1 D6/2 r/2 G4/1 r/1 Bb4/1 r/1 D5/2 r/2 C#5/1 r/1 D5/1 r/1 G5/4 A5/1 Bb5/1 A5/1 G5/1 F#5/2 A5/2 D5/4 r/4'},
+    {duty: 0.25, volume: 0.18, notes: accompany(['Gm','D','Gm','D','Eb','Cm D','Gm','D'], 4, 'arp')},
+    {notes: accompany(['Gm','D','Gm','D','Eb','Cm D','Gm','D'], 2, 'eighth')},
+    {notes: rep(DRIVE, 16)},
+  ]},
+  // ツクネ：はずむ・増える（同じ音が倍々に増える）。
+  rangerTsukune: {bpm: 132, bars: 8, volume: 0.55, channels: [
+    {duty: 0.25, notes: 'C5/1 r/1 Eb5/1 r/1 G5/2 r/2 F#5/1 r/1 G5/1 r/1 C6/4 G5/4 G5/4 G5/2 G5/2 G5/1 G5/1 G5/1 G5/1 C5/1 r/1 Eb5/1 r/1 G5/2 r/2 F#5/1 r/1 G5/1 r/1 C6/4 Ab5/4 Ab5/4 Ab5/2 Ab5/2 Ab5/1 Ab5/1 Ab5/1 Ab5/1 Eb5/2 r/2 G5/2 r/2 C6/2 r/2 Eb6/2 r/2 F5/2 r/2 Ab5/2 r/2 C6/2 r/2 F6/2 r/2 C5/1 r/1 Eb5/1 r/1 G5/2 r/2 F#5/1 r/1 G5/1 r/1 C6/4 D6/2 r/2 B5/2 r/2 G5/4 r/4'},
+    {duty: 0.5, volume: 0.18, notes: accompany(['Cm','G','Cm','Ab','Eb','Fm','Cm','G'], 4, 'arp')},
+    {notes: accompany(['Cm','G','Cm','Ab','Eb','Fm','Cm','G'], 2, 'bounce')},
+    {notes: rep(BEAT, 16)},
+  ]},
+  // ヌリエ：わがままで派手（高音の跳躍と駆け上がり）。
+  rangerNurie: {bpm: 150, bars: 8, volume: 0.55, channels: [
+    {duty: 0.5, notes: 'D5/1 r/1 F5/1 r/1 A5/2 r/2 G#5/1 r/1 A5/1 r/1 D6/4 D6/1 E6/1 F6/1 G6/1 A6/4 F6/2 D6/2 A5/4 D5/1 r/1 F5/1 r/1 A5/2 r/2 G#5/1 r/1 A5/1 r/1 D6/4 Bb5/1 C6/1 D6/1 E6/1 F6/4 E6/2 D6/2 C#6/4 G6/6 F6/2 E6/4 D6/4 C#6/2 E6/2 A6/8 r/4 D5/1 r/1 F5/1 r/1 A5/2 r/2 G#5/1 r/1 A5/1 r/1 D6/4 D6/1 C6/1 Bb5/1 A5/1 G5/1 F5/1 E5/1 D5/1 A5/8'},
+    {duty: 0.25, volume: 0.2, notes: accompany(['Dm','F','Dm','Bb A','Gm','A','Dm','A'], 4, 'arp')},
+    {notes: accompany(['Dm','F','Dm','Bb A','Gm','A','Dm','A'], 2, 'eighth')},
+    {notes: rep(DRIVE, 16)},
+  ]},
+  // ケシ：静かで不穏（低めのモチーフと長い休符、音数少なめ）。
+  rangerKeshi: {bpm: 96, bars: 8, volume: 0.5, channels: [
+    {duty: 0.125, volume: 0.4, notes: 'E4/1 r/1 G4/1 r/1 B4/2 r/2 A#4/1 r/1 B4/1 r/1 E5/4 r/8 D#5/4 r/4 E4/1 r/1 G4/1 r/1 B4/2 r/2 A#4/1 r/1 B4/1 r/1 E5/4 C5/8 r/4 B4/4 r/4 G4/4 r/4 E4/4 r/4 F#4/4 r/4 A4/4 E4/1 r/1 G4/1 r/1 B4/2 r/2 A#4/1 r/1 B4/1 r/1 E5/4 D#5/12 r/4'},
+    {duty: 0.5, volume: 0.15, notes: accompany(['Em','B','Em','B','C','Am','Em','B'], 4, 'pad')},
+    {notes: accompany(['Em','B','Em','B','C','Am','Em','B'], 2, 'long')},
+    {volume: 0.25, notes: rep('r/8 40/2@.6 r/6', 8)},
   ]},
   graphius: {bpm: 116, bars: 8, volume: 0.6, channels: [
     {duty: 0.5, notes: 'D5/6 A4/2 D5/4 E5/4 F5/6 D5/2 Bb5/8 G5/4 Bb5/4 D6/4 C6/4 A5/8 C#6/4 E6/4 F6/6 E6/2 D6/4 A5/4 C6/6 A5/2 F5/8 G5/4 Bb5/4 D6/4 F6/4 E6/8 C#6/4 A5/4'},
     {duty: 0.25, volume: 0.25, notes: accompany(['Dm','Bb','Gm','A','Dm','F','Gm Bb','A'], 4, 'pad')},
     {notes: accompany(['Dm','Bb','Gm','A','Dm','F','Gm Bb','A'], 2, 'eighth')},
     {notes: rep('40/2 40/2 88/2@.4 60/2@.8 40/2 88/2@.4 60/2@.8 88/2@.4', 8)},
+  ]},
+  // 第三章 序幕のボス「ヘドロの主・スパゲッティ」：のそのそした低音、ずれたリズム、泡のノイズ。
+  bossHedoro: {bpm: 88, bars: 8, volume: 0.55, channels: [
+    {duty: 0.5, notes: 'E3/3 r/1 E3/2 G3/3 r/1 F#3/2 r/4 Bb3/6 A3/2 G3/1 r/1 E3/2 r/4 E3/3 r/1 E3/2 G3/3 r/1 F#3/2 r/4 C4/3 r/1 B3/3 r/1 Bb3/3 r/1 A3/4 E4/1 r/2 E4/1 r/2 D#4/2 E4/4 r/4 G4/3 F#4/3 F4/3 E4/7 E3/3 r/1 E3/2 G3/3 r/1 F#3/2 r/4 Bb3/2 A3/2 Ab3/2 G3/2 F#3/2 F3/2 E3/4'},
+    {duty: 0.25, volume: 0.18, notes: accompany(['Em','Bb','Em','C','Em','C','Em','B'], 4, 'bounce')},
+    {notes: accompany(['Em','Bb','Em','C','Em','C','Em','B'], 1, 'long')},
+    {notes: rep('40/3 r/1 40/2 92/1@.3 r/1 60/3@.6 r/1 96/1@.4 96/1@.3 r/2', 8)},
+  ]},
+  // 第三章 序幕「海底の古道」：水中の静けさ・泡・遠い反響。
+  undersea: {bpm: 76, bars: 8, volume: 0.65, channels: [
+    {duty: 0.125, volume: 0.35, notes: 'E5/8 A5/4 G5/4 F5/12 r/4 E5/4 G5/4 C6/8 B5/8 G5/4 D5/4 C5/4 E5/4 A5/8 A5/4 C6/4 F5/8 D5/8 F5/4 A5/4 G#5/12 r/4'},
+    {duty: 0.25, volume: 0.15, notes: accompany(['Am','F','C','G','Am','F','Dm','E'], 4, 'arp')},
+    {notes: accompany(['Am','F','C','G','Am','F','Dm','E'], 2, 'long')},
+    {volume: 0.2, notes: rep('r/6 96/1@.25 r/3 100/1@.2 r/5', 8)},
   ]},
   victory: {bpm: 140, bars: 2, loop: false, volume: 0.7, channels: [
     {duty: 0.25, notes: 'G5/2 C6/2 E6/2 G6/6 E6/4 F6/4 D6/4 C6/8'},
@@ -98,8 +136,10 @@ export type BgmName = keyof typeof bank;
 export const bgmBank = Object.fromEntries(Object.entries(bank).map(([k, v]) => [k, normalizeSong(v as RawSong)])) as Record<BgmName, Song>;
 
 /** 場面から曲名を選ぶ。戦闘・遭遇は敵で、探索は場所で決める。 */
-export function sceneBgm({phase, area, environment, enemyId, boss, ranger}: {phase: string; area: string; environment?: string; enemyId?: string; boss?: boolean; ranger?: boolean}): BgmName {
-  if (phase === 'battle' || phase === 'encounter') return enemyId === 'graphius' ? 'graphius' : ranger ? 'ranger' : boss ? 'boss' : 'battle';
+const enemyBgm: Record<string, BgmName> = {graphius: 'graphius', 'ranger-read': 'rangerNozomi', 'ranger-create': 'rangerTsukune', 'ranger-update': 'rangerNurie', 'ranger-delete': 'rangerKeshi'};
+// TODO: ヘドロの主の敵IDが決まったら enemyBgm に bossHedoro を、地下道の Area ができたら area === 'undersea' → undersea を足す。
+export function sceneBgm({phase, area, environment, enemyId, boss}: {phase: string; area: string; environment?: string; enemyId?: string; boss?: boolean}): BgmName {
+  if (phase === 'battle' || phase === 'encounter') return enemyBgm[enemyId ?? ''] ?? (boss ? 'bossGuardian' : 'battle');
   if (['title','prologue','setup','clear'].includes(phase)) return 'title';
   if (phase !== 'world') return 'town';
   if (area.startsWith('crud')) return 'memoryDungeon';
