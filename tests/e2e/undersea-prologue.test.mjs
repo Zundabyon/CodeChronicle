@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {createServer} from 'vite';
+// Options are shuffled on screen, so find the correct answer by its text (offset picks a wrong one).
+async function answerAt(page,selector,q,offset=0){await page.locator(selector).first().waitFor();const texts=await page.locator(selector).allInnerTexts();const i=texts.findIndex(t=>t.replace(/^[A-D]\s*/,'').replace(/\s*▶$/,'').trim()===q.options[q.answer]);if(i<0)throw new Error(`answer not shown: ${q.options[q.answer]}`);return (i+offset)%4;}
 let server,browser,url;
 before(async()=>{
   server=await createServer({server:{host:'127.0.0.1',port:0,hmr:false,ws:false}});await server.listen();
@@ -74,7 +76,7 @@ test('beating the sludge boss opens the neck and reaching the far shore clears t
   await advance(page);
   assert.ok(await current(page),'the boss draws from the hedoro set');
   for(let i=0;i<7;i++){
-    const q=await current(page);await page.locator('.options button').nth(q.answer).click();
+    const q=await current(page);await page.locator('.options button').nth(await answerAt(page,'.options button',q)).click();
     if(i===6){await page.getByRole('button',{name:/戦闘を終える/}).click();break;}
     await page.getByRole('button',{name:/次の問題へ/}).click();
   }

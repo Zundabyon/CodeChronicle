@@ -20,10 +20,10 @@ async function playFive(page){
   await page.locator('.learning-session summary').click();
   await page.getByRole('button',{name:/コマンド/}).click();await page.getByRole('button',{name:/きょうかい/}).click();await page.getByRole('button',{name:/復習の部屋へ入る/}).click();
   await page.getByRole('button',{name:/答えを見ずに再挑戦/}).click();
-  const wrong=await page.evaluate(async()=>{const {questions}=await import('/src/content.ts');return (questions.find(q=>q.id==='r-b-1').answer+1)%4;});
+  const wrong=await page.evaluate(async()=>{const {questions}=await import('/src/content.ts');const q=questions.find(q=>q.id==='r-b-1');return q.options[q.answer];});
   for(let i=0;i<5;i++){
     assert.match(await page.locator('.learning-session summary').innerText(),new RegExp(`今日の5問 ${i}/5`));
-    await page.locator('.options button').nth(wrong).click();
+    await page.locator('.options button').filter({hasNotText:wrong}).first().click();
     if(i<4)await page.getByRole('button',{name:/もう一度挑戦する/}).click();
   }
 }

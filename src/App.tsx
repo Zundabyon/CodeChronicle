@@ -55,7 +55,7 @@ import { QuestionCode } from './QuestionCode';
 import { LibraryPanel } from './LibraryPanel';
 import { libraryShelves, type LibraryShelf } from './library';
 import { ReviewRoom } from './ReviewRoom';
-import { selectQuestion, isChoiceQuestion, isFillQuestion, inputIsCorrect } from './questionSelection';
+import { selectQuestion, shuffleChoices, isChoiceQuestion, isFillQuestion, inputIsCorrect } from './questionSelection';
 import { chooseHeroTechnique, type HeroTechnique } from './heroTechniques';
 import { enemyAt, moveEnemies, spawnEnemies, type EnemyPositions } from './enemyMovement';
 import { items, type Equipment, type Inventory, type ItemId, type ShopType } from './items';
@@ -370,7 +370,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
 
   const startBattle = useCallback((enemy: Enemy, fromReview=false, reviewQuestion?: Question) => {
     stopPath(); const s=stateRef.current; const ranger=rangerBattles[enemy.id],set=ranger&&drawSet(ranger);
-    const q=reviewQuestion ?? (set ? questions.find(q=>q.id===set[0])! : enemy.boss ? bossQuestion(0,s.difficulty) : memoryBattleQuestion(questions,s,enemy.id));
+    const q=shuffleChoices(reviewQuestion ?? (set ? questions.find(q=>q.id===set[0])! : enemy.boss ? bossQuestion(0,s.difficulty) : memoryBattleQuestion(questions,s,enemy.id)));
     if (enemy.boss && s.level<2) { startDialogue('知識の扉','📜',['石の扉に文字が浮かぶ。「知識の断片を集め、第二の階へ至った者のみ、この門を試せる」','平原や遺跡の敵と戦い、経験を積んでから戻ろう。']); return; }
     const hp=set?set.length:enemy.boss?bossStages.length*bossGuardHp:enemy.id==='after-gate'||fromReview?1:3;
     setBattle({enemy,hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null,bossStage:0,hints:0,set});
@@ -607,7 +607,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       return;
     }
     const ranger=rangerBattles[battle.enemy.id];
-    const order=battle.set??ranger?.set??[],rangerQuestion=(index:number,set=order)=>questions.find(q=>q.id===set[index])!;
+    const order=battle.set??ranger?.set??[],rangerQuestion=(index:number,set=order)=>shuffleChoices(questions.find(q=>q.id===set[index])!);
     // Required story battles have no game over: the battle restarts from its first question.
     if (ranger && stateRef.current.hp<=0) {
       update(s=>({...s,hp:maxHp(s.level)}));
@@ -648,12 +648,12 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
         return;
       }
       const bossStage=battle.correct ? battle.bossStage+1 : battle.bossStage;
-      setBattle({...battle,bossStage,question:bossQuestion(bossStage,battle.question.difficulty),answered:false,correct:false,eliminated:null,hints:battle.correct?0:battle.hints});
+      setBattle({...battle,bossStage,question:shuffleChoices(bossQuestion(bossStage,battle.question.difficulty)),answered:false,correct:false,eliminated:null,hints:battle.correct?0:battle.hints});
       setBattleInput(''); setBattleNote(''); return;
     }
-    if (battle.fromReview) { setBattle({...battle,answered:false,correct:false,eliminated:null}); setBattleInput(''); setBattleNote(''); return; }
+    if (battle.fromReview) { setBattle({...battle,question:shuffleChoices(battle.question),answered:false,correct:false,eliminated:null}); setBattleInput(''); setBattleNote(''); return; }
     if (ranger) { setBattle({...battle,question:rangerQuestion(battle.maxHp-battle.hp),answered:false,correct:false,eliminated:null}); setBattleInput(''); setBattleNote(''); return; }
-    const q=memoryBattleQuestion(questions,stateRef.current,battle.enemy.id);
+    const q=shuffleChoices(memoryBattleQuestion(questions,stateRef.current,battle.enemy.id));
     setBattle({...battle,question:q,answered:false,correct:false,eliminated:null}); setBattleInput(''); setBattleNote('');
   };
   const retreat=()=>{

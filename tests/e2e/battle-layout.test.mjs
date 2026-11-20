@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {createServer} from 'vite';
+// Options are shuffled on screen, so find the correct answer by its text (offset picks a wrong one).
+async function answerAt(page,selector,q,offset=0){await page.locator(selector).first().waitFor();const texts=await page.locator(selector).allInnerTexts();const i=texts.findIndex(t=>t.replace(/^[A-D]\s*/,'').replace(/\s*▶$/,'').trim()===q.options[q.answer]);if(i<0)throw new Error(`answer not shown: ${q.options[q.answer]}`);return (i+offset)%4;}
 let server,browser,url,ids;
 const key='code-chronicle-save-v1';
 const shots=process.env.BATTLE_SHOTS;
@@ -55,7 +57,7 @@ for(const [width,height] of [[1366,768],[1280,720],[1440,900],[1470,800]]){
     const page=await rangerBattle(t,viewport);const m=await bottom(page);console.log(`${width}x${height} ranger`,m);fits(m,'ranger');
     const prompt=await page.locator('.question-card h3').innerText();
     const q=await page.evaluate(async prompt=>{const {rangerBattleQuestions}=await import('/src/rangerBattleQuestions.ts');return rangerBattleQuestions.find(q=>q.prompt===prompt);},prompt);
-    await page.locator('.options button').nth(q.answer).click();const next=page.getByRole('button',{name:/次の問題へ/});await next.waitFor();
+    await page.locator('.options button').nth(await answerAt(page,'.options button',q)).click();const next=page.getByRole('button',{name:/次の問題へ/});await next.waitFor();
     const nb=await next.evaluate(el=>Math.round(el.getBoundingClientRect().bottom));console.log(`${width}x${height} next`,nb);assert.ok(nb<=height,`next button ends at ${nb} of ${height}`);
   });
 }

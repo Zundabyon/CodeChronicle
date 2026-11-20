@@ -63,7 +63,7 @@ test('API failure and incomplete catalog leave raw saves untouched; retry uses f
   await page.getByRole('heading', { name: 'APIから届いた確認問題', exact: true }).waitFor();
   await page.getByRole('button', { name: /答えを見ずに再挑戦/ }).click();
   await page.locator('.question-card h3').filter({ hasText: 'APIから届いた確認問題' }).waitFor();
-  await page.locator('.options button').nth(0).click();
+  await page.locator('.options button').filter({ hasText: 'コンポーネント' }).click(); // options are shuffled on screen
   await page.getByRole('button', { name: /戦闘を終える/ }).click();
   await page.getByRole('heading', { name: '復習する問題はありません' }).waitFor();
   const saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);

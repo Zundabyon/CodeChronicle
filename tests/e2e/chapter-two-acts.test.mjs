@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {createServer} from 'vite';
+// Options are shuffled on screen, so find the correct answer by its text (offset picks a wrong one).
+async function answerAt(page,selector,q,offset=0){await page.locator(selector).first().waitFor();const texts=await page.locator(selector).allInnerTexts();const i=texts.findIndex(t=>t.replace(/^[A-D]\s*/,'').replace(/\s*▶$/,'').trim()===q.options[q.answer]);if(i<0)throw new Error(`answer not shown: ${q.options[q.answer]}`);return (i+offset)%4;}
 let server,browser,url;
 before(async()=>{
   server=await createServer({server:{host:'127.0.0.1',port:0,hmr:false,ws:false}});await server.listen();
@@ -32,7 +34,7 @@ async function current(page){
 }
 async function winBattle(page,count){
   for(let i=0;i<count;i++){
-    const q=await current(page);await page.locator('.options button').nth(q.answer).click();
+    const q=await current(page);await page.locator('.options button').nth(await answerAt(page,'.options button',q)).click();
     if(i===count-1){await page.getByRole('button',{name:/戦闘を終える/}).click();break;}
     await page.getByRole('button',{name:/次の問題へ/}).click();
   }
@@ -57,11 +59,11 @@ test('the attack opens act one with the new faces, and the Read battle leads int
   assert.equal(await page.locator('.village-scars img[src*="fallen-villager"]').count(),7,'fallen villagers lie in the village');
   await talkToOrl(page);await page.locator('.dialogue-text > span').click();assert.match(await page.locator('.story-standing.is-active').getAttribute('aria-label'),/nozomi/,'the ranger stands in before the battle');await advance(page);
   const first=await current(page);assert.equal(first.id,'ranger-r-2','the battle draws its questions at random (Math.random is pinned)');
-  await page.locator('.options button').nth((first.answer+1)%4).click();
+  await page.locator('.options button').nth(await answerAt(page,'.options button',first,1)).click();
   assert.ok((await saved(page)).hp<30,'a wrong answer costs HP');
   await page.getByRole('button',{name:/同じ問いに再挑戦/}).click();
   assert.equal((await current(page)).id,'ranger-r-2','the same question returns after a wrong answer');
-  await page.locator('.options button').nth(first.answer).click();
+  await page.locator('.options button').nth(await answerAt(page,'.options button',first)).click();
   assert.deepEqual(Object.values((await saved(page)).learningRecords['ranger-r-2']).slice(0,5),[1,0,0,0,1],'only the first answer is recorded');
   await page.getByRole('button',{name:/次の問題へ/}).click();
   await winBattle(page,4);
@@ -74,7 +76,7 @@ test('the attack opens act one with the new faces, and the Read battle leads int
 
 test('losing a ranger battle restarts it from the first question without a game over',{timeout:60000},async t=>{
   const page=await open(t,{...chapterSave('battle-c'),hp:1});await talkToOrl(page);await advance(page);
-  const first=await current(page);await page.locator('.options button').nth((first.answer+1)%4).click();
+  const first=await current(page);await page.locator('.options button').nth(await answerAt(page,'.options button',first,1)).click();
   assert.equal((await saved(page)).hp,0);
   await page.getByRole('button',{name:/最初から挑み直す/}).click();
   assert.equal((await current(page)).id,'ranger-c-2','the retry draws a new set and restarts from its first question');const s=await saved(page);assert.equal(s.hp,30);assert.equal(s.area,'village');

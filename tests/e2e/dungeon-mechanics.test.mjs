@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {createServer} from 'vite';
+// Options are shuffled on screen, so find the correct answer by its text (offset picks a wrong one).
+async function answerAt(page,selector,q,offset=0){await page.locator(selector).first().waitFor();const texts=await page.locator(selector).allInnerTexts();const i=texts.findIndex(t=>t.replace(/^[A-D]\s*/,'').replace(/\s*▶$/,'').trim()===q.options[q.answer]);if(i<0)throw new Error(`answer not shown: ${q.options[q.answer]}`);return (i+offset)%4;}
 let server,browser,url;
 const key='code-chronicle-save-v1';
 before(async()=>{
@@ -38,12 +40,12 @@ test('a room door stays closed through mistakes and partial progress, then opens
   const [x,y]=dungeon.doors[0];await relocate(page,{pos:{x,y:y+1},quests:{'village-ledger':{step:steps[0].id}}});
   await page.locator('.world-viewport').focus();await page.keyboard.press('ArrowUp');await advance(page);
   assert.deepEqual((await saved(page)).pos,{x,y:y+1});
-  const q=steps[0].q;await page.locator('.dialogue-choices button').nth((q.answer+1)%4).click();
+  const q=steps[0].q;await page.locator('.dialogue-choices button').nth(await answerAt(page,'.dialogue-choices button',q,1)).click();
   assert.equal(await page.locator('.quest-study-result').count(),0);assert.equal((await saved(page)).quests['village-ledger'].step,steps[0].id);
   await advance(page);
   for(const [index,step] of steps.entries()){
     assert.equal((await saved(page)).quests['village-ledger'].step,step.id);
-    await page.locator('.dialogue-choices button').nth(step.q.answer).click();
+    await page.locator('.dialogue-choices button').nth(await answerAt(page,'.dialogue-choices button',step.q)).click();
     if(step.study){await page.locator('.quest-study-result').waitFor();assert.ok((await page.locator('.quest-study-result').innerText()).includes(step.study.result));}
     const open=await page.evaluate(async({npcId,key})=>{const {isMemoryDoorOpen}=await import('/src/quests/memoryGates.ts');return isMemoryDoorOpen(JSON.parse(localStorage.getItem(key)).quests,npcId);},{npcId,key});
     assert.equal(open,index===steps.length-1);

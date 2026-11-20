@@ -1,5 +1,6 @@
 import { useCallback, type RefObject } from 'react';
 import { questions as bundledQuestions, type Area, type Npc, type Point, type Question } from '../content';
+import { shuffleChoices } from '../questionSelection';
 import type { StoryLine } from '../story';
 import { worldMaps } from '../world/maps';
 import { questDefinitions } from './definitions';
@@ -40,7 +41,7 @@ export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBa
       }
       const index=steps.findIndex(step=>step.id===progress?.reviewStep),step=steps[index];
       if(!step||step.trigger.type!=='question-answered')return;
-      const questionId=step.trigger.questionId,q=questions.find(q=>q.id===questionId);
+      const questionId=step.trigger.questionId,found=questions.find(q=>q.id===questionId),q=found&&shuffleChoices(found);
       if(!q?.options)return;
       let paused=false;
       const choices:Choice[]=q.options.map((label,answer)=>({label,correct:answer===q.answer,
@@ -74,7 +75,7 @@ export function useQuests<T extends QuestSave&{area:Area;pos:Point}>({questionBa
         startDialogue(npc.name,npc.face,[...memoryHint,step.reminder??step.description]);return;
       }
       if(step.trigger.type==='question-answered'&&step.trigger.source==='quest'){
-        const questionId=step.trigger.questionId,q=questions.find(q=>q.id===questionId);if(!q?.options)return;let paused=false;
+        const questionId=step.trigger.questionId,found=questions.find(q=>q.id===questionId),q=found&&shuffleChoices(found);if(!q?.options)return;let paused=false;
         const nextStep=def.steps[def.steps.indexOf(step)+1],opensDoor=step.npcId?.includes('-trial-')&&nextStep?.npcId!==step.npcId;
         const choices:Choice[]=q.options.map((label,index)=>({label,correct:index===q.answer,response:index===q.answer?`その通り。${q.explanation}${opensDoor?' この部屋の全実習を終え、北の扉が開いた。':''}`:`その操作をする前に、もう一度確かめよう。${q.explanation}`,onChoose:()=>{
           if(stateRef.current.quests[def.id]?.step!==step.id)return;

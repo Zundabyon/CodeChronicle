@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / f8f4cc0 + current working tree",
+  "snapshot": "2026-11-20 / c76bb5c + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 544,
+  "count": 545,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 103,
+    "制作・運用": 104,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 133
+      "count": 134
     }
   },
   "files": [
@@ -406,7 +406,7 @@
     },
     {
       "path": "docs/chapter-two-learning.md",
-      "bytes": 12775,
+      "bytes": 13278,
       "suffix": ".md",
       "group": "教材・学習",
       "role": "教材・学習に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -630,7 +630,7 @@
     },
     {
       "path": "docs/production/learning.md",
-      "bytes": 2621,
+      "bytes": 2947,
       "suffix": ".md",
       "group": "教材・学習",
       "role": "教材・学習に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -3136,7 +3136,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 93007,
+      "bytes": 93128,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3541,7 +3541,7 @@
     },
     {
       "path": "src/BookPractice.tsx",
-      "bytes": 1192,
+      "bytes": 1361,
       "suffix": ".tsx",
       "group": "図書館",
       "role": "本に関連する4択の回答・正解・補足解説を表示する。",
@@ -5032,7 +5032,7 @@
     },
     {
       "path": "src/questionSelection.ts",
-      "bytes": 1869,
+      "bytes": 2592,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "学習設定で候補を絞り、未回答と形式の重みに基づき抽選する。一般の入力判定も担当する。",
@@ -5205,7 +5205,7 @@
     },
     {
       "path": "src/quests/memoryBattleQuestion.ts",
-      "bytes": 1871,
+      "bytes": 1851,
       "suffix": ".ts",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5303,7 +5303,7 @@
     },
     {
       "path": "src/quests/useQuests.ts",
-      "bytes": 8201,
+      "bytes": 8326,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "Reactの会話・回答・場面再生と、クエストエンジンをつなぐ。",
@@ -6033,7 +6033,7 @@
     },
     {
       "path": "tests/e2e/adventure.test.mjs",
-      "bytes": 13144,
+      "bytes": 13858,
       "suffix": ".mjs",
       "group": "検証",
       "role": "ブラウザで宝箱、本、通常戦、復習、セーブ・再開、クエストなどを確認する。",
@@ -6049,7 +6049,7 @@
     },
     {
       "path": "tests/e2e/battle-layout.test.mjs",
-      "bytes": 6178,
+      "bytes": 6660,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6057,7 +6057,7 @@
     },
     {
       "path": "tests/e2e/catalog.test.mjs",
-      "bytes": 8389,
+      "bytes": 8461,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6073,7 +6073,7 @@
     },
     {
       "path": "tests/e2e/chapter-two-acts.test.mjs",
-      "bytes": 10077,
+      "bytes": 10647,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6081,7 +6081,7 @@
     },
     {
       "path": "tests/e2e/daily-reward.test.mjs",
-      "bytes": 3949,
+      "bytes": 3988,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6097,7 +6097,7 @@
     },
     {
       "path": "tests/e2e/dungeon-mechanics.test.mjs",
-      "bytes": 11180,
+      "bytes": 11708,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6121,7 +6121,7 @@
     },
     {
       "path": "tests/e2e/undersea-prologue.test.mjs",
-      "bytes": 6393,
+      "bytes": 6875,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6194,6 +6194,14 @@
     {
       "path": "tests/question-catalog.test.mjs",
       "bytes": 5549,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/question-selection.test.mjs",
+      "bytes": 2587,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

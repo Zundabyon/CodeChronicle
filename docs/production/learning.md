@@ -12,6 +12,8 @@
 | 記録・復習・セッション | [learningRecords.ts](../../src/learningRecords.ts)、[reviewSchedule.ts](../../src/reviewSchedule.ts)、[LearningSession.tsx](../../src/LearningSession.tsx) |
 | 第二章の教材 | [chapter-two-learning.md](../chapter-two-learning.md)、[chapterTwoLessons.ts](../../src/quests/chapterTwoLessons.ts) |
 
+4択と選択穴埋めの選択肢は、出題のたびに表示用の写しで並び替える（`shuffleChoices`）。採点・見極め・誤答理由は写しのインデックスと文字列で動き、カタログの `answer` は変えない。選択肢の文言で位置（「上の両方」など）に頼らない。
+
 固有定義は各問題の学習目標、形式、前提、正答、誤答の理由、解説、難易度、対応トラック。問題と人物の関係は出題側やクエストからIDで参照し、騎士用・主人公用の別採点ルールを作らない。
 
 入力・4択・CLIの採点差を「共通化」のために消さない。入力は短い識別子を中心にし、自然な別解を実際の採点経路で確認する。定義ファイルを増やすだけでは出題登録されない。

@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {createServer} from 'vite';
+// Options are shuffled on screen, so find the correct answer by its text (offset picks a wrong one).
+async function answerAt(page,selector,q,offset=0){await page.locator(selector).first().waitFor();const texts=await page.locator(selector).allInnerTexts();const i=texts.findIndex(t=>t.replace(/^[A-D]\s*/,'').replace(/\s*▶$/,'').trim()===q.options[q.answer]);if(i<0)throw new Error(`answer not shown: ${q.options[q.answer]}`);return (i+offset)%4;}
 let server,browser,url;
 before(async()=>{
   server=await createServer({server:{host:'127.0.0.1',port:0,hmr:false,ws:false}});await server.listen();
@@ -40,13 +42,13 @@ test('ordinary battle grants its reward once after victory',{timeout:45000},asyn
   for(let i=0;i<5;i++){
     await page.locator('.question-card h3').waitFor();const prompt=await page.locator('.question-card h3').innerText();
     const q=await page.evaluate(async prompt=>{const {questions}=await import('/src/content.ts');return questions.find(q=>q.prompt===prompt)},prompt);
-    if(q.options)await page.locator('.options button').nth(q.answer).click();else{await page.locator('.cli-form input').fill(q.accepted[0]);await page.locator('.cli-form button').click();}
+    if(q.options)await page.locator('.options button').nth(await answerAt(page,'.options button',q)).click();else{await page.locator('.cli-form input').fill(q.accepted[0]);await page.locator('.cli-form button').click();}
     const finish=page.getByRole('button',{name:/戦闘を終える/});if(await finish.count()){await finish.click();break;}await page.getByRole('button',{name:/次の問題へ/}).click();
   }
   await page.locator('.world-stage').waitFor();const result=await saved(page);assert.equal(result.gold,135);assert.equal(result.xp,4);assert.equal(result.defeated.filter(id=>id==='f1').length,1);
 });
 test('review keeps HP, retains mistakes and removes a corrected question',{timeout:45000},async t=>{
-  const page=await fixture(t,{area:'town',pos:{x:13,y:16},wrong:['r-b-1'],hp:7});await review(page);await page.getByRole('button',{name:/答えを見ずに再挑戦/}).click();await page.locator('.options button').nth(1).click();assert.equal((await saved(page)).hp,7);assert.deepEqual((await saved(page)).wrong,['r-b-1']);await page.getByRole('button',{name:/もう一度挑戦する/}).click();await page.locator('.options button').nth(0).click();await page.getByRole('button',{name:/戦闘を終える/}).click();await page.getByRole('heading',{name:'復習する問題はありません'}).waitFor();assert.deepEqual((await saved(page)).wrong,[]);assert.equal((await saved(page)).hp,7);
+  const page=await fixture(t,{area:'town',pos:{x:13,y:16},wrong:['r-b-1'],hp:7});await review(page);const rb1=()=>page.evaluate(async()=>{const {questions}=await import('/src/content.ts');return questions.find(q=>q.id==='r-b-1');});await page.getByRole('button',{name:/答えを見ずに再挑戦/}).click();await page.locator('.options button').nth(await answerAt(page,'.options button',await rb1(),1)).click();assert.equal((await saved(page)).hp,7);assert.deepEqual((await saved(page)).wrong,['r-b-1']);await page.getByRole('button',{name:/もう一度挑戦する/}).click();await page.locator('.options button').nth(await answerAt(page,'.options button',await rb1())).click();await page.getByRole('button',{name:/戦闘を終える/}).click();await page.getByRole('heading',{name:'復習する問題はありません'}).waitFor();assert.deepEqual((await saved(page)).wrong,[]);assert.equal((await saved(page)).hp,7);
 });
 test('saved adventure resumes with possessions and position intact',{timeout:45000},async t=>{
   const page=await fixture(t,{gold:321,readBooks:['js-variables-01']});await page.locator('.world-viewport').focus();await page.keyboard.press('ArrowLeft');const first=await saved(page);await page.reload();await resume(page);const second=await saved(page);assert.deepEqual(second.pos,first.pos);assert.equal(second.gold,321);assert.deepEqual(second.readBooks,['js-variables-01']);
