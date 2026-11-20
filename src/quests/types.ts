@@ -9,6 +9,7 @@ export type QuestTrigger=
   | {type:'book-read';bookId:string}
   | {type:'chest-examined';chestId:string}
   | {type:'battle-won';enemyId:string}
+  | {type:'place-reached';placeId:string}
   | {type:'question-answered';questionId:string;correct:boolean;source:AnswerSource};
 export type QuestEvent=
   | {type:'accepted';questId:string}
@@ -21,7 +22,7 @@ export type QuestStep={
 };
 export type QuestDefinition={
   id:string;category:'side'|'chapter';title:string;description:string;
-  npcId:string;npcLocation:string;requiresFirstChapter?:boolean;startAt?:Area;opening?:StoryLine[];
+  npcId:string;npcLocation:string;requiresFirstChapter?:boolean;requiresQuest?:string;startAt?:Area;opening?:StoryLine[];
   startLabel?:string;offer?:string;acceptLabel?:string;acceptResponse?:string;reportLabel?:string;reportResponse?:string;completedText:string;completionObjective?:string;pauseResponse?:string;
   steps:QuestStep[];reward:{gold:number;items:Partial<Record<ItemId,number>>};
 };

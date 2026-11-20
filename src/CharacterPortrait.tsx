@@ -15,6 +15,7 @@ export function CharacterPortrait({face,standing=false}:{face:string;standing?:b
   if(face==='knight')return <MysteriousKnight className="knight-portrait"/>;
   if(face==='corrupted-hanna')return <span className="corrupted-portrait"><CharacterPortrait face="👩"/></span>;
   if(face.startsWith('bs-'))return <span className="character-portrait single-image" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/backstage/face-${face.slice(3)}.png)`}} role="img" aria-label={`${face}の肖像`}/>;
+  if(face==='hedoro')return <span className="character-portrait single-image" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-three/face-hedoro.png)`}} role="img" aria-label="hedoroの肖像"/>;
   if(chapterTwoFaces.has(face))return <span className="character-portrait single-image" style={{backgroundImage:`url(${import.meta.env.BASE_URL}portraits/chapter-two/face-${face}.png)`}} role="img" aria-label={`${face}の肖像`}/>;
   const name=faceSprite(face);
   const location=locations[name];
@@ -34,6 +35,8 @@ export function standingUrl(name:string):string|undefined {
   // 裏会議 'bs-<id>[-<pose>]' -> backstage/、本編の面々 'cast-<id>-<pose>' -> cast/standing-<id>-<pose>.png
   const set=/^(bs|cast)-([a-z]+)(?:-(normal|propose|down|surprised))?$/.exec(name);
   if(set)return `${import.meta.env.BASE_URL}portraits/${set[1]==='bs'?'backstage':'cast'}/standing-${set[2]}-${set[3]??'normal'}.png`;
+  const hedoro=/^hedoro-(normal|propose|down|surprised)$/.exec(name);
+  if(hedoro)return `${import.meta.env.BASE_URL}portraits/chapter-three/standing-hedoro-${hedoro[1]}.png`;
   const file=chapterTwoStanding[name];
   return file&&`${import.meta.env.BASE_URL}portraits/chapter-two/standing-${file}.png`;
 }

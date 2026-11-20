@@ -62,6 +62,8 @@ export const terrainChips = {
   lakeWall: terrain('湖の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-lake-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   mountainWall: terrain('山の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-mountain-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   desertWall: terrain('砂漠の壁','ruins','#282530d4','#3a3741',{image:'maps/dungeon-desert-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
+  underseaFloor: terrain('海底の床','ruins','#2f5866','#4f8c9c',{image:'maps/undersea-floor-64.png'}),
+  underseaWall: terrain('海底の壁','ruins','#1c2c3cd4','#22384a',{image:'maps/undersea-wall-64.png',fallbackImage:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   stoneFloor: terrain('遺跡の床', 'ruins', '#706d79', '#706d79', {image:'maps/props/stone-floor.svg'}),
   stoneWall: terrain('遺跡の壁', 'ruins', '#282530d4', '#3a3741', {image:'maps/props/stone-wall.svg',walkable:false,enemyAllowed:false}),
   woodFloor: terrain('板張りの床', 'interior', '#805a3a', '#805a3a', {image:'maps/wood-floor-64.png'}),
@@ -105,6 +107,8 @@ export const propChips = {
   mountainDecoB: prop('mountainの小物B',image('dungeon-mountain-deco-b-64.png',.9,.9),false),
   desertDecoA: prop('desertの小物A',image('dungeon-desert-deco-a-64.png',.9,.9),false),
   desertDecoB: prop('desertの小物B',image('dungeon-desert-deco-b-64.png',.9,.9),false),
+  underseaDecoA: prop('海底の小物A',image('undersea-deco-a-64.png',.9,.9),false),
+  underseaDecoB: prop('海底の小物B',image('undersea-deco-b-64.png',.9,.9),false),
   sign: prop('看板',{renderer:'text',text:'',width:1,height:.4,anchor:{x:.5,y:1}},false,'overhead'),
 } satisfies Record<string,ObjectDefinition>;
 export type PropId = keyof typeof propChips;
@@ -133,6 +137,7 @@ export const characterChips = {
   fumi:person('fumi','フミ'), graphius:person('graphius','記録卿グラフィウス'),
   'ranger-read':person('ranger-read','ノゾミ・ブルー'), 'ranger-create':person('ranger-create','ツクネ・アンバー'),
   'ranger-update':person('ranger-update','ヌリエ・ジェイド'), 'ranger-delete':person('ranger-delete','ケシ・パープル'),
+  hedoro:person('hedoro','ヘドロの主・スパゲッティ'),
   slime:enemy('slime','スライム'), bat:enemy('bat','コウモリ'), ghost:enemy('ghost','幽霊'),
   shadow:enemy('shadow','影'), memory:enemy('memory','記憶'), guardian:enemy('guardian','守護者'),
   crab:enemy('crab','カニ'), wolf:enemy('wolf','狼'), treant:enemy('treant','木の魔物'),

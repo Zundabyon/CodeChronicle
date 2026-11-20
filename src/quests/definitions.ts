@@ -1,5 +1,5 @@
 import { chapterTwoLessons } from './chapterTwoLessons';
-import { chapterTwoOpening, chapterTwoAttack, chapterTwoFound, chapterTwoEnding, fumiTalk, villagerTalk } from './chapterScenes';
+import { chapterTwoOpening, chapterTwoAttack, chapterTwoFound, chapterTwoEnding, chapterThreeDeparture, hedoroBeforeBattle, hedoroDefeated, fumiTalk, villagerTalk } from './chapterScenes';
 import type { QuestDefinition, QuestStates } from './types';
 export const questDefinitions:QuestDefinition[]=[
   {
@@ -23,6 +23,19 @@ export const questDefinitions:QuestDefinition[]=[
       ...chapterTwoLessons,
       {id:'return-names',title:'第二章：名簿を取り戻した',description:'四つの欠片と控えを持って石灯の村のオルに話しかけ、名簿を復元しよう。',trigger:{type:'npc-talked',npcId:'mountainGuide'},lines:chapterTwoEnding},
     ],reward:{gold:70,items:{ether:1}},
+  },
+  {
+    // Starts by itself when chapter two completes (engine: requiresQuest). Older finished saves get Ol's offer.
+    id:'undersea-prologue',category:'chapter',startLabel:'第三章 序幕「海底の古道」を始める',title:'第三章 序幕：海底の古道',description:'父の古い依頼書の宛先を確かめるため、記録所の地下から海の下を抜ける古い地下道を通り、海の向こうの大陸へ渡る。',
+    npcId:'mountainGuide',npcLocation:'石灯の村の記録係オル',requiresFirstChapter:true,requiresQuest:'village-ledger',opening:chapterThreeDeparture,
+    offer:'そなたに見てほしいものがある。名簿の奥から古い紙が出てきたのじゃ。見てくれんか。',acceptLabel:'古い紙を見る',acceptResponse:'これは……依頼書じゃな。',
+    completionObjective:'海の向こうの大陸に着いた。この先の職人の町は制作中です。',completedText:'向こう岸に着いたか。父上の依頼の宛先、きっと見つかる。',
+    steps:[
+      {id:'enter-undersea',title:'第三章 序幕：記録所の地下へ',description:'石灯の村の記録所（西の建物）の脇にある地下への階段から、海底の古道へ降りよう。',trigger:{type:'place-reached',placeId:'undersea-entrance'}},
+      {id:'cross-tunnel',title:'第三章 序幕：海底の古道を進む',description:'海の下の長い地下道を北へ進もう。脇の小部屋には、これまでの学びをふり返る石板がある。',trigger:{type:'place-reached',placeId:'undersea-tunnel'}},
+      {id:'defeat-hedoro',title:'第三章 序幕：ヘドロの主を倒す',description:'道をふさぐ「ヘドロの主・スパゲッティ」に話しかけ、ぐちゃぐちゃの処理を読み解こう。',npcId:'hedoro',trigger:{type:'battle-won',enemyId:'hedoro'},lines:hedoroBeforeBattle,after:hedoroDefeated},
+      {id:'reach-shore',title:'第三章 序幕：向こう岸へ',description:'ひらけた道を北へ抜け、海の向こうの大陸の浜辺へ出よう。',trigger:{type:'place-reached',placeId:'undersea-shore'}},
+    ],reward:{gold:50,items:{potion:1}},
   },
 ];
 export const questDefinition=(id:string)=>questDefinitions.find(def=>def.id===id);
@@ -48,6 +61,7 @@ export function chapterTwoAct(quests:QuestStates):number {
 const foeOrder=['ranger-read','ranger-create','ranger-update','ranger-delete','graphius'];
 /** Village foes: `foe-<id>` stands in the square during its battle step, `taunt-<id>` on the outskirts earlier in its act. */
 export function villageFoeVisible(npcId:string,quests:QuestStates):boolean {
+  if(npcId==='hedoro')return !['reach-shore','complete'].includes(quests['undersea-prologue']?.step??'');
   const match=/^(foe|taunt)-(.+)$/.exec(npcId);if(!match)return true;
   if(foeOrder[chapterTwoAct(quests)-1]!==match[2])return false;
   return (match[1]==='foe')===!!quests['village-ledger']?.step.startsWith('battle-');

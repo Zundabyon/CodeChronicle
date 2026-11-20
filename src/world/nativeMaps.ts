@@ -1,5 +1,6 @@
 import { memoryDungeonMaps } from './memoryDungeonMaps';
 import { mountainVillage } from './mountainVillage';
+import { underseaMap } from './undersea';
 import { maps as legacyMaps, type HouseArea, type Area } from '../content';
 import { npcSprite } from '../PixelSprite';
 import type { WorldMapInput, BuildingPlacement } from './maps';
@@ -30,5 +31,6 @@ export const nativeMaps:Partial<Record<Area,WorldMapInput>>=Object.fromEntries(h
 
 // The expanded library uses its own shelves, stairs and connecting corridors.
 nativeMaps.village=mountainVillage;
+nativeMaps.undersea=underseaMap;
 
 Object.assign(nativeMaps,memoryDungeonMaps);

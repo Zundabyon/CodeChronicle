@@ -1,5 +1,6 @@
 import type { Enemy } from '../content';
 import { rangerBattleSets } from '../rangerBattleQuestions';
+import { hedoroBattleSet } from '../hedoroBattleQuestions';
 
 // Required story battles: each attempt draws `count` questions at random from the set; one correct answer is one point of damage.
 // Enemy ids double as sprite names (public/sprites/<id>-right.png).
@@ -16,6 +17,8 @@ export const rangerBattles: Record<string, RangerBattle> = {
     hint: '忘却の墓所の石板：控えと照合したIDだけを destroy で消す。消した行は戻らない。' },
   graphius: { enemy: foe('graphius', '記録卿グラフィウス', '羽ペンの裁定'), set: rangerBattleSets.graphius, count: 7,
     hint: '四つの記憶を思い出そう：一覧と詳細は読むだけ、フォームを開くだけでも変わらない。保存・更新・削除はどの行に届くかを確かめる。' },
+  hedoro: { enemy: foe('hedoro', 'ヘドロの主・スパゲッティ', 'ねばねばスパゲッティ'), set: hedoroBattleSet, count: 7,
+    hint: 'ふり返りの石板：名前ではなく中身で役割を見る。取り出す番号・絞り込み・保存の有無を一つずつ確かめよう。' },
 };
 /** Questions for one attempt: a Fisher-Yates shuffle of the set, cut to the battle's count. */
 export const drawSet = ({ set, count }: RangerBattle) => {

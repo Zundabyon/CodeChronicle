@@ -1,6 +1,8 @@
 import { memoryEnemyCopies, memoryEnemyInstanceId } from './world/memoryEnemyIdentity';
 import { resourceQuestions } from './resourceQuestions';
 import { rangerBattleQuestions } from './rangerBattleQuestions';
+import { hedoroBattleQuestions } from './hedoroBattleQuestions';
+import { underseaEnemies } from './world/undersea';
 import { chapterTwoQuestions } from './chapterTwoQuestions';
 import { moreQuestions } from './moreQuestions';
 import { fillQuestions } from './fillQuestions';
@@ -17,7 +19,7 @@ import { mountainVillageGate, mountainVillageReturn } from './world/mountainVill
 export type Track = 'react' | 'vue';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 export type HouseArea = 'home' | 'elderHouse' | 'scholarHouse' | 'childHouse' | 'guestHouse' | 'weaponShop' | 'armorShop' | 'itemShop' | 'backendLibrary';
-export type Area = 'crudCreate' | 'crudRead' | 'crudUpdate' | 'crudDelete' | 'town' | 'field' | 'dungeon' | 'village' | 'librarySecondFloor' | 'libraryThirdFloor' | 'libraryFourthFloor' | 'backendSecondFloor' | HouseArea;
+export type Area = 'crudCreate' | 'crudRead' | 'crudUpdate' | 'crudDelete' | 'town' | 'field' | 'dungeon' | 'village' | 'undersea' | 'librarySecondFloor' | 'libraryThirdFloor' | 'libraryFourthFloor' | 'backendSecondFloor' | HouseArea;
 export type Question = {
   id: string;
   difficulty: Difficulty;
@@ -105,10 +107,11 @@ export const questions: Question[] = [
   ...battleQuestionsMoreIntermediate,
   ...battleQuestionsMoreBeginner,
   ...rangerBattleQuestions,
+  ...hedoroBattleQuestions,
 ];
 
 export const difficultyLabel: Record<Difficulty, string> = { beginner: '初級', intermediate: '中級', advanced: '上級' };
-export const areaLabel: Record<Area, string> = { crudCreate:'創生の工房', crudRead:'読解の書庫', crudUpdate:'改変の回廊', crudDelete:'忘却の墓所', town: '黎明の町', village:'石灯の村', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'西棟 1階・JavaScript', librarySecondFloor:'西棟 2階・TypeScript', libraryThirdFloor:'西棟 3階・React', libraryFourthFloor:'西棟 4階・Vue', backendLibrary:'東棟 1階・PHP', backendSecondFloor:'東棟 2階・Laravel', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
+export const areaLabel: Record<Area, string> = { crudCreate:'創生の工房', crudRead:'読解の書庫', crudUpdate:'改変の回廊', crudDelete:'忘却の墓所', town: '黎明の町', village:'石灯の村', undersea:'海底の古道', field: '風渡りの平原', dungeon: '忘却の遺跡', home:'旅人の家', elderHouse:'村長の家', scholarHouse:'西棟 1階・JavaScript', librarySecondFloor:'西棟 2階・TypeScript', libraryThirdFloor:'西棟 3階・React', libraryFourthFloor:'西棟 4階・Vue', backendLibrary:'東棟 1階・PHP', backendSecondFloor:'東棟 2階・Laravel', childHouse:'町の子の家', guestHouse:'旅籠', weaponShop:'武器屋', armorShop:'防具屋', itemShop:'道具屋' };
 
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
@@ -361,6 +364,7 @@ const canonicalEnemyKinds: Record<string, EnemyKind> = {
   f19:'moth',f20:'scorpion',f21:'cactus',f22:'serpent',f23:'wisp',f24:'golem',f25:'ghost',f26:'beetle',f27:'golem',
   d1:'shadow',d2:'ghost',d3:'memory',d4:'skeleton',d5:'mimic',d6:'wisp',d7:'skeleton',
   boss:'guardian',review:'shadow','after-gate':'memory',
+  ...Object.fromEntries(underseaEnemies.map(enemy=>[enemy.id,enemy.chip as EnemyKind])),
 };
 
 export const enemyKinds:Record<string,EnemyKind>=Object.fromEntries(Object.entries(canonicalEnemyKinds).flatMap(([id,kind])=>

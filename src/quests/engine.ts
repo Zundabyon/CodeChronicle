@@ -17,7 +17,8 @@ export function currentQuestStep(def: QuestDefinition, quests: QuestStates) {
 }
 
 export function canStartQuest(def: QuestDefinition, save: Pick<QuestSave, 'quests' | 'completed'>) {
-  return !save.quests[def.id] && (!def.requiresFirstChapter || save.completed);
+  return !save.quests[def.id] && (!def.requiresFirstChapter || save.completed)
+    && (!def.requiresQuest || save.quests[def.requiresQuest]?.step === COMPLETE);
 }
 
 function matchesTrigger(trigger: QuestTrigger, event: QuestEvent): boolean {
@@ -31,6 +32,8 @@ function matchesTrigger(trigger: QuestTrigger, event: QuestEvent): boolean {
       return event.type === 'chest-examined' && event.chestId === trigger.chestId;
     case 'battle-won':
       return event.type === 'battle-won' && event.enemyId === trigger.enemyId;
+    case 'place-reached':
+      return event.type === 'place-reached' && event.placeId === trigger.placeId;
     case 'question-answered':
       return event.type === 'question-answered'
         && event.questionId === trigger.questionId
@@ -83,6 +86,13 @@ export function applyQuestEvent<T extends QuestSave>(save: T, event: QuestEvent)
       }
       next = { ...next, gold: next.gold + def.reward.gold, inventory };
     }
+  }
+  // A chapter that follows another starts the moment its predecessor completes.
+  const follow = event.type !== 'accepted' && questDefinitions.find(def => def.requiresQuest
+    && save.quests[def.requiresQuest]?.step !== COMPLETE && next.quests[def.requiresQuest]?.step === COMPLETE && canStartQuest(def, next));
+  if (follow) {
+    const chained = applyQuestEvent(next, { type: 'accepted', questId: follow.id });
+    return { save: chained.save, scenes: [...scenes, ...chained.scenes], started: chained.started };
   }
   return { save: next, scenes, started };
 }

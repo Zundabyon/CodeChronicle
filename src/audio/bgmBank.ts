@@ -136,13 +136,13 @@ export type BgmName = keyof typeof bank;
 export const bgmBank = Object.fromEntries(Object.entries(bank).map(([k, v]) => [k, normalizeSong(v as RawSong)])) as Record<BgmName, Song>;
 
 /** 場面から曲名を選ぶ。戦闘・遭遇は敵で、探索は場所で決める。 */
-const enemyBgm: Record<string, BgmName> = {graphius: 'graphius', 'ranger-read': 'rangerNozomi', 'ranger-create': 'rangerTsukune', 'ranger-update': 'rangerNurie', 'ranger-delete': 'rangerKeshi'};
-// TODO: ヘドロの主の敵IDが決まったら enemyBgm に bossHedoro を、地下道の Area ができたら area === 'undersea' → undersea を足す。
+const enemyBgm: Record<string, BgmName> = {graphius: 'graphius', 'ranger-read': 'rangerNozomi', 'ranger-create': 'rangerTsukune', 'ranger-update': 'rangerNurie', 'ranger-delete': 'rangerKeshi', hedoro: 'bossHedoro'};
 export function sceneBgm({phase, area, environment, enemyId, boss}: {phase: string; area: string; environment?: string; enemyId?: string; boss?: boolean}): BgmName {
   if (phase === 'battle' || phase === 'encounter') return enemyBgm[enemyId ?? ''] ?? (boss ? 'bossGuardian' : 'battle');
   if (['title','prologue','setup','clear'].includes(phase)) return 'title';
   if (phase !== 'world') return 'town';
   if (area.startsWith('crud')) return 'memoryDungeon';
+  if (area === 'undersea') return 'undersea';
   if (environment === 'dungeon') return 'dungeon';
   return area === 'field' || area === 'village' ? area : 'town';
 }

@@ -284,3 +284,5 @@ button:disabled .shortcut-key{opacity:.5}
 .library-panel a{color:#e8c98a;text-underline-offset:3px}
 /* Atlas sprites keep their proportions and align their base to the map cell. */
 .world-chip>.world-atlas-sprite{position:absolute;inset:0;overflow:hidden;filter:drop-shadow(2px 3px 0 #15251b77)}
+/* 第三章 序幕：海底に流れ着いて変質した敵。既存スプライトを青く沈める */
+.map-undersea .world-enemy .pixel-sprite,.battle-foe-undersea .battle-foe-sprite .pixel-sprite{filter:sepia(.35) hue-rotate(160deg) saturate(1.4) brightness(.85) drop-shadow(0 0 3px #8fe3ff)}

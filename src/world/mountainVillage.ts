@@ -21,6 +21,8 @@ for(let x=0;x<width;x++) {
 for(let y=1;y<height-1;y++) {prop(`west-tree-${y}`,'tree',0,y);prop(`east-tree-${y}`,'tree',width-1,y);}
 prop('village-name','sign',11,17.5,'石灯の村');
 prop('ledger-label','sign',4,5.4,'村の記録所');
+prop('ledger-cellar','stairs',1,6);
+prop('ledger-cellar-label','sign',1,5.4,'地下 ▼');
 prop('rest-label','sign',11,5.4,'休憩所');
 prop('lodge-label','sign',18,5.4,'旅人の宿');
 prop('exit-label','sign',11,18.6,'平原へ ▼');
@@ -75,5 +77,8 @@ export const mountainVillage:WorldMapInput={
     {id:'village-traveler-house',chip:'house',x:16,y:3},
   ],
   characters:npcs.map(({chip,...npc})=>({id:npc.id,role:'npc',chip,x:npc.x,y:npc.y,npc})),
-  events:[{id:'village-field-exit',x:11,y:19,trigger:'enter',label:'風渡りの平原へ',action:{kind:'transition',to:'field',position:mountainVillageReturn}}],
+  events:[
+    // Ol stands at the ledger house door, so its cellar hatch sits on the west wall (chapter three prologue; App gates it).
+    {id:'village-ledger-basement',x:1,y:6,trigger:'enter',label:'記録所の地下へ',action:{kind:'transition',to:'undersea'}},
+    {id:'village-field-exit',x:11,y:19,trigger:'enter',label:'風渡りの平原へ',action:{kind:'transition',to:'field',position:mountainVillageReturn}}],
 };

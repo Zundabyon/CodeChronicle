@@ -12,6 +12,9 @@ const rewards:Record<string,ChestReward>={
   'dungeon:2,5':{gold:0,inventory:{potion:1}},
   'dungeon:15,10':{gold:0,inventory:{ether:1}},
   'dungeon:19,5':{gold:45,inventory:{}},
+  'undersea:35,105':{gold:0,inventory:{potion:1}},
+  'undersea:18,84':{gold:0,inventory:{ether:1}},
+  'undersea:54,30':{gold:30,inventory:{potion:1,ether:1}},
 };
 const defaultReward:ChestReward={gold:20,inventory:{herb:1}};
 type ChestSave={gold:number;inventory:Inventory;openedChests:string[]};

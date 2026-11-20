@@ -27,7 +27,16 @@ const chapterOptions:[string,string,string][]=[
   ['名簿を戻す前','オルに話して名簿を復元する','return-names'],
   ['第二章クリア','名簿を取り戻した',DONE],
 ];
-const stepOrder=(step:string)=>step===''?-1:step===DONE?Infinity:questDefinition(LEDGER)!.steps.findIndex(s=>s.id===step);
+const PROLOGUE='undersea-prologue';
+const prologueOptions:[string,string,string][]=[
+  ['未開始','第二章クリアで始まる（記録所の地下は閉じている）',''],
+  ['記録所の地下へ','記録所の建物から地下へ降りる','enter-undersea'],
+  ['海底の古道を進む','海窓の回廊まで北へ進む','cross-tunnel'],
+  ['ヘドロの主戦の前','ボスに話しかけると戦闘','defeat-hedoro'],
+  ['向こう岸へ','ボス撃破後、北の浜辺へ','reach-shore'],
+  ['序幕クリア','浜辺に到着（職人の町は制作中）',DONE],
+];
+const stepOrder=(step:string,quest=LEDGER)=>step===''?-1:step===DONE?Infinity:questDefinition(quest)!.steps.findIndex(s=>s.id===step);
 const maxHp=(l:number)=>20+(l-1)*5,maxMp=(l:number)=>3+Math.floor((l-1)/2);
 
 export function FlagSwitches({save,onChange,onResetLearning,onClose}:Props) {
@@ -36,9 +45,10 @@ export function FlagSwitches({save,onChange,onResetLearning,onClose}:Props) {
     if(storyStages.indexOf(stage)<storyStages.indexOf(save.story)&&!confirm(`第一章を「${storyLabels[stage][0]}」に戻します。よろしいですか？`))return;
     onChange(()=>({story:stage}),`第一章を『${storyLabels[stage][0]}』にしました`);
   };
-  const setChapter=([label,,step]:[string,string,string])=>{
-    if(stepOrder(step)<stepOrder(ledger)&&!confirm(`第二章を「${label}」に戻します。よろしいですか？`))return;
-    onChange(s=>{const quests={...s.quests};if(step)quests[LEDGER]={step};else delete quests[LEDGER];return {quests};},`第二章を『${label}』にしました`);
+  const prologue=save.quests[PROLOGUE]?.step??'';
+  const setChapter=([label,,step]:[string,string,string],quest=LEDGER,name='第二章')=>{
+    if(stepOrder(step,quest)<stepOrder(quest===LEDGER?ledger:prologue,quest)&&!confirm(`${name}を「${label}」に戻します。よろしいですか？`))return;
+    onChange(s=>{const quests={...s.quests};if(step)quests[quest]={step};else delete quests[quest];return {quests};},`${name}を『${label}』にしました`);
   };
   const row=(on:boolean,label:string,note:string,onClick:()=>void,kind:'radio'|'switch'='radio')=>
     <button key={label} role={kind==='radio'?'radio':'switch'} aria-checked={on} onClick={onClick}
@@ -63,8 +73,12 @@ export function FlagSwitches({save,onChange,onResetLearning,onClose}:Props) {
         <h3 style={{marginTop:0}}>2. 第二章の進み</h3>
         {chapterOptions.map(option=>row(ledger===option[2],option[0],option[1],()=>setChapter(option)))}
       </section>
+      <section style={box} role="radiogroup" aria-label="第三章 序幕の進み">
+        <h3 style={{marginTop:0}}>3. 第三章 序幕の進み</h3>
+        {prologueOptions.map(option=>row(prologue===option[2],option[0],option[1],()=>setChapter(option,PROLOGUE,'第三章 序幕')))}
+      </section>
       <section style={box} aria-label="よく使うスイッチ">
-        <h3 style={{marginTop:0}}>3. よく使うスイッチ</h3>
+        <h3 style={{marginTop:0}}>4. よく使うスイッチ</h3>
         {action('倒した敵をすべて復活',`今 ${save.defeated.length} 体倒している（守護者はそのまま）`,()=>onChange(s=>({defeated:s.defeated.filter(id=>id==='boss')}),'倒した敵をすべて復活させました'))}
         {action('宝箱をすべて未開封に',`今 ${save.openedChests.length} 個開けている`,()=>onChange(()=>({openedChests:[]}),'宝箱をすべて未開封にしました'))}
         {action('デイリー報酬を未受取に',save.dailyRewardDate?`受取日 ${save.dailyRewardDate}`:'今は未受取',()=>onChange(()=>({dailyRewardDate:''}),'デイリー報酬を未受取にしました'))}

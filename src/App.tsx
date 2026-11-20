@@ -36,8 +36,9 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { areaLabel, difficultyLabel, houses, questions as bundledQuestions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn, restoreMapPosition } from './world/maps';
 import { CharacterPortrait, StandingArt, standingUrl } from './CharacterPortrait';
-import { chapterTwoAttack } from './quests/chapterScenes';
-import { chapterTwoAct } from './quests/definitions';
+import { chapterTwoAttack, underseaEntrance, underseaTunnel, underseaShore } from './quests/chapterScenes';
+import { underseaBossNpcId, underseaBossCells, underseaReturnLanding, underseaVillageLanding } from './world/undersea';
+import { chapterTwoAct, villageFoeVisible } from './quests/definitions';
 import './storyStage.css';
 import { TitleScreen } from './TitleScreen';
 import { WorldScene, villageScarBlocks, fallenVillagerWords } from './WorldScene';
@@ -95,7 +96,8 @@ const same = (a: Point, b: Point) => a.x === b.x && a.y === b.y;
 const walkable = (area: Area, p: Point, quests:QuestStates={}) => {
   const action=eventAt(maps[area],p,'enter')?.action;
   return canWalkOnMap(maps[area],p) && (action?.kind!=='memory-door'||isMemoryDoorOpen(quests,action.npcId))
-    && !(area==='village'&&villageScarBlocks(chapterTwoAct(quests),p));
+    && !(area==='village'&&villageScarBlocks(chapterTwoAct(quests),p))
+    && !(area==='undersea'&&villageFoeVisible(underseaBossNpcId,quests)&&underseaBossCells.some(cell=>same(cell,p)));
 };
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
 function pathfind(area: Area, start: Point, goal: Point, defeated: string[], positions: EnemyPositions, story:StoryStage='legacy', quests:QuestStates={}): Point[] {
@@ -356,6 +358,16 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if(attackPending&&!dialogueRef.current)playStory(chapterTwoAttack,()=>sendQuestEvent({type:'npc-talked',npcId:'mountainGuide',questId:'village-ledger'}));
   },[attackPending,playStory,sendQuestEvent]);
 
+  // Chapter three prologue: arriving underground, crossing the sea window and reaching the far shore each play once.
+  const prologueStep=save.quests['undersea-prologue']?.step;
+  const underseaScene=phase!=='world'||save.area!=='undersea'?undefined:
+    prologueStep==='enter-undersea'?{lines:underseaEntrance,placeId:'undersea-entrance'}:
+    prologueStep==='cross-tunnel'&&save.pos.y<=40?{lines:underseaTunnel,placeId:'undersea-tunnel'}:
+    prologueStep==='reach-shore'&&save.pos.y<=4?{lines:underseaShore,placeId:'undersea-shore'}:undefined;
+  useEffect(()=>{
+    if(underseaScene&&!dialogueRef.current)playStory(underseaScene.lines,()=>sendQuestEvent({type:'place-reached',placeId:underseaScene.placeId}));
+  },[underseaScene?.placeId,!!dialogue,playStory,sendQuestEvent]);
+
   const startBattle = useCallback((enemy: Enemy, fromReview=false, reviewQuestion?: Question) => {
     stopPath(); const s=stateRef.current; const ranger=rangerBattles[enemy.id],set=ranger&&drawSet(ranger);
     const q=reviewQuestion ?? (set ? questions.find(q=>q.id===set[0])! : enemy.boss ? bossQuestion(0,s.difficulty) : memoryBattleQuestion(questions,s,enemy.id));
@@ -393,6 +405,9 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       update(s=>({...s,pos:{x:14,y:30}}));
       startDialogue(stateRef.current.name,'🗡️',[stateRef.current.story==='breakfast'?'ハンナさんが朝食を用意して待っている。先に街の東の旅籠へ行こう。':'ハンナさんを助ける方法を聞かなくちゃ。まずは街の北中央にある村長の家だ。']);return;
     }
+    if(to==='undersea'&&from==='village'&&!stateRef.current.quests['undersea-prologue']) {
+      startDialogue(stateRef.current.name,'🗡️',[stateRef.current.quests['village-ledger']?.step==='complete'?'記録所の地下への扉は閉まっている。先にオルの話を聞こう。':'記録所の地下には古い書庫があるらしい。今は、まだ用はない。']);return;
+    }
     let pos: Point = maps[to].entry;
     if (from==='dungeon' && to==='field') pos=dungeonFieldReturn;
     if (to==='town' && from in houses) pos=houses[from as HouseArea].outside;
@@ -408,7 +423,17 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     });
   },[startDialogue,update]);
   const useMemoryWarp = useCallback((key:string,room?:number) => {
-    const s=stateRef.current,target=memoryWarpTarget(s.quests,key,room);
+    const s=stateRef.current;
+    if(key==='undersea') {
+      // The entrance light reaches the north return point once the hero has walked past it (the tunnel scene).
+      const deep=room===undefined,open=!deep||!['enter-undersea','cross-tunnel'].includes(s.quests['undersea-prologue']?.step??'');
+      if(!open){startDialogue('帰還点','✧',['まだ奥の帰還点にたどり着いていない。北へ進もう。']);return;}
+      startDialogue('帰還点','✧',[deep?'奥の帰還点（海窓の回廊）へ飛ぶ？':'石灯の村へ戻る？ 戻った後は、記録所の地下の「奥の帰還点」から先へ飛べる。'],[
+        {label:deep?'奥へ飛ぶ':'村へ戻る',response:'帰還の光に包まれた。',onChoose:()=>deep?transition(s.area,'undersea',underseaReturnLanding):transition(s.area,'village',underseaVillageLanding)},
+        {label:'やめる',response:'今はこのまま進もう。'},
+      ]);return;
+    }
+    const target=memoryWarpTarget(s.quests,key,room);
     if(!target){startDialogue('帰還点','✧',[room===undefined?'まだ封印を解いた部屋がない。最初の部屋から進もう。':'この部屋の封印を解くと、ここから石灯の村へ戻れる。']);return;}
     startDialogue('帰還点','✧',[room===undefined?'到達した一番奥の部屋へ飛ぶ？':'石灯の村へ戻る？ 戻った後は、入口の「奥への帰還点」からここまで戻れる。'],[
       {label:room===undefined?'奥へ飛ぶ':'村へ戻る',response:'帰還の光に包まれた。',onChoose:()=>transition(s.area,target.area,target.position)},
@@ -776,7 +801,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     {phase==='epilogue' && <main className="epilogue-screen"><img className="gate-art" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><div className="story-card">{levelUp&&<LevelUpCue event={levelUp}/>}<span className="eyebrow">THE FIRST GATE IS OPEN</span><h2>{epilogueStep===0?'知識の扉が開いた':epilogueStep===1?'魔法「見極め」を獲得！':'新たな知識を試そう'}</h2><p>{epilogueStep===0?'守護者の目に静かな光が戻った。「私は知識を守る者。魔王の声に、務めさえ忘れていた……」。開いた扉の先から、失われた知識があふれ出す。':epilogueStep===1?'魔法を使うと、4択の誤った答えを一つ消せる。MPを1消費し、教会で回復できる。':'正気に戻った守護者が訓練用の問いを示した。見極めで偽りを見破り、答えよう。この力を、ハンナのもとへ持ち帰るために。'}</p><button className="primary" onClick={()=>{if(epilogueStep<2)setEpilogueStep(epilogueStep+1);else startBattle({id:'after-gate',name:'デバッグキーパー',attackName:'記憶の衝撃',x:0,y:0,icon:'✧'} ,false,selectQuestion(questions,stateRef.current,Math.random,true));}}>{epilogueStep<2?'次へ':'魔法を試す'}　▶</button></div></main>}
     {phase==='clear' && <main className="clear-screen"><img className="clear-symbol" src={`${import.meta.env.BASE_URL}maps/ruins-gate-128.png`} alt="開いた遺跡の門"/><span className="eyebrow">CHAPTER 1 COMPLETE</span><h1>{save.story==='rescued'?'今度は、助けられた。':'最初の扉は、開かれた。'}</h1><p>{save.story==='rescued'?'ハンナの魔物化を止め、あなたのことを思い出してもらえた。世界の知識を救う旅と、騎士の証言を手がかりに両親の行方を確かめる旅が、ここから始まる。':'失われた知識の一片を取り戻した。魔王との戦いは、まだ始まったばかり。'}</p><div className="result-grid"><div><strong>{save.level}</strong><span>到達レベル</span></div><div><strong>{save.correct}/{save.total}</strong><span>正解数</span></div><div><strong>{save.defeated.length}</strong><span>倒した敵</span></div><div><strong>{save.magicUsed?'✓':'—'}</strong><span>魔法「見極め」</span></div></div><div className="clear-actions"><QuestStartButtons save={save} onStart={startQuest}/><button className="primary" onClick={()=>{setPhase('world');update(s=>({...s,area:'town',pos:maps.town.entry}));}}>町へ戻って冒険を続ける</button><button onClick={()=>setPhase('title')}>タイトルへ</button></div></main>}
     {dialogue&&(phase==='world'||phase==='backstage')&&typeof currentLine!=='string'&&(currentLine?.art!==undefined||currentLine?.fire||(currentLine?.standing??currentLine?.face))&&<div key={dialogue.index} className={`story-stage${currentLine.fire?' is-fire':''}${currentLine.shake?' is-shake':''}`} aria-hidden="true">
-      {currentLine.art!==undefined&&<div className="story-art" style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/chapter-two/attack-${['sky','fire','rangers','final','villagers','forgotten','aftermath'][currentLine.art]}.png)`}}/>}
+      {currentLine.art!==undefined&&<div className="story-art" style={{backgroundImage:`url(${import.meta.env.BASE_URL}prologue/${typeof currentLine.art==='string'?currentLine.art:'chapter-two/attack-'+['sky','fire','rangers','final','villagers','forgotten','aftermath'][currentLine.art]}.png)`}}/>}
       {currentLine.fire&&<div className="story-fire"><i/><i/><i/><i/><i/><i/></div>}
       {stagePair.map(slot=><StandingArt key={slot.side} name={slot.name} side={slot.side} active={slot.active}/>)}
     </div>}
