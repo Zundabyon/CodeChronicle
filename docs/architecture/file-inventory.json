@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / 793d834 + current working tree",
+  "snapshot": "2026-11-20 / 53cde5c + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 561,
+  "count": 562,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 108,
+    "制作・運用": 109,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 138
+      "count": 139
     }
   },
   "files": [
@@ -958,7 +958,7 @@
     },
     {
       "path": "public/lessons/undersea-review-basics-server-960x600.png",
-      "bytes": 1056159,
+      "bytes": 328870,
       "suffix": ".png",
       "group": "教材・学習",
       "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -966,7 +966,7 @@
     },
     {
       "path": "public/lessons/undersea-review-basics-ui-960x600.png",
-      "bytes": 996468,
+      "bytes": 311659,
       "suffix": ".png",
       "group": "教材・学習",
       "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -974,7 +974,7 @@
     },
     {
       "path": "public/lessons/undersea-review-create-960x600.png",
-      "bytes": 1011553,
+      "bytes": 301231,
       "suffix": ".png",
       "group": "教材・学習",
       "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -982,7 +982,7 @@
     },
     {
       "path": "public/lessons/undersea-review-delete-960x600.png",
-      "bytes": 977697,
+      "bytes": 309222,
       "suffix": ".png",
       "group": "教材・学習",
       "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -990,7 +990,7 @@
     },
     {
       "path": "public/lessons/undersea-review-read-960x600.png",
-      "bytes": 977685,
+      "bytes": 320754,
       "suffix": ".png",
       "group": "教材・学習",
       "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -998,7 +998,7 @@
     },
     {
       "path": "public/lessons/undersea-review-update-960x600.png",
-      "bytes": 1061163,
+      "bytes": 337873,
       "suffix": ".png",
       "group": "教材・学習",
       "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
@@ -3114,6 +3114,14 @@
     {
       "path": "scripts/check-cloudflare-deployment.mjs",
       "bytes": 2224,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "scripts/compress-lessons.mjs",
+      "bytes": 705,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
