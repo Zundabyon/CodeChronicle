@@ -358,3 +358,6 @@ export const dungeonLessons:Record<string,DungeonLesson>={
 export const lessonReadId=(id:string)=>'lesson:'+id;
 export const isLessonRead=(readBooks:string[],id:string)=>readBooks.includes(lessonReadId(id));
 export const lessonReadIds=()=>Object.keys(dungeonLessons).map(lessonReadId);
+// Review tablets come with a diagram (public/lessons/<id>-960x600.png) and can be reread in the gallery.
+export const lessonImage=(id:string)=>id.startsWith('undersea-review-')?`lessons/${id}-960x600.png`:undefined;
+export const galleryLessons=Object.keys(dungeonLessons).filter(id=>lessonImage(id));

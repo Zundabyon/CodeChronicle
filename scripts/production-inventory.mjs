@@ -24,7 +24,7 @@ const flat={
   motion:['battleTiming','heroAttackArt','HeroBattleSprite','EnemyEffectSprite','enemyMovement','RecoveryCue','LevelUpCue','characterArt','heroBattleSprite','bossBreakEffect','recoveryCue','levelUpCue','chestRewardCue'],
   narrative:['story','dialogueLog','DialogueHistoryPanel','DialogueChoices','heroBanter','battleBanter'],
   learning:['questionCatalog','catalogRelease','content','questionSelection','wrongChoiceReasons','bookQuestions','library','LibraryPanel','LibrarySearch','BookPractice','LearningRecordPanel','LearningSession','LearningSetupHelp','QuestionCode','ReviewRoom','learningRecords','reviewSchedule','learningRecords','learningSession','learningSetupHelp','librarySearch','reviewRoom','questLearning'],
-  gameplay:['bossBattle','heroTechniques','items','chests','ChestSprite','AdventurePanels','BattleStage','BattleEncounter','battle','chestSprite','enemyStats','bestiary','MonsterBook','cursedBook'],
+  gameplay:['bossBattle','heroTechniques','items','chests','ChestSprite','AdventurePanels','BattleStage','BattleEncounter','battle','chestSprite','enemyStats','bestiary','MonsterBook','cursedBook','TabletGallery'],
   presentation:['titleMotion','QuestionBootstrap','questionBootstrap','TitleScreen','ControlsGuide','keyboardNavigation','keyboardShortcuts','base','style','titleScreen','chapterStart','storyStage','HudPanel'],
   persistence:['saveValidation','SaveTransfer','SaveStatus','ResumeSummary','saveTransfer','saveStatus','resumeSummary'],
   operations:['App','main','vite-env.d'],
@@ -47,6 +47,7 @@ function classify(path){
   if(path.startsWith('public/portraits/'))return 'characters';
   if(path.startsWith('public/sprites/'))return /\/hero-(walk|attack)/.test(path)?'motion':'characters';
   if(path.startsWith('public/prologue/'))return 'narrative';
+  if(path.startsWith('public/lessons/'))return 'learning';
   if(/^public\/(title|fonts)\//.test(path))return 'presentation';
   if(path.startsWith('docs/production/characters/'))return 'characters';
   if(path.startsWith('docs/production/uses/'))return /\/(walking|combat-art|object-motion)\./.test(path)?'motion':/\/(dialogue-portraits|map-sprites)\./.test(path)?'characters':/\/backgrounds\./.test(path)?'presentation':'world';
