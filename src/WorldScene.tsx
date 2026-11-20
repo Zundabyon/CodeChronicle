@@ -67,6 +67,7 @@ type Props = {
   onWarp: (area: Area) => void;
   onFlags: () => void;
   onBestiary: () => void;
+  goldenEnemies?: ReadonlySet<string>;
   bestiaryOwned?: boolean;
   onSfx: () => void;
   onBgm: () => void;
@@ -110,7 +111,7 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </HudPanel>;
 }
 
-export function WorldScene({onFlags,onBestiary,bestiaryOwned=false,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
+export function WorldScene({goldenEnemies,onFlags,onBestiary,bestiaryOwned=false,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
@@ -207,7 +208,7 @@ export function WorldScene({onFlags,onBestiary,bestiaryOwned=false,onSfx,onBgm,o
             const definition=customArt?{...base,visual:customArt}:base;
             if(enemy&&save.defeated.includes(enemy.id)||!visible(point,definition.visual)) return null;
             return <WorldChip key={character.id} definition={definition} point={point}
-              className={enemy?`world-enemy ${enemy.boss?'boss':''}`:`world-npc ${character.id==='mimic-book'?'cursed-book':''}`}
+              className={enemy?`world-enemy ${enemy.boss?'boss':''} ${goldenEnemies?.has(enemy.id)?'golden-enemy':''}`:`world-npc ${character.id==='mimic-book'?'cursed-book':''}`}
               label={enemy?`${enemy.name}に近づく`:undefined} onClick={enemy?()=>onTile(point):undefined}/>;
           })}
           {save.story==='knight'&&knightVisible&&<WorldChip definition={characterChips.knight} point={knightPoint} className="world-knight"/>}

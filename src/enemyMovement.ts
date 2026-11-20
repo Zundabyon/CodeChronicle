@@ -61,3 +61,7 @@ export function moveEnemies(area: Area, current: EnemyPositions, defeated: strin
   }
   return changed ? next : current;
 }
+
+/** Rare golden foes (1%), rolled once per session so the map can show them before the fight. */
+export const rollGoldenEnemies = (): ReadonlySet<string> =>
+  new Set(Object.values(maps).flatMap(map => map.enemies).filter(enemy => !enemy.boss && enemy.id !== 'after-gate' && Math.random() >= .99).map(enemy => enemy.id));
