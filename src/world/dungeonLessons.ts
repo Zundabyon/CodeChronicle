@@ -358,6 +358,8 @@ export const dungeonLessons:Record<string,DungeonLesson>={
 export const lessonReadId=(id:string)=>'lesson:'+id;
 export const isLessonRead=(readBooks:string[],id:string)=>readBooks.includes(lessonReadId(id));
 export const lessonReadIds=()=>Object.keys(dungeonLessons).map(lessonReadId);
-// Review tablets come with a diagram (public/lessons/<id>-960x600.png) and can be reread in the gallery.
-export const lessonImage=(id:string)=>id.startsWith('undersea-review-')?`lessons/${id}-960x600.png`:undefined;
-export const galleryLessons=Object.keys(dungeonLessons).filter(id=>lessonImage(id));
+// Every tablet comes with a diagram (public/lessons/<id>-960x600.png) and can be reread in the gallery.
+export const lessonImage=(id:string)=>dungeonLessons[id]?`lessons/${id}-960x600.png`:undefined;
+export const galleryGroups:[string,string[]][]=[['読解の書庫','r-'],['創生の工房','c-'],['改変の回廊','u-'],['忘却の墓所','d-'],['海底の古道','undersea-review-']]
+  .map(([name,prefix])=>[name,Object.keys(dungeonLessons).filter(id=>id.startsWith(prefix))]);
+export const galleryLessons=galleryGroups.flatMap(([,ids])=>ids);

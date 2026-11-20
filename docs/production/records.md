@@ -5,6 +5,10 @@
 | 履歴 | 今後使う共通仕様 | 固有設定・実行側の正本 |
 |---|---|---|
 | [海底の古道・ふり返りの石板v1](../art/undersea-review-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説6枚（UI/MVC/Read/Create/Update/Delete）、960×600不透明PNG。src登録・実表示確認はClaude担当 |
+| [読解の書庫・石板の図解v1](../art/r-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
+| [創生の工房・石板の図解v1](../art/c-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
+| [改変の回廊・石板の図解v1](../art/u-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
+| [忘却の墓所・石板の図解v1](../art/d-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
 | [第二章の人物・小物v1](../art/chapter-two-assets-v1.md) | [会話画像](uses/dialogue-portraits.md)、[マップ画像](uses/map-sprites.md)、[戦闘画像](uses/combat-art.md)、[状態差分](uses/state-variants.md) | [画像依頼](chapter-two-art-request.md)。生成候補17枚を引き渡し、src登録・実表示確認はClaude担当 |
 | [家具・小物アトラス](../../public/maps/props/props-atlas-v2.prompt.txt) | [環境素材](uses/environment-art.md) | [propArt.ts](../../src/world/propArt.ts) |
 | [主人公歩行](../../public/sprites/hero-walk-art.txt) | [歩行](uses/walking.md) | [主人公](characters/hero.md)、[WorldCharacter.tsx](../../src/WorldCharacter.tsx)、[characterArt.css](../../src/characterArt.css) |

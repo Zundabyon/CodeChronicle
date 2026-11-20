@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / 53cde5c + current working tree",
+  "snapshot": "2026-11-20 / cc93ba6 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 562,
+  "count": 626,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 109,
+    "制作・運用": 113,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -32,7 +32,7 @@
     "戦闘表示": 11,
     "探索画面": 7,
     "教材・共通データ": 4,
-    "教材・学習": 25,
+    "教材・学習": 85,
     "検証": 14,
     "物語": 1,
     "物語・進行": 16,
@@ -68,7 +68,7 @@
     "learning": {
       "label": "教材・学習",
       "guide": "docs/production/learning.md",
-      "count": 49
+      "count": 109
     },
     "gameplay": {
       "label": "ゲームルール",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 139
+      "count": 143
     }
   },
   "files": [
@@ -277,6 +277,14 @@
       "genre": "operations"
     },
     {
+      "path": "docs/art/c-dungeon-tablets-v1.md",
+      "bytes": 24988,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/art/cast-standing-v1.md",
       "bytes": 4644,
       "suffix": ".md",
@@ -341,6 +349,14 @@
       "genre": "operations"
     },
     {
+      "path": "docs/art/d-dungeon-tablets-v1.md",
+      "bytes": 20685,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/art/dungeon-theme-tiles-v1.md",
       "bytes": 4570,
       "suffix": ".md",
@@ -381,6 +397,14 @@
       "genre": "world"
     },
     {
+      "path": "docs/art/r-dungeon-tablets-v1.md",
+      "bytes": 22302,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/art/title-journey-v1.md",
       "bytes": 6115,
       "suffix": ".md",
@@ -395,6 +419,14 @@
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
       "genre": "presentation"
+    },
+    {
+      "path": "docs/art/u-dungeon-tablets-v1.md",
+      "bytes": 21678,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
     },
     {
       "path": "docs/art/undersea-review-tablets-v1.md",
@@ -694,7 +726,7 @@
     },
     {
       "path": "docs/production/records.md",
-      "bytes": 3331,
+      "bytes": 4239,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -955,6 +987,486 @@
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "presentation"
+    },
+    {
+      "path": "public/lessons/c-detail-1-a-960x600.png",
+      "bytes": 360760,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-1-b-960x600.png",
+      "bytes": 361465,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-2-a-960x600.png",
+      "bytes": 320471,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-2-b-960x600.png",
+      "bytes": 300242,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-3-a-960x600.png",
+      "bytes": 301940,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-3-b-960x600.png",
+      "bytes": 333138,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-4-a-960x600.png",
+      "bytes": 343374,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-4-b-960x600.png",
+      "bytes": 375646,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-5-a-960x600.png",
+      "bytes": 338528,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-detail-5-b-960x600.png",
+      "bytes": 326508,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-required-1-960x600.png",
+      "bytes": 336986,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-required-2-960x600.png",
+      "bytes": 310163,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-required-3-960x600.png",
+      "bytes": 322837,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-required-4-960x600.png",
+      "bytes": 316296,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/c-required-5-960x600.png",
+      "bytes": 293750,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-1-a-960x600.png",
+      "bytes": 376394,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-1-b-960x600.png",
+      "bytes": 410881,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-2-a-960x600.png",
+      "bytes": 389118,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-2-b-960x600.png",
+      "bytes": 360940,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-3-a-960x600.png",
+      "bytes": 368274,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-3-b-960x600.png",
+      "bytes": 375365,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-4-a-960x600.png",
+      "bytes": 356357,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-4-b-960x600.png",
+      "bytes": 394063,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-5-a-960x600.png",
+      "bytes": 381926,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-detail-5-b-960x600.png",
+      "bytes": 372044,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-required-1-960x600.png",
+      "bytes": 345532,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-required-2-960x600.png",
+      "bytes": 407677,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-required-3-960x600.png",
+      "bytes": 401204,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-required-4-960x600.png",
+      "bytes": 343340,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/d-required-5-960x600.png",
+      "bytes": 354690,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-1-a-960x600.png",
+      "bytes": 332511,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-1-b-960x600.png",
+      "bytes": 348222,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-2-a-960x600.png",
+      "bytes": 342742,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-2-b-960x600.png",
+      "bytes": 329902,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-3-a-960x600.png",
+      "bytes": 308861,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-3-b-960x600.png",
+      "bytes": 300113,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-4-a-960x600.png",
+      "bytes": 344587,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-4-b-960x600.png",
+      "bytes": 315396,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-5-a-960x600.png",
+      "bytes": 335761,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-detail-5-b-960x600.png",
+      "bytes": 369681,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-required-1-960x600.png",
+      "bytes": 379464,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-required-2-960x600.png",
+      "bytes": 311568,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-required-3-960x600.png",
+      "bytes": 335314,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-required-4-960x600.png",
+      "bytes": 335690,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/r-required-5-960x600.png",
+      "bytes": 330819,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-1-a-960x600.png",
+      "bytes": 349143,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-1-b-960x600.png",
+      "bytes": 340779,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-2-a-960x600.png",
+      "bytes": 368221,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-2-b-960x600.png",
+      "bytes": 358854,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-3-a-960x600.png",
+      "bytes": 342178,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-3-b-960x600.png",
+      "bytes": 345564,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-4-a-960x600.png",
+      "bytes": 342292,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-4-b-960x600.png",
+      "bytes": 339136,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-5-a-960x600.png",
+      "bytes": 355869,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-detail-5-b-960x600.png",
+      "bytes": 367962,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-required-1-960x600.png",
+      "bytes": 363300,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-required-2-960x600.png",
+      "bytes": 387875,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-required-3-960x600.png",
+      "bytes": 343002,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-required-4-960x600.png",
+      "bytes": 358042,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
+      "path": "public/lessons/u-required-5-960x600.png",
+      "bytes": 377956,
+      "suffix": ".png",
+      "group": "教材・学習",
+      "role": "教材・学習に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
     },
     {
       "path": "public/lessons/undersea-review-basics-server-960x600.png",
@@ -4135,7 +4647,7 @@
     },
     {
       "path": "src/TabletGallery.tsx",
-      "bytes": 1648,
+      "bytes": 2154,
       "suffix": ".tsx",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -4746,7 +5258,7 @@
     },
     {
       "path": "src/cursedBook.css",
-      "bytes": 11662,
+      "bytes": 11998,
       "suffix": ".css",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5819,7 +6331,7 @@
     },
     {
       "path": "src/world/dungeonLessons.ts",
-      "bytes": 30234,
+      "bytes": 30482,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",

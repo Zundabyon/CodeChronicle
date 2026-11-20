@@ -108,3 +108,7 @@
 .tablet-gallery article h3{margin:8px 0 4px;color:#9ff0e4}
 .tablet-gallery article p{margin:4px 0;font-size:.9rem;line-height:1.7}
 @media(max-width:700px){.tablet-gallery-body{grid-template-columns:1fr}.tablet-gallery ul{flex-direction:row;overflow-x:auto}.tablet-gallery li{flex:0 0 120px}}
+.tablet-gallery-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tablet-gallery-tabs button{display:flex;gap:6px;align-items:baseline;padding:4px 10px;background:#0f2026;border:1px solid #2f5d63;color:inherit}
+.tablet-gallery-tabs button[aria-pressed="true"]{border-color:#7fe3d6;background:#17343b}
+.tablet-gallery-tabs small{color:#7fe3d6}
