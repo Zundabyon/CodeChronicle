@@ -23,7 +23,7 @@ async function pageFor(t){
 }
 async function dismissNotice(page){const button=page.getByRole('button',{name:'確認しました'});if(await button.count())await button.click();}
 async function advance(page){
-  for(let i=0;i<30&&await page.locator('.dialogue-box').count();i++)await page.locator('.dialogue-text > span').click();
+  for(let i=0;i<200&&await page.locator('.dialogue-box').count();i++)await page.locator('.dialogue-text > span').click();
 }
 async function readSave(page,key=storage){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);}
 
