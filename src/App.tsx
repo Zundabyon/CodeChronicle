@@ -378,7 +378,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     const q=shuffleChoices(reviewQuestion ?? (set ? questions.find(q=>q.id===set[0])! : enemy.boss ? bossQuestion(0,s.difficulty) : memoryBattleQuestion(questions,s,enemy.id)));
     if (enemy.boss && s.level<2) { startDialogue('知識の扉','📜',['石の扉に文字が浮かぶ。「知識の断片を集め、第二の階へ至った者のみ、この門を試せる」','平原や遺跡の敵と戦い、経験を積んでから戻ろう。']); return; }
     // Rare golden foes (1%): double attack, double experience.
-    const elite=!set&&!enemy.boss&&!fromReview&&enemy.id!=='after-gate'&&Math.random()<.01,base=enemyStats(enemy,s.area);
+    const elite=!set&&!enemy.boss&&!fromReview&&enemy.id!=='after-gate'&&Math.random()>=.99,base=enemyStats(enemy,s.area);
     const stats=elite?{...base,attack:base.attack*2,xp:base.xp*2}:base;
     if(elite)enemy={...enemy,name:`黄金の${enemy.name}`};
     const hp=set?set.length:enemy.boss?bossStages.length*bossGuardHp:enemy.id==='after-gate'||fromReview?1:stats.hp;
