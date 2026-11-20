@@ -72,6 +72,6 @@ export function PixelSprite({name,className='',variant='default'}:{name:SpriteNa
   </svg>;
 }
 
-export function npcSprite(id:string):SpriteName { return id==='elder'?'elder':id==='scholar'||id==='assistant'||id==='backendLibrarian'?'scholar':id==='child'||id==='elderKin'?'child':id==='wanderer'||id==='itemMerchant'?'wanderer':id==='weaponMerchant'?'father':id==='childMother'||id==='innkeeper'||id==='armorMerchant'?'mother':'priest'; }
+export function npcSprite(id:string):SpriteName { return id==='mimic-book'?'mimic':id==='elder'?'elder':id==='scholar'||id==='assistant'||id==='backendLibrarian'?'scholar':id==='child'||id==='elderKin'?'child':id==='wanderer'||id==='itemMerchant'?'wanderer':id==='weaponMerchant'?'father':id==='childMother'||id==='innkeeper'||id==='armorMerchant'?'mother':'priest'; }
 export function enemySprite(id:string):SpriteName { return enemyKinds[id] ?? 'shadow'; }
 export function faceSprite(face:string):SpriteName { return face==='🗡️'?'hero':face==='👴'?'elder':face==='👩🏻‍🎓'?'scholar':face==='🧒'?'child':face==='👩🏼'?'priest':face==='🧑🏽'?'wanderer':face==='🧔'?'father':face==='👩'?'mother':'scroll'; }

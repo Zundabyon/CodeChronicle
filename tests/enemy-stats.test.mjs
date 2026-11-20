@@ -18,3 +18,12 @@ test('bestiary lists ordinary monsters but not story foes',async()=>{
   assert.ok(bestiary.length>30);
   assert.ok(!bestiary.some(e=>e.ids.some(id=>/^(ranger|graphius|boss|hedoro)/.test(id))));
 });
+test('the cursed book appears only during its side quest and fights with three hard questions',async()=>{
+  const {villageFoeVisible,questDefinition}=await server.ssrLoadModule('/src/quests/definitions.ts');
+  const {rangerBattles}=await server.ssrLoadModule('/src/quests/rangerBattles.ts');
+  assert.equal(villageFoeVisible('mimic-book',{}),false);
+  assert.equal(villageFoeVisible('mimic-book',{'cursed-book':{step:'defeat-mimic'}}),true);
+  assert.equal(villageFoeVisible('mimic-book',{'cursed-book':{step:'complete'}}),false);
+  assert.ok(questDefinition('cursed-book').requiresFirstChapter);
+  const mimic=rangerBattles['mimic-book'];assert.equal(mimic.count,3);assert.ok(mimic.set.length>=3);
+});

@@ -15,6 +15,20 @@ export const questDefinitions:QuestDefinition[]=[
     ],reward:{gold:40,items:{herb:1}},
   },
   {
+    id:'cursed-book',category:'side',title:'旅人の依頼：嫌な予感のする本',
+    description:'平原の東の草むらに落ちている「妙な本」を確かめよう。開くかどうかは、自分で決めること。',npcId:'wanderer',npcLocation:'風渡りの平原の旅人ロイ',requiresFirstChapter:true,
+    offer:'なあ、東の草むらに妙な本が落ちてるんだ。魔物の名前と強さがびっしり書いてある……らしい。拾おうとしたら、表紙が「ぎょろり」とこっちを見た気がしてな。腕に自信があるなら、確かめてきてくれないか？',
+    acceptLabel:'本を確かめに行く',acceptResponse:'助かる。場所は俺のいるところから北東、草の濃いあたりだ。……嫌な予感がしたら、無理に開くなよ。',
+    reportLabel:'本のことを報告する',reportResponse:'なんだって、本そのものがミミックだったのか！ しかも倒したら、中身はちゃんとした魔物の図鑑……。持っていけよ。お前が持つのが一番だ。',
+    completedText:'あの図鑑、まだ噛みついてこないか？ ……そうか、ならいい。',
+    steps:[
+      {id:'defeat-mimic',title:'嫌な予感のする本を確かめる',description:'旅人ロイの北東、草むらに落ちている本を調べる。',npcId:'mimic-book',trigger:{type:'battle-won',enemyId:'mimic-book'},
+        lines:[{speaker:'語り手',face:'📜',text:'草むらに、分厚い本が落ちている。革の表紙が、かすかに脈打っている……。',shake:true},{speaker:'語り手',face:'📜',text:'何やら嫌な予感がする……。'}],
+        after:[{speaker:'語り手',face:'📜',text:'本は牙をおさめ、ぱたりと閉じた。表紙に金の文字が浮かぶ。「モンスター図鑑」。'},{speaker:'語り手',face:'📜',text:'旅人ロイに報告しよう。'}]},
+      {id:'report',title:'旅人ロイに報告する',description:'平原の旅人ロイに、本の正体を伝える。',trigger:{type:'reported',npcId:'wanderer'}},
+    ],reward:{gold:120,items:{}},
+  },
+  {
     id:'village-ledger',category:'chapter',startLabel:'第二章「消えた名簿」を始める',title:'第二章：消えた名簿',description:'記録卿グラフィウスに裂かれた名簿を、四つの幕で取り戻す。読む→作る→直す→消すの順にダンジョンの封印を解き、村を荒らす悪レンジャーとの戦いで学んだ操作を試す。最後はグラフィウスとの決戦。',npcId:'mountainGuide',npcLocation:'石灯の村の記録係オル',requiresFirstChapter:true,startAt:'town',opening:chapterTwoOpening,
     pauseResponse:'ここまでの記憶は残っている。同じ封印に触れれば、続きから挑める。',completionObjective:'村人の暮らしを支える記録を取り戻した。自由に探索を続けよう。',completedText:'名簿は元通りじゃ。名前を呼び合う声が戻った。ありがとう、忘れぬよう書き留めておくよ。',
     steps:[
@@ -61,6 +75,7 @@ export function chapterTwoAct(quests:QuestStates):number {
 const foeOrder=['ranger-read','ranger-create','ranger-update','ranger-delete','graphius'];
 /** Village foes: `foe-<id>` stands in the square during its battle step, `taunt-<id>` on the outskirts earlier in its act. */
 export function villageFoeVisible(npcId:string,quests:QuestStates):boolean {
+  if(npcId==='mimic-book')return quests['cursed-book']?.step==='defeat-mimic';
   if(npcId==='hedoro')return !['reach-shore','complete'].includes(quests['undersea-prologue']?.step??'');
   const match=/^(foe|taunt)-(.+)$/.exec(npcId);if(!match)return true;
   if(foeOrder[chapterTwoAct(quests)-1]!==match[2])return false;

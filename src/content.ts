@@ -317,7 +317,7 @@ export const maps: Partial<Record<Area, MapData>> = {
   field: {
     tiles: fieldTiles,
     entry: {x:60,y:78},
-    npcs: [{id:'wanderer',name:'旅人ロイ',x:61,y:72,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','北東の山脈の門が、忘却の遺跡への入口だ。'],alternateLines:[['森の川に古い橋がある。道を見失ったら、石畳をたどるといい。','敵は動き回る。近づく前にHPを確かめておけよ。'],['俺も昔は答えを覚えるだけで精一杯だった。','なぜその答えになるのか考えるようになって、ようやく先へ進めたんだ。']]}],
+    npcs: [{id:'mimic-book',name:'？？？の本',x:66,y:69,face:'📕',lines:['禍々しい気配を放つ本が、草の上に落ちている……']},{id:'wanderer',name:'旅人ロイ',x:61,y:72,face:'🧑🏽',lines:['遺跡の守護者は、忘れられた知識を試すそうだ。','答えを急ぐな。問いを読み、選択肢を比べるんだ。','北東の山脈の門が、忘却の遺跡への入口だ。'],alternateLines:[['森の川に古い橋がある。道を見失ったら、石畳をたどるといい。','敵は動き回る。近づく前にHPを確かめておけよ。'],['俺も昔は答えを覚えるだけで精一杯だった。','なぜその答えになるのか考えるようになって、ようやく先へ進めたんだ。']]}],
     enemies: [
       {id:'f1',name:'バグスライム',attackName:'バグスプラッシュ',x:57,y:73,icon:'◕'},
       {id:'f2',name:'イベントコウモリ',attackName:'ノイズウェーブ',x:53,y:64,icon:'✦'},
@@ -363,7 +363,7 @@ const canonicalEnemyKinds: Record<string, EnemyKind> = {
   f10:'crab',f11:'bat',f12:'wisp',f13:'crab',f14:'wolf',f15:'treant',f16:'moth',f17:'beetle',f18:'wolf',
   f19:'moth',f20:'scorpion',f21:'cactus',f22:'serpent',f23:'wisp',f24:'golem',f25:'ghost',f26:'beetle',f27:'golem',
   d1:'shadow',d2:'ghost',d3:'memory',d4:'skeleton',d5:'mimic',d6:'wisp',d7:'skeleton',
-  boss:'guardian',review:'shadow','after-gate':'memory',
+  boss:'guardian',review:'shadow','after-gate':'memory','mimic-book':'mimic',
   ...Object.fromEntries(underseaEnemies.map(enemy=>[enemy.id,enemy.chip as EnemyKind])),
 };
 

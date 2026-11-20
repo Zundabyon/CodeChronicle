@@ -67,6 +67,7 @@ type Props = {
   onWarp: (area: Area) => void;
   onFlags: () => void;
   onBestiary: () => void;
+  bestiaryOwned?: boolean;
   onSfx: () => void;
   onBgm: () => void;
   onTile: (point: Point) => void;
@@ -109,7 +110,7 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </HudPanel>;
 }
 
-export function WorldScene({onFlags,onBestiary,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
+export function WorldScene({onFlags,onBestiary,bestiaryOwned=false,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
@@ -206,7 +207,7 @@ export function WorldScene({onFlags,onBestiary,onSfx,onBgm,onWarp,save,recovery,
             const definition=customArt?{...base,visual:customArt}:base;
             if(enemy&&save.defeated.includes(enemy.id)||!visible(point,definition.visual)) return null;
             return <WorldChip key={character.id} definition={definition} point={point}
-              className={enemy?`world-enemy ${enemy.boss?'boss':''}`:'world-npc'}
+              className={enemy?`world-enemy ${enemy.boss?'boss':''}`:`world-npc ${character.id==='mimic-book'?'cursed-book':''}`}
               label={enemy?`${enemy.name}に近づく`:undefined} onClick={enemy?()=>onTile(point):undefined}/>;
           })}
           {save.story==='knight'&&knightVisible&&<WorldChip definition={characterChips.knight} point={knightPoint} className="world-knight"/>}
@@ -226,7 +227,7 @@ export function WorldScene({onFlags,onBestiary,onSfx,onBgm,onWarp,save,recovery,
         <button onClick={()=>{onMenu(null);onMap();}}>▶ 地図 <kbd className="shortcut-key">M</kbd></button>
         <button onClick={()=>onMenu('quest')}>▶ たびのもくてき</button>
         {save.area==='town'&&<button onClick={()=>{onMenu(null);onChurch();}}>▶ きょうかい</button>}
-        <button onClick={()=>{onMenu(null);onBestiary();}}>▶ モンスター図鑑</button>
+        {bestiaryOwned&&<button onClick={()=>{onMenu(null);onBestiary();}}>▶ モンスター図鑑</button>}
         <button onClick={()=>{onMenu(null);onSettings();}}>▶ 学習設定</button>
         <button onClick={onGuide}>▶ 操作方法</button>
         <button onClick={onSound}>▶ おと　{muted?'オフ':'オン'}</button>

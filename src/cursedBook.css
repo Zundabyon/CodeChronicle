@@ -1,0 +1,59 @@
+/* 嫌な予感のする本（ミミック）：マップ・会話・戦闘で禍々しいオーラを出す。 */
+
+/* --- マップ上の本 --- */
+.world-npc.cursed-book{filter:drop-shadow(0 0 4px #c03cff) drop-shadow(0 0 10px #6a00b8) drop-shadow(0 2px 0 #000);animation:cursed-hover 2.4s ease-in-out infinite,cursed-flicker 3.7s steps(1) infinite}
+.world-npc.cursed-book::before{content:'';position:absolute;left:50%;top:60%;width:260%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle,#ff2a6d55 0 12%,#9b1fff40 30%,#3a0066 52%,transparent 70%);animation:cursed-breathe 1.8s ease-in-out infinite;mix-blend-mode:screen}
+.world-npc.cursed-book::after{content:'✦ ᛟ ✧ ᚱ ✦';position:absolute;left:50%;bottom:90%;translate:-50% 0;white-space:nowrap;pointer-events:none;
+  font:10px/1 'DotGothic16',monospace;letter-spacing:.35em;color:#e3a6ff;text-shadow:0 0 6px #b100ff,0 0 2px #fff;animation:cursed-rise 2.6s linear infinite}
+
+/* --- 画面全体：近づくと世界が蝕まれる --- */
+.app-shell.cursed-presence::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9;
+  background:radial-gradient(ellipse at 50% 45%,transparent 30%,#2a003f99 62%,#0b0010f2 100%),repeating-linear-gradient(0deg,#ffffff06 0 1px,transparent 1px 3px);
+  animation:cursed-vignette 2.2s ease-in-out infinite}
+.app-shell.cursed-presence::after{content:'ᛉ　✦　ᚦ　✧　ᛟ　✦　ᚱ　✧　ᛞ　✦　ᛗ　✧　ᚹ';position:fixed;left:0;right:0;bottom:-40px;pointer-events:none;z-index:9;
+  font:22px/1 'DotGothic16',monospace;text-align:center;letter-spacing:1.4em;color:#c86bff;opacity:.55;text-shadow:0 0 12px #9000ff,0 0 30px #ff2a6d;
+  animation:cursed-runes 7s linear infinite}
+
+/* --- 会話：「何やら嫌な予感がする……」 --- */
+.cursed-presence .dialogue-overlay{z-index:11;background:linear-gradient(transparent,#12001c 32%)}
+.cursed-presence .dialogue-box{position:relative;border-color:#b14cff;background:linear-gradient(160deg,#1d0b2b,#2b0d24 60%,#14051c);
+  box-shadow:0 0 0 4px #12001c,0 0 0 6px #ff2a6d55,0 0 40px #9b1fffaa,inset 0 0 50px #4a0070cc;animation:cursed-border 1.6s ease-in-out infinite}
+.cursed-presence .dialogue-box::before{content:'';position:absolute;inset:-3px;pointer-events:none;
+  background:conic-gradient(from var(--cursed-angle,0deg),transparent 0 70%,#ff2a6d 80%,#c03cff 88%,transparent 95%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:3px;animation:cursed-orbit 2.8s linear infinite}
+.cursed-presence .dialogue-portrait{background:radial-gradient(circle at 50% 55%,#ff2a6d 0 6%,#6a00b8 26%,#14001f 70%);border-right-color:#b14cff;animation:cursed-pulse-portrait 1.2s ease-in-out infinite}
+.cursed-presence .dialogue-text strong{color:#ff7ad9;text-shadow:0 0 8px #ff2a6d,1px 0 #00e5ff,-1px 0 #ff006a;animation:cursed-glitch 2.3s steps(1) infinite}
+.cursed-presence .dialogue-text p{color:#f0d7ff;text-shadow:0 0 10px #8a00ff88;animation:cursed-tremble .18s steps(2) infinite}
+.cursed-presence .dialogue-choices button:first-child{background:linear-gradient(#5a0024,#2c0012);border-color:#ff2a6d;color:#ffd1e1;box-shadow:0 0 14px #ff2a6daa,inset 0 0 12px #ff2a6d66;animation:cursed-border 1s ease-in-out infinite}
+.cursed-presence .dialogue-choices button:first-child::before{content:'☠ '}
+.cursed-presence .dialogue-choices button:last-child{opacity:.75}
+
+/* --- 戦闘：図鑑ミミック --- */
+.battle-foe-cursed .battle-foe-sprite{position:relative;filter:drop-shadow(0 0 6px #ff2a6d) drop-shadow(0 0 18px #9b1fff) hue-rotate(-25deg) saturate(1.4);animation:cursed-hover 1.6s ease-in-out infinite}
+.battle-foe-cursed .battle-foe-sprite::before{content:'';position:absolute;inset:-35%;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle,#ff2a6d66 0 10%,#9b1fff55 32%,#2a004466 55%,transparent 70%);animation:cursed-breathe 1.2s ease-in-out infinite}
+.battle-foe-cursed .battle-foe-sprite::after{content:'ᛉ ✦ ᚦ ✧ ᛟ';position:absolute;left:50%;top:-10%;translate:-50% 0;white-space:nowrap;pointer-events:none;
+  font:14px/1 'DotGothic16',monospace;letter-spacing:.5em;color:#e3a6ff;text-shadow:0 0 10px #b100ff;animation:cursed-rise 2s linear infinite}
+.battle-foe-cursed .battle-foe-status strong{color:#ff7ad9;text-shadow:0 0 8px #ff2a6d}
+.battle-foe-cursed .enemy-hp i{background:linear-gradient(90deg,#ff2a6d,#9b1fff);box-shadow:0 0 8px #ff2a6d}
+.cursed-presence .battlefield{box-shadow:inset 0 0 80px #3a0060,inset 0 0 0 2px #9b1fff66}
+
+@property --cursed-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes cursed-orbit{to{--cursed-angle:360deg}}
+@keyframes cursed-hover{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes cursed-breathe{0%,100%{opacity:.55;scale:.85}50%{opacity:1;scale:1.12}}
+@keyframes cursed-rise{0%{opacity:0;translate:-50% 8px}25%{opacity:1}100%{opacity:0;translate:-50% -18px}}
+@keyframes cursed-flicker{0%,93%,100%{opacity:1}94%{opacity:.35}96%{opacity:.9}97%{opacity:.2}}
+@keyframes cursed-vignette{0%,100%{opacity:.85}50%{opacity:1}}
+@keyframes cursed-runes{from{translate:0 0;opacity:0}15%{opacity:.55}85%{opacity:.4}to{translate:0 -105vh;opacity:0}}
+@keyframes cursed-border{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+@keyframes cursed-pulse-portrait{0%,100%{filter:brightness(.9)}50%{filter:brightness(1.4) saturate(1.3)}}
+@keyframes cursed-glitch{0%,88%,100%{translate:0 0}90%{translate:2px 0}93%{translate:-2px 1px}96%{translate:1px -1px}}
+@keyframes cursed-tremble{0%{translate:0 0}50%{translate:.5px .3px}}
+
+@media (prefers-reduced-motion: reduce){
+  .world-npc.cursed-book,.world-npc.cursed-book::before,.world-npc.cursed-book::after,.app-shell.cursed-presence::before,.app-shell.cursed-presence::after,
+  .cursed-presence .dialogue-box,.cursed-presence .dialogue-box::before,.cursed-presence .dialogue-portrait,.cursed-presence .dialogue-text strong,.cursed-presence .dialogue-text p,
+  .cursed-presence .dialogue-choices button,.battle-foe-cursed .battle-foe-sprite,.battle-foe-cursed .battle-foe-sprite::before,.battle-foe-cursed .battle-foe-sprite::after{animation:none}
+}

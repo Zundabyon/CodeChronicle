@@ -4,6 +4,7 @@ import { App } from './App';
 import { QuestionBootstrap } from './QuestionBootstrap';
 import './base.css';
 import './style.css';
+import './cursedBook.css';
 import './battle.css';
 import './titleScreen.css';
 
