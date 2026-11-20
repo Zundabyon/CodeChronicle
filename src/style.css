@@ -294,3 +294,18 @@ button:disabled .shortcut-key{opacity:.5}
 .world-chip>.world-atlas-sprite{position:absolute;inset:0;overflow:hidden;filter:drop-shadow(2px 3px 0 #15251b77)}
 /* 第三章 序幕：海底に流れ着いて変質した敵。既存スプライトを青く沈める */
 .map-undersea .world-enemy .pixel-sprite,.battle-foe-undersea .battle-foe-sprite .pixel-sprite{filter:sepia(.35) hue-rotate(160deg) saturate(1.4) brightness(.85) drop-shadow(0 0 3px #8fe3ff)}
+
+.monster-book{display:flex;flex-direction:column;gap:8px;max-height:min(80vh,720px);color:#f3ead2}
+.monster-book header{display:flex;align-items:center;gap:12px}
+.monster-book h2{margin:0;font-size:1.2rem}
+.monster-book header span{color:#e8c66a}
+.monster-book header button{margin-left:auto}
+.monster-book p{margin:0;font-size:.85rem;opacity:.85}
+.monster-book-scroll{overflow:auto;min-height:0}
+.monster-book table{width:100%;border-collapse:collapse;font-size:.85rem;white-space:nowrap}
+.monster-book th,.monster-book td{padding:4px 8px;border-bottom:1px solid #ffffff22;text-align:right}
+.monster-book th:nth-child(-n+3),.monster-book td:nth-child(-n+3){text-align:left}
+.monster-book thead th{position:sticky;top:0;background:#14121c}
+.monster-book td .pixel-sprite{width:32px;height:32px;image-rendering:pixelated}
+.monster-book tr.unknown{opacity:.5}
+.monster-book tr.unknown td[colspan]{text-align:center}

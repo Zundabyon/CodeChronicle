@@ -13,3 +13,8 @@ test('leveling up raises attack and defense and cuts xp from weak foes',()=>{
   assert.ok(heroAttack(9,0)>heroAttack(1,0)&&heroDefense(9,0)>heroDefense(1,0));
   assert.equal(scaledXp(10,3,1),10);assert.ok(scaledXp(10,9,1)<10);
 });
+test('bestiary lists ordinary monsters but not story foes',async()=>{
+  const {bestiary}=await server.ssrLoadModule('/src/bestiary.ts');
+  assert.ok(bestiary.length>30);
+  assert.ok(!bestiary.some(e=>e.ids.some(id=>/^(ranger|graphius|boss|hedoro)/.test(id))));
+});

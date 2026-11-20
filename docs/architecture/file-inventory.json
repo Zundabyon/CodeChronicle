@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / bf2fe5e + current working tree",
+  "snapshot": "2026-11-20 / c811e8c + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,11 +10,11 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 549,
+  "count": 552,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
-    "ゲームルール": 2,
+    "ゲームルール": 4,
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 48,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 106,
+    "制作・運用": 107,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -73,7 +73,7 @@
     "gameplay": {
       "label": "ゲームルール",
       "guide": "docs/production/gameplay.md",
-      "count": 12
+      "count": 14
     },
     "presentation": {
       "label": "画面・表現・操作",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 136
+      "count": 137
     }
   },
   "files": [
@@ -613,8 +613,16 @@
       "genre": "operations"
     },
     {
+      "path": "docs/production/enemy-stats.md",
+      "bytes": 5888,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/production/gameplay.md",
-      "bytes": 1788,
+      "bytes": 1895,
       "suffix": ".md",
       "group": "ゲームルール",
       "role": "ゲームルールに関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -3081,7 +3089,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9042,
+      "bytes": 9067,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3136,7 +3144,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 93732,
+      "bytes": 94021,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3869,6 +3877,14 @@
       "genre": "learning"
     },
     {
+      "path": "src/MonsterBook.tsx",
+      "bytes": 1414,
+      "suffix": ".tsx",
+      "group": "ゲームルール",
+      "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "gameplay"
+    },
+    {
       "path": "src/MysteriousKnight.tsx",
       "bytes": 998,
       "suffix": ".tsx",
@@ -4179,7 +4195,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 22095,
+      "bytes": 22226,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4483,6 +4499,14 @@
         }
       ],
       "genre": "learning"
+    },
+    {
+      "path": "src/bestiary.ts",
+      "bytes": 1253,
+      "suffix": ".ts",
+      "group": "ゲームルール",
+      "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "gameplay"
     },
     {
       "path": "src/bookQuestions.ts",
@@ -5534,7 +5558,7 @@
     },
     {
       "path": "src/style.css",
-      "bytes": 29091,
+      "bytes": 30006,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
@@ -6153,7 +6177,7 @@
     },
     {
       "path": "tests/enemy-stats.test.mjs",
-      "bytes": 942,
+      "bytes": 1207,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
