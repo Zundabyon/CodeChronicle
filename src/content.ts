@@ -30,7 +30,7 @@ export type Question = {
   filename?: string;
   prompt: string;
   code?: string;
-  options?: [string, string, string, string];
+  options?: string[];
   answer?: number;
   accepted?: string[];
   reveal: string;

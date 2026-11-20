@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / 2ed8131 + current working tree",
+  "snapshot": "2026-11-20 / 0df0b43 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -3144,7 +3144,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 94861,
+      "bytes": 95198,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4633,7 +4633,7 @@
     },
     {
       "path": "src/content.ts",
-      "bytes": 36632,
+      "bytes": 36608,
       "suffix": ".ts",
       "group": "教材・共通データ",
       "role": "QuestionやAreaなどの共通型、基本問題と問題配列の集約、旧マップ、住民・敵の定義を持つ。教材専用ファイルには分離しきれていない。",
@@ -4674,7 +4674,7 @@
     },
     {
       "path": "src/cursedBook.css",
-      "bytes": 6246,
+      "bytes": 7333,
       "suffix": ".css",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5080,7 +5080,7 @@
     },
     {
       "path": "src/questionSelection.ts",
-      "bytes": 2592,
+      "bytes": 3383,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "学習設定で候補を絞り、未回答と形式の重みに基づき抽選する。一般の入力判定も担当する。",
@@ -6185,7 +6185,7 @@
     },
     {
       "path": "tests/enemy-stats.test.mjs",
-      "bytes": 1910,
+      "bytes": 2398,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

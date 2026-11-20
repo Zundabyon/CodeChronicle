@@ -27,3 +27,11 @@ test('the cursed book appears only during its side quest and fights with three h
   assert.ok(questDefinition('cursed-book').requiresFirstChapter);
   const mimic=rangerBattles['mimic-book'];assert.equal(mimic.count,3);assert.ok(mimic.set.length>=3);
 });
+test('page-scramble adds four wrong options and keeps the right answer',async()=>{
+  const {withDecoys}=await server.ssrLoadModule('/src/questionSelection.ts');
+  const {questions}=await server.ssrLoadModule('/src/content.ts');
+  const q=questions.find(q=>q.difficulty==='advanced'&&q.topic==='laravel'&&q.options);
+  const s=withDecoys(q,questions);
+  assert.equal(s.options.length,8);assert.equal(new Set(s.options).size,8);
+  assert.equal(s.options[s.answer],q.options[q.answer]);
+});

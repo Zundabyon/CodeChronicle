@@ -34,3 +34,13 @@ export function shuffleChoices(q: Question, random = Math.random): Question {
   for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
   return { ...q, options: order.map(i => q.options![i]) as typeof q.options, answer: order.indexOf(q.answer) };
 }
+
+/** The cursed book's page-scramble: add `count` wrong options borrowed from other questions on the same topic, then shuffle. */
+export function withDecoys(q: Question, pool: Question[], count = 4, random = Math.random): Question {
+  if (!isChoiceQuestion(q) || !q.options || q.answer === undefined) return q;
+  const taken = new Set(q.options);
+  const candidates = [...new Set(pool.filter(o => o.id !== q.id && o.topic === q.topic && o.options && isFillQuestion(o) === isFillQuestion(q)).flatMap(o => o.options!))].filter(o => !taken.has(o));
+  const decoys: string[] = [];
+  while (decoys.length < count && candidates.length) decoys.push(candidates.splice(Math.floor(random() * candidates.length), 1)[0]);
+  return shuffleChoices({ ...q, options: [...q.options, ...decoys] }, random);
+}

@@ -57,3 +57,13 @@
   .cursed-presence .dialogue-box,.cursed-presence .dialogue-box::before,.cursed-presence .dialogue-portrait,.cursed-presence .dialogue-text strong,.cursed-presence .dialogue-text p,
   .cursed-presence .dialogue-choices button,.battle-foe-cursed .battle-foe-sprite,.battle-foe-cursed .battle-foe-sprite::before,.battle-foe-cursed .battle-foe-sprite::after{animation:none}
 }
+
+/* --- ページばさみ：選択肢が増えて舞い散る --- */
+.options.scrambled{grid-template-columns:1fr 1fr;gap:6px}
+.options.scrambled button{min-height:40px;padding:5px 10px;position:relative;border-color:#b14cff;background:linear-gradient(135deg,#2a1638,#1c1226);box-shadow:0 0 10px #9b1fff55;animation:page-scatter .7s cubic-bezier(.2,.9,.3,1.3) both}
+.options.scrambled button:nth-child(2n){animation-delay:.06s;--page-tilt:7deg}
+.options.scrambled button:nth-child(3n){animation-delay:.12s;--page-tilt:-9deg}
+.options.scrambled button:nth-child(4n){animation-delay:.18s;--page-tilt:12deg}
+.options.scrambled button::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(-45deg,transparent 0 9px,#c03cff12 9px 10px)}
+@keyframes page-scatter{0%{opacity:0;transform:translate(0,-30px) rotate(var(--page-tilt,-6deg)) scale(.6)}60%{opacity:1;transform:translate(0,4px) rotate(calc(var(--page-tilt,-6deg) * -.4)) scale(1.03)}100%{transform:none}}
+@media (prefers-reduced-motion: reduce){.options.scrambled button{animation:none}}
