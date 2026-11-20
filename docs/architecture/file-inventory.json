@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-20 / deba31c + current working tree",
+  "snapshot": "2026-11-20 / bf2fe5e + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,11 +10,11 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 547,
+  "count": 549,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
-    "ゲームルール": 1,
+    "ゲームルール": 2,
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 48,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 105,
+    "制作・運用": 106,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -73,7 +73,7 @@
     "gameplay": {
       "label": "ゲームルール",
       "guide": "docs/production/gameplay.md",
-      "count": 11
+      "count": 12
     },
     "presentation": {
       "label": "画面・表現・操作",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 135
+      "count": 136
     }
   },
   "files": [
@@ -3081,7 +3081,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9029,
+      "bytes": 9042,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3136,7 +3136,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 93181,
+      "bytes": 93732,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -3470,7 +3470,7 @@
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 7741,
+      "bytes": 7829,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -4744,6 +4744,14 @@
         }
       ],
       "genre": "motion"
+    },
+    {
+      "path": "src/enemyStats.ts",
+      "bytes": 2058,
+      "suffix": ".ts",
+      "group": "ゲームルール",
+      "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "gameplay"
     },
     {
       "path": "src/fillQuestions.ts",
@@ -6073,7 +6081,7 @@
     },
     {
       "path": "tests/e2e/chapter-start.test.mjs",
-      "bytes": 6116,
+      "bytes": 6117,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6138,6 +6146,14 @@
     {
       "path": "tests/e2e/world-hud.test.mjs",
       "bytes": 3244,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/enemy-stats.test.mjs",
+      "bytes": 942,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

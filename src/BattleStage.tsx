@@ -16,6 +16,7 @@ type BattleStageProps = {
   enemyMaxHp: number;
   bossStage?: number;
   hero: { name: string; level: number; hp: number; mp: number };
+  enemyLevel?: number;
   heroMaxHp: number;
   heroMaxMp: number;
   attack: 'hero' | 'enemy' | null;
@@ -39,7 +40,7 @@ const heroMoves = ['斬りつけ', '横薙ぎ', '突き'] as const;
 
 export const battleLocation = (area: string) => area.startsWith('crud') || area === 'village' || area === 'undersea' ? areaLabel[area as Area] : area === 'field' ? '風渡りの平原' : area === 'dungeon' ? '忘却の遺跡' : area === 'church' ? '黎明の教会' : '黎明の町';
 
-export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0 }: BattleStageProps) {
+export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp, heroMaxMp, attack, attackRound, answered, attackAnimating, impact, banterSeed=0, heroTechnique, bossStage=0, enemyLevel }: BattleStageProps) {
   const [impactRound,setImpactRound]=useState<number|null>(null);
   useEffect(()=>{
     if(!attack||!attackAnimating||!impact)return;
@@ -85,7 +86,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
           {defeated&&<span className="battle-defeat-effect" aria-hidden="true"><i/><i/><i/><i/><b>撃破</b></span>}
         </div>
         <div className="battle-combatant-status battle-foe-status">
-          <strong>{enemy.name}</strong>
+          <strong>{enemy.name}{enemyLevel ? <small> LV {enemyLevel}</small> : null}</strong>
           <div className="enemy-hp" role="progressbar" aria-label={`${enemy.name}のHP`} aria-valuenow={displayedEnemyHp} aria-valuemin={0} aria-valuemax={enemyMaxHp}>
             <i style={{ width: `${displayedEnemyHp / enemyMaxHp * 100}%` }} />
           </div>
