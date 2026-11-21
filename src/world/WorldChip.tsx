@@ -8,6 +8,7 @@ import type { Point } from '../content';
 type Props = {
   definition:Pick<ObjectDefinition,'visual'|'layer'|'label'> & {category:ObjectDefinition['category']|'terrain'}; point:Point; walking?:boolean; direction?:CharacterDirection; chestOpen?:boolean; text?:string;
   label?:string; onClick?:()=>void; className?:string;
+  /** Tile the chip walks in from (CSS animation `world-enter-from`). */ enterFrom?:Point;
 };
 
 function ChipVisual({visual,walking,direction,text}:{visual:Visual;walking:boolean;direction?:CharacterDirection;text?:string}) {
@@ -26,7 +27,7 @@ function ChipVisual({visual,walking,direction,text}:{visual:Visual;walking:boole
   return <img src={`${import.meta.env.BASE_URL}${visual.src}`} alt="" draggable={false} onError={event=>{if(visual.src.includes('-ruined-'))event.currentTarget.src=`${import.meta.env.BASE_URL}${visual.src.replace('-ruined-','-')}`;else event.currentTarget.style.visibility='hidden';}}/>;
 }
 
-export function WorldChip({definition,point,walking=false,direction,text,label,onClick,chestOpen,className=''}:Props) {
+export function WorldChip({definition,point,walking=false,direction,text,label,onClick,chestOpen,className='',enterFrom}:Props) {
   const {visual}=definition;
   const foot=point.y+visual.anchor.y+visual.height*(1-visual.anchor.y);
   const layer=definition.layer==='ground'?0:definition.layer==='overhead'?100000:Math.round(foot*100)+10;
@@ -35,6 +36,7 @@ export function WorldChip({definition,point,walking=false,direction,text,label,o
     top:`calc(${point.y+visual.anchor.y-visual.height*visual.anchor.y} * var(--tile-size))`,
     width:`calc(${visual.width} * var(--tile-size))`,height:`calc(${visual.height} * var(--tile-size))`,
     zIndex:layer,
+    ...(enterFrom?{'--enter-dx':`calc(${enterFrom.x-point.x} * var(--tile-size))`,'--enter-dy':`calc(${enterFrom.y-point.y} * var(--tile-size))`}:{}),
   } as CSSProperties;
   const classes=`world-chip chip-category-${definition.category} ${className}`;
   const content=chestOpen===undefined?<ChipVisual visual={visual} walking={walking} direction={direction} text={text}/>:<ChestSprite opened={chestOpen}/>;

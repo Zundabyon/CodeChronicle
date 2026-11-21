@@ -5,7 +5,7 @@ import type { QuestStates } from './quests/types';
 export const storyStages=['breakfast','mayor','ruins','knight','knowledge','homecoming','rescued','legacy'] as const;
 export type StoryStage=typeof storyStages[number];
 // art: 0-6 = public/prologue/chapter-two/attack-{sky,fire,rangers,final,villagers,forgotten,aftermath}.png, or a path under public/prologue/ without .png; standing: a chapter two standing key or 'bs-<id>-<pose>' for backstage (defaults to the face).
-export type StoryLine={speaker:string;face:string;text:string;action?:'knight-leaves';art?:number|string;standing?:string;fire?:boolean;shake?:boolean};
+export type StoryLine={speaker:string;face:string;text:string;action?:'knight-leaves'|'mayor-enters';art?:number|string;standing?:string;fire?:boolean;shake?:boolean;/** false: keep the map visible (no dark stage) so on-map action can be seen. */stage?:false};
 const line=(speaker:string,face:string,text:string):StoryLine=>({speaker,face,text});
 const hero=(text:string)=>line('{name}','🗡️',text);
 const hanna=(text:string)=>line('女将ハンナ','👩',text);
@@ -47,7 +47,7 @@ export const breakfastScene:StoryLine[]=[
   line('女将ハンナ','corrupted-hanna','違う。知らない。……お前が、私から奪ったんだろう。名前も、思い出も、全部！'),
   narrator('女将の影が歪む。指先が黒い爪へ変わり、見慣れた顔に、憎しみの色が浮かんだ。'),
   {...hero('やめてくれ！ 俺だよ。十年前、あんたが助けてくれた……！'),standing:'cast-hero-surprised'},
-  {...narrator('ばんっ！ 旅籠の扉が蹴破られた。叫び声を聞きつけた村長エルドが、司祭セラを連れて飛び込んでくる。'),shake:true},
+  {...narrator('ばんっ！ 旅籠の扉が蹴破られた。叫び声を聞きつけた村長エルドが、司祭セラを連れて飛び込んでくる。'),shake:true,action:'mayor-enters',stage:false},
   {...mayor('下がれ、{name}！ まだ、言葉が残っている。――思い出せ。この町で、お前が守ってきたものを！'),standing:'cast-mayor-propose'},
   {...narrator('村長の杖から光が広がる。女将は膝をつき、黒い爪がゆっくりと元に戻った。'),shake:true},
   {...hanna('……スープが、冷め……。'),standing:'cast-hanna-down'},

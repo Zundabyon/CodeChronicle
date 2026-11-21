@@ -112,3 +112,9 @@
 .tablet-gallery-tabs button{display:flex;gap:6px;align-items:baseline;padding:4px 10px;background:#0f2026;border:1px solid #2f5d63;color:inherit}
 .tablet-gallery-tabs button[aria-pressed="true"]{border-color:#7fe3d6;background:#17343b}
 .tablet-gallery-tabs small{color:#7fe3d6}
+
+/* --- 第一章：村長と司祭が旅籠の扉から駆け込む --- */
+.world-rushing-in{animation:world-enter-from .9s cubic-bezier(.3,.7,.4,1) both}
+.world-rushing-in.rush-1{animation-delay:.35s}
+@keyframes world-enter-from{from{translate:var(--enter-dx,0) var(--enter-dy,0)}to{translate:0 0}}
+@media (prefers-reduced-motion: reduce){.world-rushing-in{animation:none}}

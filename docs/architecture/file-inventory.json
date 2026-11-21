@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-21 / bed6ff5 + current working tree",
+  "snapshot": "2026-11-21 / 0c801b4 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -3752,7 +3752,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 96293,
+      "bytes": 96446,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4811,7 +4811,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 22569,
+      "bytes": 23239,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -5290,7 +5290,7 @@
     },
     {
       "path": "src/cursedBook.css",
-      "bytes": 11998,
+      "bytes": 12374,
       "suffix": ".css",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6157,7 +6157,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 10461,
+      "bytes": 10603,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
@@ -6235,7 +6235,7 @@
     },
     {
       "path": "src/world/WorldChip.tsx",
-      "bytes": 2991,
+      "bytes": 3243,
       "suffix": ".tsx",
       "group": "世界の定義",
       "role": "カタログと配置を受け取り、画像・アトラス・人物などの表示方式を選ぶ。",

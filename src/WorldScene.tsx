@@ -60,6 +60,7 @@ type Props = {
   chestReward?:{id:string;message:string}|null;
   enemyPositions: EnemyPositions;
   knightVisible?:boolean;
+  mayorRushedIn?:boolean;
   /** Chapter two acts passed while in the village (-1 elsewhere); scars fade act by act. */
   villageAct?:number;
   menu: 'command'|'status'|'quest'|'warp'|null;
@@ -112,12 +113,16 @@ function FieldMiniMap({position,onOpen}:{position:Point;onOpen:()=>void}) {
   </HudPanel>;
 }
 
-export function WorldScene({goldenEnemies,onGallery,onFlags,onBestiary,bestiaryOwned=false,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
+export function WorldScene({goldenEnemies,onGallery,onFlags,onBestiary,bestiaryOwned=false,onSfx,onBgm,onWarp,save,recovery,levelUp,chestReward,enemyPositions,knightVisible=true,mayorRushedIn=false,villageAct=-1,menu,onMenu,onTile,onGuide,onMap,onChurch,onInventory,onSettings,onSound,onQuit,muted,walking,facing={x:0,y:1},objectiveOverride,nearbyHint,notices}:Props) {
   const textureId = `terrain-${useId().replace(/:/g, '')}`;
   const map=worldMaps[save.area];
   const openedChest=chestReward&&map.events.find(event=>event.action.kind==='chest'&&event.action.id===chestReward.id);
   const npcs=storyNpcs(map.npcs,save.story,save.quests);
   const objective=objectiveOverride??storyObjective(save.story,save.bossDefeated);
+  // The mayor and the priest run in from the inn door and stop beside the hero.
+  const freeNearHero=[[0,1],[-1,1],[1,1],[-1,0],[1,0],[0,2],[-1,2],[1,2]].map(([dx,dy])=>({x:save.pos.x+dx,y:save.pos.y+dy}))
+    .filter(point=>canWalkOnMap(map,point)&&!npcs.some(npc=>npc.x===point.x&&npc.y===point.y));
+  const rescuers=(['elder','priest'] as const).map((chip,i)=>({chip,point:freeNearHero[i]??save.pos}));
   const knightPoint=[{x:save.pos.x+2,y:save.pos.y},{x:save.pos.x+1,y:save.pos.y},{x:save.pos.x-1,y:save.pos.y}].find(point=>canWalkOnMap(map,point))??save.pos;
   const {width,height}=map;
   const viewColumns=Math.min(14,width),viewRows=Math.min(9,height);
@@ -212,6 +217,7 @@ export function WorldScene({goldenEnemies,onGallery,onFlags,onBestiary,bestiaryO
               className={enemy?`world-enemy ${enemy.boss?'boss':''} ${goldenEnemies?.has(enemy.id)?'golden-enemy':''}`:`world-npc ${character.id==='mimic-book'?'cursed-book':''}`}
               label={enemy?`${enemy.name}に近づく`:undefined} onClick={enemy?()=>onTile(point):undefined}/>;
           })}
+          {mayorRushedIn&&rescuers.map(({chip,point},i)=><WorldChip key={chip} definition={characterChips[chip]} point={point} enterFrom={map.entry} walking direction="up" className={`world-rushing-in rush-${i}`}/>)}
           {save.story==='knight'&&knightVisible&&<WorldChip definition={characterChips.knight} point={knightPoint} className="world-knight"/>}
           <WorldChip definition={characterChips.hero} point={save.pos} walking={walking} direction={facing.x<0?'left':facing.x>0?'right':facing.y<0?'up':'down'} className="world-hero"/>
         </div>
