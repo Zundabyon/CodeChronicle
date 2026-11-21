@@ -15,6 +15,7 @@ const kindTraits: Record<EnemyKind, [number, number, number]> = {
   shadow: [1, 1, 0], memory: [1, 0, 1], crab: [0, 0, 2], beetle: [1, 0, 2], wolf: [0, 2, 0],
   scorpion: [0, 2, 0], serpent: [1, 1, 1], cactus: [2, 0, 1], treant: [3, 0, 1], skeleton: [1, 1, 1],
   mimic: [2, 2, 0], golem: [4, 0, 2], guardian: [4, 2, 2],
+  imp: [0, 3, 0], jelly: [2, -1, 1], raven: [-1, 2, 1],
 };
 
 export function enemyStats(enemy: Enemy, area: Area | string): EnemyStats {

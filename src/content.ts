@@ -116,7 +116,7 @@ export const areaLabel: Record<Area, string> = { crudCreate:'創生の工房', c
 export type Point = { x: number; y: number };
 export type Npc = { id: string; name: string; x: number; y: number; face: string; lines: string[]; alternateLines?: string[][] };
 export type Enemy = { id: string; name: string; attackName: string; x: number; y: number; icon: string; boss?: boolean };
-export type EnemyKind = 'slime' | 'bat' | 'ghost' | 'shadow' | 'memory' | 'guardian' | 'crab' | 'wolf' | 'treant' | 'moth' | 'beetle' | 'scorpion' | 'cactus' | 'serpent' | 'golem' | 'wisp' | 'skeleton' | 'mimic';
+export type EnemyKind = 'slime' | 'bat' | 'ghost' | 'shadow' | 'memory' | 'guardian' | 'crab' | 'wolf' | 'treant' | 'moth' | 'beetle' | 'scorpion' | 'cactus' | 'serpent' | 'golem' | 'wisp' | 'skeleton' | 'mimic' | 'imp' | 'jelly' | 'raven';
 export type MapData = { tiles: string[]; npcs: Npc[]; enemies: Enemy[]; entry: Point };
 
 export const houses: Record<HouseArea,{name:string;door:Point;outside:Point}> = {
@@ -346,6 +346,9 @@ export const maps: Partial<Record<Area, MapData>> = {
       {id:'f25',name:'霧峰のコマンドゴースト',attackName:'霧の呪縛',x:92,y:40,icon:'♟'},
       {id:'f26',name:'鉄殻のバリデートビートル',attackName:'鉄殻突進',x:117,y:32,icon:'⬢'},
       {id:'f27',name:'門前のビルドゴーレム',attackName:'石門の拳',x:107,y:14,icon:'◆'},
+      {id:'f28',name:'デッドロックインプ',attackName:'がんじがらめロック',x:104,y:18,icon:'♠'},
+      {id:'f29',name:'メモリリーククラゲ',attackName:'じわじわリーク',x:30,y:24,icon:'◎'},
+      {id:'f30',name:'キャッシュガラス',attackName:'古い値のついばみ',x:70,y:40,icon:'▼'},
     ],
   },
   dungeon: {
@@ -361,7 +364,7 @@ const canonicalEnemyKinds: Record<string, EnemyKind> = {
   'memory-d-enemy-0':'skeleton','memory-d-enemy-1':'ghost','memory-d-enemy-2':'golem',
   f1:'slime',f2:'bat',f3:'ghost',f4:'treant',f5:'slime',f6:'scorpion',f7:'serpent',f8:'bat',f9:'golem',
   f10:'crab',f11:'bat',f12:'wisp',f13:'crab',f14:'wolf',f15:'treant',f16:'moth',f17:'beetle',f18:'wolf',
-  f19:'moth',f20:'scorpion',f21:'cactus',f22:'serpent',f23:'wisp',f24:'golem',f25:'ghost',f26:'beetle',f27:'golem',
+  f19:'moth',f20:'scorpion',f21:'cactus',f22:'serpent',f23:'wisp',f24:'golem',f25:'ghost',f26:'beetle',f27:'golem',f28:'imp',f29:'jelly',f30:'raven',
   d1:'shadow',d2:'ghost',d3:'memory',d4:'skeleton',d5:'mimic',d6:'wisp',d7:'skeleton',
   boss:'guardian',review:'shadow','after-gate':'memory','mimic-book':'mimic',
   ...Object.fromEntries(underseaEnemies.map(enemy=>[enemy.id,enemy.chip as EnemyKind])),

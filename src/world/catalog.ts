@@ -144,6 +144,7 @@ export const characterChips = {
   moth:enemy('moth','蛾'), beetle:enemy('beetle','甲虫'), scorpion:enemy('scorpion','サソリ'),
   cactus:enemy('cactus','サボテンの魔物'), serpent:enemy('serpent','蛇'), golem:enemy('golem','ゴーレム'),
   wisp:enemy('wisp','迷い火'), skeleton:enemy('skeleton','骸骨'), mimic:enemy('mimic','ミミック'),
+  imp:enemy('imp','インプ'), jelly:enemy('jelly','クラゲ'), raven:enemy('raven','カラス'),
 } satisfies Record<string,ObjectDefinition>;
 export type CharacterId = keyof typeof characterChips;
 

@@ -31,7 +31,7 @@ type BattleStageProps = {
 const enemyAttackStyles: Record<string, EnemyAttackStyle> = {
   slime:'splash',bat:'wave',ghost:'curse',shadow:'blade',memory:'drain',guardian:'lightning',
   crab:'splash',wolf:'blade',treant:'drain',moth:'wave',beetle:'shock',scorpion:'blade',
-  cactus:'shock',serpent:'curse',golem:'shock',wisp:'lightning',skeleton:'blade',mimic:'drain',
+  cactus:'shock',serpent:'curse',golem:'shock',wisp:'lightning',skeleton:'blade',mimic:'drain',imp:'curse',jelly:'drain',raven:'blade',
   review:'curse','after-gate':'shock',
   'ranger-read':'wave','ranger-create':'splash','ranger-update':'curse','ranger-delete':'drain',graphius:'lightning',hedoro:'splash',
 };
