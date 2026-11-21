@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-21 / 0e173a4 + current working tree",
+  "snapshot": "2026-11-21 / bed6ff5 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -6157,7 +6157,7 @@
     },
     {
       "path": "src/story.ts",
-      "bytes": 10134,
+      "bytes": 10461,
       "suffix": ".ts",
       "group": "物語",
       "role": "第一章の物語段階、場面会話、NPCの出現条件、目的表示、旧状態の移行を定義する。",
