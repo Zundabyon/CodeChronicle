@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-22 / 1616e73 + current working tree",
+  "snapshot": "2026-11-22 / 2fd7dcc + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,11 +10,11 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 630,
+  "count": 633,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
-    "ゲームルール": 6,
+    "ゲームルール": 7,
     "ゲーム進行": 1,
     "世界の定義": 10,
     "世界・場所": 48,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 114,
+    "制作・運用": 116,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -73,7 +73,7 @@
     "gameplay": {
       "label": "ゲームルール",
       "guide": "docs/production/gameplay.md",
-      "count": 16
+      "count": 17
     },
     "presentation": {
       "label": "画面・表現・操作",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 144
+      "count": 146
     }
   },
   "files": [
@@ -735,6 +735,14 @@
     {
       "path": "docs/production/records.md",
       "bytes": 4488,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/roundtable-enemy-abilities-log.md",
+      "bytes": 10546,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -3697,7 +3705,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9155,
+      "bytes": 9172,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3752,7 +3760,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 96771,
+      "bytes": 97493,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4486,7 +4494,7 @@
     },
     {
       "path": "src/MonsterBook.tsx",
-      "bytes": 1414,
+      "bytes": 1572,
       "suffix": ".tsx",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5290,7 +5298,7 @@
     },
     {
       "path": "src/cursedBook.css",
-      "bytes": 12374,
+      "bytes": 12655,
       "suffix": ".css",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5369,6 +5377,14 @@
       "lines": 6,
       "imports": [],
       "genre": "narrative"
+    },
+    {
+      "path": "src/enemyAbilities.ts",
+      "bytes": 3920,
+      "suffix": ".ts",
+      "group": "ゲームルール",
+      "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "gameplay"
     },
     {
       "path": "src/enemyMovement.ts",
@@ -6182,7 +6198,7 @@
     },
     {
       "path": "src/style.css",
-      "bytes": 30006,
+      "bytes": 30083,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",
@@ -6794,6 +6810,14 @@
     {
       "path": "tests/e2e/world-hud.test.mjs",
       "bytes": 3244,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "tests/enemy-abilities.test.mjs",
+      "bytes": 2373,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

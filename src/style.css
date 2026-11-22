@@ -309,3 +309,4 @@ button:disabled .shortcut-key{opacity:.5}
 .monster-book td .pixel-sprite{width:32px;height:32px;image-rendering:pixelated}
 .monster-book tr.unknown{opacity:.5}
 .monster-book tr.unknown td[colspan]{text-align:center}
+.monster-book .monster-ability{display:block;color:#c9a8ff;font-size:.72rem}

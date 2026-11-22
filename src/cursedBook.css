@@ -118,3 +118,7 @@
 .world-rushing-in.rush-1{animation-delay:.35s}
 @keyframes world-enter-from{from{translate:var(--enter-dx,0) var(--enter-dy,0)}to{translate:0 0}}
 @media (prefers-reduced-motion: reduce){.world-rushing-in{animation:none}}
+
+/* --- 敵の特殊能力：状態表示（色だけに頼らずアイコンと文字で） --- */
+.ability-status{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0;font-size:.8rem}
+.ability-status span{padding:3px 8px;border:1px dashed #b89cff;background:#221a33;color:#e6dcff}

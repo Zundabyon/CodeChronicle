@@ -1,3 +1,4 @@
+import { abilityOf } from './enemyAbilities';
 import { bestiary } from './bestiary';
 import { PixelSprite, enemySprite } from './PixelSprite';
 
@@ -13,7 +14,7 @@ export function MonsterBook({ defeated, onClose }: { defeated: string[]; onClose
         const known = e.ids.some(id => seen.has(id)), s = e.stats;
         return <tr key={e.key} className={known ? '' : 'unknown'}>
           <td>{known ? <PixelSprite name={enemySprite(e.spriteId)} /> : '？'}</td>
-          <td>{known ? e.name : '？？？'}</td><td>{e.areaName}</td><td>{s.level}</td>
+          <td>{known ? e.name : '？？？'}{known && abilityOf(e.spriteId) && <small className="monster-ability"> ✦{abilityOf(e.spriteId)!.name}</small>}</td><td>{e.areaName}</td><td>{s.level}</td>
           {known ? <><td>{s.hp}</td><td>{s.attack}</td><td>{s.defense}</td><td>{s.xp}</td><td>{s.gold}</td></> : <td colSpan={5}>まだ倒していない</td>}
         </tr>;
       })}</tbody>
