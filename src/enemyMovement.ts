@@ -1,4 +1,4 @@
-import { type Area, type Enemy, type Point } from './content';
+import { enemyKinds, type Area, type Enemy, type Point } from './content';
 import { worldMaps as maps, canEnemyOccupyMap, reachableMapCells } from './world/maps';
 
 export type EnemyPositions = Record<string, Point>;
@@ -19,6 +19,8 @@ const withinTerritory = (area:Area, enemy: Enemy, point: Point) =>
   enemy.id.startsWith('undersea-') ? Math.max(Math.abs(enemy.x-point.x),Math.abs(enemy.y-point.y))<=2 :
   maps[area].environment==='outdoor' ? distance(enemy,point)<=7 : area!=='dungeon' || !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
 
+const isMimic = (id: string) => enemyKinds[id] === 'mimic';
+
 export function spawnEnemies(defeated: string[] = []): EnemyPositions {
   const positions: EnemyPositions = {};
   for (const area of Object.keys(maps) as Area[]) {
@@ -33,7 +35,9 @@ export function spawnEnemies(defeated: string[] = []): EnemyPositions {
       const choices = candidates.filter(point =>
         withinTerritory(area, enemy, point) && occupied.every(other => distance(point, other) > 1));
       const fallback=candidates.find(point=>withinTerritory(area,enemy,point)&&occupied.every(other=>!same(point,other)));
-      const point = choices[Math.floor(Math.random() * choices.length)] ?? fallback;
+      // Mimics pose as treasure: they keep their authored spot (when it is usable) and never wander.
+      const home = isMimic(enemy.id) && candidates.some(point => same(point, enemy)) && occupied.every(other => !same(enemy, other)) ? { x: enemy.x, y: enemy.y } : undefined;
+      const point = home ?? choices[Math.floor(Math.random() * choices.length)] ?? fallback;
       if(!point) throw new Error(`到達可能な敵の配置場所がありません: ${area}/${enemy.id}`);
       positions[enemy.id] = point;
       occupied.push(point);
@@ -46,7 +50,7 @@ export function moveEnemies(area: Area, current: EnemyPositions, defeated: strin
   const next = { ...current };
   let changed = false;
   for (const enemy of maps[area].enemies) {
-    if (defeated.includes(enemy.id) || Math.random() < 0.25) continue;
+    if (defeated.includes(enemy.id) || isMimic(enemy.id) || Math.random() < 0.25) continue;
     const from = positionOf(enemy, next);
     const neighbors = [
       { x: from.x, y: from.y - 1 }, { x: from.x + 1, y: from.y },

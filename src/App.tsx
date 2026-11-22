@@ -612,7 +612,10 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     setBattle({...battle,scrambled:!correct&&battle.enemy.id==='mimic-book',submitted:value,answered:true,correct,hp:enemyHp,rounds:battle.rounds+1,heroTechnique,impact:{enemyBefore:battle.hp,heroBefore,enemyDamage:battle.hp-enemyHp,heroDamage:heroBefore-newHp}});
     setBattleNote(correct?`${heroTechnique!.name}！ ${battle.enemy.name}に${battle.hp-enemyHp}ダメージ！${bossResult ? ` ${bossResult.reason}` : ''}`:battle.fromReview?'惜しい！ 解説を読んで、もう一度挑戦しよう。':`${battle.enemy.name}の「${battle.enemy.attackName}」！ HPが${damage}減った。${bossResult ? ` ${bossResult.reason}` : ''}${ranger ? ` ${ranger.hint}` : ''}${!correct&&battle.enemy.id==='mimic-book' ? ' 図鑑のページがばらばらに舞い、選択肢が4つ増えて混ざった！' : ''}`);
     sfx(correct?'correct':'wrong');
+    if(enemyHp<=0&&!battle.fromReview)victoryAtImpact(animateAttack);
   };
+  // The victory jingle sounds when the enemy's HP bar visibly reaches 0, not when the player closes the battle.
+  const victoryAtImpact=(animated:boolean)=>{if(animated)setTimeout(()=>jingle('victory'),battleTiming.hero.impact);else jingle('victory');};
   const battleNext = () => {
     if (!battle || !battle.answered || attackAnimating) return;
     if(battle.fromReview&&reviewCourse){
@@ -637,7 +640,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
         setBattle(null);
         if(stateRef.current.story==='legacy') {update(s=>({...s,completed:true}));setPhase('clear');}
         else {update(s=>({...s,story:'homecoming',area:'town',pos:{x:13,y:16}}));setPhase('world');setToast('教会へ。見極めでハンナを救おう。');}
-        jingle('victory');return;
+        return;
       }
       const current=stateRef.current,gained=battle.enemy.boss?12:scaledXp(battle.stats.xp,current.level,battle.stats.level), earned=battle.enemy.boss?100:battle.stats.gold;
       const nextLevel=1+Math.floor((current.xp+gained)/12);
@@ -647,7 +650,6 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}を倒した！ 経験値 +${gained}${battle.elite?'（黄金の敵：2倍！）':''}、${earned} G`); }
       if (ranger) sendQuestEvent({type:'battle-won',enemyId:battle.enemy.id});
       if(nextLevel>current.level)sfx('levelUp');
-      jingle('victory');
       return;
     }
     if (battle.enemy.boss) {
@@ -660,6 +662,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
         setBattle({...battle,hp,rounds:battle.rounds+1,heroTechnique,impact:{enemyBefore:battle.hp,heroBefore:stateRef.current.hp,enemyDamage:battle.hp-hp,heroDamage:0}});
         setBattleNote(`${heroTechnique.name}！ 防御を崩した隙に追撃、${battle.hp-hp}ダメージ！`);
         sfx('attack');
+        if(hp<=0)victoryAtImpact(animate);
         return;
       }
       const bossStage=battle.correct ? battle.bossStage+1 : battle.bossStage;

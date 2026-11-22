@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-21 / 0c801b4 + current working tree",
+  "snapshot": "2026-11-22 / 1616e73 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -3752,7 +3752,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 96446,
+      "bytes": 96771,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -5372,7 +5372,7 @@
     },
     {
       "path": "src/enemyMovement.ts",
-      "bytes": 3638,
+      "bytes": 4017,
       "suffix": ".ts",
       "group": "地図・移動",
       "role": "敵の初期配置、現在位置、接触判定、移動を管理する。",
