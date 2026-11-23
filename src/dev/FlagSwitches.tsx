@@ -2,8 +2,9 @@ import { storyStages, type StoryStage } from '../story';
 import { questDefinition } from '../quests/definitions';
 import type { QuestStates } from '../quests/types';
 import { designerBox as box } from './DesignerShell';
+import { lessonReadIds } from '../world/dungeonLessons';
 
-type FlagSave={story:StoryStage;completed:boolean;bossDefeated:boolean;quests:QuestStates;level:number;hp:number;mp:number;gold:number;xp:number;defeated:string[];openedChests:string[];dailyRewardDate:string};
+type FlagSave={story:StoryStage;completed:boolean;bossDefeated:boolean;quests:QuestStates;level:number;hp:number;mp:number;gold:number;xp:number;defeated:string[];openedChests:string[];dailyRewardDate:string;readBooks:string[]};
 type Props={save:FlagSave;onChange:(fn:(s:FlagSave)=>Partial<FlagSave>,message:string)=>void;onResetLearning:()=>void;onClose:()=>void};
 
 const storyLabels:Record<StoryStage,[string,string]>={
@@ -36,6 +37,20 @@ const prologueOptions:[string,string,string][]=[
   ['向こう岸へ','ボス撃破後、北の浜辺へ','reach-shore'],
   ['序幕クリア','浜辺に到着（職人の町は制作中）',DONE],
 ];
+const ROYAL='royal-gate-intro';
+const royalOptions:[string,string,string][]=[
+  ['未開始','第三章 序幕クリアで始まる',''],
+  ['王都へ','浜辺の看板の脇から街道を東へ','reach-gate'],
+  ['隠れ茶屋で話を聞く','路地の奥の女主人ミーナに話す','meet-haven'],
+  ['道化師戦の前','城門の道化師エヌコイールイーチに話すと戦闘','defeat-clown'],
+  ['導入クリア','行列がはけた（王城は制作中）',DONE],
+];
+// Story order: picking a stage completes every chapter before it and clears every chapter after it.
+const chain=[LEDGER,PROLOGUE,ROYAL];
+const sideQuests:[string,string,string][]=[
+  ['cursed-book','嫌な予感のする本（クリアでモンスター図鑑）','旅人ロイの依頼。クリアするとコマンドにモンスター図鑑が出る'],
+  ['library-signboard','図書館の案内板','司書見習いノアの依頼'],
+];
 const stepOrder=(step:string,quest=LEDGER)=>step===''?-1:step===DONE?Infinity:questDefinition(quest)!.steps.findIndex(s=>s.id===step);
 const maxHp=(l:number)=>20+(l-1)*5,maxMp=(l:number)=>3+Math.floor((l-1)/2);
 
@@ -47,8 +62,23 @@ export function FlagSwitches({save,onChange,onResetLearning,onClose}:Props) {
   };
   const prologue=save.quests[PROLOGUE]?.step??'';
   const setChapter=([label,,step]:[string,string,string],quest=LEDGER,name='第二章')=>{
-    if(stepOrder(step,quest)<stepOrder(quest===LEDGER?ledger:prologue,quest)&&!confirm(`${name}を「${label}」に戻します。よろしいですか？`))return;
-    onChange(s=>{const quests={...s.quests};if(step)quests[quest]={step};else delete quests[quest];return {quests};},`${name}を『${label}』にしました`);
+    if(stepOrder(step,quest)<stepOrder(save.quests[quest]?.step??'',quest)&&!confirm(`${name}を「${label}」に戻します。以降の章は未開始に戻ります。よろしいですか？`))return;
+    onChange(s=>{
+      const quests={...s.quests},at=chain.indexOf(quest);
+      chain.slice(0,at).forEach(id=>{quests[id]={step:DONE};});
+      chain.slice(at+1).forEach(id=>{if(step!==DONE)delete quests[id];});
+      if(step)quests[quest]={step};else delete quests[quest];
+      // Every chapter needs chapter one cleared.
+      return step?{quests,story:'rescued',completed:true,bossDefeated:true,defeated:s.defeated.includes('boss')?s.defeated:[...s.defeated,'boss']}:{quests};
+    },`${name}を『${label}』にしました（前の章はクリア済み）`);
+  };
+  const royal=save.quests[ROYAL]?.step??'';
+  const allCleared=()=>{
+    if(!confirm('これまでの章・サブクエ・石板をすべてクリア済みにします。よろしいですか？'))return;
+    onChange(s=>({story:'rescued',completed:true,bossDefeated:true,defeated:s.defeated.includes('boss')?s.defeated:[...s.defeated,'boss'],
+      quests:{...s.quests,...Object.fromEntries([...chain,...sideQuests.map(([id])=>id)].map(id=>[id,{step:DONE}]))},
+      readBooks:[...new Set([...s.readBooks,...lessonReadIds()])],level:Math.max(s.level,10),xp:Math.max(s.xp,108),hp:maxHp(Math.max(s.level,10)),mp:maxMp(Math.max(s.level,10))}),
+      'これまでの内容をすべてクリア済みにしました');
   };
   const row=(on:boolean,label:string,note:string,onClick:()=>void,kind:'radio'|'switch'='radio')=>
     <button key={label} role={kind==='radio'?'radio':'switch'} aria-checked={on} onClick={onClick}
@@ -59,7 +89,7 @@ export function FlagSwitches({save,onChange,onResetLearning,onClose}:Props) {
   const action=(label:string,note:string,onClick:()=>void)=><button key={label} onClick={onClick} style={{padding:'6px 10px',margin:4,background:'#2a2438',border:'1px solid #c3a06d',color:'#f2e8d6',cursor:'pointer'}} title={note}>{label}<br/><small style={{color:'#b8aec8'}}>{note}</small></button>;
   return <div style={{color:'#f2e8d6',padding:16}} aria-label="進行スイッチ">
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><h2 style={{margin:0}}>デバッグ：進行スイッチ</h2><button onClick={onClose}>とじる（Esc）</button></div>
-    <p style={{fontSize:12,color:'#e8a07a',margin:'4px 0 12px'}}>※ デバッグ用。セーブデータが書き換わります。</p>
+    <p style={{fontSize:12,color:'#e8a07a',margin:'4px 0 12px'}}>※ デバッグ用。セーブデータが書き換わります。章を選ぶと、それより前の章はクリア済み・後の章は未開始になります。</p>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',gap:12}}>
       <section style={box} role="radiogroup" aria-label="物語の進み">
         <h3 style={{marginTop:0}}>1. 物語の進み（第一章）</h3>
@@ -77,8 +107,19 @@ export function FlagSwitches({save,onChange,onResetLearning,onClose}:Props) {
         <h3 style={{marginTop:0}}>3. 第三章 序幕の進み</h3>
         {prologueOptions.map(option=>row(prologue===option[2],option[0],option[1],()=>setChapter(option,PROLOGUE,'第三章 序幕')))}
       </section>
+      <section style={box} role="radiogroup" aria-label="第四章 導入の進み">
+        <h3 style={{marginTop:0}}>4. 第四章 導入の進み</h3>
+        {royalOptions.map(option=>row(royal===option[2],option[0],option[1],()=>setChapter(option,ROYAL,'第四章 導入')))}
+      </section>
+      <section style={box} aria-label="サブクエスト">
+        <h3 style={{marginTop:0}}>5. サブクエスト</h3>
+        {sideQuests.map(([id,label,note])=>row(save.quests[id]?.step===DONE,label,note,()=>{
+          const on=save.quests[id]?.step!==DONE;
+          onChange(s=>{const quests={...s.quests};if(on)quests[id]={step:DONE};else delete quests[id];return {quests,...(on?{completed:true}:{})};},`${label}を${on?'クリア済み':'未開始'}にしました`);},'switch'))}
+      </section>
       <section style={box} aria-label="よく使うスイッチ">
-        <h3 style={{marginTop:0}}>4. よく使うスイッチ</h3>
+        <h3 style={{marginTop:0}}>6. よく使うスイッチ</h3>
+        {action('これまでを全部クリア済みに','第一章〜第四章 導入・サブクエ・全石板・LV10以上',allCleared)}
         {action('倒した敵をすべて復活',`今 ${save.defeated.length} 体倒している（守護者はそのまま）`,()=>onChange(s=>({defeated:s.defeated.filter(id=>id==='boss')}),'倒した敵をすべて復活させました'))}
         {action('宝箱をすべて未開封に',`今 ${save.openedChests.length} 個開けている`,()=>onChange(()=>({openedChests:[]}),'宝箱をすべて未開封にしました'))}
         {action('デイリー報酬を未受取に',save.dailyRewardDate?`受取日 ${save.dailyRewardDate}`:'今は未受取',()=>onChange(()=>({dailyRewardDate:''}),'デイリー報酬を未受取にしました'))}

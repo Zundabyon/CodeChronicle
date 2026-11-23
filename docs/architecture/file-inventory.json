@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-23 / 1a8f8c6 + current working tree",
+  "snapshot": "2026-11-23 / aaeb877 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -5450,7 +5450,7 @@
     },
     {
       "path": "src/dev/FlagSwitches.tsx",
-      "bytes": 8651,
+      "bytes": 11869,
       "suffix": ".tsx",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6857,7 +6857,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 11462,
+      "bytes": 12916,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

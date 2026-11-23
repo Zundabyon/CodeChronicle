@@ -148,3 +148,22 @@ test('メニューの進行スイッチで第二章を「グラフィウス戦�
   assert.equal(await page.locator('.world-viewport img[src*="sprites/graphius-64.png"]').count(),1,'Graphius stands in the village square');
   assert.equal(await page.locator('.world-viewport img[src*="sprites/ranger-create-64.png"]').count(),0,'the act-two ranger is gone');
 });
+
+test('進行スイッチで後の章を選ぶと前の章がすべてクリア済みになり、全部クリアでサブクエと石板もそろう',async t=>{
+  const page=await open(t,{...base,story:'breakfast',area:'town',pos:{x:13,y:16},quests:{}});
+  await page.getByRole('button',{name:/続きから/}).click();
+  await page.locator('.world-viewport').focus();await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'▶ デバッグ：進行スイッチ'}).click();
+  const dialog=page.getByRole('dialog',{name:'進行スイッチ'});await dialog.getByText('セーブデータが書き換わります').waitFor();
+  await dialog.getByRole('radio',{name:/道化師戦の前/}).click();
+  let s=await saved(page);
+  assert.equal(s.story,'rescued');assert.equal(s.completed,true);
+  assert.equal(s.quests['village-ledger'].step,'complete');assert.equal(s.quests['undersea-prologue'].step,'complete');
+  assert.equal(s.quests['royal-gate-intro'].step,'defeat-clown');
+  page.once('dialog',d=>d.accept());
+  await dialog.getByRole('button',{name:/これまでを全部クリア済みに/}).click();
+  await page.getByText('これまでの内容をすべてクリア済みにしました').waitFor();
+  s=await saved(page);
+  assert.equal(s.quests['royal-gate-intro'].step,'complete');assert.equal(s.quests['cursed-book'].step,'complete');
+  assert.ok(s.readBooks.includes('lesson:undersea-review-read'));assert.ok(s.level>=10);
+});
