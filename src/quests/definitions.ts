@@ -1,5 +1,5 @@
 import { chapterTwoLessons } from './chapterTwoLessons';
-import { chapterTwoOpening, chapterTwoAttack, chapterTwoFound, chapterTwoEnding, chapterThreeDeparture, hedoroBeforeBattle, hedoroDefeated, fumiTalk, villagerTalk } from './chapterScenes';
+import { chapterTwoOpening, chapterTwoAttack, chapterTwoFound, chapterTwoEnding, chapterThreeDeparture, hedoroBeforeBattle, hedoroDefeated, royalGateHaven, clownBeforeBattle, clownDefeated, fumiTalk, villagerTalk } from './chapterScenes';
 import type { QuestDefinition, QuestStates } from './types';
 export const questDefinitions:QuestDefinition[]=[
   {
@@ -51,15 +51,31 @@ export const questDefinitions:QuestDefinition[]=[
       {id:'reach-shore',title:'第三章 序幕：向こう岸へ',description:'ひらけた道を北へ抜け、海の向こうの大陸の浜辺へ出よう。',trigger:{type:'place-reached',placeId:'undersea-shore'}},
     ],reward:{gold:50,items:{potion:1}},
   },
+  {
+    id:'royal-gate-intro',category:'chapter',title:'第四章 導入：王都の関所街',description:'浜辺から街道を東へ。寂れた商業王国の王都で、道化師エヌコイールイーチが関所の行列を止めている。疲れ切った住人を正気に戻し、道化師に挑もう。',
+    npcId:'royalTeahouse',npcLocation:'王都の関所街の隠れ茶屋',requiresFirstChapter:true,requiresQuest:'undersea-prologue',
+    opening:[{speaker:'語り手',face:'📜',text:'浜辺の看板のそばから、東へ街道が延びている。第四章 導入「王都の関所街」へ向かおう。'}],
+    completionObjective:'関所の行列がはけた。この先の王城は制作中です。',completedText:'行列がはけて、街に少しだけ声が戻ったよ。ありがとうね。',
+    steps:[
+      {id:'reach-gate',title:'第四章 導入：王都へ',description:'浜辺の看板のそばから街道を東へ進み、王都の関所街に入ろう。',trigger:{type:'place-reached',placeId:'royal-gate-arrival'}},
+      {id:'meet-haven',title:'第四章 導入：隠れ茶屋で話を聞く',description:'入口の北、路地の奥にある隠れ茶屋の女主人ミーナに話しかけよう。泉で休むこともできる。',npcId:'royalTeahouse',trigger:{type:'npc-talked',npcId:'royalTeahouse'},lines:royalGateHaven},
+      {id:'defeat-clown',title:'第四章 導入：道化師に挑む',description:'待たされて疲れ切った住人たちを正気に戻しながら北の城門へ。道化師エヌコイールイーチに話しかけよう。',npcId:'clown',trigger:{type:'battle-won',enemyId:'clown'},lines:clownBeforeBattle,after:clownDefeated},
+    ],reward:{gold:120,items:{ether:1}},
+  },
 ];
 export const questDefinition=(id:string)=>questDefinitions.find(def=>def.id===id);
 const actMarks=['visit-village','battle-r','battle-c','battle-u','battle-d','battle-graphius'];
+/** How many `marks` (step ids) a quest has moved past: -1 before it starts, marks.length once complete. Shared by every chapter. */
+export function questPhase(quests:QuestStates,questId:string,marks:readonly string[]):number {
+  const def=questDefinition(questId)!,step=quests[questId]?.step;
+  if(!step)return -1;
+  if(step==='complete')return marks.length;
+  const index=def.steps.findIndex(s=>s.id===step);
+  return marks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
+}
 /** Chapter phase: 0 before the attack, then one per act boundary passed, fumiTalk.length-1 once complete. */
 function chapterTwoPhase(quests:QuestStates):number {
-  const def=questDefinition('village-ledger')!,step=quests[def.id]?.step;
-  if(step==='complete')return fumiTalk.length-1;
-  const index=def.steps.findIndex(s=>s.id===step);
-  return index<0?0:actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
+  return quests['village-ledger']?.step==='complete'?fumiTalk.length-1:Math.max(0,questPhase(quests,'village-ledger',actMarks));
 }
 /** Fumi's line follows how many act boundaries the chapter has passed. */
 export const fumiLine=(quests:QuestStates)=>fumiTalk[chapterTwoPhase(quests)];
@@ -67,15 +83,13 @@ export const fumiLine=(quests:QuestStates)=>fumiTalk[chapterTwoPhase(quests)];
 export const villagerLines=(npcId:string,quests:QuestStates):string[]|undefined=>villagerTalk[npcId]?.[chapterTwoPhase(quests)-1];
 /** Act count passed in the village-ledger chapter, or -1 when it is not running. */
 export function chapterTwoAct(quests:QuestStates):number {
-  const def=questDefinition('village-ledger')!,step=quests[def.id]?.step;
-  if(!step||step==='complete')return -1;
-  const index=def.steps.findIndex(s=>s.id===step);
-  return actMarks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
+  return quests['village-ledger']?.step==='complete'?-1:questPhase(quests,'village-ledger',actMarks);
 }
 const foeOrder=['ranger-read','ranger-create','ranger-update','ranger-delete','graphius'];
 /** Village foes: `foe-<id>` stands in the square during its battle step, `taunt-<id>` on the outskirts earlier in its act. */
 export function villageFoeVisible(npcId:string,quests:QuestStates):boolean {
   if(npcId==='mimic-book')return quests['cursed-book']?.step==='defeat-mimic';
+  if(npcId==='clown')return quests['royal-gate-intro']?.step!=='complete';
   if(npcId==='hedoro')return !['reach-shore','complete'].includes(quests['undersea-prologue']?.step??'');
   const match=/^(foe|taunt)-(.+)$/.exec(npcId);if(!match)return true;
   if(foeOrder[chapterTwoAct(quests)-1]!==match[2])return false;

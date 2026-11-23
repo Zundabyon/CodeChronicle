@@ -16,6 +16,7 @@ const canOccupy = (area: Area, point: Point) => canEnemyOccupyMap(maps[area],poi
 
 const withinTerritory = (area:Area, enemy: Enemy, point: Point) =>
   enemy.id.startsWith('memory-') ? distance(enemy,point)<=2 :
+  enemy.id.startsWith('royal-') ? Math.max(Math.abs(enemy.x-point.x),Math.abs(enemy.y-point.y))<=1 :
   enemy.id.startsWith('undersea-') ? Math.max(Math.abs(enemy.x-point.x),Math.abs(enemy.y-point.y))<=2 :
   maps[area].environment==='outdoor' ? distance(enemy,point)<=7 : area!=='dungeon' || !enemy.boss || (point.y <= 3 && point.x >= 8 && point.x <= 15);
 

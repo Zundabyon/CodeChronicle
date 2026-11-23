@@ -190,9 +190,11 @@ export const canWalkOnMap=(map:WorldMap,point:Point)=>insideMap(map,point)&&
   terrainChips[map.terrain[point.y][point.x]].walkable&&!map.blocked.has(key(point));
 export const dungeonFieldReturn:Point={x:fieldRuinsGate.x-1,y:fieldRuinsGate.y+1};
 
+export const corridorBossIds:ReadonlySet<string>=new Set(['hedoro','clown']);
 export function reachableMapCells(map:WorldMap):ReadonlySet<string> {
   const seen=new Set<string>(),queue:Point[]=[];
-  const npcCells=new Set(map.npcs.map(key));
+  // Corridor bosses step aside once beaten, so the cells beyond them stay valid places to stand.
+  const npcCells=new Set(map.npcs.filter(npc=>!corridorBossIds.has(npc.id)).map(key));
   const visit=(point:Point)=>{
     const cell=key(point);
     if(!seen.has(cell)&&canWalkOnMap(map,point)&&!npcCells.has(cell)) {

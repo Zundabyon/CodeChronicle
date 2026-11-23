@@ -8,6 +8,8 @@ const FULL_THEME_POOL=16;
 function themePool(questions:Question[],save:Learning,enemyId:string):Question[]|undefined {
   const fits=(q:Question)=>q.kind!=='cli'&&(!q.track||q.track===save.track)&&(q.inertia===undefined||q.inertia===save.inertia);
   // Undersea foes review the chapter two CRUD/resource lessons.
+  // Weary townsfolk at the royal gate review one-to-many and N+1 / with().
+  if(enemyId.startsWith('royal-'))return questions.filter(q=>fits(q)&&q.id.startsWith('clown-'));
   if(enemyId.startsWith('undersea-'))return questions.filter(q=>fits(q)&&/^(basics-crud-|ledger-|resource-)/.test(q.id));
   const key=/^memory-([crud])-enemy-/.exec(enemyId)?.[1],name=key&&operations[key];
   if(!name)return undefined;

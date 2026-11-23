@@ -38,8 +38,9 @@ import { enemyStats, heroAttack, heroDefense, scaledXp, type EnemyStats } from '
 import { areaLabel, difficultyLabel, houses, questions as bundledQuestions, type Area, type Difficulty, type Enemy, type HouseArea, type Npc, type Point, type Question, type Track } from './content';
 import { worldMaps as maps, canWalkOnMap, eventAt, dungeonFieldReturn, restoreMapPosition } from './world/maps';
 import { CharacterPortrait, StandingArt, standingUrl } from './CharacterPortrait';
-import { chapterTwoAttack, underseaEntrance, underseaTunnel, underseaShore } from './quests/chapterScenes';
+import { chapterTwoAttack, underseaEntrance, underseaTunnel, underseaShore, royalGateArrival } from './quests/chapterScenes';
 import { underseaBossNpcId, underseaBossCells, underseaReturnLanding, underseaVillageLanding } from './world/undersea';
+import { royalGateBossNpcId, royalGateBossCells } from './world/royalGate';
 import { chapterTwoAct, villageFoeVisible } from './quests/definitions';
 import './storyStage.css';
 import { TitleScreen } from './TitleScreen';
@@ -101,7 +102,8 @@ const walkable = (area: Area, p: Point, quests:QuestStates={}) => {
   const action=eventAt(maps[area],p,'enter')?.action;
   return canWalkOnMap(maps[area],p) && (action?.kind!=='memory-door'||isMemoryDoorOpen(quests,action.npcId))
     && !(area==='village'&&villageScarBlocks(chapterTwoAct(quests),p))
-    && !(area==='undersea'&&villageFoeVisible(underseaBossNpcId,quests)&&underseaBossCells.some(cell=>same(cell,p)));
+    && !(area==='undersea'&&villageFoeVisible(underseaBossNpcId,quests)&&underseaBossCells.some(cell=>same(cell,p)))
+    && !(area==='royalGate'&&villageFoeVisible(royalGateBossNpcId,quests)&&royalGateBossCells.some(cell=>same(cell,p)));
 };
 const neighbors = (p: Point): Point[] => [{x:p.x,y:p.y-1},{x:p.x+1,y:p.y},{x:p.x,y:p.y+1},{x:p.x-1,y:p.y}];
 function pathfind(area: Area, start: Point, goal: Point, defeated: string[], positions: EnemyPositions, story:StoryStage='legacy', quests:QuestStates={}): Point[] {
@@ -372,9 +374,16 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     prologueStep==='enter-undersea'?{lines:underseaEntrance,placeId:'undersea-entrance'}:
     prologueStep==='cross-tunnel'&&save.pos.y<=40?{lines:underseaTunnel,placeId:'undersea-tunnel'}:
     prologueStep==='reach-shore'&&save.pos.y<=4?{lines:underseaShore,placeId:'undersea-shore'}:undefined;
+  const royalScene=phase==='world'&&save.area==='royalGate'&&save.quests['royal-gate-intro']?.step==='reach-gate'?{lines:royalGateArrival,placeId:'royal-gate-arrival'}:undefined;
   useEffect(()=>{
     if(underseaScene&&!dialogueRef.current)playStory(underseaScene.lines,()=>sendQuestEvent({type:'place-reached',placeId:underseaScene.placeId}));
   },[underseaScene?.placeId,!!dialogue,playStory,sendQuestEvent]);
+  // Saves that cleared the prologue before chapter four existed start its intro on arrival.
+  const royalUnstarted=phase==='world'&&save.area==='royalGate'&&!save.quests['royal-gate-intro'];
+  useEffect(()=>{if(royalUnstarted)startQuest('royal-gate-intro');},[royalUnstarted,startQuest]);
+  useEffect(()=>{
+    if(royalScene&&!dialogueRef.current)playStory(royalScene.lines,()=>sendQuestEvent({type:'place-reached',placeId:royalScene.placeId}));
+  },[royalScene?.placeId,!!dialogue,playStory,sendQuestEvent]);
 
   const startBattle = useCallback((enemy: Enemy, fromReview=false, reviewQuestion?: Question) => {
     stopPath(); const s=stateRef.current; const ranger=rangerBattles[enemy.id],set=ranger&&drawSet(ranger);
@@ -417,6 +426,9 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     if(from==='town'&&to==='field'&&!canLeaveTown(stateRef.current.story)) {
       update(s=>({...s,pos:{x:14,y:30}}));
       startDialogue(stateRef.current.name,'🗡️',[stateRef.current.story==='breakfast'?'ハンナさんが朝食を用意して待っている。先に街の東の旅籠へ行こう。':'ハンナさんを助ける方法を聞かなくちゃ。まずは街の北中央にある村長の家だ。']);return;
+    }
+    if(to==='royalGate'&&stateRef.current.quests['undersea-prologue']?.step!=='complete') {
+      startDialogue(stateRef.current.name,'🗡️',['まずは浜辺まで出て、海を渡りきろう。']);return;
     }
     if(to==='undersea'&&from==='village'&&!stateRef.current.quests['undersea-prologue']) {
       startDialogue(stateRef.current.name,'🗡️',[stateRef.current.quests['village-ledger']?.step==='complete'?'記録所の地下への扉は閉まっている。先にオルの話を聞こう。':'記録所の地下には古い書庫があるらしい。今は、まだ用はない。']);return;
@@ -651,7 +663,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       if(nextLevel>current.level)setLevelUp({level:nextLevel,hpGain:maxHp(nextLevel)-maxHp(current.level),mpGain:maxMp(nextLevel)-maxMp(current.level)});
       update(s=>{ const xp=s.xp+gained, level=1+Math.floor(xp/12), leveled=level>s.level; return {...s,xp,level,gold:s.gold+earned,hp:leveled?maxHp(level):s.hp,mp:leveled?maxMp(level):s.mp,defeated:[...s.defeated,battle.enemy.id],bossDefeated:s.bossDefeated||!!battle.enemy.boss}; });
       setBattle(null);
-      if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}を倒した！ 経験値 +${gained}${battle.elite?'（黄金の敵：2倍！）':''}、${earned} G`); }
+      if (battle.enemy.boss) { if(stateRef.current.story==='legacy'){setPhase('epilogue');setEpilogueStep(0);}else{update(s=>({...s,story:'knight'}));setPhase('world');} } else { setPhase('world'); setToast(`${battle.enemy.name}${battle.enemy.id.startsWith('royal-')?'は正気に戻り、その場に座り込んだ。':'を倒した！'} 経験値 +${gained}${battle.elite?'（黄金の敵：2倍！）':''}、${earned} G`); }
       if (ranger) sendQuestEvent({type:'battle-won',enemyId:battle.enemy.id});
       if(nextLevel>current.level)sfx('levelUp');
       return;

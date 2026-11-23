@@ -352,6 +352,16 @@ export const dungeonLessons:Record<string,DungeonLesson>={
     'destroy は対象を特定して削除する。確認画面を表示しただけでは消えない。',
     '名前ではなく番号（ID）で照合し、その1行だけを消す。',
     '消した行は戻らない。消したあとは、残すべき行が残っているか表で確かめよう。'),
+  // 第四章 導入「王都の関所街」：逃げた学者の覚え書き（1対多のふり返りとN+1）
+  'royal-review-1':L('学者の覚え書き：1対多のつながり',
+    '依頼（quests）は依頼主の村人（villagers）に属する。外部キー villager_id は「多い側」の依頼の表に置く。',
+    '依頼から依頼主へは belongsTo（$quest->villager）、村人から依頼の一覧へは hasMany（$villager->quests）でたどる。'),
+  'royal-review-2':L('学者の覚え書き：一人ずつ取りに行く行列',
+    '依頼を10件取ってから、ループの中で $quest->villager を読むと、そのたびに村人の表へ問い合わせが走る。',
+    '最初の1回と、10件ぶんの10回で、合わせて11回。件数が増えるほど回数も増える。これを N+1 問題と呼ぶ。'),
+  'royal-review-3':L('学者の覚え書き：まとめて連れてくる with',
+    'Quest::with(\'villager\')->get() と書けば、依頼の一覧と、関係する村人をまとめて先に読み込む。問い合わせは2回で済む。',
+    'with に渡すのはリレーションのメソッド名（villager）で、テーブル名（villagers）ではない。取れる結果は同じで、変わるのは問い合わせの回数だけ。'),
 };
 
 // Read state lives in save.readBooks under a prefix, so no new save field is needed.
@@ -359,7 +369,7 @@ export const lessonReadId=(id:string)=>'lesson:'+id;
 export const isLessonRead=(readBooks:string[],id:string)=>readBooks.includes(lessonReadId(id));
 export const lessonReadIds=()=>Object.keys(dungeonLessons).map(lessonReadId);
 // Every tablet comes with a diagram (public/lessons/<id>-960x600.png) and can be reread in the gallery.
-export const lessonImage=(id:string)=>dungeonLessons[id]?`lessons/${id}-960x600.png`:undefined;
+export const lessonImage=(id:string)=>/^([rcud]-|undersea-review-)/.test(id)&&dungeonLessons[id]?`lessons/${id}-960x600.png`:undefined;
 export const galleryGroups:[string,string[]][]=[['読解の書庫','r-'],['創生の工房','c-'],['改変の回廊','u-'],['忘却の墓所','d-'],['海底の古道','undersea-review-']]
   .map(([name,prefix])=>[name,Object.keys(dungeonLessons).filter(id=>id.startsWith(prefix))]);
 export const galleryLessons=galleryGroups.flatMap(([,ids])=>ids);

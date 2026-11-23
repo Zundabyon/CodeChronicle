@@ -87,5 +87,5 @@ test('beating the sludge boss opens the neck and reaching the far shore clears t
   assert.match(await page.locator('.dialogue-box').innerText(),/浜辺/);
   await advance(page);
   s=await saved(page);assert.equal(s.quests['undersea-prologue'].step,'complete');assert.deepEqual(s.pos,{x:40,y:4});
-  assert.match(await page.locator('.world-objective').innerText(),/制作中/);
+  assert.match(await page.locator('.world-objective').innerText(),/王都/,'the chapter four intro follows the prologue');
 });

@@ -4,7 +4,7 @@ import { createServer } from 'vite';
 
 const server=await createServer({server:{middlewareMode:true,hmr:false,ws:false},optimizeDeps:{noDiscovery:true,include:[]},appType:'custom'});
 after(()=>server.close());
-const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt,reachableMapCells,dungeonFieldReturn}=await server.ssrLoadModule('/src/world/maps.ts');
+const {worldMaps,createWorldMap,canWalkOnMap,canEnemyOccupyMap,eventAt,reachableMapCells,dungeonFieldReturn,corridorBossIds}=await server.ssrLoadModule('/src/world/maps.ts');
 const {houses}=await server.ssrLoadModule('/src/content.ts');
 const {spawnEnemies,moveEnemies}=await server.ssrLoadModule('/src/enemyMovement.ts');
 const key=point=>`${point.x},${point.y}`;
@@ -14,7 +14,7 @@ const neighbors=({x,y})=>[{x:x+1,y},{x:x-1,y},{x,y:y+1},{x,y:y-1}];
 function playerCells(map) {
   const queue=[map.entry],seen=new Set([key(map.entry)]);
   for(let head=0;head<queue.length;head++) for(const point of neighbors(queue[head])) {
-    if(!seen.has(key(point))&&canWalkOnMap(map,point)&&!map.npcs.some(npc=>key(npc)===key(point))) {
+    if(!seen.has(key(point))&&canWalkOnMap(map,point)&&!map.npcs.some(npc=>key(npc)===key(point)&&!corridorBossIds.has(npc.id))) {
       seen.add(key(point)); queue.push(point);
     }
   }

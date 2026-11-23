@@ -1,0 +1,786 @@
+{
+  "version": 1,
+  "area": "royalGate",
+  "name": "王都の関所街",
+  "width": 60,
+  "height": 50,
+  "tilePixels": 64,
+  "entry": [
+    20,
+    48
+  ],
+  "back": {
+    "id": "royal-back",
+    "position": [
+      21,
+      48
+    ],
+    "approach": [
+      20,
+      48
+    ],
+    "label": "海底の古道へ戻る",
+    "destination": "underseaOldRoad"
+  },
+  "mainRoute": [
+    [
+      20,
+      48
+    ],
+    [
+      20,
+      47
+    ],
+    [
+      20,
+      46
+    ],
+    [
+      20,
+      45
+    ],
+    [
+      20,
+      44
+    ],
+    [
+      20,
+      43
+    ],
+    [
+      20,
+      42
+    ],
+    [
+      20,
+      41
+    ],
+    [
+      20,
+      40
+    ],
+    [
+      20,
+      39
+    ],
+    [
+      20,
+      38
+    ],
+    [
+      20,
+      37
+    ],
+    [
+      20,
+      36
+    ],
+    [
+      20,
+      35
+    ],
+    [
+      20,
+      34
+    ],
+    [
+      20,
+      33
+    ],
+    [
+      20,
+      32
+    ],
+    [
+      20,
+      31
+    ],
+    [
+      20,
+      30
+    ],
+    [
+      20,
+      29
+    ],
+    [
+      21,
+      29
+    ],
+    [
+      22,
+      29
+    ],
+    [
+      23,
+      29
+    ],
+    [
+      24,
+      29
+    ],
+    [
+      25,
+      29
+    ],
+    [
+      26,
+      29
+    ],
+    [
+      27,
+      29
+    ],
+    [
+      28,
+      29
+    ],
+    [
+      29,
+      29
+    ],
+    [
+      30,
+      29
+    ],
+    [
+      30,
+      28
+    ],
+    [
+      30,
+      27
+    ],
+    [
+      30,
+      26
+    ],
+    [
+      30,
+      25
+    ],
+    [
+      30,
+      24
+    ],
+    [
+      30,
+      23
+    ],
+    [
+      30,
+      22
+    ],
+    [
+      30,
+      21
+    ],
+    [
+      30,
+      20
+    ],
+    [
+      30,
+      19
+    ],
+    [
+      30,
+      18
+    ],
+    [
+      30,
+      17
+    ],
+    [
+      30,
+      16
+    ],
+    [
+      30,
+      15
+    ],
+    [
+      30,
+      14
+    ],
+    [
+      30,
+      13
+    ],
+    [
+      30,
+      12
+    ],
+    [
+      30,
+      11
+    ],
+    [
+      30,
+      10
+    ]
+  ],
+  "queue": [
+    {
+      "id": "royal-queue-28-12",
+      "position": [
+        28,
+        12
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-32-12",
+      "position": [
+        32,
+        12
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-28-15",
+      "position": [
+        28,
+        15
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-32-15",
+      "position": [
+        32,
+        15
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-28-18",
+      "position": [
+        28,
+        18
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-32-18",
+      "position": [
+        32,
+        18
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-28-21",
+      "position": [
+        28,
+        21
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-32-21",
+      "position": [
+        32,
+        21
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-28-24",
+      "position": [
+        28,
+        24
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-32-24",
+      "position": [
+        32,
+        24
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-28-27",
+      "position": [
+        28,
+        27
+      ],
+      "blocking": false
+    },
+    {
+      "id": "royal-queue-32-27",
+      "position": [
+        32,
+        27
+      ],
+      "blocking": false
+    }
+  ],
+  "enemies": [
+    {
+      "id": "royal-resident-01",
+      "position": [
+        18,
+        21
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-02",
+      "position": [
+        22,
+        24
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-03",
+      "position": [
+        18,
+        27
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-04",
+      "position": [
+        22,
+        32
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-05",
+      "position": [
+        39,
+        19
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-06",
+      "position": [
+        41,
+        21
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-07",
+      "position": [
+        39,
+        23
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-08",
+      "position": [
+        41,
+        25
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-09",
+      "position": [
+        39,
+        27
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-10",
+      "position": [
+        41,
+        29
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-11",
+      "position": [
+        39,
+        31
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    },
+    {
+      "id": "royal-resident-12",
+      "position": [
+        41,
+        33
+      ],
+      "radius": 1,
+      "rangeMetric": "Chebyshev radius 1; reachable pavement only; never leave this range",
+      "afterRescue": "seated; nonblocking"
+    }
+  ],
+  "haven": {
+    "bounds": [
+      13,
+      37,
+      23,
+      43
+    ],
+    "spring": {
+      "id": "royal-spring",
+      "position": [
+        16,
+        40
+      ],
+      "approach": [
+        17,
+        40
+      ],
+      "blocking": true
+    },
+    "havenNpc": {
+      "id": "royal-teahouse-host",
+      "position": [
+        16,
+        42
+      ],
+      "approach": [
+        17,
+        42
+      ],
+      "blocking": true
+    }
+  },
+  "houses": [
+    {
+      "id": "royal-house-1",
+      "position": [
+        11,
+        19
+      ],
+      "door": [
+        13,
+        22
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-2",
+      "position": [
+        11,
+        27
+      ],
+      "door": [
+        13,
+        30
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-3",
+      "position": [
+        11,
+        34
+      ],
+      "door": [
+        13,
+        37
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-4",
+      "position": [
+        44,
+        16
+      ],
+      "door": [
+        46,
+        19
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-5",
+      "position": [
+        44,
+        23
+      ],
+      "door": [
+        46,
+        26
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-6",
+      "position": [
+        44,
+        30
+      ],
+      "door": [
+        46,
+        33
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-7",
+      "position": [
+        23,
+        10
+      ],
+      "door": [
+        25,
+        13
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    },
+    {
+      "id": "royal-house-8",
+      "position": [
+        34,
+        10
+      ],
+      "door": [
+        36,
+        13
+      ],
+      "size": [
+        5,
+        4
+      ],
+      "state": "closed"
+    }
+  ],
+  "boards": [
+    {
+      "id": "royal-board-1",
+      "position": [
+        23,
+        38
+      ],
+      "approach": [
+        22,
+        38
+      ]
+    },
+    {
+      "id": "royal-board-2",
+      "position": [
+        33,
+        12
+      ],
+      "approach": [
+        32,
+        12
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "royal-review-1",
+      "position": [
+        18,
+        25
+      ],
+      "approach": [
+        18,
+        26
+      ],
+      "blocking": true
+    },
+    {
+      "id": "royal-review-2",
+      "position": [
+        42,
+        22
+      ],
+      "approach": [
+        42,
+        23
+      ],
+      "blocking": true
+    },
+    {
+      "id": "royal-review-3",
+      "position": [
+        42,
+        32
+      ],
+      "approach": [
+        42,
+        33
+      ],
+      "blocking": true
+    }
+  ],
+  "boss": {
+    "id": "royal-nkoiruichi",
+    "name": "道化師エヌコイールイーチ",
+    "footprint": [
+      [
+        29,
+        9
+      ],
+      [
+        30,
+        9
+      ],
+      [
+        31,
+        9
+      ]
+    ],
+    "approach": [
+      30,
+      10
+    ],
+    "forecourt": [
+      27,
+      10,
+      33,
+      14
+    ]
+  },
+  "gate": {
+    "id": "royal-gate",
+    "position": [
+      30,
+      8
+    ],
+    "footprint": [
+      [
+        29,
+        8
+      ],
+      [
+        30,
+        8
+      ],
+      [
+        31,
+        8
+      ]
+    ],
+    "approach": [
+      30,
+      9
+    ],
+    "opensOnDefeat": "royal-nkoiruichi"
+  },
+  "sign": {
+    "id": "royal-castle-unfinished",
+    "position": [
+      30,
+      4
+    ],
+    "approach": [
+      30,
+      5
+    ],
+    "text": "この先の王城は制作中です",
+    "blocking": true
+  },
+  "terrain": [
+    "############################################################",
+    "############################################################",
+    "############################################################",
+    "##########################.........#########################",
+    "##########################.........#########################",
+    "##########################.........#########################",
+    "##########################.........#########################",
+    "##########################.........#########################",
+    "#############################...############################",
+    "#############################...############################",
+    "#######################................#####################",
+    "#######################................#####################",
+    "#######################................#####################",
+    "#######################................#####################",
+    "#######################................#####################",
+    "############################.....###########################",
+    "############################.....###########.....###########",
+    "############################.....###########.....###########",
+    "####################.......................#.....###########",
+    "###########.....##.........................#.....###########",
+    "###########.....##...............................###########",
+    "###########.....##.....#####.....#####.....#################",
+    "###########.....##.....#####.....#####.....#################",
+    "###########............#####.....#####.....#.....###########",
+    "##################.....#####.....#####.....#.....###########",
+    "##################.....#####.....#####.....#.....###########",
+    "##################.....#####.....#####.....#.....###########",
+    "###########.....##.....#####.....#####...........###########",
+    "###########.....##.........................#################",
+    "###########.....##.........................#################",
+    "###########.....##.........................#.....###########",
+    "###########............###############.....#.....###########",
+    "##################.....###############.....#.....###########",
+    "##################.....###############.....#.....###########",
+    "###########.....##.....###############...........###########",
+    "###########.....##.....#####################################",
+    "###########.....###...######################################",
+    "###########.............####################################",
+    "###########.............####################################",
+    "#############...........####################################",
+    "#############...........####################################",
+    "#############...........####################################",
+    "#############...........####################################",
+    "#############...........####################################",
+    "###################...######################################",
+    "###################...######################################",
+    "###################...######################################",
+    "###################...######################################",
+    "###################...######################################",
+    "###################...######################################"
+  ]
+}

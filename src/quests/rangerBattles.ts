@@ -1,6 +1,7 @@
 import type { Enemy } from '../content';
 import { rangerBattleSets } from '../rangerBattleQuestions';
 import { hedoroBattleSet } from '../hedoroBattleQuestions';
+import { clownBattleSet } from '../clownBattleQuestions';
 import { questions } from '../content';
 
 // Required story battles: each attempt draws `count` questions at random from the set; one correct answer is one point of damage.
@@ -22,6 +23,8 @@ export const rangerBattles: Record<string, RangerBattle> = {
   'mimic-book': { enemy: foe('mimic-book', '人喰い図鑑ミミック', 'ページばさみ'), count: 3,
     set: questions.filter(q => q.difficulty === 'advanced' && q.topic === 'laravel' && q.options).map(q => q.id),
     hint: '図鑑の牙が食い込む……。落ち着いて、問いの条件を一つずつ確かめよう。' },
+  clown: { enemy: foe('clown', '道化師エヌコイールイーチ', 'お一人様ずつご案内'), set: clownBattleSet, count: 7,
+    hint: '学者の覚え書き：ループの中で毎回つながりを辿ると、件数ぶん問い合わせが増える。with でまとめて先に読み込めば2回で済む。' },
   hedoro: { enemy: foe('hedoro', 'ヘドロの主・スパゲッティ', 'ねばねばスパゲッティ'), set: hedoroBattleSet, count: 7,
     hint: 'ふり返りの石板：名前ではなく中身で役割を見る。取り出す番号・絞り込み・保存の有無を一つずつ確かめよう。' },
 };

@@ -122,3 +122,9 @@
 /* --- 敵の特殊能力：状態表示（色だけに頼らずアイコンと文字で） --- */
 .ability-status{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0;font-size:.8rem}
 .ability-status span{padding:3px 8px;border:1px dashed #b89cff;background:#221a33;color:#e6dcff}
+
+/* --- 第四章 導入：待たされて疲れ切った住人（魔物ではない） --- */
+.world-enemy.weary-folk{filter:grayscale(.85) brightness(.8) drop-shadow(0 0 3px #9aa0b0);animation:weary-sway 2.6s ease-in-out infinite}
+.battle-foe-weary .battle-foe-sprite{filter:grayscale(.85) brightness(.85)}
+@keyframes weary-sway{0%,100%{rotate:-2deg}50%{rotate:2deg}}
+@media (prefers-reduced-motion: reduce){.world-enemy.weary-folk{animation:none}}

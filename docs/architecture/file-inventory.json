@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-22 / 2fd7dcc + current working tree",
+  "snapshot": "2026-11-23 / 1a8f8c6 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,20 +10,20 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 633,
+  "count": 651,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
     "ゲームルール": 7,
     "ゲーム進行": 1,
     "世界の定義": 10,
-    "世界・場所": 48,
-    "人物・生物": 103,
+    "世界・場所": 51,
+    "人物・生物": 110,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 116,
+    "制作・運用": 122,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -32,10 +32,10 @@
     "戦闘表示": 11,
     "探索画面": 7,
     "教材・共通データ": 4,
-    "教材・学習": 85,
+    "教材・学習": 86,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 16,
+    "物語・進行": 17,
     "状態・保存": 4,
     "画像・素材": 95,
     "画面・表現・操作": 25,
@@ -48,12 +48,12 @@
     "world": {
       "label": "世界・場所",
       "guide": "docs/production/world.md",
-      "count": 116
+      "count": 119
     },
     "characters": {
       "label": "人物・生物",
       "guide": "docs/production/characters.md",
-      "count": 144
+      "count": 151
     },
     "motion": {
       "label": "動き・演出",
@@ -63,12 +63,12 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 31
+      "count": 32
     },
     "learning": {
       "label": "教材・学習",
       "guide": "docs/production/learning.md",
-      "count": 109
+      "count": 110
     },
     "gameplay": {
       "label": "ゲームルール",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 146
+      "count": 152
     }
   },
   "files": [
@@ -287,6 +287,14 @@
     {
       "path": "docs/art/cast-standing-v1.md",
       "bytes": 4644,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/chapter-four-intro-v1.md",
+      "bytes": 20142,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -501,8 +509,32 @@
       "genre": "operations"
     },
     {
+      "path": "docs/production/chapter-four-gate-design.md",
+      "bytes": 11566,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-four-gate-layout.json",
+      "bytes": 13763,
+      "suffix": ".json",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/chapter-four-gate-validate.mjs",
+      "bytes": 17227,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "docs/production/chapter-three-plan.md",
-      "bytes": 11199,
+      "bytes": 13221,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -734,7 +766,15 @@
     },
     {
       "path": "docs/production/records.md",
-      "bytes": 4488,
+      "bytes": 4853,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/production/roundtable-chapter-four-log.md",
+      "bytes": 9687,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -1610,6 +1650,22 @@
       "group": "画像・素材",
       "role": "地形・建物・家具・背景などのPNG素材。旧版・予備素材も含み、存在だけで現行使用中とは限らない。",
       "staticReferenceHints": [],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/city-cobble-64.png",
+      "bytes": 9789,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/city-wall-64.png",
+      "bytes": 10221,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "world"
     },
     {
@@ -2760,6 +2816,46 @@
       "genre": "characters"
     },
     {
+      "path": "public/portraits/chapter-four/face-clown.png",
+      "bytes": 473820,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-four/standing-clown-down.png",
+      "bytes": 213510,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-four/standing-clown-normal.png",
+      "bytes": 228464,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-four/standing-clown-propose.png",
+      "bytes": 239718,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/portraits/chapter-four/standing-clown-surprised.png",
+      "bytes": 248095,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
       "path": "public/portraits/chapter-three/face-hedoro.png",
       "bytes": 374102,
       "suffix": ".png",
@@ -2965,6 +3061,14 @@
       "genre": "narrative"
     },
     {
+      "path": "public/prologue/chapter-four/gate-queue.png",
+      "bytes": 1118147,
+      "suffix": ".png",
+      "group": "物語・進行",
+      "role": "物語・進行に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "narrative"
+    },
+    {
       "path": "public/prologue/chapter-three/undersea-entrance.png",
       "bytes": 857574,
       "suffix": ".png",
@@ -3105,6 +3209,22 @@
       "staticReferenceHints": [
         "src/PixelSprite.tsx"
       ],
+      "genre": "characters"
+    },
+    {
+      "path": "public/sprites/clown-64.png",
+      "bytes": 5841,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "characters"
+    },
+    {
+      "path": "public/sprites/clown-right.png",
+      "bytes": 1291887,
+      "suffix": ".png",
+      "group": "人物・生物",
+      "role": "人物・生物に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "characters"
     },
     {
@@ -3705,7 +3825,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9172,
+      "bytes": 9207,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3721,7 +3841,7 @@
     },
     {
       "path": "seed.game.sql",
-      "bytes": 1279414,
+      "bytes": 1315165,
       "suffix": ".sql",
       "group": "状態・保存",
       "role": "状態・保存に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3760,7 +3880,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 97493,
+      "bytes": 98711,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -4094,7 +4214,7 @@
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 7989,
+      "bytes": 8072,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -4194,7 +4314,7 @@
     },
     {
       "path": "src/CharacterPortrait.tsx",
-      "bytes": 3699,
+      "bytes": 4090,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "会話用の顔・立ち絵を人物に対応づけて表示する。",
@@ -4796,7 +4916,7 @@
     },
     {
       "path": "src/WorldCharacter.tsx",
-      "bytes": 1175,
+      "bytes": 1183,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "主人公・住民・騎士の方向と歩行状態を描画する。",
@@ -4819,7 +4939,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 23239,
+      "bytes": 23288,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -4954,7 +5074,7 @@
     },
     {
       "path": "src/audio/bgmBank.ts",
-      "bytes": 12256,
+      "bytes": 12275,
       "suffix": ".ts",
       "group": "画面・表現・操作",
       "role": "画面・表現・操作に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5256,8 +5376,16 @@
       "genre": "gameplay"
     },
     {
+      "path": "src/clownBattleQuestions.ts",
+      "bytes": 13788,
+      "suffix": ".ts",
+      "group": "教材・学習",
+      "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "learning"
+    },
+    {
       "path": "src/content.ts",
-      "bytes": 37004,
+      "bytes": 37361,
       "suffix": ".ts",
       "group": "教材・共通データ",
       "role": "QuestionやAreaなどの共通型、基本問題と問題配列の集約、旧マップ、住民・敵の定義を持つ。教材専用ファイルには分離しきれていない。",
@@ -5298,7 +5426,7 @@
     },
     {
       "path": "src/cursedBook.css",
-      "bytes": 12655,
+      "bytes": 13106,
       "suffix": ".css",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5388,7 +5516,7 @@
     },
     {
       "path": "src/enemyMovement.ts",
-      "bytes": 4017,
+      "bytes": 4118,
       "suffix": ".ts",
       "group": "地図・移動",
       "role": "敵の初期配置、現在位置、接触判定、移動を管理する。",
@@ -5411,7 +5539,7 @@
     },
     {
       "path": "src/enemyStats.ts",
-      "bytes": 2114,
+      "bytes": 2197,
       "suffix": ".ts",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5712,7 +5840,7 @@
     },
     {
       "path": "src/questionSelection.ts",
-      "bytes": 3383,
+      "bytes": 3389,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "学習設定で候補を絞り、未回答と形式の重みに基づき抽選する。一般の入力判定も担当する。",
@@ -5802,7 +5930,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 28549,
+      "bytes": 33711,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -5827,7 +5955,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 10351,
+      "bytes": 12451,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -5885,7 +6013,7 @@
     },
     {
       "path": "src/quests/memoryBattleQuestion.ts",
-      "bytes": 1851,
+      "bytes": 2025,
       "suffix": ".ts",
       "group": "教材・学習",
       "role": "教材・学習に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -5930,7 +6058,7 @@
     },
     {
       "path": "src/quests/rangerBattles.ts",
-      "bytes": 3295,
+      "bytes": 3677,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6298,7 +6426,7 @@
     },
     {
       "path": "src/world/catalog.ts",
-      "bytes": 12319,
+      "bytes": 12708,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
@@ -6379,7 +6507,7 @@
     },
     {
       "path": "src/world/dungeonLessons.ts",
-      "bytes": 30482,
+      "bytes": 31837,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6454,7 +6582,7 @@
     },
     {
       "path": "src/world/maps.ts",
-      "bytes": 14431,
+      "bytes": 14649,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "旧形式を新形式に変換し、配置検証・通行・イベント・到達性・小地図の共通情報を作る。",
@@ -6596,7 +6724,7 @@
     },
     {
       "path": "src/world/nativeMaps.ts",
-      "bytes": 1840,
+      "bytes": 1919,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "新形式の室内・村などを登録する。家の壁を共有し、家具は配置データから加える。",
@@ -6646,8 +6774,16 @@
       "genre": "world"
     },
     {
+      "path": "src/world/royalGate.ts",
+      "bytes": 4658,
+      "suffix": ".ts",
+      "group": "世界・場所",
+      "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
       "path": "src/world/undersea.ts",
-      "bytes": 5151,
+      "bytes": 5562,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6664,7 +6800,7 @@
     },
     {
       "path": "src/wrongChoiceReasons.ts",
-      "bytes": 3867,
+      "bytes": 3953,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "一部問題の誤答ごとの補足説明。選択肢の文字列に対応づける。",
@@ -6792,6 +6928,14 @@
       "genre": "operations"
     },
     {
+      "path": "tests/e2e/royal-gate-intro.test.mjs",
+      "bytes": 5225,
+      "suffix": ".mjs",
+      "group": "制作・運用",
+      "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
       "path": "tests/e2e/title-screen.test.mjs",
       "bytes": 5973,
       "suffix": ".mjs",
@@ -6801,7 +6945,7 @@
     },
     {
       "path": "tests/e2e/undersea-prologue.test.mjs",
-      "bytes": 6875,
+      "bytes": 6918,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -6857,7 +7001,7 @@
     },
     {
       "path": "tests/map-reachability.test.mjs",
-      "bytes": 9881,
+      "bytes": 9927,
       "suffix": ".mjs",
       "group": "検証",
       "role": "出入口・NPC・敵・家具配置の到達性と復帰位置を検証する。",

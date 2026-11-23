@@ -24,7 +24,7 @@ const flat={
   motion:['battleTiming','heroAttackArt','HeroBattleSprite','EnemyEffectSprite','enemyMovement','RecoveryCue','LevelUpCue','characterArt','heroBattleSprite','bossBreakEffect','recoveryCue','levelUpCue','chestRewardCue'],
   narrative:['story','dialogueLog','DialogueHistoryPanel','DialogueChoices','heroBanter','battleBanter'],
   learning:['questionCatalog','catalogRelease','content','questionSelection','wrongChoiceReasons','bookQuestions','library','LibraryPanel','LibrarySearch','BookPractice','LearningRecordPanel','LearningSession','LearningSetupHelp','QuestionCode','ReviewRoom','learningRecords','reviewSchedule','learningRecords','learningSession','learningSetupHelp','librarySearch','reviewRoom','questLearning'],
-  gameplay:['bossBattle','heroTechniques','items','chests','ChestSprite','AdventurePanels','BattleStage','BattleEncounter','battle','chestSprite','enemyStats','bestiary','MonsterBook','cursedBook','TabletGallery','enemyAbilities'],
+  gameplay:['bossBattle','heroTechniques','items','chests','ChestSprite','AdventurePanels','BattleStage','BattleEncounter','battle','chestSprite','enemyStats','bestiary','MonsterBook','cursedBook','TabletGallery','enemyAbilities','royalGate','clownBattleQuestions'],
   presentation:['titleMotion','QuestionBootstrap','questionBootstrap','TitleScreen','ControlsGuide','keyboardNavigation','keyboardShortcuts','base','style','titleScreen','chapterStart','storyStage','HudPanel'],
   persistence:['saveValidation','SaveTransfer','SaveStatus','ResumeSummary','saveTransfer','saveStatus','resumeSummary'],
   operations:['App','main','vite-env.d'],

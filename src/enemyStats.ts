@@ -6,7 +6,7 @@ export type EnemyStats = { level: number; hp: number; attack: number; defense: n
 const areaTier: Partial<Record<Area, number>> = {
   town: 1, field: 1, dungeon: 2,
   librarySecondFloor: 2, libraryThirdFloor: 3, libraryFourthFloor: 3, backendSecondFloor: 3,
-  crudRead: 3, crudCreate: 4, crudUpdate: 4, crudDelete: 5, village: 4, undersea: 6,
+  crudRead: 3, crudCreate: 4, crudUpdate: 4, crudDelete: 5, village: 4, undersea: 6, royalGate: 7,
 };
 
 // [hp, attack, defense] adjustments that give each kind its own feel.
@@ -20,7 +20,8 @@ const kindTraits: Record<EnemyKind, [number, number, number]> = {
 
 export function enemyStats(enemy: Enemy, area: Area | string): EnemyStats {
   const tier = areaTier[area as Area] ?? 1;
-  const [hp, attack, defense] = kindTraits[enemyKinds[enemy.id] ?? 'shadow'];
+  // Townsfolk (person sprites) have no monster traits.
+  const [hp, attack, defense] = kindTraits[enemyKinds[enemy.id] ?? 'shadow'] ?? [0, 0, 0];
   return {
     level: tier * 2 - 1,
     hp: Math.max(3, 3 + tier * 2 + hp),

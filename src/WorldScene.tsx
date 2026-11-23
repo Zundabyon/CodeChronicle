@@ -214,7 +214,7 @@ export function WorldScene({goldenEnemies,onGallery,onFlags,onBestiary,bestiaryO
             const definition=customArt?{...base,visual:customArt}:base;
             if(enemy&&save.defeated.includes(enemy.id)||!visible(point,definition.visual)) return null;
             return <WorldChip key={character.id} definition={definition} point={point}
-              className={enemy?`world-enemy ${enemy.boss?'boss':''} ${goldenEnemies?.has(enemy.id)?'golden-enemy':''}`:`world-npc ${character.id==='mimic-book'?'cursed-book':''}`}
+              className={enemy?`world-enemy ${enemy.boss?'boss':''} ${goldenEnemies?.has(enemy.id)?'golden-enemy':''} ${enemy.id.startsWith('royal-')?'weary-folk':''}`:`world-npc ${character.id==='mimic-book'?'cursed-book':''}`}
               label={enemy?`${enemy.name}に近づく`:undefined} onClick={enemy?()=>onTile(point):undefined}/>;
           })}
           {mayorRushedIn&&rescuers.map(({chip,point},i)=><WorldChip key={chip} definition={characterChips[chip]} point={point} enterFrom={map.entry} walking direction="up" className={`world-rushing-in rush-${i}`}/>)}
