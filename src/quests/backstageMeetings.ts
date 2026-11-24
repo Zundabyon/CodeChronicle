@@ -14,7 +14,11 @@ const metappi=bs('めたっぴ','metappi'),ai=bs('AIの代弁者','ai');
 const graphius=say('記録卿グラフィウス','graphius'),demon=bs('魔王','maou');
 const nozomi=say('ノゾミ・ブルー','nozomi'),tsukune=say('ツクネ・アンバー','tsukune'),nurie=say('ヌリエ・ジェイド','nurie'),keshi=say('ケシ・パープル','keshi');
 
-export type BackstageMeeting={id:string;title:string;theme:string;unlocked:(save:{completed?:boolean;quests?:QuestStates})=>boolean;lines:StoryLine[]};
+export type BackstageMeeting={id:string;title:string;theme:string;lockedHint?:string;unlocked:(save:{completed?:boolean;quests?:QuestStates})=>boolean;lines:StoryLine[]};
+// Roundtable logs live in docs/production/roundtable-logs/; later meetings are adapted from them (/cast-roundtable).
+const teacher=say('先生','📚'),mimic=say('人喰い図鑑ミミック','📕'),clown=(text:string,pose:Pose='normal'):StoryLine=>({speaker:'道化師エヌコイールイーチ',face:'clown',standing:`clown-${pose}`,text}),
+  hedoro=(text:string,pose:Pose='normal'):StoryLine=>({speaker:'ヘドロの主・スパゲッティ',face:'hedoro',standing:`hedoro-${pose}`,text});
+const king=say('王（仮）','👑'),masked=say('仮面卿（仮）','🎭');
 
 export const backstageMeetings:BackstageMeeting[]=[
   {id:'first',title:'第一回',theme:'そもそもどんなアプリ作る？',unlocked:save=>!!save.completed,lines:[
@@ -140,5 +144,64 @@ export const backstageMeetings:BackstageMeeting[]=[
     hanna('どこへでも飛べるワープまで付いたんだって？ 宿の掃除にも欲しいもんだね。','propose'),
     ai('デバッグ用です。テストが楽になりました。','propose'),
     narrator('こうして第二章は、事件のたびに少しずつ遊びやすくなった。魔王の曲は、まだ無い。'),
+  ]},
+  {id:'fourth',title:'第四回',theme:'敵に特殊能力を持たせよう',lockedHint:'第三章 序幕クリアで解放',unlocked:save=>save.quests?.['undersea-prologue']?.step==='complete',lines:[
+    narrator('実は裏で、こんな会議をしていました。議題は「敵の特殊能力を十個出し合う」。凶悪度の順に並べるそうです。'),
+    metappi('敵が弱すぎて張り合いがない！ 特殊能力、凶悪な順に！','propose'),
+    con('タイマー案、絶対誰か出してるでしょ……。それ、スクリーンリーダーで一回プレイしてから持ってきて。'),
+    user('凶悪な能力って言われても、初心者には四択そのものがもう十分凶悪なんだよなあ……。','down'),
+    pro('「キャッシュの残像」！ 間違えた問題が、並びを変えてもう一回来る！','propose'),
+    teacher('それはただの復習です。先生としては大歓迎です。'),
+    mid('出す案の半分は「既存関数の引数を変えるだけ」です。地味ですが、誰かが言わないといけないので。'),
+    ai('凶悪な能力を十個？ まず answer() の三項演算子という最凶のボスを倒させてください。','down'),
+    mimic('ページばさみ、もう一回いく？ 今度は八択だよ〜！'),
+    user('八択は凶悪。','surprised'),
+    nurie('ちょっと！ アタシの「おきにいり塗り」だけ「実装が重い」ってどういうこと!? 塗りがいがあるってことよね!?'),
+    keshi('……ぼくの技、ためらう演出つき。……べつに、いいけど。'),
+    teacher('敵が誤った知識を囁くたびに、私は解説を三行ずつ書き足すことになるんですよ……。'),
+    metappi('で、どれ採用？'),
+    mid('おすすめは四つあります。','propose'),
+    metappi('おすすめでー！','propose'),
+    narrator('決まったのは、カラスの「キャッシュの残像」、クラゲの「メモリリーク」、インプの「デッドロック封印」。時間制限は、ほぼ全員一致で却下された。'),
+    demon('余の能力は？','surprised'),
+    ai('魔王本人は喋らない方針なので、能力の説明もできません。'),
+    demon('喋っておるが!? ここ楽屋だが!?','surprised'),
+    con('楽屋だから許されているだけです。'),
+    narrator('ついでに、百体に一体の「黄金の敵」も生まれた。'),
+    pro('攻撃二倍、経験値二倍！ 見つけたら逃げるか挑むか！','propose'),
+    user('マップで光ってないと気づけない、って言ったら光るようになりました。','propose'),
+    metappi('あとモンスター図鑑はミミックが守ってる。「何やら嫌な予感がする……開けますか？」','propose'),
+    mimic('……ひらく？ ひらかない？ ……ひらくよね？'),
+    narrator('こうして敵は、少しずつ凶悪になった。魔王の能力は、まだ無い。'),
+  ]},
+  {id:'fifth',title:'第五回',theme:'新大陸と道化師',lockedHint:'第四章 導入クリアで解放',unlocked:save=>save.quests?.['royal-gate-intro']?.step==='complete',lines:[
+    narrator('実は裏で、こんな会議をしていました。議題は「第三章でやること、第四章の新大陸どうする」。'),
+    metappi('新大陸はでかい商業都市！ 王様は元英雄！ 知識狩り！ でも妻と子を人質に取られて、魔王と契約しちゃってる！','propose'),
+    con('盛りすぎだ。……で、街の人は？'),
+    metappi('ゾンビみたいに寂れてディストピア！ ゾンビが向かってきて戦闘！ でも本当は人間！','propose'),
+    mid('ゾンビの出どころを一行決めないまま村を三つ描き始めると、全員の台詞を書き直すのは私なんですよ。','down'),
+    teacher('人を魔物に変えられるのは魔王だけ、という世界の決まりがあります。'),
+    user('人間だと分かってて殴るのは、ちょっと嫌です。','down'),
+    pro('じゃあ「待たされ続けて疲れ切った人」！ 勝ったら正気に戻って、座り込む！','propose'),
+    ai('町の人の絵を灰色にして使い回せば、新しい絵はゼロ枚です。','propose'),
+    metappi('あと四天王の二人目！ 道化師エヌコイールイーチ！','propose'),
+    mid('四天王が五人目を雇い始めたら、それはもう会社です。'),
+    con('二人目の席には、もう断縁卿（案）が座っているが。'),
+    teacher('名前は「N個」と「each」……N+1問題ですね。第三章では教えない、と書いてありますが。'),
+    pro('だから第四章の入口で、第三章のふり返りにするんです！ 一石二鳥！','propose'),
+    clown('お一人様ずつ、ご案内〜！ 楽屋入りにも名前の確認が百回！ ……ああ、これ、ボクの持ちネタだった。','propose'),
+    teacher('N+1を教えるのに道化師を一人雇ったら、毎回一人ずつ呼び出すから、結局N+1人来ました。'),
+    king('元英雄で、人質を取られて、弾圧までして、それでも嫌われるなと？ 台本が重い。'),
+    masked('私の出番、名前に（仮）が付いたままなんだがね。身元を奪う役が、自分の名前を持っていないとは。'),
+    ai('設定は盛り上がりますが、こちらはまず第二章専用の if 文をはがすところから始めました。','down'),
+    narrator('こうして断縁卿（案）は双子に鋏を預けて席を立ち、道化師が四天王の二人目に座った。'),
+    hedoro('オレさまの地下道も作り直されたぞぉ！ 「大通りの周りに小部屋があって敵がいるだけで、全く面白くない」だってよぉ！','surprised'),
+    con('正しい評価だ。'),
+    hedoro('今はおどろおどろしくて陰湿！ 三本傷の道しるべつき！ ……オレさまより目立ってない？'),
+    clown('道しるべも、お一人様ずつご案内〜！'),
+    demon('……で、余の曲は？','surprised'),
+    graphius('道化には専用曲ができたぞ。見世物小屋の三拍子だ。'),
+    demon('四天王二人に曲があって、主に無い!?','down'),
+    narrator('王都の城門は開いた。王城と、魔王の曲は、まだ制作中。'),
   ]},
 ];
