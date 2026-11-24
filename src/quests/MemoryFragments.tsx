@@ -10,7 +10,8 @@ export function collectedMemories(quests:QuestStates):string[]{
   return memoryDungeons.filter(d=>chapterTwoLessons.findIndex(s=>s.id==='collect-'+d.key)<current).map(d=>d.key);
 }
 export function MemoryFragments({quests}:{quests:QuestStates}){
-  if(!quests['village-ledger'])return null;
+  // Only while chapter two is running; afterwards the fragments are just clutter.
+  const step=quests['village-ledger']?.step;if(!step||step==='complete')return null;
   const collected=collectedMemories(quests);
   return <div className="memory-fragments" role="group" aria-label={'記憶の欠片 '+collected.length+' / 4'}>
     {memoryDungeons.map(d=><span key={d.key} data-collected={collected.includes(d.key)} title={d.name+'：'+d.operation}

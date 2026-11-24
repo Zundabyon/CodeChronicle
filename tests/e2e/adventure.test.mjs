@@ -72,7 +72,7 @@ test('a completed adventure can resume resource review without losing fragments 
   await page.reload();await resume(page);await review();
   assert.ok((await page.locator('.dialogue-text > p').first().innerText()).includes(steps[1].q.prompt));
   progress=await saved(page);assert.equal(progress.quests['village-ledger'].step,'complete');assert.equal(progress.gold,321);assert.equal(progress.inventory.ether,1);
-  assert.equal(await page.locator('.memory-fragments [data-collected=true]').count(),4);
+  assert.equal(await page.locator('.memory-fragments').count(),0,'the CRUD fragments leave the objective once chapter two is complete');
 });
 
 test('side quest keeps progress through reading, practice, reporting and reload',{timeout:45000},async t=>{

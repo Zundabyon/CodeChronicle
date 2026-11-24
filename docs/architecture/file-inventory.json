@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / ce795b1 + current working tree",
+  "snapshot": "2026-11-24 / 440d772 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -5921,7 +5921,7 @@
     },
     {
       "path": "src/quests/MemoryFragments.tsx",
-      "bytes": 1181,
+      "bytes": 1305,
       "suffix": ".tsx",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6905,7 +6905,7 @@
     },
     {
       "path": "tests/e2e/adventure.test.mjs",
-      "bytes": 13858,
+      "bytes": 13906,
       "suffix": ".mjs",
       "group": "検証",
       "role": "ブラウザで宝箱、本、通常戦、復習、セーブ・再開、クエストなどを確認する。",
