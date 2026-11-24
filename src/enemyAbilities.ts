@@ -1,7 +1,7 @@
 import { enemyKinds, type Question } from './content';
 import { shuffleChoices, withDecoys } from './questionSelection';
 
-// Enemy special abilities (docs/production/roundtable-enemy-abilities-log.md).
+// Enemy special abilities (docs/production/roundtable-logs/2026-11-22-enemy-abilities.md).
 // Rules from the roundtable: one ability per enemy, never timed, announced in words, and a correct answer always eases it.
 export type AbilityId = 'page-scramble' | 'cache-afterimage' | 'memory-leak' | 'deadlock';
 /** Per-battle state, never saved. `pending`: twist the next question; `shown`: the current question was twisted. */

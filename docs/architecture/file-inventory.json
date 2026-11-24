@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / 440d772 + current working tree",
+  "snapshot": "2026-11-24 / 39d8832 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 658,
+  "count": 659,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 123,
+    "制作・運用": 124,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,13 +88,21 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 153
+      "count": 154
     }
   },
   "files": [
     {
       "path": ".agents/skills/agent-coordination/SKILL.md",
       "bytes": 4256,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": ".agents/skills/cast-roundtable/SKILL.md",
+      "bytes": 7616,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する作業手順・担当設定。用途と登録先はジャンル案内を参照。",
@@ -246,7 +254,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "bytes": 3469,
+      "bytes": 3597,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -542,7 +550,7 @@
     },
     {
       "path": "docs/production/chapter-three-plan.md",
-      "bytes": 13221,
+      "bytes": 13239,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -781,7 +789,7 @@
       "genre": "operations"
     },
     {
-      "path": "docs/production/roundtable-chapter-four-log.md",
+      "path": "docs/production/roundtable-logs/2026-11-22-chapter-four-intro.md",
       "bytes": 9687,
       "suffix": ".md",
       "group": "制作・運用",
@@ -789,7 +797,7 @@
       "genre": "operations"
     },
     {
-      "path": "docs/production/roundtable-enemy-abilities-log.md",
+      "path": "docs/production/roundtable-logs/2026-11-22-enemy-abilities.md",
       "bytes": 10546,
       "suffix": ".md",
       "group": "制作・運用",
@@ -5564,7 +5572,7 @@
     },
     {
       "path": "src/enemyAbilities.ts",
-      "bytes": 3920,
+      "bytes": 3932,
       "suffix": ".ts",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
