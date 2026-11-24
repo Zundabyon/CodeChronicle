@@ -10,7 +10,7 @@ import { mountainVillageGate } from './mountainVillage';
 import { mapDecorations } from './decorations';
 
 type Placement<Id> = Point & {
-  id: string; chip: Id; blocksMovement?: boolean; text?: string;
+  id: string; chip: Id; blocksMovement?: boolean; text?: string; className?: string;
 };
 export type PropPlacement = Placement<PropId>;
 export type BuildingPlacement = Placement<BuildingId>;

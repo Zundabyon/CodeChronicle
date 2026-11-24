@@ -64,4 +64,8 @@ characters.push({id:underseaBossNpcId,role:'npc',chip:'hedoro',x:bossX,y:bossY-1
 const decorChips={drip:'underseaDrip',bones:'underseaBones',wreck:'underseaWreck',books:'underseaBooks',eyes:'underseaEyes',chains:'underseaChains'} as const;
 layout.decor.forEach(({kind,position:[x,y]},i)=>props.push({id:`undersea-decor-${i}`,chip:decorChips[kind as keyof typeof decorChips],x,y,blocksMovement:false}));
 
+// Way markers along the main route (scratches left by old porters) so the maze stays readable in the dark.
+const taken=new Set([...props,...events].map(o=>`${o.x},${o.y}`));
+layout.mainRoute.forEach(([x,y],i)=>{if(i%3===1&&!taken.has(`${x},${y}`))props.push({id:`undersea-trail-${i}`,chip:'sign',x,y:y-.1,text:'⫽',className:'trail-mark',blocksMovement:false});});
+
 export const underseaMap:WorldMapInput={environment:'dungeon',terrain,entry:{x:entryX,y:entryY},props,buildings:[],characters,events};

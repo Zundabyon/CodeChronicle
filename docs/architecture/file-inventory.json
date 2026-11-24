@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / 66f39ab + current working tree",
+  "snapshot": "2026-11-24 / ce795b1 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -4995,7 +4995,7 @@
     },
     {
       "path": "src/WorldScene.tsx",
-      "bytes": 23288,
+      "bytes": 23298,
       "suffix": ".tsx",
       "group": "探索画面",
       "role": "地形、建物、物、小道具、キャラクターを重ねて探索画面を描く。カメラやHUD、表示演出も扱う。",
@@ -5482,7 +5482,7 @@
     },
     {
       "path": "src/cursedBook.css",
-      "bytes": 13849,
+      "bytes": 14192,
       "suffix": ".css",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6638,7 +6638,7 @@
     },
     {
       "path": "src/world/maps.ts",
-      "bytes": 14649,
+      "bytes": 14669,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "旧形式を新形式に変換し、配置検証・通行・イベント・到達性・小地図の共通情報を作る。",
@@ -6839,7 +6839,7 @@
     },
     {
       "path": "src/world/undersea.ts",
-      "bytes": 5571,
+      "bytes": 5939,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",

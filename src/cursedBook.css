@@ -137,3 +137,6 @@
   background:radial-gradient(ellipse 38% 42% at 50% 50%,transparent 0 55%,#05080acc 100%);animation:undersea-breathe 5s ease-in-out infinite}
 @keyframes undersea-breathe{0%,100%{opacity:.92}50%{opacity:1}}
 @media (prefers-reduced-motion: reduce){.world-viewport:has(.map-undersea)::after{animation:none}}
+/* 道しるべ：昔の運び手が壁際に残した三本傷。闇の中でもかすかに光る */
+.trail-mark .world-chip-sign{border:0;background:none;box-shadow:none;padding:0;color:#9fe8dc;font-weight:bold;opacity:.55;text-shadow:0 0 4px #4fd1c0,0 0 9px #1f8f86;font-size:calc(.32 * var(--tile-size))}
+.trail-mark{pointer-events:none}
