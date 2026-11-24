@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / 03b4f59 + current working tree",
+  "snapshot": "2026-11-24 / 66f39ab + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 657,
+  "count": 658,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -23,7 +23,7 @@
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 122,
+    "制作・運用": 123,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 152
+      "count": 153
     }
   },
   "files": [
@@ -303,6 +303,14 @@
     {
       "path": "docs/art/chapter-three-undersea-v1.md",
       "bytes": 18031,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/chapter-three-undersea-v2.md",
+      "bytes": 12026,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -766,7 +774,7 @@
     },
     {
       "path": "docs/production/records.md",
-      "bytes": 5218,
+      "bytes": 5156,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
