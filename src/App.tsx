@@ -372,7 +372,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
   const prologueStep=save.quests['undersea-prologue']?.step;
   const underseaScene=phase!=='world'||save.area!=='undersea'?undefined:
     prologueStep==='enter-undersea'?{lines:underseaEntrance,placeId:'undersea-entrance'}:
-    prologueStep==='cross-tunnel'&&save.pos.y<=40?{lines:underseaTunnel,placeId:'undersea-tunnel'}:
+    prologueStep==='cross-tunnel'&&save.pos.y<=52?{lines:underseaTunnel,placeId:'undersea-tunnel'}:
     prologueStep==='reach-shore'&&save.pos.y<=4?{lines:underseaShore,placeId:'undersea-shore'}:undefined;
   const royalScene=phase==='world'&&save.area==='royalGate'&&save.quests['royal-gate-intro']?.step==='reach-gate'?{lines:royalGateArrival,placeId:'royal-gate-arrival'}:undefined;
   useEffect(()=>{

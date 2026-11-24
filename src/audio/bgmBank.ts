@@ -118,6 +118,13 @@ const bank = {
     {notes: accompany(['Em','Bb','Em','C','Em','C','Em','B'], 1, 'long')},
     {notes: rep('40/3 r/1 40/2 92/1@.3 r/1 60/3@.6 r/1 96/1@.4 96/1@.3 r/2', 8)},
   ]},
+  // 第四章 導入：道化師エヌコイールイーチ戦。半音で滑り落ちる見世物小屋のワルツ風。明るいのに不気味。
+  bossClown: {bpm: 132, bars: 8, volume: 0.6, channels: [
+    {duty: 0.125, notes: 'C5/2 E5/2 G5/2 C6/2 B5/2 Bb5/2 A5/4 Ab5/2 G5/2 F#5/2 G5/2 E5/4 r/4 D5/2 F5/2 Ab5/2 B5/2 D6/2 C#6/2 C6/4 B5/2 Bb5/2 A5/2 Ab5/2 G5/8 C5/1 r/1 C5/1 r/1 E5/2 G5/2 F#5/2 G5/2 C6/4 Eb6/2 D6/2 C6/2 B5/2 Ab5/4 G5/4 F5/2 Ab5/2 C6/2 F6/2 E6/2 Eb6/2 D6/4 G5/2 F#5/2 F5/2 E5/2 Eb5/2 D5/2 C5/4'},
+    {duty: 0.5, volume: 0.16, notes: accompany(['C','C','Bdim','G','C','Ab','Fm','G'], 4, 'bounce')},
+    {notes: accompany(['C','C','Bdim','G','C','Ab','Fm','G'], 2, 'pulse')},
+    {notes: rep('40/4 88/2@.4 60/2@.6 40/4 88/2@.4 60/2@.6', 8)},
+  ]},
   // 第三章 序幕「海底の古道」：水中の静けさ・泡・遠い反響。
   undersea: {bpm: 76, bars: 8, volume: 0.65, channels: [
     {duty: 0.125, volume: 0.35, notes: 'E5/8 A5/4 G5/4 F5/12 r/4 E5/4 G5/4 C6/8 B5/8 G5/4 D5/4 C5/4 E5/4 A5/8 A5/4 C6/4 F5/8 D5/8 F5/4 A5/4 G#5/12 r/4'},
@@ -136,7 +143,7 @@ export type BgmName = keyof typeof bank;
 export const bgmBank = Object.fromEntries(Object.entries(bank).map(([k, v]) => [k, normalizeSong(v as RawSong)])) as Record<BgmName, Song>;
 
 /** 場面から曲名を選ぶ。戦闘・遭遇は敵で、探索は場所で決める。 */
-const enemyBgm: Record<string, BgmName> = {graphius: 'graphius', 'ranger-read': 'rangerNozomi', 'ranger-create': 'rangerTsukune', 'ranger-update': 'rangerNurie', 'ranger-delete': 'rangerKeshi', hedoro: 'bossHedoro', clown: 'graphius'};
+const enemyBgm: Record<string, BgmName> = {graphius: 'graphius', 'ranger-read': 'rangerNozomi', 'ranger-create': 'rangerTsukune', 'ranger-update': 'rangerNurie', 'ranger-delete': 'rangerKeshi', hedoro: 'bossHedoro', clown: 'bossClown'};
 export function sceneBgm({phase, area, environment, enemyId, boss}: {phase: string; area: string; environment?: string; enemyId?: string; boss?: boolean}): BgmName {
   if (phase === 'battle' || phase === 'encounter') return enemyBgm[enemyId ?? ''] ?? (boss ? 'bossGuardian' : 'battle');
   if (['title','prologue','setup','clear'].includes(phase)) return 'title';

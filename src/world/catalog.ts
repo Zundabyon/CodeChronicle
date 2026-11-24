@@ -109,8 +109,12 @@ export const propChips = {
   mountainDecoB: prop('mountainの小物B',image('dungeon-mountain-deco-b-64.png',.9,.9),false),
   desertDecoA: prop('desertの小物A',image('dungeon-desert-deco-a-64.png',.9,.9),false),
   desertDecoB: prop('desertの小物B',image('dungeon-desert-deco-b-64.png',.9,.9),false),
-  underseaDecoA: prop('海底の小物A',image('undersea-deco-a-64.png',.9,.9),false),
-  underseaDecoB: prop('海底の小物B',image('undersea-deco-b-64.png',.9,.9),false),
+  underseaDrip: prop('したたる泥水',image('undersea-drip-64.png',.9,.9),false),
+  underseaBones: prop('古い骨の山',image('undersea-bones-64.png',.9,.9),false),
+  underseaWreck: prop('朽ちた船材',image('undersea-wreck-64.png',.9,.9),false),
+  underseaBooks: prop('朽ちた本の山',image('undersea-books-64.png',.9,.9),false),
+  underseaEyes: prop('暗がりの目',image('undersea-eyes-64.png',.9,.9),false),
+  underseaChains: prop('錆びた鎖',image('undersea-chains-64.png',.9,.9),false),
   sign: prop('看板',{renderer:'text',text:'',width:1,height:.4,anchor:{x:.5,y:1}},false,'overhead'),
 } satisfies Record<string,ObjectDefinition>;
 export type PropId = keyof typeof propChips;

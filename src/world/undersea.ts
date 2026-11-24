@@ -60,11 +60,8 @@ for(const enemy of underseaEnemies)characters.push({id:enemy.id,role:'enemy',chi
 const [bossX,bossY]=layout.boss.approach;
 characters.push({id:underseaBossNpcId,role:'npc',chip:'hedoro',x:bossX,y:bossY-1,npc:{id:underseaBossNpcId,name:'ヘドロの主・スパゲッティ',x:bossX,y:bossY-1,face:'hedoro',
   lines:['ぐちゃぐちゃの泥とコードの塊が、道をふさいでいる。']}});
-// Wall faces with floor below carry the undersea ornaments, as in the v3 memory dungeons.
-let wallFaces=0;
-layout.terrain.forEach((row,y)=>[...row].forEach((cell,x)=>{
-  if(cell!=='#'||layout.terrain[y+1]?.[x]!=='.'||[...props,...events].some(o=>Math.abs(o.x-x)<2&&Math.abs(o.y-y)<2))return;
-  if(wallFaces++%7===0)props.push({id:'undersea-deco-'+x+'-'+y,chip:wallFaces%2?'underseaDecoA':'underseaDecoB',x,y,blocksMovement:false});
-}));
+// Grim props along the passages (layout v2 `decor`): drips, bones, wreckage, rotten books, eyes in the dark, rusted chains.
+const decorChips={drip:'underseaDrip',bones:'underseaBones',wreck:'underseaWreck',books:'underseaBooks',eyes:'underseaEyes',chains:'underseaChains'} as const;
+layout.decor.forEach(({kind,position:[x,y]},i)=>props.push({id:`undersea-decor-${i}`,chip:decorChips[kind as keyof typeof decorChips],x,y,blocksMovement:false}));
 
 export const underseaMap:WorldMapInput={environment:'dungeon',terrain,entry:{x:entryX,y:entryY},props,buildings:[],characters,events};

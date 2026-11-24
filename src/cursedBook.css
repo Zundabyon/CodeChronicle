@@ -128,3 +128,12 @@
 .battle-foe-weary .battle-foe-sprite{filter:grayscale(.85) brightness(.85)}
 @keyframes weary-sway{0%,100%{rotate:-2deg}50%{rotate:2deg}}
 @media (prefers-reduced-motion: reduce){.world-enemy.weary-folk{animation:none}}
+
+/* --- 海底の古道 v2：暗く湿った地下道。壁を沈めて道を浮かせ、灯りの外を闇で包む --- */
+.map-undersea .terrain-underseaWall{filter:brightness(.38) saturate(.7)}
+.map-undersea .terrain-underseaFloor{filter:brightness(1.05) contrast(1.05)}
+.world-viewport:has(.map-undersea){position:relative}
+.world-viewport:has(.map-undersea)::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:radial-gradient(ellipse 38% 42% at 50% 50%,transparent 0 55%,#05080acc 100%);animation:undersea-breathe 5s ease-in-out infinite}
+@keyframes undersea-breathe{0%,100%{opacity:.92}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){.world-viewport:has(.map-undersea)::after{animation:none}}
