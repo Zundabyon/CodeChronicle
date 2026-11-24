@@ -9,6 +9,7 @@
 | [創生の工房・石板の図解v1](../art/c-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
 | [改変の回廊・石板の図解v1](../art/u-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
 | [忘却の墓所・石板の図解v1](../art/d-dungeon-tablets-v1.md) | [背景](uses/backgrounds.md) | 解説15枚、960×600不透明PNG（256色に圧縮して登録）。ゲーム内の石板とギャラリーで表示 |
+| [立て看板v1](../art/signboard-v1.md) | [環境素材](uses/environment-art.md) | 調べられる立て看板と張り紙の掲示板。中身は `src/world/dungeonLessons.ts` の `sign-*` |
 | [海底の古道 v2（陰湿化）](../art/chapter-three-undersea-v2.md) | [環境素材](uses/environment-art.md) | 床・壁の差し替えと小物6種（したたり・骨・船材・朽ちた本・暗がりの目・鎖）。配置は [layout v2](chapter-three-undersea-layout.json) の `decor` |
 | [第四章 導入の画像v1](../art/chapter-four-intro-v1.md) | [会話画像](uses/dialogue-portraits.md)、[戦闘画像](uses/combat-art.md)、[環境素材](uses/environment-art.md)、[背景](uses/backgrounds.md) | 道化師エヌコイールイーチ（顔・立ち絵4・戦闘・マップ）、王都の石畳・街壁、城門前の行列の場面絵 |
 | [新しい敵3体v1](../art/new-enemies-v1.md) | [マップ画像](uses/map-sprites.md)、[戦闘画像](uses/combat-art.md) | インプ・クラゲ・カラス。[PixelSprite.tsx](../../src/PixelSprite.tsx)、[content.ts](../../src/content.ts) |

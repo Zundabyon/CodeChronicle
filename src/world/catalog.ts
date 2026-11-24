@@ -93,6 +93,8 @@ export const propChips = {
   tree: prop('木',image('tree-64.png',1.55,1.55),true,'depth','#2d6a3d'),
   cactus: prop('サボテン',image('cactus-64.png',1.15,1.3),true,'depth','#799054'),
   lessonTablet: prop('解説の石板',image('lesson-tablet-64.png',.92,.92)),
+  signboard: prop('立て看板',image('signboard-64.png',.95,.95)),
+  signboardNotice: prop('張り紙の掲示板',image('signboard-notice-64.png',.95,.95)),
   chest: prop('宝箱',image('chest-64.png',.92,.92)),
   dresser: prop('タンス',image('dresser-64.png',.92,.92)),
   bed: prop('ベッド',image('bed-64.png',.92,.92)),

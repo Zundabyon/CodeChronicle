@@ -35,3 +35,11 @@ test('page-scramble adds four wrong options and keeps the right answer',async()=
   assert.equal(s.options.length,8);assert.equal(new Set(s.options).size,8);
   assert.equal(s.options[s.answer],q.options[q.answer]);
 });
+test('weary townsfolk at the royal gate can always draw a question and have battle lines',async()=>{
+  const {memoryBattleQuestion}=await server.ssrLoadModule('/src/quests/memoryBattleQuestion.ts');
+  const {questions}=await server.ssrLoadModule('/src/content.ts');
+  const {battleBanter}=await server.ssrLoadModule('/src/battleBanter.ts');
+  for(const difficulty of ['beginner','intermediate','advanced'])for(let i=0;i<20;i++)
+    assert.ok(memoryBattleQuestion(questions,{difficulty,track:'react',inertia:true,answered:[]},'royal-resident-01',()=>i/20));
+  assert.match(battleBanter({id:'royal-resident-01',name:'待ちくたびれた商人'},'intro',0,0).enemy,/順番/);
+});

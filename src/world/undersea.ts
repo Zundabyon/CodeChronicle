@@ -48,12 +48,12 @@ props.push({id:'undersea-spring',chip:'memorySpring',x:springX,y:springY});
 props.push({id:'undersea-spring-label',chip:'sign',x:springX,y:springY-1.4,text:'回復泉 HP・MP / 無料'});
 events.push({id:'undersea-spring-interact',x:springX,y:springY,trigger:'interact',label:'海底の泉で休む',action:{kind:'spring',name:'海底の泉'}});
 const [signX,signY]=layout.sign.position;
-props.push({id:'undersea-wip-sign',chip:'sign',x:signX,y:signY,text:'王都への街道 ▶（職人の町は制作中）',blocksMovement:true});
+props.push({id:'undersea-signboard',chip:'signboard',x:signX,y:signY});
+events.push({id:'undersea-signboard-interact',x:signX,y:signY,trigger:'interact',label:'立て看板を読む',action:{kind:'lesson',id:'sign-shore',required:false}});
 // Chapter four intro: the road east to the royal capital starts beside the sign (App gates it on the prologue).
 const [roadX,roadY]=layout.sign.approach;
 events.push({id:'undersea-royal-road',x:roadX,y:roadY,trigger:'enter',label:'王都への街道を進む',action:{kind:'transition',to:'royalGate'}});
 export const underseaShoreLanding:Point={x:layout.exit[0],y:layout.exit[1]};
-props.push({id:'undersea-exit-label',chip:'sign',x:layout.exit[0],y:layout.exit[1]-.6,text:'向こう岸の浜辺'});
 for(const enemy of underseaEnemies)characters.push({id:enemy.id,role:'enemy',chip:enemy.chip,x:enemy.x,y:enemy.y,
   enemy:{id:enemy.id,name:enemy.name,attackName:enemy.attackName,x:enemy.x,y:enemy.y,icon:'🌊'}});
 // Interaction needs the boss next to the forecourt, so the NPC stands on the south cell of its body.

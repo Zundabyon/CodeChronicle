@@ -63,7 +63,7 @@ test('restoring the ledger starts the prologue and the cellar leads to the old r
 test('the sea window scene marks the tunnel crossed',{timeout:60000},async t=>{
   const page=await open(t,prologueSave('cross-tunnel','undersea',{x:18,y:53}));
   await press(page,'ArrowUp');await page.locator('.dialogue-box').waitFor();
-  assert.match(await page.locator('.story-art').getAttribute('style'),/undersea-tunnel/);
+  assert.match(await page.locator('.dialogue-box').innerText(),/窓/,'the sea window scene plays (without the reserved underwater-city art)');
   await advance(page);assert.equal((await saved(page)).quests['undersea-prologue'].step,'defeat-hedoro');
 });
 

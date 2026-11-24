@@ -219,6 +219,23 @@ const lines: Record<string, EnemyBanter> = {
     defeat: '……消さないほうが、いい行もある？',
     victory: '……しずかになった。',
   },
+  // 王都の関所街：待たされ続けて疲れ切った住人（魔物ではない）。
+  weary: {
+    intro: '……順番……まだ……？ あなたも……並んで……。',
+    ready: '……名前……なんだっけ……。',
+    attack: '……どいて……列が……進まない……！',
+    hurt: '……あれ……わたし……なにを……。',
+    defeat: '……ああ……目が、覚めた……。ありがとう……。',
+    victory: '……また……列の、うしろへ……。',
+  },
+  clown: {
+    intro: 'お一人様ずつ、ご案内〜！ さあさあ、キミの番だよ！',
+    ready: '次の方〜！ ……名簿を取ってくるから、待っててね〜！',
+    attack: 'お一人様ずつ、何度でも！ 往復往復〜！',
+    hurt: 'あれれ？ まとめて持ってこられちゃった？',
+    defeat: '行列が……一瞬で……はけちゃった……。',
+    victory: 'またのご来場を〜！ 列のおしまいはあちら！',
+  },
   graphius: {
     intro: '記録は所有物だ。取り返せるものなら、取り返してみよ。',
     ready: '次の頁を読め。見分けられるか。',
@@ -240,7 +257,8 @@ const lines: Record<string, EnemyBanter> = {
 export type BattleMoment = 'intro' | 'ready' | 'heroAttack' | 'enemyAttack' | 'reviewMiss' | 'victory' | 'defeat';
 
 export function battleBanter(enemy: Enemy, moment: BattleMoment, round: number, seed=0): { enemy: string; hero: string } {
-  const foe = lines[enemy.id] ?? lines[enemyKinds[enemy.id] ?? 'shadow'];
+  // Townsfolk use person sprites that have no monster lines; anything unknown falls back to the shadow's.
+  const foe = lines[enemy.id] ?? (enemy.id.startsWith('royal-') ? lines.weary : lines[enemyKinds[enemy.id] ?? 'shadow']) ?? lines.shadow;
   let context: HeroBanterContext = moment;
   if (moment==='intro' || moment==='victory') {
     const prefix=enemy.boss?'boss':enemy.id==='review'?'review':enemy.id==='after-gate'?'afterGate':null;

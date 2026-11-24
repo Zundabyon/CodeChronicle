@@ -11,8 +11,10 @@ export function inputIsCorrect(q: Question, input: string): boolean {
 }
 export const RECENT_LIMIT = 8;
 export function selectQuestion(questions: Question[], save: Learning, random = Math.random, onlyChoice = false): Question {
+  // Story-boss sets stay out of the general pool, but a theme drawn from such a set (royal-gate townsfolk) may use it.
+  const story = (q: Question) => /^(ranger|graphius|hedoro|clown)-/.test(q.id), mixed = questions.some(q => !story(q));
   const pool = questions.filter(q => q.difficulty === save.difficulty && (!q.track || q.track === save.track)
-    && (q.inertia === undefined || q.inertia === save.inertia) && q.kind !== 'cli' && !/^(ranger|graphius|hedoro|clown)-/.test(q.id) && (!onlyChoice || q.kind === 'choice'));
+    && (q.inertia === undefined || q.inertia === save.inertia) && q.kind !== 'cli' && !(mixed && story(q)) && (!onlyChoice || q.kind === 'choice'));
   if (!pool.length) throw new Error('学習設定に対応する問題がありません。');
   const unseen = pool.filter(q => !save.answered.includes(q.id));
   const candidates = unseen.length ? unseen : pool;

@@ -54,7 +54,7 @@ export function BattleStage({ area, enemy, enemyHp, enemyMaxHp, hero, heroMaxHp,
   const defeated=attack==='hero'&&enemyHp<=0&&impactReached;
   const terrain = area === 'field' || area === 'dungeon' || area === 'church' ? area : area.startsWith('crud')?'dungeon':'town';
   const ground = terrain === 'field' ? 'field-ground.png' : terrain === 'town' ? 'town-ground.png' : 'dungeon-ground.png';
-  const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'];
+  const enemyAttackStyle = enemyAttackStyles[enemy.id] ?? enemyAttackStyles[enemyKinds[enemy.id] ?? 'shadow'] ?? 'curse';
   const heroMove = heroTechnique?.motion ?? (Math.max(0, attackRound - 1) % heroMoves.length) as 0 | 1 | 2;
   let moment: BattleMoment = attackRound ? 'ready' : 'intro';
   if (answered) {

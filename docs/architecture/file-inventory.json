@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / 1a2e21f + current working tree",
+  "snapshot": "2026-11-24 / 593269b + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,20 +10,20 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 659,
+  "count": 662,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
     "ゲームルール": 7,
     "ゲーム進行": 1,
     "世界の定義": 10,
-    "世界・場所": 57,
+    "世界・場所": 59,
     "人物・生物": 110,
     "会話・操作": 6,
     "作問の仕組み": 5,
     "保存・復元": 4,
     "公開": 1,
-    "制作・運用": 124,
+    "制作・運用": 125,
     "動き・演出": 8,
     "図書館": 5,
     "地図・移動": 3,
@@ -48,7 +48,7 @@
     "world": {
       "label": "世界・場所",
       "guide": "docs/production/world.md",
-      "count": 125
+      "count": 127
     },
     "characters": {
       "label": "人物・生物",
@@ -88,7 +88,7 @@
     "operations": {
       "label": "制作・運用",
       "guide": "docs/production/operations.md",
-      "count": 154
+      "count": 155
     }
   },
   "files": [
@@ -310,7 +310,7 @@
     },
     {
       "path": "docs/art/chapter-three-undersea-v1.md",
-      "bytes": 18031,
+      "bytes": 18303,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -431,6 +431,14 @@
     {
       "path": "docs/art/r-dungeon-tablets-v1.md",
       "bytes": 22302,
+      "suffix": ".md",
+      "group": "制作・運用",
+      "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
+      "genre": "operations"
+    },
+    {
+      "path": "docs/art/signboard-v1.md",
+      "bytes": 5819,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -782,7 +790,7 @@
     },
     {
       "path": "docs/production/records.md",
-      "bytes": 5156,
+      "bytes": 5352,
       "suffix": ".md",
       "group": "制作・運用",
       "role": "制作・運用に関する制作規約・記録。用途と登録先はジャンル案内を参照。",
@@ -2305,6 +2313,22 @@
       "staticReferenceHints": [
         "src/world/catalog.ts"
       ],
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/signboard-64.png",
+      "bytes": 6316,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
+      "genre": "world"
+    },
+    {
+      "path": "public/maps/signboard-notice-64.png",
+      "bytes": 6494,
+      "suffix": ".png",
+      "group": "世界・場所",
+      "role": "世界・場所に関する素材または制作情報。用途と登録先はジャンル案内を参照。",
       "genre": "world"
     },
     {
@@ -4278,7 +4302,7 @@
     },
     {
       "path": "src/BattleStage.tsx",
-      "bytes": 8072,
+      "bytes": 8083,
       "suffix": ".tsx",
       "group": "戦闘表示",
       "role": "主人公・敵の攻撃、HP、ボスの防御、台詞と衝撃を描く。",
@@ -5212,7 +5236,7 @@
     },
     {
       "path": "src/battleBanter.ts",
-      "bytes": 12663,
+      "bytes": 13862,
       "suffix": ".ts",
       "group": "戦闘表示",
       "role": "敵種別と戦闘場面に応じて敵・主人公の台詞を組み立てる。",
@@ -5904,7 +5928,7 @@
     },
     {
       "path": "src/questionSelection.ts",
-      "bytes": 3389,
+      "bytes": 3603,
       "suffix": ".ts",
       "group": "学習・採点",
       "role": "学習設定で候補を絞り、未回答と形式の重みに基づき抽選する。一般の入力判定も担当する。",
@@ -5994,7 +6018,7 @@
     },
     {
       "path": "src/quests/chapterScenes.ts",
-      "bytes": 33711,
+      "bytes": 35026,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "第二章の導入・発見・結末の会話を定義する。",
@@ -6019,7 +6043,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 12451,
+      "bytes": 12610,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -6490,7 +6514,7 @@
     },
     {
       "path": "src/world/catalog.ts",
-      "bytes": 13045,
+      "bytes": 13205,
       "suffix": ".ts",
       "group": "世界の定義",
       "role": "地形・小物・建物・キャラクターの素材カタログと見た目・通行範囲を定義する。",
@@ -6571,7 +6595,7 @@
     },
     {
       "path": "src/world/dungeonLessons.ts",
-      "bytes": 31837,
+      "bytes": 33029,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6839,7 +6863,7 @@
     },
     {
       "path": "src/world/royalGate.ts",
-      "bytes": 4658,
+      "bytes": 5017,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6847,7 +6871,7 @@
     },
     {
       "path": "src/world/undersea.ts",
-      "bytes": 5939,
+      "bytes": 5915,
       "suffix": ".ts",
       "group": "世界・場所",
       "role": "世界・場所に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -7009,7 +7033,7 @@
     },
     {
       "path": "tests/e2e/undersea-prologue.test.mjs",
-      "bytes": 6918,
+      "bytes": 6971,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
@@ -7033,7 +7057,7 @@
     },
     {
       "path": "tests/enemy-stats.test.mjs",
-      "bytes": 2398,
+      "bytes": 3077,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",

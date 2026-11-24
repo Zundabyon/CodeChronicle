@@ -54,7 +54,7 @@ export const questDefinitions:QuestDefinition[]=[
   {
     id:'royal-gate-intro',category:'chapter',title:'第四章 導入：王都の関所街',description:'浜辺から街道を東へ。寂れた商業王国の王都で、道化師エヌコイールイーチが関所の行列を止めている。疲れ切った住人を正気に戻し、道化師に挑もう。',
     npcId:'royalTeahouse',npcLocation:'王都の関所街の隠れ茶屋',requiresFirstChapter:true,requiresQuest:'undersea-prologue',
-    opening:[{speaker:'語り手',face:'📜',text:'浜辺の看板のそばから、東へ街道が延びている。第四章 導入「王都の関所街」へ向かおう。'}],
+    opening:[{speaker:'語り手',face:'📜',text:'浜辺の古い立て看板のそばから、潮風に削られた街道が東へ延びている。遠くに、高い城壁の影が見えた。'},{speaker:'語り手',face:'📜',text:'第四章 導入「王都の関所街」。看板を調べてから、街道を東へ進もう。'}],
     completionObjective:'関所の行列がはけた。この先の王城は制作中です。',completedText:'行列がはけて、街に少しだけ声が戻ったよ。ありがとうね。',
     steps:[
       {id:'reach-gate',title:'第四章 導入：王都へ',description:'浜辺の看板のそばから街道を東へ進み、王都の関所街に入ろう。',trigger:{type:'place-reached',placeId:'royal-gate-arrival'}},

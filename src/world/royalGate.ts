@@ -32,7 +32,10 @@ const [backX,backY]=layout.back.position;
 props.push({id:'royal-back-stairs',chip:'stairs',x:backX,y:backY});
 props.push({id:'royal-back-label',chip:'sign',x:backX,y:backY-.6,text:'海底の古道へ ▼'});
 events.push({id:'royal-back-exit',x:backX,y:backY,trigger:'enter',label:'海底の古道へ戻る',action:{kind:'transition',to:'undersea',position:underseaShoreLanding}});
-for(const {id,position:[x,y]} of layout.boards)props.push({id,chip:'sign',x,y,text:'手配書：知識を持つ者を差し出せ',blocksMovement:true});
+for(const {id,position:[x,y]} of layout.boards){
+  props.push({id,chip:'signboardNotice',x,y});
+  events.push({id:id+'-interact',x,y,trigger:'interact',label:'張り紙を読む',action:{kind:'lesson',id:'sign-royal-wanted',required:false}});
+}
 for(const {id,position:[x,y]} of layout.reviews){
   props.push({id:'lesson-'+id,chip:'lessonTablet',x,y,blocksMovement:true});
   events.push({id:'lesson-'+id+'-interact',x,y,trigger:'interact',label:'学者の覚え書きを読む',action:{kind:'lesson',id,required:false}});
@@ -43,7 +46,7 @@ props.push({id:'royal-spring-label',chip:'sign',x:springX,y:springY-1.4,text:'�
 events.push({id:'royal-spring-interact',x:springX,y:springY,trigger:'interact',label:'隠れ茶屋の泉で休む',action:{kind:'spring',name:'隠れ茶屋の泉'}});
 const [hostX,hostY]=layout.haven.havenNpc.position;
 characters.push({id:'royalTeahouse',role:'npc',chip:'mother',x:hostX,y:hostY,npc:{id:'royalTeahouse',name:'隠れ茶屋の女主人 ミーナ',x:hostX,y:hostY,face:'👩',
-  lines:['泉の水を飲んでいきな。路地の石板には、昔の学者が残した覚え書きもあるよ。']}});
+  lines:['泉の水、もう一杯どうだい。……表へ出るなら、道化と目を合わせるんじゃないよ。','行列の連中は悪くないんだ。待たされすぎて、くたびれちまっただけさ。正気に戻してやっておくれ。']}});
 layout.queue.forEach(({id,position:[x,y]},i)=>characters.push({id,role:'npc',chip:(['father','mother','wanderer','child'] as const)[i%4],x,y,
   npc:{id,name:'行列の人',x,y,face:'🧑',lines:[royalQueueLines[i%royalQueueLines.length]]}}));
 for(const enemy of royalGateFolk)characters.push({id:enemy.id,role:'enemy',chip:enemy.chip,x:enemy.x,y:enemy.y,
@@ -53,6 +56,7 @@ const [bossX,bossY]=layout.boss.approach;
 characters.push({id:royalGateBossNpcId,role:'npc',chip:'clown',x:bossX,y:bossY-1,npc:{id:royalGateBossNpcId,name:'道化師エヌコイールイーチ',x:bossX,y:bossY-1,face:'clown',
   lines:['お一人様ずつ、ご案内〜！ 順番は守ってね！']}});
 const [signX,signY]=layout.sign.position;
-props.push({id:'royal-castle-sign',chip:'sign',x:signX,y:signY,text:'この先の王城は制作中',blocksMovement:true});
+props.push({id:'royal-castle-sign',chip:'signboard',x:signX,y:signY});
+events.push({id:'royal-castle-sign-interact',x:signX,y:signY,trigger:'interact',label:'立て看板を読む',action:{kind:'lesson',id:'sign-royal-castle',required:false}});
 
 export const royalGateMap:WorldMapInput={environment:'dungeon',terrain,entry:royalGateEntry,props,buildings,characters,events};
