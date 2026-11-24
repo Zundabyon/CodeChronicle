@@ -38,10 +38,11 @@ test('メニューの「ゲームを終わる」は確認後に保存してタ�
   assert.ok((await saved(page)).lastSavedAt>=before);
 });
 
-test('裏会議は章クリアで解放され、未解放はロックされる',async t=>{
+test('裏会議は今はすべて読める（確認用）',async t=>{
   const page=await open(t,{...base,completed:true,bossDefeated:true});
   await page.getByRole('button',{name:/冒険の管理/}).click();await page.getByText('おまけ：裏会議').click();
-  assert.equal(await page.getByRole('button',{name:/第二回（未解放）/}).isDisabled(),true);
+  // BACKSTAGE_ALL_OPEN: every meeting is readable while the author reviews them.
+  assert.equal(await page.getByRole('button',{name:/第九回「/}).isEnabled(),true);
   const before=JSON.stringify(await saved(page));
   await page.getByRole('button',{name:/第一回「/}).click();
   await page.locator('.dialogue-box').waitFor();
@@ -72,7 +73,7 @@ test('第二章クリアで第二回も読める',async t=>{
 test('第二章クリアで第三回が解放され、最後まで読める',async t=>{
   const locked=await open(t,{...base,completed:true});
   await locked.getByRole('button',{name:/冒険の管理/}).click();await locked.getByText('おまけ：裏会議').click();
-  assert.equal(await locked.getByRole('button',{name:/第三回（未解放）/}).isDisabled(),true);
+  assert.equal(await locked.getByRole('button',{name:/第三回「/}).isEnabled(),true,'all meetings are open for review');
   const page=await open(t,{...base,completed:true,quests:{'village-ledger':{step:'complete'}}});
   await page.getByRole('button',{name:/冒険の管理/}).click();await page.getByText('おまけ：裏会議').click();
   await page.getByRole('button',{name:/第三回「第二章、作ってみたら事件だらけ」/}).click();await page.locator('.dialogue-box').waitFor();

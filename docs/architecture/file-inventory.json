@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / a561df9 + current working tree",
+  "snapshot": "2026-11-24 / 1a2e21f + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -3944,7 +3944,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 98727,
+      "bytes": 98767,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -5986,7 +5986,7 @@
     },
     {
       "path": "src/quests/backstageMeetings.ts",
-      "bytes": 22444,
+      "bytes": 31359,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6921,7 +6921,7 @@
     },
     {
       "path": "tests/e2e/backstage-menu.test.mjs",
-      "bytes": 12916,
+      "bytes": 12986,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する検証。用途と登録先はジャンル案内を参照。",
