@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-25 / d46eafa + current working tree",
+  "snapshot": "2026-11-25 / fb7b2db + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -5227,7 +5227,7 @@
     },
     {
       "path": "src/battle.css",
-      "bytes": 41048,
+      "bytes": 41114,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "戦闘画面・攻撃演出のCSS。",
