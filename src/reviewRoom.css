@@ -12,3 +12,8 @@
 @media(max-width:800px){.review-room-screen{grid-template-columns:1fr;padding:15px;gap:16px}.review-room-scene{padding:18px}.study-interior{max-width:330px;margin:auto}.review-room-question{padding:15px}.review-room-card{padding:20px}}
 
 .review-room-filters{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;padding:14px;border:1px solid #6c8278;min-width:0}.review-room-filters legend{padding:0 5px;color:#e7d6a1}.review-room-filters label{flex:1;min-width:125px;font-size:12px}.review-room-filters select{display:block;width:100%;margin-top:5px;padding:8px;background:#142431;color:#f1eddc;border:1px solid #63837a}.review-room-filters p{flex-basis:100%;margin:0;font-size:12px;color:#b9d3ca}
+/* The frame fits the window; the scene and the question list scroll inside it. */
+@media(min-width:801px){
+  .review-room-screen{box-sizing:border-box;height:calc(100vh - 76px);padding:20px 30px;align-items:stretch}
+  .review-room-scene,.review-room-card{max-height:100%;overflow:auto;box-sizing:border-box;scrollbar-width:thin}
+}

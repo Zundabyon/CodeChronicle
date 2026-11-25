@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-25 / fb7b2db + current working tree",
+  "snapshot": "2026-11-25 / db5ef38 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -6294,7 +6294,7 @@
     },
     {
       "path": "src/reviewRoom.css",
-      "bytes": 5039,
+      "bytes": 5371,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "復習の部屋のCSS。",
@@ -6422,7 +6422,7 @@
     },
     {
       "path": "src/style.css",
-      "bytes": 30083,
+      "bytes": 31169,
       "suffix": ".css",
       "group": "表示スタイル",
       "role": "アプリ全体の画面・レイアウトと共通表現のCSS。",

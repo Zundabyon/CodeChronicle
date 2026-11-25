@@ -140,7 +140,7 @@ button,input{font-family:'DotGothic16',monospace}
 
 .map-letter{font-size:calc(var(--tile-size) * .6);color:#fff1c8;text-shadow:2px 2px #342b2a}
 
-.prologue-screen{min-height:calc(100vh - 76px);padding:26px 18px 44px;display:grid;place-items:center;background:radial-gradient(circle at 50% 5%,#30405b,#0a0e1b 68%)}
+.prologue-screen{min-height:calc(100vh - 76px);padding:14px 18px 14px;box-sizing:border-box;display:grid;place-items:center;background:radial-gradient(circle at 50% 5%,#30405b,#0a0e1b 68%)}
 .prologue-layout{width:min(1050px,100%);background:#0b111c;border:3px solid #e6d5a9;box-shadow:0 0 0 5px #1a263a,0 24px 65px #000b}
 .prologue-art{position:relative;width:100%;aspect-ratio:2/1;background-size:200% 200%;background-repeat:no-repeat;image-rendering:auto;animation:prologue-reveal .5s ease-out both}
 .prologue-art::after{content:'';position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0b111c9a)}
@@ -310,3 +310,19 @@ button:disabled .shortcut-key{opacity:.5}
 .monster-book tr.unknown{opacity:.5}
 .monster-book tr.unknown td[colspan]{text-align:center}
 .monster-book .monster-ability{display:block;color:#c9a8ff;font-size:.72rem}
+/* The outer frame never scrolls; only the text panel inside may (like the battle screen's right column). */
+.prologue-layout{max-height:calc(100vh - 104px);display:flex;flex-direction:column}
+.prologue-art{flex:none}
+.prologue-panel{flex:1 1 auto;min-height:0;overflow:auto}
+@media (min-width:900px) and (max-height:960px){
+  .prologue-layout{width:min(1240px,100%);display:grid;grid-template-columns:minmax(0,3fr) minmax(320px,2fr);align-items:center}
+  .prologue-panel{max-height:calc(100vh - 110px)}
+}
+@media (max-width:899px){.prologue-art{max-height:38vh}}
+.setup-screen{box-sizing:border-box;height:calc(100vh - 76px);min-height:0;padding:14px 16px}
+.setup-panel{box-sizing:border-box;max-height:100%;overflow:auto;scrollbar-width:thin;scrollbar-color:#8a7a55 transparent}
+/* Church: the frame fits the window; the cards scroll inside if needed. */
+@media (min-width:701px){
+  .church-screen{box-sizing:border-box;height:calc(100vh - 76px);padding:20px 30px}
+  .church-visual,.church-card{min-height:0;max-height:100%;overflow:auto;box-sizing:border-box}
+}
