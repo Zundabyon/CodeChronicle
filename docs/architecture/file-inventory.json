@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-24 / 593269b + current working tree",
+  "snapshot": "2026-11-25 / d46eafa + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -10,7 +10,7 @@
     ],
     "status": "Historical source/reference hints retained; not recomputed by this classification tool. Verify against current source."
   },
-  "count": 662,
+  "count": 663,
   "groups": {
     "アイテム": 3,
     "クエスト": 7,
@@ -35,7 +35,7 @@
     "教材・学習": 86,
     "検証": 14,
     "物語": 1,
-    "物語・進行": 17,
+    "物語・進行": 18,
     "状態・保存": 4,
     "画像・素材": 95,
     "画面・表現・操作": 25,
@@ -63,7 +63,7 @@
     "narrative": {
       "label": "物語・進行",
       "guide": "docs/production/narrative.md",
-      "count": 32
+      "count": 33
     },
     "learning": {
       "label": "教材・学習",
@@ -3913,7 +3913,7 @@
     },
     {
       "path": "scripts/production-inventory.mjs",
-      "bytes": 9207,
+      "bytes": 9221,
       "suffix": ".mjs",
       "group": "制作・運用",
       "role": "制作・運用に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -3968,7 +3968,7 @@
     },
     {
       "path": "src/App.tsx",
-      "bytes": 98767,
+      "bytes": 99616,
       "suffix": ".tsx",
       "group": "ゲーム進行",
       "role": "画面Phase、セーブ、会話、移動、戦闘、採点後の報酬・復習・イベントを統合する中心。現状は状態・UI・処理が同居する。",
@@ -6043,7 +6043,7 @@
     },
     {
       "path": "src/quests/definitions.ts",
-      "bytes": 12610,
+      "bytes": 12617,
       "suffix": ".ts",
       "group": "クエスト",
       "role": "図書館依頼と第二章の段階、イベント条件、報酬、会話をデータとして記述する。",
@@ -6097,6 +6097,14 @@
           "target": "src/quests/types.ts"
         }
       ],
+      "genre": "narrative"
+    },
+    {
+      "path": "src/quests/heroReplies.ts",
+      "bytes": 6133,
+      "suffix": ".ts",
+      "group": "物語・進行",
+      "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
       "genre": "narrative"
     },
     {

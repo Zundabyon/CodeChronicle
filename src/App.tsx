@@ -47,6 +47,7 @@ import { TitleScreen } from './TitleScreen';
 import { WorldScene, villageScarBlocks, fallenVillagerWords } from './WorldScene';
 import { canLeaveTown, storyNpcs, wakingScene, breakfastScene, mayorScene, knightScene, rescueScene, type StoryStage, type StoryLine } from './story';
 import { BACKSTAGE_ALL_OPEN, backstageMeetings } from './quests/backstageMeetings';
+import { heroReply } from './quests/heroReplies';
 import { ControlsGuide } from './ControlsGuide';
 import { DialogueChoices } from './DialogueChoices';
 import { moveButtonFocus } from './keyboardNavigation';
@@ -290,7 +291,9 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     const chapterLines=villagerLines(npc.id,stateRef.current.quests)?.map(line=>line.replaceAll('{name}',stateRef.current.name));
     if(chapterLines)npc={...npc,lines:chapterLines,alternateLines:undefined};
     if(talkToQuestNpc(npc,npcChoices[npc.id]))return;
-    if(npc.id==='fumi'){startDialogue(npc.name,npc.face,[fumiLine(stateRef.current.quests)]);return;}
+    // The hero answers back after ordinary talks.
+    const reply=(count=0):StoryLine[]=>{const text=heroReply(npc.id,stateRef.current.quests,count);return text?[{speaker:'{name}',face:'🗡️',text,stage:false}]:[];};
+    if(npc.id==='fumi'){startDialogue(npc.name,npc.face,[fumiLine(stateRef.current.quests),...reply()]);return;}
     if(npc.id==='mountainHealer') {
       startDialogue(npc.name,npc.face,[...npc.lines,'温かな灯りのそばでひと休みした。HPとMPが全回復した。'],undefined,()=>{
         const current=stateRef.current,hp=maxHp(current.level)-current.hp,mp=maxMp(current.level)-current.mp;
@@ -312,17 +315,17 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
       playStory(mayorScene,()=>{update(s=>({...s,story:'ruins'}));setToast('東の忘却の遺跡で、女将を救う知識を取り戻そう。');}); return;
     }
     if(npc.id==='elder'&&stage!=='legacy') {
-      startDialogue(npc.name,npc.face,[stage==='homecoming'?'よく戻った。ハンナは教会で待っている。取り戻した見極めで、あの人を救ってくれ。':stage==='rescued'?'ハンナを救ってくれて、ありがとう。世界には、まだ知識を失った人々がいる。忘れたら、また学べばよい。お前が示してくれた。':'まずは支度を整え、平原で経験を積むのだ。LV 2になったら東の遺跡へ。暴走した守護者を正気に戻し、見極めを持ち帰ってくれ。']); return;
+      startDialogue(npc.name,npc.face,[stage==='homecoming'?'よく戻った。ハンナは教会で待っている。取り戻した見極めで、あの人を救ってくれ。':stage==='rescued'?'ハンナを救ってくれて、ありがとう。世界には、まだ知識を失った人々がいる。忘れたら、また学べばよい。お前が示してくれた。':'まずは支度を整え、平原で経験を積むのだ。LV 2になったら東の遺跡へ。暴走した守護者を正気に戻し、見極めを持ち帰ってくれ。',{speaker:'{name}',face:'🗡️',stage:false,text:stage==='homecoming'?'はい。今度こそ、ハンナさんを助けます。':stage==='rescued'?'忘れたら、また学ぶ……。村長さんの言葉、ちゃんと覚えておきます。':'分かりました。支度をして、必ず見極めを持ち帰ります。'}]); return;
     }
     if(npc.id==='innkeeper'&&stage==='rescued') {
-      startDialogue(npc.name,npc.face,['おかえり。今日のスープは、あんたに教わった味だよ。','忘れたって、また覚えられるんだね。……どんなに遠くへ行っても、ここに帰っておいで。']); return;
+      startDialogue(npc.name,npc.face,['おかえり。今日のスープは、あんたに教わった味だよ。','忘れたって、また覚えられるんだね。……どんなに遠くへ行っても、ここに帰っておいで。',{speaker:'{name}',face:'🗡️',text:'ただいま、ハンナさん。……どこへ行っても、ここに帰ってくるよ。スープ、また温めておいてくれ。',stage:false}]); return;
     }
     const merchant:Record<string,ShopType>={weaponMerchant:'weapon',armorMerchant:'armor',itemMerchant:'item'};
     if (merchant[npc.id]) { stopPath(); setShopMode('buy'); setShopType(merchant[npc.id]); sfx('select'); return; }
     const count=npcTalkCounts.current[npc.id] ?? 0;
     npcTalkCounts.current[npc.id]=count+1;
     const conversations=[npc.lines,...(npc.alternateLines ?? [])];
-    startDialogue(npc.name,npc.face,conversations[count%conversations.length].map(line=>line.replaceAll('{name}',stateRef.current.name)),npcChoices[npc.id]);
+    startDialogue(npc.name,npc.face,[...conversations[count%conversations.length].map(line=>line.replaceAll('{name}',stateRef.current.name)),...(npcChoices[npc.id]?[]:reply(count))],npcChoices[npc.id]);
   },[startDialogue,playStory,update,stopPath,sfx,talkToQuestNpc]);
   const openDresser = useCallback(() => {
     stopPath(); const first=!stateRef.current.dresserOpened;

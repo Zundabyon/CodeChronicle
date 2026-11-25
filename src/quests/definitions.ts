@@ -74,7 +74,7 @@ export function questPhase(quests:QuestStates,questId:string,marks:readonly stri
   return marks.filter(id=>def.steps.findIndex(s=>s.id===id)<index).length;
 }
 /** Chapter phase: 0 before the attack, then one per act boundary passed, fumiTalk.length-1 once complete. */
-function chapterTwoPhase(quests:QuestStates):number {
+export function chapterTwoPhase(quests:QuestStates):number {
   return quests['village-ledger']?.step==='complete'?fumiTalk.length-1:Math.max(0,questPhase(quests,'village-ledger',actMarks));
 }
 /** Fumi's line follows how many act boundaries the chapter has passed. */
