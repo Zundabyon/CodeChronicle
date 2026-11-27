@@ -1,5 +1,5 @@
 {
-  "snapshot": "2026-11-27 / 6ce7a19 + current working tree",
+  "snapshot": "2026-11-27 / 7884bf8 + current working tree",
   "scope": "git cached and untracked non-ignored existing files; generated architecture HTML and inventory itself excluded",
   "detailSnapshot": {
     "snapshot": "2026-10-30 / 396cc64 + untracked authoring files",
@@ -5596,7 +5596,7 @@
     },
     {
       "path": "src/enemyAbilities.ts",
-      "bytes": 6570,
+      "bytes": 6852,
       "suffix": ".ts",
       "group": "ゲームルール",
       "role": "ゲームルールに関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",
@@ -6010,7 +6010,7 @@
     },
     {
       "path": "src/quests/backstageMeetings.ts",
-      "bytes": 34688,
+      "bytes": 37975,
       "suffix": ".ts",
       "group": "物語・進行",
       "role": "物語・進行に関する定義・処理・運用ファイル。用途と登録先はジャンル案内を参照。",

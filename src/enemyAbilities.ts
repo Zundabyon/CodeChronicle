@@ -40,15 +40,15 @@ const byKind: Partial<Record<string, Move>> = {
   imp: ['deadlock', 2, 'デッドロック封印', '鎖が絡みついた！'],
 };
 const bossMoves: Record<string, Move> = {
-  boss: ['memory-leak', 1, '暴走する門番の怒り', '守護者の拳に、怒りがこもっていく！'],
-  'ranger-read': ['page-scramble', 1, 'すりかえ栞', 'はい、それ別の人の記録でしたー！'],
-  'ranger-create': ['memory-leak', 1, 'お友達いっぱい', '空っぽの住人が、どんどん増えていく！'],
-  'ranger-update': ['cache-afterimage', 2, 'ぜんぶ塗りかえ', '答えごと、ぜんぶ同じ色に塗りかえられた！'],
-  'ranger-delete': ['deadlock', 2, 'しずかにする', '……しずかにして。手の中の道具が、消えたように動かない！'],
-  hedoro: ['page-scramble', 2, 'からみつく麺', 'ぐちゃぐちゃの麺が、選択肢にからみついた！'],
-  clown: ['cache-afterimage', 3, 'お一人様ずつ、ご案内', '次の方〜！ ……と思ったら、さっきのキミだ！'],
-  graphius: ['memory-leak', 3, '改竄の羽ペン', '誤りが帳簿に記された！ 罪が重なるほど、羽ペンは鋭くなる！'],
-  'mimic-book': ['page-scramble', 3, 'ページばさみ', '図鑑のページがばらばらに舞った！'],
+  boss: ['memory-leak', 1, '封門憤怒〈ゲート・オブ・レイジ〉', '守護者の拳に、怒りがこもっていく！'],
+  'ranger-read': ['page-scramble', 1, '虚偽閲覧〈フェイク・リード〉', 'はい、それ別の人の記録でしたー！'],
+  'ranger-create': ['memory-leak', 1, '無限増殖〈インフィニット・フレンズ〉', '空っぽの住人が、どんどん増えていく！'],
+  'ranger-update': ['cache-afterimage', 2, '全塗装上書〈オーバーライト・ハザード〉', '答えごと、ぜんぶ同じ色に塗りかえられた！'],
+  'ranger-delete': ['deadlock', 2, '静寂消去〈サイレント・デリート〉', '……しずかにして。手の中の道具が、消えたように動かない！'],
+  hedoro: ['page-scramble', 2, '混沌麺獄〈スパゲッティ・インフェルノ〉', 'ぐちゃぐちゃの麺が、選択肢にからみついた！'],
+  clown: ['cache-afterimage', 3, '無限回廊ノ案内人〈エンドレス・イーチ〉', '次の方〜！ ……と思ったら、さっきのキミだ！'],
+  graphius: ['memory-leak', 3, '断罪ノ羽筆〈ジャッジメント・クイル〉', '誤りが帳簿に記された！ 罪が重なるほど、羽ペンは鋭くなる！'],
+  'mimic-book': ['page-scramble', 3, '禁書頁乱〈フォービドゥン・ページ〉', '図鑑のページがばらばらに舞った！'],
 };
 
 export const abilityOf = (enemyId: string): Ability | undefined => {
