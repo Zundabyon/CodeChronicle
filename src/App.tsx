@@ -399,7 +399,7 @@ export function App({questionBank=bundledQuestions}:{questionBank?:Question[]} =
     const hp=set?set.length:enemy.boss?bossStages.length*bossGuardHp:enemy.id==='after-gate'||fromReview?1:stats.hp;
     setBattle({enemy,stats,elite,ability:initialAbilityState(),hp,maxHp:hp,question:q,answered:false,correct:false,eliminated:null,rounds:0,fromReview,banterSeed:Math.floor(Math.random()*0x100000000),heroTechnique:null,bossStage:0,hints:0,set});
     const ability=fromReview?undefined:abilityOf(enemy.id);
-    setBattleInput(''); setBattleNote(ability?`特殊能力「${ability.name}」：${ability.summary}`:''); phaseRef.current='encounter'; setPhase('encounter'); sfx('encounter');
+    setBattleInput(''); setBattleNote(ability?`${ability.boss?`必殺技「${ability.name}」LV${ability.level}`:`特殊能力「${ability.name}」`}：${ability.summary}`:''); phaseRef.current='encounter'; setPhase('encounter'); sfx('encounter');
   },[stopPath,sfx,startDialogue,goldenEnemies]);
   useEffect(()=>{startBattleRef.current=startBattle;},[startBattle]);
   useEffect(() => {

@@ -31,3 +31,18 @@ test('page scramble keeps its eight choices and heavy bite',()=>{
   const a=abilityOf('mimic-book');const s=afterAnswer(a,initialAbilityState(),false);
   const [next]=nextQuestion(a,s,q,q,questions);assert.equal(next.options.length,8);assert.equal(abilityDamage(a,s,1,30),14);
 });
+test('every boss has a special move, and a higher level hits harder',()=>{
+  for(const id of ['boss','ranger-read','ranger-create','ranger-update','ranger-delete','hedoro','graphius','clown','mimic-book'])
+    assert.ok(abilityOf(id)?.boss,`${id} has a special move`);
+  const leak1=abilityOf('ranger-create'),leak3=abilityOf('graphius'),full={...initialAbilityState(),leak:3};
+  assert.ok(abilityDamage(leak3,full,10,30)>abilityDamage(leak1,full,10,30),'LV3 leak hurts more than LV1');
+  const scramble=(id)=>{const a=abilityOf(id);return nextQuestion(a,afterAnswer(a,initialAbilityState(),false),q,q,questions)[0].options.length;};
+  assert.ok(scramble('mimic-book')>scramble('hedoro')&&scramble('hedoro')>scramble('ranger-read'),'more decoys at higher levels');
+  const clown=abilityOf('clown');const [again]=nextQuestion(clown,afterAnswer(clown,initialAbilityState(),false),q,fresh,questions);
+  assert.equal(again.id,q.id);assert.equal(again.options.length,6,'the clown repeats the question with two extra choices');
+});
+test('repeated misses against the clown do not pile up decoys',()=>{
+  const a=abilityOf('clown');let s=initialAbilityState(),cur=q;
+  for(let i=0;i<4;i++){s=afterAnswer(a,s,false);[cur,s]=nextQuestion(a,s,cur,fresh,questions);}
+  assert.equal(cur.options.length,6);
+});
